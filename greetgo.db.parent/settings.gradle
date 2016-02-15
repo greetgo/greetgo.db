@@ -1,1 +1,4 @@
 include 'greetgo.db'
+include 'greetgo.sqlmanager'
+include 'greetgo.gbatis'
+include 'greetgo.gbatis.util'

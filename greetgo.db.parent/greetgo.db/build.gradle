@@ -21,9 +21,7 @@ dependencies {
 
   testCompile 'com.mchange:c3p0:0.9.5.2'
   testCompile 'postgresql:postgresql:9.1-901-1.jdbc4'
-  testCompile "kz.greetgo:greetgo.util:0.0.15"
-
-
+  testCompile "kz.greetgo:greetgo.util:${greetgoUtilVersion}"
 
 }
 

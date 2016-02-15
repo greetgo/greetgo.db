@@ -20,6 +20,8 @@ public class ProbeEnhancer {
     Enhancer enhancer = new Enhancer();
     enhancer.setSuperclass(Wow.class);
 
+    final Wow original = new Wow();
+
     enhancer.setCallback(new MethodInterceptor() {
       @Override
       public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
@@ -28,8 +30,7 @@ public class ProbeEnhancer {
           return "wow proxy@" + System.identityHashCode(obj);
         }
 
-        //System.out.println("obj = " + obj);
-        return null;
+        return method.invoke(original, args);
       }
     });
 
@@ -37,7 +38,7 @@ public class ProbeEnhancer {
 
     System.out.println("wowProxy = " + wowProxy);
 
-
+    wowProxy.asd();
   }
 }
 
