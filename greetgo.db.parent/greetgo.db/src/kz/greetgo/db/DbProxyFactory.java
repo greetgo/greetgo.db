@@ -2,11 +2,7 @@ package kz.greetgo.db;
 
 import net.sf.cglib.proxy.Enhancer;
 
-import java.lang.reflect.Constructor;
-
 public class DbProxyFactory {
-
-  static class Hello {}
 
   private final TransactionManager transactionManager;
 

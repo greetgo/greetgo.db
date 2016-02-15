@@ -11,7 +11,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 public class DbProxyFactoryTest {
 
-  private IsolationLevelTester original, proxied;
+  private TestingController original, proxied;
 
   @BeforeMethod
   public void setup() {
@@ -20,12 +20,12 @@ public class DbProxyFactoryTest {
     transactionManager.setExceptionCatcher(exceptionCatcher);
     DbProxyFactory dbProxyFactory = new DbProxyFactory(transactionManager);
 
-    original = new IsolationLevelTester();
+    original = new TestingController();
     original.transactionManager = transactionManager;
-    proxied = (IsolationLevelTester) dbProxyFactory.createProxyFor(original);
+    proxied = (TestingController) dbProxyFactory.createProxyFor(original);
   }
 
-  public static class IsolationLevelTester {
+  public static class TestingController {
 
     TransactionManager transactionManager;
 
