@@ -26,7 +26,7 @@ import kz.greetgo.util.db.DbType;
  * @author pompei
  */
 class PreparedSql {
-  public final SqlWithParams sql = new SqlWithParams();
+  private final SqlWithParams sql = new SqlWithParams();
   
   private Conf conf;
   private Stru stru;
@@ -61,11 +61,11 @@ class PreparedSql {
     String sql;
   }
   
-  private final List<WithSql> withSqls = new ArrayList<>();
+  private final List<WithSql> withSqlList = new ArrayList<>();
   
-  private void prepareWithSqls() {
+  private void prepareWithSqlList() {
     for (WithView withView : request.withList) {
-      withSqls.add(prepareWithSql(withView));
+      withSqlList.add(prepareWithSql(withView));
     }
   }
   
@@ -90,14 +90,14 @@ class PreparedSql {
       select.append(", x.").append(fieldInfo.name);
     }
     from.append(" from ");
-    if (at != null) from.append(conf.tsTab + ", ");
-    from.append(withView.table + " x");
+    if (at != null) from.append(conf.tsTab).append(", ");
+    from.append(withView.table).append(" x");
     
     int index = 1;
     for (String fieldName : withView.fields) {
       int i = index++;
       Field field = getField(table, fieldName);
-      from.append(" left join " + fieldView(field) + " x" + i);
+      from.append(" left join ").append(fieldView(field)).append(" x").append(i);
       boolean first = true;
       for (FieldDb fi : table.dbKeys()) {
         if (first) {
@@ -106,16 +106,16 @@ class PreparedSql {
         } else {
           from.append(" and ");
         }
-        from.append("x." + fi.name + " = x" + i + "." + fi.name);
+        from.append("x.").append(fi.name).append(" = x").append(i).append(".").append(fi.name);
       }
       
-      select.append(", x" + i + "." + prepareFieldName(fieldName));
+      select.append(", x").append(i).append(".").append(prepareFieldName(fieldName));
       
     }
     
     select.append(from);
     if (at != null) {
-      select.append(" where x." + conf.cre + " <= " + conf.tsTab + "." + conf.ts);
+      select.append(" where x.").append(conf.cre).append(" <= ").append(conf.tsTab).append(".").append(conf.ts);
     }
     return select.toString();
   }
@@ -142,9 +142,9 @@ class PreparedSql {
         }
       }
       
-      sb.append(" order by y." + conf.ts + " desc) as rn__ from " + conf.tsTab + ", "
-          + conf.tabPrefix + field.table.name + "_" + field.name + " y where y." + conf.ts + " <= "
-          + conf.tsTab + '.' + conf.ts);
+      sb.append(" order by y.").append(conf.ts).append(" desc) as rn__ from ").append(conf.tsTab)
+        .append(", ").append(conf.tabPrefix).append(field.table.name).append("_").append(field.name)
+        .append(" y where y.").append(conf.ts).append(" <= ").append(conf.tsTab).append('.').append(conf.ts);
       
       sb.append(" ) yy where yy.rn__ = 1)");
       
@@ -168,7 +168,7 @@ class PreparedSql {
       int idx1 = temp.indexOf("${");
       if (idx1 < 0) break;
       int idx2 = temp.indexOf("}");
-      if (idx2 < 0) throw new IllegalArgumentException("Whonge field format: " + fieldName);
+      if (idx2 < 0) throw new IllegalArgumentException("Wrong field format: " + fieldName);
       String varName = temp.substring(idx1 + 2, idx2);
       ret.append(temp.substring(0, idx1));
       ret.append(getStrArg(varName));
@@ -192,12 +192,12 @@ class PreparedSql {
   }
   
   private void init() throws Exception {
-    prepareWithSqls();
+    prepareWithSqlList();
     
     StringBuilder sb = new StringBuilder();
     
-    if (withSqls.size() > 0) {
-      appendWithSqls(sb);
+    if (withSqlList.size() > 0) {
+      appendWithSqlList(sb);
       sb.append(' ');
     }
     
@@ -206,23 +206,23 @@ class PreparedSql {
     sql.type = request.type;
   }
   
-  private void appendWithSqls(StringBuilder sb) {
+  private void appendWithSqlList(StringBuilder sb) {
     sb.append("with ");
     boolean needComma = false;
     if (at != null) {
       String placeHolder = "?" + (dbType == DbType.PostgreSQL ? "::timestamp" :"");
-      sb.append(conf.tsTab + " as (select " + placeHolder + " as " + conf.ts
-          + (dbType == DbType.Oracle ? " from dual" :"") + ")");
+      sb.append(conf.tsTab).append(" as (select ").append(placeHolder).append(" as ")
+        .append(conf.ts).append(dbType == DbType.Oracle ? " from dual" : "").append(")");
       needComma = true;
       sql.params.add(new java.sql.Timestamp(at.getTime()));
     }
-    for (WithSql withSql : withSqls) {
+    for (WithSql withSql : withSqlList) {
       if (needComma) {
         sb.append(", ");
       } else {
         needComma = true;
       }
-      sb.append(withSql.withView.view + " as (" + withSql.sql + ")");
+      sb.append(withSql.withView.view).append(" as (").append(withSql.sql).append(")");
     }
   }
   

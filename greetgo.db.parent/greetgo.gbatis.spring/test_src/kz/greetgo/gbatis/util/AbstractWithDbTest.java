@@ -1,28 +1,21 @@
 package kz.greetgo.gbatis.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.mchange.v2.c3p0.PooledDataSource;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import kz.greetgo.conf.SysParams;
 import kz.greetgo.sqlmanager.gen.Conf;
 import kz.greetgo.sqlmanager.gen.Nf6Generator;
 import kz.greetgo.sqlmanager.gen.Nf6GeneratorPostgres;
 import kz.greetgo.sqlmanager.parser.StruShaper;
-
 import org.postgresql.util.PSQLException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.mchange.v2.c3p0.PooledDataSource;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.net.URL;
+import java.sql.*;
+import java.util.List;
 
 @SuppressFBWarnings("SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING")
 public abstract class AbstractWithDbTest {

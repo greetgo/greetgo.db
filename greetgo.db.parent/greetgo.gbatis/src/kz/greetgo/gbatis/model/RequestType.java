@@ -19,5 +19,5 @@ public enum RequestType {
   /**
    * Запрос на изменение данных
    */
-  Modi;
+  Modi
 }

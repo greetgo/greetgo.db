@@ -1,17 +1,15 @@
 package kz.greetgo.gbatis.spring.beans;
 
-import static kz.greetgo.gbatis.util.AbstractWithDbTest.changeDb;
-
-import javax.sql.DataSource;
-
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import kz.greetgo.conf.SysParams;
 import kz.greetgo.gbatis.util.AbstractWithDbTest;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
+import javax.sql.DataSource;
+
+import static kz.greetgo.gbatis.util.AbstractWithDbTest.changeDb;
 
 @Component
 public class DataSourceFab {

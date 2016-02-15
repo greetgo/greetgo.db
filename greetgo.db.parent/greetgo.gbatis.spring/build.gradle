@@ -15,10 +15,9 @@ eclipse {
 configurations { repoUpload }
 
 dependencies {
-  compile project(':greetgo.sqlmanager')
+  compile project(':greetgo.gbatis')
 
-  //compile "org.springframework:spring-jdbc:3.0.7.RELEASE"
-  compile 'com.metapossum:metapossum-scanner:1.0.1'
+  compile "org.springframework:spring-jdbc:3.0.7.RELEASE"
 
   testCompile 'kz.greetgo:greetgo.conf:0.0.12'
 

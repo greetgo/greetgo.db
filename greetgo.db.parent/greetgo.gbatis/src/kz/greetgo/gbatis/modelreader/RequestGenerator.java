@@ -85,6 +85,7 @@ public class RequestGenerator {
       this.withView = withView;
     }
     
+    @SuppressWarnings("NullableProblems")
     @Override
     public int compareTo(T_dot o) {
       return index - o.index;
@@ -92,6 +93,7 @@ public class RequestGenerator {
     
     @Override
     public boolean equals(Object obj) {
+      //noinspection SimplifiableIfStatement
       if (obj instanceof T_dot) return compareTo((T_dot)obj) == 0;
       return false;
     }
@@ -124,7 +126,7 @@ public class RequestGenerator {
     
     readAnnotations(ret, method, stru, conf);
     
-    readXmls(ret, method, stru, conf);
+    readAllXml(ret, method, stru, conf);
     
     fillParams(ret, method);
     
@@ -139,18 +141,19 @@ public class RequestGenerator {
     
     return ret;
   }
-  
+
   private static void readAnnotations(Request ret, Method method, Stru stru, Conf conf)
       throws Exception {
-    final List<T_dot> tdotList = new ArrayList<>();
+    final List<T_dot> tDotList = new ArrayList<>();
     
     ret.type = null;
-    
+
+
     FOR: for (Annotation ann : method.getAnnotations()) {
       {
-        T_dot tdot = readTDot(ann, stru, conf);
-        if (tdot != null) {
-          tdotList.add(tdot);
+        T_dot tDot = readTDot(ann, stru, conf);
+        if (tDot != null) {
+          tDotList.add(tDot);
           continue FOR;
         }
       }
@@ -188,8 +191,8 @@ public class RequestGenerator {
       }
     }
     
-    Collections.sort(tdotList);
-    for (T_dot x : tdotList) {
+    Collections.sort(tDotList);
+    for (T_dot x : tDotList) {
       ret.withList.add(x.withView);
     }
     
@@ -197,22 +200,22 @@ public class RequestGenerator {
   
   private static void fillParams(Request ret, Method method) {
     {
-      Annotation[][] parAnns = method.getParameterAnnotations();
-      Class<?>[] pclasses = method.getParameterTypes();
-      if (parAnns.length != pclasses.length) {
-        throw new RuntimeException("BAD dsadfsdfdsfd");
+      Annotation[][] parAnnotations = method.getParameterAnnotations();
+      Class<?>[] pClasses = method.getParameterTypes();
+      if (parAnnotations.length != pClasses.length) {
+        throw new RuntimeException("BAD asd asd asd");
       }
-      for (int i = 0, C = pclasses.length; i < C; i++) {
-        Annotation[] annotations = parAnns[i];
-        Class<?> pclass = pclasses[i];
-        ret.paramList.add(convertParam(pclass, annotations));
+      for (int i = 0, C = pClasses.length; i < C; i++) {
+        Annotation[] annotations = parAnnotations[i];
+        Class<?> pClass = pClasses[i];
+        ret.paramList.add(convertParam(pClass, annotations));
       }
     }
   }
   
-  private static Param convertParam(Class<?> pclass, Annotation[] annotations) {
+  private static Param convertParam(Class<?> pClass, Annotation[] annotations) {
     Param ret = new Param();
-    ret.type = pclass;
+    ret.type = pClass;
     
     for (Annotation ann : annotations) {
       if (ann instanceof Prm) {
@@ -345,6 +348,7 @@ public class RequestGenerator {
     
     if (method.getReturnType().isAssignableFrom(Map.class)) {
       if (method.getGenericReturnType() instanceof ParameterizedType) {
+        //noinspection StatementWithEmptyBody
         if (ret.result.mapKeyField == null) {
           //throw new RequestGeneratorException("No MapKey in " + method);
           //Убираем эту проверку, потому что есть смысл не указывать MapKey
@@ -368,35 +372,35 @@ public class RequestGenerator {
           }
           
           if (valueType instanceof ParameterizedType) {
-            ParameterizedType ptype = (ParameterizedType)valueType;
+            ParameterizedType pType = (ParameterizedType)valueType;
             
-            Class<?> rawType = (Class<?>)ptype.getRawType();
+            Class<?> rawType = (Class<?>)pType.getRawType();
             
             if (rawType.isAssignableFrom(List.class)) {
-              if (ptype.getActualTypeArguments().length != 1) {
+              if (pType.getActualTypeArguments().length != 1) {
                 throw new RequestGeneratorException(List.class
                     + " has more or less then one type argument");
               }
               
-              ret.result.resultDataClass = (Class<?>)ptype.getActualTypeArguments()[0];
+              ret.result.resultDataClass = (Class<?>)pType.getActualTypeArguments()[0];
               ret.result.type = ResultType.MAP_LIST;
               
               return;
             }
             
             if (rawType.isAssignableFrom(Set.class)) {
-              if (ptype.getActualTypeArguments().length != 1) {
+              if (pType.getActualTypeArguments().length != 1) {
                 throw new RequestGeneratorException(Set.class
                     + " has more or less then one type argument");
               }
               
-              ret.result.resultDataClass = (Class<?>)ptype.getActualTypeArguments()[0];
+              ret.result.resultDataClass = (Class<?>)pType.getActualTypeArguments()[0];
               ret.result.type = ResultType.MAP_SET;
               
               return;
             }
             
-            throw new RequestGeneratorException("Cannot work with " + ptype
+            throw new RequestGeneratorException("Cannot work with " + pType
                 + " in second place of " + Map.class.getName());
             
           }
@@ -448,25 +452,25 @@ public class RequestGenerator {
     if (futureCallArgType instanceof Class) {
       futureCallArgClass = (Class<?>)futureCallArgType;
     } else if (futureCallArgType instanceof ParameterizedType) {
-      ParameterizedType ptype = (ParameterizedType)futureCallArgType;
+      ParameterizedType pType = (ParameterizedType)futureCallArgType;
       
-      if (ptype.getRawType() instanceof Class) {
+      if (pType.getRawType() instanceof Class) {
         
-        futureCallArgClass = (Class<?>)ptype.getRawType();
+        futureCallArgClass = (Class<?>)pType.getRawType();
         
-        if (((Class<?>)ptype.getRawType()).isAssignableFrom(Map.class)) {
+        if (((Class<?>)pType.getRawType()).isAssignableFrom(Map.class)) {
           if (ret.result.mapKeyField == null) {
             throw new RequestGeneratorException("No MapKey in " + method);
           }
-          if (ptype.getActualTypeArguments().length != 2) {
+          if (pType.getActualTypeArguments().length != 2) {
             throw new RequestGeneratorException(Map.class
                 + " has more or less then two type argument in result of " + method);
           }
           
-          ret.result.mapKeyClass = (Class<?>)ptype.getActualTypeArguments()[0];
+          ret.result.mapKeyClass = (Class<?>)pType.getActualTypeArguments()[0];
           
           {
-            Type valueType = ptype.getActualTypeArguments()[1];
+            Type valueType = pType.getActualTypeArguments()[1];
             if (valueType instanceof Class) {
               ret.result.resultDataClass = (Class<?>)valueType;
               ret.result.type = ResultType.MAP;
@@ -508,25 +512,25 @@ public class RequestGenerator {
           }
         }
         
-        if (((Class<?>)ptype.getRawType()).isAssignableFrom(List.class)) {
-          if (ptype.getActualTypeArguments().length != 1) {
+        if (((Class<?>)pType.getRawType()).isAssignableFrom(List.class)) {
+          if (pType.getActualTypeArguments().length != 1) {
             throw new RequestGeneratorException(List.class
                 + " has more or less then one type argument in result of " + method);
           }
           
           ret.result.type = ResultType.LIST;
-          ret.result.resultDataClass = (Class<?>)ptype.getActualTypeArguments()[0];
+          ret.result.resultDataClass = (Class<?>)pType.getActualTypeArguments()[0];
           return;
         }
         
-        if (((Class<?>)ptype.getRawType()).isAssignableFrom(Set.class)) {
-          if (ptype.getActualTypeArguments().length != 1) {
+        if (((Class<?>)pType.getRawType()).isAssignableFrom(Set.class)) {
+          if (pType.getActualTypeArguments().length != 1) {
             throw new RequestGeneratorException(List.class
                 + " has more or less then one type argument in result of " + method);
           }
           
           ret.result.type = ResultType.SET;
-          ret.result.resultDataClass = (Class<?>)ptype.getActualTypeArguments()[0];
+          ret.result.resultDataClass = (Class<?>)pType.getActualTypeArguments()[0];
           return;
         }
         
@@ -542,7 +546,7 @@ public class RequestGenerator {
     ret.result.resultDataClass = futureCallArgClass;
   }
   
-  private static void readXmls(Request ret, Method method, Stru stru, Conf conf) throws Exception {
+  private static void readAllXml(Request ret, Method method, Stru stru, Conf conf) throws Exception {
     FromXml fromXml = method.getAnnotation(FromXml.class);
     if (fromXml == null) return;
     if (ret.sql != null) throw new ExcessXmlException(
@@ -614,11 +618,8 @@ public class RequestGenerator {
       IOException {
     XMLReader reader = XMLReaderFactory.createXMLReader();
     reader.setContentHandler(new XmlRequestSaxHandler(acceptor));
-    InputStream inputStream = xmlURL.openStream();
-    try {
+    try (InputStream inputStream = xmlURL.openStream()) {
       reader.parse(new InputSource(inputStream));
-    } finally {
-      inputStream.close();
     }
   }
   

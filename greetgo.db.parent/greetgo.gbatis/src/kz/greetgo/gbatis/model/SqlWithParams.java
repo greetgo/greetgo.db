@@ -3,6 +3,7 @@ package kz.greetgo.gbatis.model;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import kz.greetgo.gbatis.util.SqlUtil;
@@ -17,9 +18,7 @@ public class SqlWithParams {
     SqlWithParams ret = new SqlWithParams();
     ret.type = RequestType.Sele;
     ret.sql = sql;
-    for (Object p : params) {
-      ret.params.add(p);
-    }
+    Collections.addAll(ret.params, params);
     return ret;
   }
   
@@ -35,9 +34,7 @@ public class SqlWithParams {
     SqlWithParams ret = new SqlWithParams();
     ret.type = RequestType.Call;
     ret.sql = sql;
-    for (Object p : params) {
-      ret.params.add(p);
-    }
+    Collections.addAll(ret.params, params);
     return ret;
   }
   
@@ -53,9 +50,7 @@ public class SqlWithParams {
     SqlWithParams ret = new SqlWithParams();
     ret.type = RequestType.Modi;
     ret.sql = sql;
-    for (Object p : params) {
-      ret.params.add(p);
-    }
+    Collections.addAll(ret.params, params);
     return ret;
   }
   

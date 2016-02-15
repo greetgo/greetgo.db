@@ -1,7 +1,6 @@
 package kz.greetgo.gbatis.spring.beans;
 
 import kz.greetgo.gbatis.spring.daos.ClientDao6;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

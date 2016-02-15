@@ -1,22 +1,21 @@
 package kz.greetgo.gbatis.spring;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import kz.greetgo.gbatis.spring.beans.TestProxyGenerator;
+import kz.greetgo.gbatis.spring.beans.UsingDao;
+import kz.greetgo.gbatis.spring.daos.Client;
+import kz.greetgo.gbatis.spring.daos.ClientDao6;
+import kz.greetgo.gbatis.util.AbstractWithDbTest;
+import org.springframework.context.support.AbstractXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import kz.greetgo.gbatis.spring.beans.TestProxyGenerator;
-import kz.greetgo.gbatis.spring.beans.UsingDao;
-import kz.greetgo.gbatis.spring.daos.Client;
-import kz.greetgo.gbatis.spring.daos.ClientDao6;
-import kz.greetgo.gbatis.util.AbstractWithDbTest;
-
-import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 public class AbstractProxyGeneratorTest extends AbstractWithDbTest {
   @Override
@@ -78,8 +77,8 @@ public class AbstractProxyGeneratorTest extends AbstractWithDbTest {
     
     Thread.sleep(500);
     
-    Date beforeOlding = clientDao6.now();
-    System.out.println("beforeOlding = " + beforeOlding);
+    Date beforeMakeOld = clientDao6.now();
+    System.out.println("beforeMakeOld = " + beforeMakeOld);
     
     Thread.sleep(100);
     
@@ -87,7 +86,7 @@ public class AbstractProxyGeneratorTest extends AbstractWithDbTest {
     
     List<Client> youngClientsLast = clientDao6.youngClients(17).last();
     
-    List<Client> youngClientsAt = clientDao6.youngClients(17).at(beforeOlding);
+    List<Client> youngClientsAt = clientDao6.youngClients(17).at(beforeMakeOld);
     
     System.out.println("youngClientsLast.size = " + youngClientsLast.size());
     System.out.println("youngClientsAt.size = " + youngClientsAt.size());
@@ -99,11 +98,11 @@ public class AbstractProxyGeneratorTest extends AbstractWithDbTest {
       System.out.println("!!!!!!!! " + client);
     }
     System.out.println("**************");
-    for (Client client : clientDao6.youngClients(17).at(beforeOlding, 4, 3)) {
+    for (Client client : clientDao6.youngClients(17).at(beforeMakeOld, 4, 3)) {
       System.out.println("!!!!!!!! " + client);
     }
     
-    List<String> surnames = clientDao6.youngClientsField(17, "surname").at(beforeOlding);
+    List<String> surnames = clientDao6.youngClientsField(17, "surname").at(beforeMakeOld);
     
     System.out.println("surnames = " + surnames);
     

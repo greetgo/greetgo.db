@@ -1,15 +1,14 @@
 package kz.greetgo.gbatis.spring.beans;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import kz.greetgo.gbatis.futurecall.SqlViewer;
 import kz.greetgo.gbatis.spring.AbstractProxyGenerator;
 import kz.greetgo.sqlmanager.gen.Conf;
 import kz.greetgo.sqlmanager.model.Stru;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class TestProxyGenerator extends AbstractProxyGenerator {

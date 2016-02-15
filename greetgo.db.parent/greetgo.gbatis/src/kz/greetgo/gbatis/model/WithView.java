@@ -1,6 +1,7 @@
 package kz.greetgo.gbatis.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import kz.greetgo.gbatis.t.T1;
@@ -20,9 +21,7 @@ public class WithView {
   public WithView(String table, String view, String... fields) {
     this.table = table;
     this.view = view;
-    for (String field : fields) {
-      this.fields.add(field);
-    }
+    Collections.addAll(this.fields, fields);
   }
   
   @Override

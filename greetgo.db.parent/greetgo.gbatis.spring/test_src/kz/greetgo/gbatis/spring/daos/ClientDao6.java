@@ -1,14 +1,10 @@
 package kz.greetgo.gbatis.spring.daos;
 
+import kz.greetgo.gbatis.model.FutureCall;
+import kz.greetgo.gbatis.t.*;
+
 import java.util.Date;
 import java.util.List;
-
-import kz.greetgo.gbatis.model.FutureCall;
-import kz.greetgo.gbatis.t.Autoimpl;
-import kz.greetgo.gbatis.t.Call;
-import kz.greetgo.gbatis.t.Prm;
-import kz.greetgo.gbatis.t.Sele;
-import kz.greetgo.gbatis.t.T1;
 
 @Autoimpl
 public interface ClientDao6 {
@@ -21,6 +17,7 @@ public interface ClientDao6 {
   @Sele("select client as id, ${field} from x_client where age <= #{age} order by client")
   FutureCall<List<String>> youngClientsField(@Prm("age") int age, @Prm("field") String field);
   
+  @SuppressWarnings("unused")
   @T1("m_client")
   @Sele("select client as id,surname,name,patronymic,age from x_client")
   FutureCall<List<Client>> allClients();
@@ -28,6 +25,7 @@ public interface ClientDao6 {
   @Sele("select moment()")
   Date now();
   
+  @SuppressWarnings("unused")
   @Sele("select nextval('s_client')")
   long nextClient();
   
@@ -40,6 +38,7 @@ public interface ClientDao6 {
   @Call("{call p_client_name (#{id}, #{name})}")
   void insClientName(@Prm("id") long id, @Prm("name") String name);
   
+  @SuppressWarnings("unused")
   @Call("{call p_client_name (#{id}, #{patronymic})}")
   void insClientPatronymic(@Prm("id") long id, @Prm("patronymic") String patronymic);
   

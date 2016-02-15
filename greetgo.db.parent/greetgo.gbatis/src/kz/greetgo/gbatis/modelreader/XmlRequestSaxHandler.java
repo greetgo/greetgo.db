@@ -17,7 +17,7 @@ import org.xml.sax.SAXException;
  */
 public class XmlRequestSaxHandler extends AbstractContentHandler {
   
-  private XmlRequestAcceptor acceptor;
+  private final XmlRequestAcceptor acceptor;
   
   public XmlRequestSaxHandler(XmlRequestAcceptor acceptor) {
     this.acceptor = acceptor;
@@ -39,14 +39,14 @@ public class XmlRequestSaxHandler extends AbstractContentHandler {
   }
   
   @Override
-  public void startElement(String uri, String localName, String qName, Attributes atts)
+  public void startElement(String uri, String localName, String qName, Attributes attributes)
       throws SAXException {
     text = null;
     if ("request".equals(localName)) {
       if (xmlRequest != null) throw new SAXException("Left open tag: <request>");
       xmlRequest = new XmlRequest();
-      xmlRequest.id = atts.getValue("id");
-      xmlRequest.type = RequestType.valueOf(atts.getValue("type"));
+      xmlRequest.id = attributes.getValue("id");
+      xmlRequest.type = RequestType.valueOf(attributes.getValue("type"));
       return;
     }
     
@@ -54,9 +54,9 @@ public class XmlRequestSaxHandler extends AbstractContentHandler {
       if (withView != null) throw new SAXException("Left open tag: <with>");
       withView = new WithView();
       xmlRequest.withViewList.add(withView);
-      withView.table = atts.getValue("value");
-      withView.view = atts.getValue("name");
-      String fields = atts.getValue("fields");
+      withView.table = attributes.getValue("value");
+      withView.view = attributes.getValue("name");
+      String fields = attributes.getValue("fields");
       if (fields != null) for (String field : fields.split(",")) {
         String tmp = field.trim();
         if (tmp.length() > 0) withView.fields.add(tmp);
