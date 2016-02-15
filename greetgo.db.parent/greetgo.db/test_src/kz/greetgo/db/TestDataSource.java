@@ -15,10 +15,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import static java.util.Collections.synchronizedList;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 public class TestDataSource implements DataSource {
 
   public static TestConnection extractTestConnection(Connection connection) {
+    assertThat(connection).isNotNull();
     return (TestConnection) Proxy.getInvocationHandler(connection);
   }
 
@@ -29,10 +31,12 @@ public class TestDataSource implements DataSource {
     public int closeCallCount = 0;
     public int setAutoCommitCallCount = 0;
     public boolean autoCommit = true;
-    public int transactionIsolation;
+    public String transactionIsolation;
     public int setTransactionIsolationCallCount = 0;
 
     public int commitCallCount = 0, rollbackCallCount = 0;
+
+    public final List<String> events = new ArrayList<>();
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -40,6 +44,7 @@ public class TestDataSource implements DataSource {
       final String methodName = method.getName();
 
       if (method.getParameterTypes().length == 0 && methodName.equals("close")) {
+        events.add("CLOSE");
         closeCallCount++;
         return null;
       }
@@ -51,12 +56,14 @@ public class TestDataSource implements DataSource {
       if (method.getParameterTypes().length == 1 && methodName.equals("setAutoCommit")) {
         autoCommit = (boolean) args[0];
         setAutoCommitCallCount++;
+        events.add("SET AutoCommit TO " + autoCommit);
         return null;
       }
 
       if (method.getParameterTypes().length == 1 && methodName.equals("setTransactionIsolation")) {
-        transactionIsolation = (int) args[0];
+        transactionIsolation = transactionIsolationToStr((int) args[0]);
         setTransactionIsolationCallCount++;
+        events.add("SET TransactionIsolation TO " + transactionIsolation);
         return null;
       }
 
@@ -78,16 +85,25 @@ public class TestDataSource implements DataSource {
 
       if (method.getParameterTypes().length == 0 && methodName.equals("commit")) {
         commitCallCount++;
+        events.add("COMMIT");
         return null;
       }
 
       if (method.getParameterTypes().length == 0 && methodName.equals("rollback")) {
         rollbackCallCount++;
+        events.add("ROLLBACK");
+        return null;
+      }
+
+      if (method.getParameterTypes().length == 1 && methodName.equals("prepareStatement")) {
+        events.add("CALL prepareStatement(" + args[0] + ")");
         return null;
       }
 
       throw new RuntimeException("Cannot invoke method " + method);
     }
+
+
   }
 
   public final List<Connection> gotConnections = synchronizedList(new ArrayList<Connection>());
@@ -148,5 +164,21 @@ public class TestDataSource implements DataSource {
   @Override
   public boolean isWrapperFor(Class<?> iface) throws SQLException {
     throw new RuntimeException();
+  }
+
+  private static String transactionIsolationToStr(int transactionIsolationCode) {
+    switch (transactionIsolationCode) {
+      case Connection.TRANSACTION_READ_COMMITTED:
+        return "READ_COMMITTED";
+      case Connection.TRANSACTION_READ_UNCOMMITTED:
+        return "READ_UNCOMMITTED";
+      case Connection.TRANSACTION_REPEATABLE_READ:
+        return "REPEATABLE_READ";
+      case Connection.TRANSACTION_SERIALIZABLE:
+        return "SERIALIZABLE";
+      default:
+        throw new IllegalArgumentException("Unknown transactionIsolationCode = " + transactionIsolationCode);
+    }
+
   }
 }

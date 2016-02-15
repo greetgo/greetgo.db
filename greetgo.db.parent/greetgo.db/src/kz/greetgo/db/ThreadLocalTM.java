@@ -186,7 +186,7 @@ class ThreadLocalTM {
       else throwList.add(e);
     }
     try {
-      connection.setAutoCommit(true);
+      if (!connection.getAutoCommit()) connection.setAutoCommit(true);
       connection.close();
     } catch (SQLException e) {
       exceptionCatcher.catchException(e);

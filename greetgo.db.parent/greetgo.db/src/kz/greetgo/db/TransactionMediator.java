@@ -1,12 +1,15 @@
 package kz.greetgo.db;
 
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
+
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-class TransactionMediator implements InvocationHandler {
+class TransactionMediator implements MethodInterceptor {
   private final TransactionManager transactionManager;
   private final Object object;
 
@@ -41,7 +44,7 @@ class TransactionMediator implements InvocationHandler {
   }
 
   @Override
-  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+  public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
 
     final CallMeta callMeta = getCallMeta(method);
 
@@ -49,17 +52,27 @@ class TransactionMediator implements InvocationHandler {
 
     try {
 
-      return method.invoke(object, args);
+      final Object ret = method.invoke(object, args);
+      transactionManager.downLevel(null);
+      return ret;
 
     } catch (Throwable e) {
+
+      e = prepare(e);
 
       transactionManager.downLevel(e);
 
       throw e;
 
-    } finally {
-      transactionManager.downLevel(null);
     }
+
+  }
+
+  private static Throwable prepare(Throwable e) {
+    if (e instanceof InvocationTargetException) {
+      return e.getCause();
+    }
+    return e;
   }
 
   private final Map<Method, CallMeta> callMetaCache = new ConcurrentHashMap<>();
