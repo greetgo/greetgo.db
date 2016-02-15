@@ -100,6 +100,10 @@ public class TestDataSource implements DataSource {
         return null;
       }
 
+      if (method.getParameterTypes().length == 0 && methodName.equals("toString")) {
+        return "proxyOf(" + Connection.class.getName() + ")@" + System.identityHashCode(proxy);
+      }
+
       throw new RuntimeException("Cannot invoke method " + method);
     }
 

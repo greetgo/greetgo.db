@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import static kz.greetgo.db.TestDataSource.extractTestConnection;
 import static org.fest.assertions.api.Assertions.assertThat;
 
-public class DbProxyFactoryTest {
+public class DbProxyFactoryTest_inOneThread {
 
   private TestingController original, proxied;
 
@@ -76,11 +76,49 @@ public class DbProxyFactoryTest {
     @InTransaction(IsolationLevel.SERIALIZABLE)
     public void isolationLevel_SERIALIZABLE() throws SQLException {
       final Connection connection = transactionManager.getConnection(ds);
+      assertThat(connection.getAutoCommit()).isFalse();
       connection.prepareStatement("select 1 from dual");
       transactionManager.closeConnection(ds, connection);
 
       isolationLevel_SERIALIZABLE_tc = extractTestConnection(connection);
     }
+
+    TestDataSource.TestConnection isolationLevel_REPEATABLE_READ_tc = null;
+
+    @InTransaction(IsolationLevel.REPEATABLE_READ)
+    public void isolationLevel_REPEATABLE_READ() throws SQLException {
+      final Connection connection = transactionManager.getConnection(ds);
+      assertThat(connection.getAutoCommit()).isFalse();
+      connection.prepareStatement("select 1 from dual");
+      transactionManager.closeConnection(ds, connection);
+
+      isolationLevel_REPEATABLE_READ_tc = extractTestConnection(connection);
+    }
+
+    TestDataSource.TestConnection isolationLevel_READ_UNCOMMITTED_tc = null;
+
+    @InTransaction(IsolationLevel.READ_UNCOMMITTED)
+    public void isolationLevel_READ_UNCOMMITTED() throws SQLException {
+      final Connection connection = transactionManager.getConnection(ds);
+      assertThat(connection.getAutoCommit()).isFalse();
+      connection.prepareStatement("select 1 from dual");
+      transactionManager.closeConnection(ds, connection);
+
+      isolationLevel_READ_UNCOMMITTED_tc = extractTestConnection(connection);
+    }
+
+    TestDataSource.TestConnection isolationLevel_READ_COMMITTED_tc = null;
+
+    @InTransaction(IsolationLevel.READ_COMMITTED)
+    public void isolationLevel_READ_COMMITTED() throws SQLException {
+      final Connection connection = transactionManager.getConnection(ds);
+      assertThat(connection.getAutoCommit()).isFalse();
+      connection.prepareStatement("select 1 from dual");
+      transactionManager.closeConnection(ds, connection);
+
+      isolationLevel_READ_COMMITTED_tc = extractTestConnection(connection);
+    }
+
 
     TestDataSource.TestConnection throwsTestExceptionAndRollback_tc = null;
 
@@ -125,7 +163,7 @@ public class DbProxyFactoryTest {
   }
 
   @Test
-  public void createProxyFor_noIsolationLevel() throws Exception {
+  public void noIsolationLevel() throws Exception {
 
     proxied.noIsolationLevel();
 
@@ -142,7 +180,7 @@ public class DbProxyFactoryTest {
   }
 
   @Test
-  public void createProxyFor_isolationLevel_default() throws Exception {
+  public void isolationLevel_default() throws Exception {
 
     proxied.isolationLevel_default();
 
@@ -157,7 +195,7 @@ public class DbProxyFactoryTest {
   }
 
   @Test
-  public void createProxyFor_isolationLevel_SERIALIZABLE() throws Exception {
+  public void isolationLevel_SERIALIZABLE() throws Exception {
 
     proxied.isolationLevel_SERIALIZABLE();
 
@@ -172,7 +210,52 @@ public class DbProxyFactoryTest {
   }
 
   @Test
-  public void createProxyFor_throwsTestExceptionAndRollback() throws Exception {
+  public void isolationLevel_REPEATABLE_READ() throws Exception {
+
+    proxied.isolationLevel_REPEATABLE_READ();
+
+    assertThat(original.isolationLevel_REPEATABLE_READ_tc.events).containsExactly(
+      "SET AutoCommit TO false",
+      "SET TransactionIsolation TO REPEATABLE_READ",
+      "CALL prepareStatement(select 1 from dual)",
+      "COMMIT",
+      "SET AutoCommit TO true",
+      "CLOSE"
+    );
+  }
+
+  @Test
+  public void isolationLevel_READ_UNCOMMITTED() throws Exception {
+
+    proxied.isolationLevel_READ_UNCOMMITTED();
+
+    assertThat(original.isolationLevel_READ_UNCOMMITTED_tc.events).containsExactly(
+      "SET AutoCommit TO false",
+      "SET TransactionIsolation TO READ_UNCOMMITTED",
+      "CALL prepareStatement(select 1 from dual)",
+      "COMMIT",
+      "SET AutoCommit TO true",
+      "CLOSE"
+    );
+  }
+
+  @Test
+  public void isolationLevel_READ_COMMITTED() throws Exception {
+
+    proxied.isolationLevel_READ_COMMITTED();
+
+    assertThat(original.isolationLevel_READ_COMMITTED_tc.events).containsExactly(
+      "SET AutoCommit TO false",
+      "SET TransactionIsolation TO READ_COMMITTED",
+      "CALL prepareStatement(select 1 from dual)",
+      "COMMIT",
+      "SET AutoCommit TO true",
+      "CLOSE"
+    );
+  }
+
+  @Test
+  public void throwsTestExceptionAndRollback() throws Exception {
 
     TestException ex = null;
 
@@ -196,7 +279,7 @@ public class DbProxyFactoryTest {
   }
 
   @Test
-  public void createProxyFor_throwsTestExceptionAndCommit() throws Exception {
+  public void throwsTestExceptionAndCommit() throws Exception {
 
     TestException ex = null;
 
