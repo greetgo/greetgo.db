@@ -9,14 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kz.greetgo.db.ConnectionExecutor;
 import kz.greetgo.gbatis.futurecall.SqlViewer;
 import kz.greetgo.gbatis.util.SqlUtil;
 import kz.greetgo.gbatis.util.model.Colinfo;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.ConnectionCallback;
-
-public final class GetFieldCallback<T> implements ConnectionCallback<T> {
+public final class GetFieldCallback<T> implements ConnectionExecutor<T> {
   public SqlViewer sqlViewer;
   
   private final String tableName;
@@ -45,7 +43,7 @@ public final class GetFieldCallback<T> implements ConnectionCallback<T> {
   }
   
   @Override
-  public T doInConnection(Connection con) throws SQLException, DataAccessException {
+  public T execute(Connection con) throws Exception {
     class Data {
       final Object value;
       @SuppressWarnings("unused")

@@ -1,30 +1,29 @@
 package kz.greetgo.gbatis.util.impl;
 
+import kz.greetgo.db.Jdbc;
+import kz.greetgo.db.JdbcOneConnection;
+import kz.greetgo.gbatis.futurecall.SqlViewer;
+
 import java.sql.Connection;
 
-import kz.greetgo.gbatis.futurecall.SqlViewer;
-import kz.greetgo.util.db.ConnectionDataSource;
-
-import org.springframework.jdbc.core.JdbcTemplate;
-
 public class TestingUtilRegister extends AbstractUtilRegister {
-  
-  private JdbcTemplate jdbc;
-  
+
+  private Jdbc jdbc;
+
   @Override
-  protected JdbcTemplate jdbc() {
+  protected Jdbc jdbc() {
     return jdbc;
   }
-  
+
   public void setConnection(final Connection con) {
-    jdbc = new JdbcTemplate(new ConnectionDataSource(con));
+    jdbc = new JdbcOneConnection(con);
   }
-  
+
   public SqlViewer sqlViewer;
-  
+
   @Override
   protected SqlViewer sqlViewer() {
     return sqlViewer;
   }
-  
+
 }

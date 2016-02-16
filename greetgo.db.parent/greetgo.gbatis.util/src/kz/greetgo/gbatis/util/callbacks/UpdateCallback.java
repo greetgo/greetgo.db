@@ -1,83 +1,73 @@
 package kz.greetgo.gbatis.util.callbacks;
 
-import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import kz.greetgo.db.ConnectionExecutor;
 import kz.greetgo.gbatis.futurecall.SqlViewer;
 import kz.greetgo.gbatis.util.SqlUtil;
 import kz.greetgo.gbatis.util.model.Colinfo;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.ConnectionCallback;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.util.*;
 
 @SuppressFBWarnings("SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING")
-public final class UpdateCallback implements ConnectionCallback<Integer> {
+public final class UpdateCallback implements ConnectionExecutor<Integer> {
   public SqlViewer sqlViewer;
-  
+
   private final String tableName;
   private final Object object;
   private final Map<String, Colinfo> colinfoMap;
   private final Set<String> keyNamesInLowcase;
-  
+
   public UpdateCallback(String tableName, Collection<Colinfo> colinfo, Collection<String> keyNames,
-      Object object) {
+                        Object object) {
     this.tableName = tableName;
     this.object = object;
-    
+
     if (object == null) throw new IllegalArgumentException("object == null");
-    
+
     colinfoMap = new HashMap<>();
     for (Colinfo s : colinfo) {
       colinfoMap.put(s.name.toLowerCase(), s);
     }
-    
+
     keyNamesInLowcase = new HashSet<>();
     for (String s : keyNames) {
       keyNamesInLowcase.add(s.toLowerCase());
     }
   }
-  
+
   public UpdateCallback(SqlViewer sqlViewer, String tableName, Collection<Colinfo> colinfo,
-      Collection<String> keyNames, Object object) {
+                        Collection<String> keyNames, Object object) {
     this(tableName, colinfo, keyNames, object);
     this.sqlViewer = sqlViewer;
   }
-  
+
   @Override
-  public Integer doInConnection(Connection con) throws SQLException, DataAccessException {
+  public Integer execute(Connection con) throws Exception {
     if (object == null) return 0;
-    
+
     class Data {
       final Object value;
       @SuppressWarnings("unused")
       final Colinfo colinfo;
-      
+
       public Data(Object value, Colinfo colinfo) {
         this.value = value;
         this.colinfo = colinfo;
       }
     }
-    
+
     List<Data> data = new ArrayList<>();
     List<Data> keyData = new ArrayList<>();
-    
+
     StringBuilder sql = new StringBuilder();
     sql.append("update ").append(tableName).append(" set");
-    
+
     StringBuilder where = new StringBuilder();
     where.append(" where 1=1");
-    
+
     boolean needComma = false;
     for (Field field : object.getClass().getFields()) {
       String fn = field.getName().toLowerCase();
@@ -90,9 +80,9 @@ public final class UpdateCallback implements ConnectionCallback<Integer> {
           throw new RuntimeException(e);
         }
         if (value == null) throw new IllegalArgumentException("It is updating table " + tableName
-            + ". This table has primary key with field " + field.getName()
-            + ". But its value in object with class " + object.getClass()
-            + " is null. I do not know what to update.");
+          + ". This table has primary key with field " + field.getName()
+          + ". But its value in object with class " + object.getClass()
+          + " is null. I do not know what to update.");
         keyData.add(new Data(value, colinfoMap.get(fn)));
       } else if (colinfoMap.keySet().contains(fn)) {
         final Object value;
@@ -108,24 +98,24 @@ public final class UpdateCallback implements ConnectionCallback<Integer> {
             needComma = true;
           }
           sql.append(' ').append(field.getName()).append(" = ?");
-          
+
           data.add(new Data(value, colinfoMap.get(fn)));
         }
       }
     }
-    
+
     if (keyData.size() == 0) {
       throw new IllegalArgumentException("No key values in update of table " + tableName
-          + " from object of class " + object.getClass());
+        + " from object of class " + object.getClass());
     }
-    
+
     if (data.size() == 0) {
       throw new IllegalArgumentException("Nothing to update in table " + tableName
-          + " from object of class " + object.getClass());
+        + " from object of class " + object.getClass());
     }
-    
+
     sql.append(where);
-    
+
     List<Object> params = new ArrayList<>();
     long startedAt = System.currentTimeMillis();
     try {
@@ -142,10 +132,10 @@ public final class UpdateCallback implements ConnectionCallback<Integer> {
         {
           int ret = ps.executeUpdate();
           if (ret == 0) throw new NoUpdateException("PreparedStatement.executeUpdate() returns"
-              + " 0 when updating table " + tableName + " by object of " + object.getClass());
-          
+            + " 0 when updating table " + tableName + " by object of " + object.getClass());
+
           if (U.need(sqlViewer)) U.view(startedAt, sqlViewer, null, sql, params);
-          
+
           return ret;
         }
       }

@@ -16,6 +16,7 @@ configurations { repoUpload }
 
 dependencies {
   compile project(':greetgo.gbatis')
+  compile project(':greetgo.db')
 
   testCompile 'kz.greetgo:greetgo.test.db_providers:0.0.6'
 

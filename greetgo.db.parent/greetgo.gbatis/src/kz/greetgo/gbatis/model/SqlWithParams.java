@@ -1,19 +1,18 @@
 package kz.greetgo.gbatis.model;
 
-import java.sql.SQLException;
+import kz.greetgo.gbatis.util.SqlUtil;
+import kz.greetgo.util.db.DbType;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import kz.greetgo.gbatis.util.SqlUtil;
-import kz.greetgo.util.db.DbType;
-
 public class SqlWithParams {
   public RequestType type;
   public String sql;
   public final List<Object> params = new ArrayList<>();
-  
+
   public static SqlWithParams select(String sql, Object... params) {
     SqlWithParams ret = new SqlWithParams();
     ret.type = RequestType.Sele;
@@ -21,7 +20,7 @@ public class SqlWithParams {
     Collections.addAll(ret.params, params);
     return ret;
   }
-  
+
   public static SqlWithParams selectWith(String sql, Collection<Object> params) {
     SqlWithParams ret = new SqlWithParams();
     ret.type = RequestType.Sele;
@@ -29,7 +28,7 @@ public class SqlWithParams {
     ret.params.addAll(params);
     return ret;
   }
-  
+
   public static SqlWithParams call(String sql, Object... params) {
     SqlWithParams ret = new SqlWithParams();
     ret.type = RequestType.Call;
@@ -37,7 +36,7 @@ public class SqlWithParams {
     Collections.addAll(ret.params, params);
     return ret;
   }
-  
+
   public static SqlWithParams callWith(String sql, Collection<Object> params) {
     SqlWithParams ret = new SqlWithParams();
     ret.type = RequestType.Call;
@@ -45,7 +44,7 @@ public class SqlWithParams {
     ret.params.addAll(params);
     return ret;
   }
-  
+
   public static SqlWithParams modi(String sql, Object... params) {
     SqlWithParams ret = new SqlWithParams();
     ret.type = RequestType.Modi;
@@ -53,7 +52,7 @@ public class SqlWithParams {
     Collections.addAll(ret.params, params);
     return ret;
   }
-  
+
   public static SqlWithParams modiWith(String sql, Collection<Object> params) {
     SqlWithParams ret = new SqlWithParams();
     ret.type = RequestType.Modi;
@@ -61,13 +60,9 @@ public class SqlWithParams {
     ret.params.addAll(params);
     return ret;
   }
-  
+
   public SqlWithParams page(DbType dbType, int offset, int count) {
-    try {
-      sql = SqlUtil.preparePagedSql(dbType, sql, offset, count, params);
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
+    sql = SqlUtil.preparePagedSql(dbType, sql, offset, count, params);
     return this;
   }
 }
