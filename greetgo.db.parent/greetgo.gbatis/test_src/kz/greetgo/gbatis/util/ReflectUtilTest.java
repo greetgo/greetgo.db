@@ -4,10 +4,12 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.util.Map;
 
+import kz.greetgo.util.RND;
 import org.testng.annotations.Test;
 
 public class ReflectUtilTest {
   
+  @SuppressWarnings("unused")
   static class Asd {
     public String fieldStr;
     
@@ -35,13 +37,13 @@ public class ReflectUtilTest {
   }
   
   @Test
-  public void scanSetters_fieldStr() throws Exception {
+  public void scanSetters_fieldStr() {
     Asd asd = new Asd();
     Map<String, Setter> setters = ReflectUtil.scanSetters(asd);
     
     assertThat(setters).isNotNull();
     
-    String value = RND.rndStr(10);
+    String value = RND.str(10);
     
     setters.get("fieldStr").set(value);
     
@@ -49,13 +51,13 @@ public class ReflectUtilTest {
   }
   
   @Test
-  public void scanSetters_fieldInteger() throws Exception {
+  public void scanSetters_fieldInteger() {
     Asd asd = new Asd();
     Map<String, Setter> setters = ReflectUtil.scanSetters(asd);
     
     assertThat(setters).isNotNull();
     
-    Integer value = RND.rndInt(10000000);
+    Integer value = RND.plusInt(10000000);
     
     setters.get("fieldInteger").set(value);
     
@@ -63,13 +65,13 @@ public class ReflectUtilTest {
   }
   
   @Test
-  public void scanSetters_fieldInt() throws Exception {
+  public void scanSetters_fieldInt() {
     Asd asd = new Asd();
     Map<String, Setter> setters = ReflectUtil.scanSetters(asd);
     
     assertThat(setters).isNotNull();
     
-    int value = RND.rndInt(10000000);
+    int value = RND.plusInt(10000000);
     
     setters.get("fieldInt").set(value);
     
@@ -77,13 +79,13 @@ public class ReflectUtilTest {
   }
   
   @Test
-  public void scanSetters_propertyStr() throws Exception {
+  public void scanSetters_propertyStr() {
     Asd asd = new Asd();
     Map<String, Setter> setters = ReflectUtil.scanSetters(asd);
     
     assertThat(setters).isNotNull();
     
-    String value = RND.rndStr(10);
+    String value = RND.str(10);
     
     setters.get("propertyStr").set(value);
     
@@ -91,13 +93,13 @@ public class ReflectUtilTest {
   }
   
   @Test
-  public void scanSetters_leftSetterType() throws Exception {
+  public void scanSetters_leftSetterType() {
     Asd asd = new Asd();
     Map<String, Setter> setters = ReflectUtil.scanSetters(asd);
     
     assertThat(setters).isNotNull();
     
-    int value = RND.rndInt(10000000);
+    int value = RND.plusInt(10000000);
     
     setters.get("leftSetterType").set("" + value);
     
@@ -105,13 +107,13 @@ public class ReflectUtilTest {
   }
   
   @Test
-  public void scanSetters_propertyInt() throws Exception {
+  public void scanSetters_propertyInt() {
     Asd asd = new Asd();
     Map<String, Setter> setters = ReflectUtil.scanSetters(asd);
     
     assertThat(setters).isNotNull();
     
-    int value = RND.rndInt(10000000);
+    int value = RND.plusInt(10000000);
     
     setters.get("propertyInt").set(value);
     

@@ -1,5 +1,6 @@
 package kz.greetgo.gbatis.util;
 
+@SuppressWarnings("unused")
 public enum ForTestSqlUtil {
   
   ONE {
@@ -14,6 +15,6 @@ public enum ForTestSqlUtil {
       return 13;
     }
   };
-  
+
   public abstract int hi();
 }

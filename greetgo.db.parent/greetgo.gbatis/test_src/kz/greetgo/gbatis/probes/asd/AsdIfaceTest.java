@@ -15,13 +15,13 @@ public class AsdIfaceTest {
     
     Method[] methods = AsdIfaceChild.class.getMethods();
     
-    Method meth = methods[0];
+    Method method = methods[0];
     
-    Type genericReturnType = meth.getGenericReturnType();
-    ParameterizedType ptype = (ParameterizedType)genericReturnType;
-    System.out.println("ptype = " + ptype);
+    Type genericReturnType = method.getGenericReturnType();
+    ParameterizedType pType = (ParameterizedType)genericReturnType;
+    System.out.println("pType = " + pType);
     
-    Class<?> retType = meth.getReturnType();
+    Class<?> retType = method.getReturnType();
     System.out.println("retType = " + retType);
   }
 }

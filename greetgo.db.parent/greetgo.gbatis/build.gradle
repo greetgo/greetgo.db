@@ -21,6 +21,7 @@ dependencies {
   compile 'com.metapossum:metapossum-scanner:1.0.1'
 
   testCompile 'kz.greetgo:greetgo.conf:0.0.12'
+  testCompile "kz.greetgo:greetgo.util:${greetgoUtilVersion}"
 
   testCompile 'postgresql:postgresql:9.1-901.jdbc4'
   testCompile 'c3p0:c3p0:0.9.1.2'
