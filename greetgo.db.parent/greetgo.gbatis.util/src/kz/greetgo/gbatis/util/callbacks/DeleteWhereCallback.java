@@ -1,6 +1,6 @@
 package kz.greetgo.gbatis.util.callbacks;
 
-import kz.greetgo.db.ConnectionExecutor;
+import kz.greetgo.db.ConnectionCallback;
 import kz.greetgo.gbatis.futurecall.SqlViewer;
 import kz.greetgo.gbatis.model.Result;
 import kz.greetgo.gbatis.model.SqlWithParams;
@@ -8,7 +8,7 @@ import kz.greetgo.gbatis.util.OperUtil;
 
 import java.sql.Connection;
 
-public final class DeleteWhereCallback implements ConnectionExecutor<Integer> {
+public final class DeleteWhereCallback implements ConnectionCallback<Integer> {
 
   public SqlViewer sqlViewer;
   private final String tableName;
@@ -29,7 +29,7 @@ public final class DeleteWhereCallback implements ConnectionExecutor<Integer> {
   }
 
   @Override
-  public Integer execute(Connection con) throws Exception {
+  public Integer doInConnection(Connection con) throws Exception {
     StringBuilder sql = new StringBuilder();
     sql.append("delete from ").append(tableName);
     U.appendWhere(sql, where);

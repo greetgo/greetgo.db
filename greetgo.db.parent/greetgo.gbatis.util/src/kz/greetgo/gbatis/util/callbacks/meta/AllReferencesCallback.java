@@ -1,6 +1,6 @@
 package kz.greetgo.gbatis.util.callbacks.meta;
 
-import kz.greetgo.db.ConnectionExecutor;
+import kz.greetgo.db.ConnectionCallback;
 import kz.greetgo.gbatis.futurecall.SqlViewer;
 import kz.greetgo.gbatis.model.Result;
 import kz.greetgo.gbatis.model.SqlWithParams;
@@ -12,7 +12,7 @@ import java.sql.Connection;
 import java.util.Set;
 
 
-public class AllReferencesCallback implements ConnectionExecutor<Set<TableReference>> {
+public class AllReferencesCallback implements ConnectionCallback<Set<TableReference>> {
   public SqlViewer sqlViewer;
 
   public AllReferencesCallback() {
@@ -23,7 +23,7 @@ public class AllReferencesCallback implements ConnectionExecutor<Set<TableRefere
   }
 
   @Override
-  public Set<TableReference> execute(Connection con) throws Exception {
+  public Set<TableReference> doInConnection(Connection con) throws Exception {
     String sqlStr = SqlSrc.get(con).sql("meta/allReferences");
     SqlWithParams sql = SqlWithParams.select(sqlStr);
     return OperUtil.call(con, sql, Result.setOf(TableReference.class).with(sqlViewer));

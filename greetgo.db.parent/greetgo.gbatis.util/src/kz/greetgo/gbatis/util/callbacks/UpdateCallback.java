@@ -1,7 +1,7 @@
 package kz.greetgo.gbatis.util.callbacks;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import kz.greetgo.db.ConnectionExecutor;
+import kz.greetgo.db.ConnectionCallback;
 import kz.greetgo.gbatis.futurecall.SqlViewer;
 import kz.greetgo.gbatis.util.SqlUtil;
 import kz.greetgo.gbatis.util.model.Colinfo;
@@ -12,7 +12,7 @@ import java.sql.PreparedStatement;
 import java.util.*;
 
 @SuppressFBWarnings("SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING")
-public final class UpdateCallback implements ConnectionExecutor<Integer> {
+public final class UpdateCallback implements ConnectionCallback<Integer> {
   public SqlViewer sqlViewer;
 
   private final String tableName;
@@ -45,7 +45,7 @@ public final class UpdateCallback implements ConnectionExecutor<Integer> {
   }
 
   @Override
-  public Integer execute(Connection con) throws Exception {
+  public Integer doInConnection(Connection con) throws Exception {
     if (object == null) return 0;
 
     class Data {

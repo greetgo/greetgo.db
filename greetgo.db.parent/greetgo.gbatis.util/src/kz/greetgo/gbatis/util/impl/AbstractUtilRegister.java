@@ -1,6 +1,6 @@
 package kz.greetgo.gbatis.util.impl;
 
-import kz.greetgo.db.ConnectionExecutor;
+import kz.greetgo.db.ConnectionCallback;
 import kz.greetgo.db.Jdbc;
 import kz.greetgo.gbatis.futurecall.SqlViewer;
 import kz.greetgo.gbatis.model.Creator;
@@ -276,9 +276,9 @@ public abstract class AbstractUtilRegister implements UtilRegister {
   public <T> List<T> selectList(final Creator<T> creator, final CharSequence sql,
                                 final List<Object> params, final int offset, final int count) {
 
-    return jdbc().executeConnection(new ConnectionExecutor<List<T>>() {
+    return jdbc().executeConnection(new ConnectionCallback<List<T>>() {
       @Override
-      public List<T> execute(Connection con) throws Exception {
+      public List<T> doInConnection(Connection con) throws Exception {
         Result result = new Result();
         result.creator = creator;
         result.sqlViewer = sqlViewer();
@@ -303,9 +303,9 @@ public abstract class AbstractUtilRegister implements UtilRegister {
 
   @Override
   public int executeUpdate(final CharSequence sql, final List<Object> params) {
-    return jdbc().executeConnection(new ConnectionExecutor<Integer>() {
+    return jdbc().executeConnection(new ConnectionCallback<Integer>() {
       @Override
-      public Integer execute(Connection con) throws Exception {
+      public Integer doInConnection(Connection con) throws Exception {
         SqlWithParams sqlp = SqlWithParams.modiWith(sql.toString(), params);
         Result result = Result.simple(Integer.class).with(sqlViewer());
         return OperUtil.call(con, sqlp, result);
@@ -324,9 +324,9 @@ public abstract class AbstractUtilRegister implements UtilRegister {
 
   @Override
   public long selectLong(final CharSequence sql, final List<Object> params) {
-    return jdbc().executeConnection(new ConnectionExecutor<Long>() {
+    return jdbc().executeConnection(new ConnectionCallback<Long>() {
       @Override
-      public Long execute(Connection con) throws Exception {
+      public Long doInConnection(Connection con) throws Exception {
         SqlWithParams sqlp = SqlWithParams.selectWith(sql.toString(), params);
         Result result = Result.simple(Long.class).with(sqlViewer());
         return OperUtil.call(con, sqlp, result);
@@ -345,9 +345,9 @@ public abstract class AbstractUtilRegister implements UtilRegister {
 
   @Override
   public int selectInt(final CharSequence sql, final List<Object> params) {
-    return jdbc().executeConnection(new ConnectionExecutor<Integer>() {
+    return jdbc().executeConnection(new ConnectionCallback<Integer>() {
       @Override
-      public Integer execute(Connection con) throws Exception {
+      public Integer doInConnection(Connection con) throws Exception {
         SqlWithParams sqlp = SqlWithParams.selectWith(sql.toString(), params);
         Result result = Result.simple(Integer.class).with(sqlViewer());
         return OperUtil.call(con, sqlp, result);

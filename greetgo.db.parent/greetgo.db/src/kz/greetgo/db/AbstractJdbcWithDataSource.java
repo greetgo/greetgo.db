@@ -10,7 +10,7 @@ public abstract class AbstractJdbcWithDataSource implements Jdbc {
   protected abstract TransactionManager getTransactionManager();
 
   @Override
-  public <T> T executeConnection(ConnectionExecutor<T> connectionExecutor) {
+  public <T> T executeConnection(ConnectionCallback<T> connectionCallback) {
     final TransactionManager tm = getTransactionManager();
     final DataSource dataSource = getDataSource();
 
@@ -18,7 +18,7 @@ public abstract class AbstractJdbcWithDataSource implements Jdbc {
 
     if (tm == null) {
       try (Connection connection = dataSource.getConnection()) {
-        return connectionExecutor.execute(connection);
+        return connectionCallback.doInConnection(connection);
       } catch (Exception e) {
         if (e instanceof RuntimeException) throw (RuntimeException) e;
         throw new RuntimeException(e);
@@ -27,7 +27,7 @@ public abstract class AbstractJdbcWithDataSource implements Jdbc {
 
     final Connection connection = tm.getConnection(dataSource);
     try {
-      return connectionExecutor.execute(connection);
+      return connectionCallback.doInConnection(connection);
     } catch (Exception e) {
       if (e instanceof RuntimeException) throw (RuntimeException) e;
       throw new RuntimeException(e);

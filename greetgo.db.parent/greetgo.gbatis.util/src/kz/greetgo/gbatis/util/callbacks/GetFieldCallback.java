@@ -3,18 +3,17 @@ package kz.greetgo.gbatis.util.callbacks;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import kz.greetgo.db.ConnectionExecutor;
+import kz.greetgo.db.ConnectionCallback;
 import kz.greetgo.gbatis.futurecall.SqlViewer;
 import kz.greetgo.gbatis.util.SqlUtil;
 import kz.greetgo.gbatis.util.model.Colinfo;
 
-public final class GetFieldCallback<T> implements ConnectionExecutor<T> {
+public final class GetFieldCallback<T> implements ConnectionCallback<T> {
   public SqlViewer sqlViewer;
   
   private final String tableName;
@@ -43,7 +42,7 @@ public final class GetFieldCallback<T> implements ConnectionExecutor<T> {
   }
   
   @Override
-  public T execute(Connection con) throws Exception {
+  public T doInConnection(Connection con) throws Exception {
     class Data {
       final Object value;
       @SuppressWarnings("unused")

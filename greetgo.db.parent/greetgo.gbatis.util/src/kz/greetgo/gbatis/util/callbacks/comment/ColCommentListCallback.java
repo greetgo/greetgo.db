@@ -1,6 +1,6 @@
 package kz.greetgo.gbatis.util.callbacks.comment;
 
-import kz.greetgo.db.ConnectionExecutor;
+import kz.greetgo.db.ConnectionCallback;
 import kz.greetgo.gbatis.futurecall.SqlViewer;
 import kz.greetgo.gbatis.model.Result;
 import kz.greetgo.gbatis.model.SqlWithParams;
@@ -11,7 +11,7 @@ import kz.greetgo.gbatis.util.sqls.SqlSrc;
 import java.sql.Connection;
 import java.util.List;
 
-public class ColCommentListCallback implements ConnectionExecutor<List<ObjectComment>> {
+public class ColCommentListCallback implements ConnectionCallback<List<ObjectComment>> {
   public SqlViewer sqlViewer;
 
   private final String tableName;
@@ -26,7 +26,7 @@ public class ColCommentListCallback implements ConnectionExecutor<List<ObjectCom
   }
 
   @Override
-  public List<ObjectComment> execute(Connection con) throws Exception {
+  public List<ObjectComment> doInConnection(Connection con) throws Exception {
     String sqlStr = SqlSrc.get(con).sql("comment/colCommentList");
     SqlWithParams sql = SqlWithParams.select(sqlStr, tableName);
     return OperUtil.call(con, sql, Result.listOf(ObjectComment.class).with(sqlViewer));
