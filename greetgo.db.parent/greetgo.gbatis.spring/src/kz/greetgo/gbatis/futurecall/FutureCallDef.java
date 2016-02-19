@@ -1,79 +1,73 @@
 package kz.greetgo.gbatis.futurecall;
 
+import kz.greetgo.db.ConnectionCallback;
+import kz.greetgo.db.Jdbc;
+import kz.greetgo.gbatis.model.FutureCall;
+import kz.greetgo.gbatis.model.Request;
+import kz.greetgo.sqlmanager.gen.Conf;
+import kz.greetgo.sqlmanager.model.Stru;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 
-import kz.greetgo.gbatis.model.FutureCall;
-import kz.greetgo.gbatis.model.Request;
-import kz.greetgo.gbatis.model.SqlWithParams;
-import kz.greetgo.gbatis.util.OperUtil;
-import kz.greetgo.sqlmanager.gen.Conf;
-import kz.greetgo.sqlmanager.model.Stru;
-import kz.greetgo.util.db.DbTypeDetector;
-
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.ConnectionCallback;
-import org.springframework.jdbc.core.JdbcTemplate;
-
 /**
  * Реализация получения отложенных данных
- * 
- * @see FutureCall
+ *
  * @author pompei
+ * @see FutureCall
  */
 public class FutureCallDef<T> implements FutureCall<T> {
-  
-  private final Conf conf;
-  private final Stru stru;
-  private final JdbcTemplate jdbc;
-  public final Request request;
-  private final Object[] args;
-  
-  public FutureCallDef(Conf conf, Stru stru, JdbcTemplate jdbc, Request request, Object[] args) {
-    this.conf = conf;
-    this.stru = stru;
-    this.jdbc = jdbc;
-    this.request = request;
-    this.args = args == null ? null :args.clone();
+
+  private final FutureCallImpl<T> delegate;
+
+  public FutureCallDef(Conf conf, Stru stru, final JdbcTemplate jdbcTemplate, Request request, Object[] args) {
+
+    Jdbc jdbc = new Jdbc() {
+      @Override
+      public <T1> T1 execute(final ConnectionCallback<T1> connectionCallback) {
+        return jdbcTemplate.execute(new org.springframework.jdbc.core.ConnectionCallback<T1>() {
+          @Override
+          public T1 doInConnection(Connection con) throws SQLException, DataAccessException {
+            try {
+              return connectionCallback.doInConnection(con);
+            } catch (Exception e) {
+              if (e instanceof DataAccessException) throw (DataAccessException) e;
+              if (e instanceof SQLException) throw (SQLException) e;
+              if (e instanceof RuntimeException) throw (RuntimeException) e;
+              throw new RuntimeException(e);
+            }
+          }
+        });
+      }
+    };
+
+    delegate = new FutureCallImpl<T>(conf, stru, jdbc, request, args);
   }
-  
+
   @Override
   public T last() {
-    return at(null, 0, 0);
+    return delegate.last();
   }
-  
+
+  @Override
+  public T last(int offset, int pageSize) {
+    return delegate.last(offset, pageSize);
+  }
+
   @Override
   public T at(Date at) {
-    return at(at, 0, 0);
+    return delegate.at(at);
   }
-  
+
   @Override
-  public T last(final int offset, final int pageSize) {
-    return at(null, offset, pageSize);
+  public T at(Date at, int offset, int pageSize) {
+    return delegate.at(at, offset, pageSize);
   }
-  
-  @Override
-  public T at(final Date at, final int offset, final int pageSize) {
-    return jdbc.execute(new ConnectionCallback<T>() {
-      @Override
-      public T doInConnection(Connection con) throws SQLException, DataAccessException {
-        try {
-          return onPagedWithConnection(con, at, offset, pageSize);
-        } catch (Exception e) {
-          throw new RuntimeException(e);
-        }
-      }
-    });
+
+  public void setSqlViewer(SqlViewer sqlViewer) {
+    delegate.request.result.sqlViewer = sqlViewer;
   }
-  
-  private T onPagedWithConnection(Connection con, Date at, int offset, int pageSize)
-      throws Exception {
-    
-    SqlWithParams sql = PreparedSql.prepare(conf, stru, request, args, at,
-        DbTypeDetector.detect(con), offset, pageSize);
-    
-    return OperUtil.callException(con, sql, request.result);
-  }
-  
 }

@@ -51,23 +51,23 @@ public class Result {
     return this;
   }
   
-  public static Result setOf(Class<?> classs) {
+  public static Result setOf(Class<?> aClass) {
     Result ret = new Result();
-    ret.resultDataClass = classs;
+    ret.resultDataClass = aClass;
     ret.type = ResultType.SET;
     return ret;
   }
   
-  public static Result listOf(Class<?> classs) {
+  public static Result listOf(Class<?> aClass) {
     Result ret = new Result();
-    ret.resultDataClass = classs;
+    ret.resultDataClass = aClass;
     ret.type = ResultType.LIST;
     return ret;
   }
   
-  public static Result simple(Class<?> classs) {
+  public static Result simple(Class<?> aClass) {
     Result ret = new Result();
-    ret.resultDataClass = classs;
+    ret.resultDataClass = aClass;
     ret.type = ResultType.SIMPLE;
     return ret;
   }

@@ -19,6 +19,8 @@ dependencies {
 
   compile "org.springframework:spring-jdbc:3.0.7.RELEASE"
 
+  compile "kz.greetgo.class_scanner:greetgo.class_scanner:${classScannerVersion}"
+
   testCompile 'kz.greetgo:greetgo.conf:0.0.12'
 
   testCompile 'postgresql:postgresql:9.1-901.jdbc4'

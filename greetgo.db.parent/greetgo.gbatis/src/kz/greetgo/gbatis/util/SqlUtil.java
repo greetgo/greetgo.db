@@ -5,9 +5,6 @@ import kz.greetgo.util.db.DbType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -231,41 +228,6 @@ public class SqlUtil {
     if (value instanceof Long) return ((Long) value).intValue();
     if (value instanceof BigDecimal) return ((BigDecimal) value).intValue();
     return null;
-  }
-
-  public static PreparedStatement preparePagedStatement(Connection con, CharSequence sql,
-                                                        int offset, int count, List<Object> limitParams) throws SQLException {
-
-    if (count == 0) return con.prepareStatement(sql.toString());
-
-    String db = con.getMetaData().getDatabaseProductName().toLowerCase();
-
-    if ("oracle".equals(db)) {
-
-      if (offset <= 0) {
-        limitParams.add(count);
-        return con.prepareStatement("select * from ( " + sql + " ) where rownum <= ? ");
-      }
-
-      limitParams.add(count + offset);
-      limitParams.add(offset);
-      return con.prepareStatement("select * from ( select row_.*, rownum rownum_ from ( " + sql
-        + " ) row_ where rownum <= ? ) where rownum_ > ?");
-    }
-
-    if ("postgresql".equals(db)) {
-
-      if (offset <= 0) {
-        limitParams.add(count);
-        return con.prepareStatement(sql + " limit ?");
-      }
-
-      limitParams.add(count);
-      limitParams.add(offset);
-      return con.prepareStatement(sql + " limit ? offset ?");
-    }
-
-    throw new IllegalArgumentException("Unknown product surname = " + db + " to append pagination");
   }
 
   public static String preparePagedSql(DbType dbType, CharSequence sql, int offset, int count,

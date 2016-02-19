@@ -32,7 +32,7 @@ public class AbstractJdbcWithDataSourceTest {
 
     final TestDataSource.TestConnection testConnection[] = new TestDataSource.TestConnection[]{null};
 
-    jdbc.executeConnection(new ConnectionCallback<Object>() {
+    jdbc.execute(new ConnectionCallback<Object>() {
       @Override
       public Object doInConnection(Connection connection) throws Exception {
         connection.prepareStatement("select 1 from dual");
@@ -55,7 +55,7 @@ public class AbstractJdbcWithDataSourceTest {
 
     final TestDataSource.TestConnection testConnection[] = new TestDataSource.TestConnection[]{null};
 
-    jdbc.executeConnection(new ConnectionCallback<Object>() {
+    jdbc.execute(new ConnectionCallback<Object>() {
       @Override
       public Object doInConnection(Connection connection) throws Exception {
         connection.prepareStatement("select 1 from dual");
@@ -76,7 +76,7 @@ public class AbstractJdbcWithDataSourceTest {
     testDataSource = null;
     Jdbc jdbc = new MyAbstractJdbcWithDataSource();
 
-    jdbc.executeConnection(new ConnectionCallback<Object>() {
+    jdbc.execute(new ConnectionCallback<Object>() {
       @Override
       public Object doInConnection(Connection connection) throws Exception {
         return null;

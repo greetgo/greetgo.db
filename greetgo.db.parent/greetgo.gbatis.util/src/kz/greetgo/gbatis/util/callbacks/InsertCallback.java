@@ -4,7 +4,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import kz.greetgo.db.ConnectionCallback;
 import kz.greetgo.gbatis.futurecall.SqlViewer;
 import kz.greetgo.gbatis.util.SqlUtil;
-import kz.greetgo.gbatis.util.model.Colinfo;
+import kz.greetgo.gbatis.util.model.ColInfo;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -17,21 +17,21 @@ public final class InsertCallback implements ConnectionCallback<Void> {
 
   private final String tableName;
   private final Object object;
-  private final Map<String, Colinfo> colinfoMap;
+  private final Map<String, ColInfo> colinfoMap;
 
-  public InsertCallback(String tableName, Collection<Colinfo> colinfo, Object object) {
+  public InsertCallback(String tableName, Collection<ColInfo> colInfo, Object object) {
     this.tableName = tableName;
     this.object = object;
 
     colinfoMap = new HashMap<>();
-    for (Colinfo s : colinfo) {
+    for (ColInfo s : colInfo) {
       colinfoMap.put(s.name.toLowerCase(), s);
     }
   }
 
-  public InsertCallback(SqlViewer sqlViewer, String tableName, Collection<Colinfo> colinfo,
+  public InsertCallback(SqlViewer sqlViewer, String tableName, Collection<ColInfo> colInfo,
                         Object object) {
-    this(tableName, colinfo, object);
+    this(tableName, colInfo, object);
     this.sqlViewer = sqlViewer;
   }
 
@@ -42,9 +42,9 @@ public final class InsertCallback implements ConnectionCallback<Void> {
     class Data {
       final Object value;
       @SuppressWarnings("unused")
-      final Colinfo colinfo;
+      final ColInfo colinfo;
 
-      public Data(Object value, Colinfo colinfo) {
+      public Data(Object value, ColInfo colinfo) {
         this.value = value;
         this.colinfo = colinfo;
       }

@@ -1,6 +1,6 @@
 package kz.greetgo.gbatis.util.model;
 
-public class Colinfo {
+public class ColInfo {
   public String name;
   public String type;
   public boolean canNull;

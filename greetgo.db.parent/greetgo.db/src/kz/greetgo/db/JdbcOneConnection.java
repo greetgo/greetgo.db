@@ -11,7 +11,7 @@ public class JdbcOneConnection implements Jdbc {
   }
 
   @Override
-  public <T> T executeConnection(ConnectionCallback<T> connectionCallback) {
+  public <T> T execute(ConnectionCallback<T> connectionCallback) {
     try {
       return connectionCallback.doInConnection(connection);
     } catch (Exception e) {

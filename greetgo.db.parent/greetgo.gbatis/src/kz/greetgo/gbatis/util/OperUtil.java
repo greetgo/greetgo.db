@@ -26,7 +26,7 @@ public class OperUtil {
       throws SQLException {
     if (hasColumnCache != null) {
       Boolean ret = hasColumnCache.get(name);
-      if (ret != null) return ret.booleanValue();
+      if (ret != null) return ret;
     }
     try {
       rs.findColumn(name);
@@ -108,6 +108,7 @@ public class OperUtil {
     if (cl.isPrimitive()) return true;
     if (cl.isEnum()) return true;
     if (cl.isAssignableFrom(String.class)) return true;
+    //noinspection SimplifiableIfStatement
     if (cl.isAssignableFrom(Date.class)) return true;
     return SIMPLE_CLASSES.contains(cl);
   }
@@ -119,6 +120,7 @@ public class OperUtil {
     }
     
     {
+      //noinspection ConstantConditions
       Object object = result.creator == null ? //
       result.resultDataClass.newInstance() //
           :result.creator.create();
@@ -131,26 +133,22 @@ public class OperUtil {
     long startedAt = System.currentTimeMillis();
     
     try {
-      
-      PreparedStatement ps = con.prepareStatement(sql.sql);
-      
-      try {
-        
+
+      try (PreparedStatement ps = con.prepareStatement(sql.sql)) {
+
         {
           int index = 1;
           for (Object param : sql.params) {
             ps.setObject(index++, param);
           }
         }
-        
+
         T ret = castInt(ps.executeUpdate(), result.resultDataClass);
-        
+
         view(result.sqlViewer, null, sql, startedAt);
-        
+
         return ret;
-        
-      } finally {
-        ps.close();
+
       }
       
     } catch (Exception e) {
@@ -190,34 +188,26 @@ public class OperUtil {
     long startedAt = System.currentTimeMillis();
     
     try {
-      
-      PreparedStatement ps = con.prepareStatement(sql.sql);
-      
-      try {
-        
+
+      try (PreparedStatement ps = con.prepareStatement(sql.sql)) {
+
         {
           int index = 1;
           for (Object param : sql.params) {
             ps.setObject(index++, param);
           }
         }
-        
-        ResultSet rs = ps.executeQuery();
-        try {
-          
+
+        try (ResultSet rs = ps.executeQuery()) {
+
           T ret = assemble(rs, result);
-          
+
           view(result.sqlViewer, null, sql, startedAt);
-          
+
           return ret;
-          
-        } finally {
-          rs.close();
-          
+
         }
-        
-      } finally {
-        ps.close();
+
       }
       
     } catch (Exception e) {
@@ -231,24 +221,20 @@ public class OperUtil {
     long startedAt = System.currentTimeMillis();
     
     try {
-      
-      CallableStatement cs = con.prepareCall(sql.sql);
-      try {
-        
+
+      try (CallableStatement cs = con.prepareCall(sql.sql)) {
+
         {
           int index = 1;
           for (Object param : sql.params) {
             cs.setObject(index++, param);
           }
         }
-        
+
         cs.execute();
-        
+
         view(result.sqlViewer, null, sql, startedAt);
-        
-      } finally {
-        cs.close();
-        
+
       }
       
       return null;
@@ -299,7 +285,7 @@ public class OperUtil {
       
       Set<Object> list = ret.get(key);
       if (list == null) {
-        ret.put(key, list = new HashSet<Object>());
+        ret.put(key, list = new HashSet<>());
       }
       
       list.add(keyValue[1]);
@@ -321,7 +307,7 @@ public class OperUtil {
       
       List<Object> list = ret.get(key);
       if (list == null) {
-        ret.put(key, list = new ArrayList<Object>());
+        ret.put(key, list = new ArrayList<>());
       }
       
       list.add(keyValue[1]);

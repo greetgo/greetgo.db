@@ -15,21 +15,12 @@ eclipse {
 configurations { repoUpload }
 
 dependencies {
-  compile project(':greetgo.sqlmanager')
-  compile project(':greetgo.db')
+  compile project(':greetgo.gbatis')
 
-  //compile "org.springframework:spring-jdbc:3.0.7.RELEASE"
+  compile "kz.greetgo.depinject:greetgo.depinject:${depinjectVersion}"
 
-  testCompile 'kz.greetgo:greetgo.conf:0.0.12'
-  compile "kz.greetgo:greetgo.util:${greetgoUtilVersion}"
+  testCompile 'com.h2database:h2:1.4.191'
 
-  testCompile 'postgresql:postgresql:9.1-901.jdbc4'
-  testCompile 'c3p0:c3p0:0.9.1.2'
-
-  testCompile "greetgo.3rd-party:oracle-ojdbc6_g:11.2.0.3"
-  testCompile "greetgo.3rd-party:oracle-ucp:11.2.0.3"
-
-  testCompile "kz.greetgo.class_scanner:greetgo.class_scanner:${classScannerVersion}"
 }
 
 test { useTestNG() }

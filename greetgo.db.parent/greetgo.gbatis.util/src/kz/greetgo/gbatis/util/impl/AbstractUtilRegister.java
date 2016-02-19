@@ -13,7 +13,7 @@ import kz.greetgo.gbatis.util.callbacks.meta.AllReferencesCallback;
 import kz.greetgo.gbatis.util.callbacks.meta.ColinfoCallback;
 import kz.greetgo.gbatis.util.callbacks.meta.KeyNamesCallback;
 import kz.greetgo.gbatis.util.iface.UtilRegister;
-import kz.greetgo.gbatis.util.model.Colinfo;
+import kz.greetgo.gbatis.util.model.ColInfo;
 import kz.greetgo.gbatis.util.model.ForeignKey;
 import kz.greetgo.gbatis.util.model.TableReference;
 import kz.greetgo.util.db.DbTypeDetector;
@@ -55,16 +55,16 @@ public abstract class AbstractUtilRegister implements UtilRegister {
   }
 
   private Map<String, Set<ForeignKey>> referenceMap = null;
-  private final Object referenceMapSyncer = new Object();
+  private final Object referenceMapSynchronized = new Object();
 
   private Set<ForeignKey> referencesTo(String tableName) {
 
-    synchronized (referenceMapSyncer) {
+    synchronized (referenceMapSynchronized) {
       if (referenceMap == null) {
 
         referenceMap = new HashMap<>();
 
-        Set<TableReference> allReferences = jdbc().executeConnection(new AllReferencesCallback(sqlViewer()));
+        Set<TableReference> allReferences = jdbc().execute(new AllReferencesCallback(sqlViewer()));
         for (TableReference ref : allReferences) {
           Set<ForeignKey> set = referenceMap.get(ref.toTableName.toLowerCase());
           if (set == null) referenceMap.put(ref.toTableName.toLowerCase(), set = new HashSet<>());
@@ -86,35 +86,35 @@ public abstract class AbstractUtilRegister implements UtilRegister {
     if (fieldValuePairs.length % 2 > 0) {
       throw new IllegalArgumentException("fieldValuePairs must contains odd elements");
     }
-    return jdbc().executeConnection(
-      new GetFieldCallback<T>(sqlViewer(), cl, tableName, getColinfo(tableName), gettingField,
+    return jdbc().execute(
+      new GetFieldCallback<>(sqlViewer(), cl, tableName, getColInfo(tableName), gettingField,
         fieldValuePairs));
   }
 
   @Override
   public <T> T insert(String tableName, T object) {
-    jdbc().executeConnection(new InsertCallback(sqlViewer(), tableName, getColinfo(tableName), object));
+    jdbc().execute(new InsertCallback(sqlViewer(), tableName, getColInfo(tableName), object));
     return object;
   }
 
-  private final Map<String, List<Colinfo>> colinfoCache = new HashMap<>();
+  private final Map<String, List<ColInfo>> colInfoCache = new HashMap<>();
 
-  private synchronized List<Colinfo> getColinfo(String tableName) {
+  private synchronized List<ColInfo> getColInfo(String tableName) {
     {
-      List<Colinfo> ret = colinfoCache.get(tableName);
+      List<ColInfo> ret = colInfoCache.get(tableName);
       if (ret != null) return ret;
     }
     {
-      List<Colinfo> ret = jdbc().executeConnection(new ColinfoCallback(sqlViewer(), tableName));
-      colinfoCache.put(tableName, ret);
+      List<ColInfo> ret = jdbc().execute(new ColinfoCallback(sqlViewer(), tableName));
+      colInfoCache.put(tableName, ret);
       return ret;
     }
   }
 
   @Override
   public int update(String tableName, Object object) {
-    return jdbc().executeConnection(
-      new UpdateCallback(tableName, getColinfo(tableName), getKeyNames(tableName), object));
+    return jdbc().execute(
+      new UpdateCallback(tableName, getColInfo(tableName), getKeyNames(tableName), object));
   }
 
   @Override
@@ -136,7 +136,7 @@ public abstract class AbstractUtilRegister implements UtilRegister {
       if (ret != null) return ret;
     }
     {
-      List<String> ret = jdbc().executeConnection(new KeyNamesCallback(sqlViewer(), tableName));
+      List<String> ret = jdbc().execute(new KeyNamesCallback(sqlViewer(), tableName));
       keyNameCache.put(tableName, ret);
       return ret;
     }
@@ -144,12 +144,12 @@ public abstract class AbstractUtilRegister implements UtilRegister {
 
   @Override
   public int deleteWhere(String tableName, String where, Object... values) {
-    return jdbc().executeConnection(new DeleteWhereCallback(sqlViewer(), tableName, where, values));
+    return jdbc().execute(new DeleteWhereCallback(sqlViewer(), tableName, where, values));
   }
 
   @Override
   public int countWhere(String tableName, String where, Object... values) {
-    return jdbc().executeConnection(new CountWhereCallback(sqlViewer(), tableName, where, values));
+    return jdbc().execute(new CountWhereCallback(sqlViewer(), tableName, where, values));
   }
 
   @Override
@@ -188,15 +188,13 @@ public abstract class AbstractUtilRegister implements UtilRegister {
 
   @Override
   public <T> List<T> seleList(Class<T> cl, CharSequence sql, Object... params) {
-    return seleList(newInstanciator(cl), sql, params);
+    return seleList(newInstanceMaker(cl), sql, params);
   }
 
   @Override
   public <T> List<T> seleList(Creator<T> cl, CharSequence sql, Object... params) {
     List<Object> list = new ArrayList<>(params.length);
-    for (Object object : params) {
-      list.add(object);
-    }
+    Collections.addAll(list, params);
     return selectList(cl, sql, list);
   }
 
@@ -205,7 +203,7 @@ public abstract class AbstractUtilRegister implements UtilRegister {
     return selectList(cl, sql, params, 0, 0);
   }
 
-  private static <T> Creator<T> newInstanciator(final Class<T> cl) {
+  private static <T> Creator<T> newInstanceMaker(final Class<T> cl) {
     if (cl == Integer.class || cl == Integer.TYPE) return new Creator<T>() {
       @SuppressWarnings("unchecked")
       @Override
@@ -269,14 +267,14 @@ public abstract class AbstractUtilRegister implements UtilRegister {
   @Override
   public <T> List<T> selectList(Class<T> cl, CharSequence sql, List<Object> params, int offset,
                                 int count) {
-    return selectList(newInstanciator(cl), sql, params, offset, count);
+    return selectList(newInstanceMaker(cl), sql, params, offset, count);
   }
 
   @Override
   public <T> List<T> selectList(final Creator<T> creator, final CharSequence sql,
                                 final List<Object> params, final int offset, final int count) {
 
-    return jdbc().executeConnection(new ConnectionCallback<List<T>>() {
+    return jdbc().execute(new ConnectionCallback<List<T>>() {
       @Override
       public List<T> doInConnection(Connection con) throws Exception {
         Result result = new Result();
@@ -284,10 +282,10 @@ public abstract class AbstractUtilRegister implements UtilRegister {
         result.sqlViewer = sqlViewer();
         result.type = ResultType.LIST;
 
-        SqlWithParams sqlp = SqlWithParams.selectWith(sql.toString(), params);
-        sqlp.page(DbTypeDetector.detect(con), offset, count);
+        SqlWithParams sqlWithParams = SqlWithParams.selectWith(sql.toString(), params);
+        sqlWithParams.page(DbTypeDetector.detect(con), offset, count);
 
-        return OperUtil.call(con, sqlp, result);
+        return OperUtil.call(con, sqlWithParams, result);
       }
     });
   }
@@ -295,20 +293,18 @@ public abstract class AbstractUtilRegister implements UtilRegister {
   @Override
   public int execUpdate(CharSequence sql, Object... params) {
     List<Object> list = new ArrayList<>();
-    for (Object x : params) {
-      list.add(x);
-    }
+    Collections.addAll(list, params);
     return executeUpdate(sql, list);
   }
 
   @Override
   public int executeUpdate(final CharSequence sql, final List<Object> params) {
-    return jdbc().executeConnection(new ConnectionCallback<Integer>() {
+    return jdbc().execute(new ConnectionCallback<Integer>() {
       @Override
       public Integer doInConnection(Connection con) throws Exception {
-        SqlWithParams sqlp = SqlWithParams.modiWith(sql.toString(), params);
+        SqlWithParams sqlWithParams = SqlWithParams.modiWith(sql.toString(), params);
         Result result = Result.simple(Integer.class).with(sqlViewer());
-        return OperUtil.call(con, sqlp, result);
+        return OperUtil.call(con, sqlWithParams, result);
       }
     });
   }
@@ -316,20 +312,18 @@ public abstract class AbstractUtilRegister implements UtilRegister {
   @Override
   public long seleLong(CharSequence sql, Object... params) {
     List<Object> list = new ArrayList<>();
-    for (Object object : params) {
-      list.add(object);
-    }
+    Collections.addAll(list, params);
     return selectLong(sql, list);
   }
 
   @Override
   public long selectLong(final CharSequence sql, final List<Object> params) {
-    return jdbc().executeConnection(new ConnectionCallback<Long>() {
+    return jdbc().execute(new ConnectionCallback<Long>() {
       @Override
       public Long doInConnection(Connection con) throws Exception {
-        SqlWithParams sqlp = SqlWithParams.selectWith(sql.toString(), params);
+        SqlWithParams sqlWithParams = SqlWithParams.selectWith(sql.toString(), params);
         Result result = Result.simple(Long.class).with(sqlViewer());
-        return OperUtil.call(con, sqlp, result);
+        return OperUtil.call(con, sqlWithParams, result);
       }
     });
   }
@@ -337,20 +331,18 @@ public abstract class AbstractUtilRegister implements UtilRegister {
   @Override
   public int seleInt(CharSequence sql, Object... params) {
     List<Object> list = new ArrayList<>();
-    for (Object object : params) {
-      list.add(object);
-    }
+    Collections.addAll(list, params);
     return selectInt(sql, list);
   }
 
   @Override
   public int selectInt(final CharSequence sql, final List<Object> params) {
-    return jdbc().executeConnection(new ConnectionCallback<Integer>() {
+    return jdbc().execute(new ConnectionCallback<Integer>() {
       @Override
       public Integer doInConnection(Connection con) throws Exception {
-        SqlWithParams sqlp = SqlWithParams.selectWith(sql.toString(), params);
+        SqlWithParams sqlWithParams = SqlWithParams.selectWith(sql.toString(), params);
         Result result = Result.simple(Integer.class).with(sqlViewer());
-        return OperUtil.call(con, sqlp, result);
+        return OperUtil.call(con, sqlWithParams, result);
       }
     });
   }
@@ -394,8 +386,7 @@ public abstract class AbstractUtilRegister implements UtilRegister {
     return bool(getField(Boolean.class, tableName, gettingField, fieldValuePairs));
   }
 
-  public static boolean bool(Boolean obj) {
-    if (obj == null) return false;
-    return obj.booleanValue();
+  private static boolean bool(Boolean obj) {
+    return obj == null ? false : obj;
   }
 }

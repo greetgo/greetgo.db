@@ -4,8 +4,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.util.Set;
 
-import kz.greetgo.gbatis.classscanner.ClassScannerDef;
-
+import kz.greetgo.class_scanner.ClassScannerDef;
 import org.testng.annotations.Test;
 
 public class ClassScannerDefTest {

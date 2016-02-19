@@ -11,7 +11,7 @@ import java.util.Map;
 import kz.greetgo.db.ConnectionCallback;
 import kz.greetgo.gbatis.futurecall.SqlViewer;
 import kz.greetgo.gbatis.util.SqlUtil;
-import kz.greetgo.gbatis.util.model.Colinfo;
+import kz.greetgo.gbatis.util.model.ColInfo;
 
 public final class GetFieldCallback<T> implements ConnectionCallback<T> {
   public SqlViewer sqlViewer;
@@ -19,10 +19,10 @@ public final class GetFieldCallback<T> implements ConnectionCallback<T> {
   private final String tableName;
   private final Object[] fieldValuePairs;
   private final String gettingField;
-  private final Map<String, Colinfo> colinfoMap;
+  private final Map<String, ColInfo> colinfoMap;
   private final Class<T> classs;
   
-  public GetFieldCallback(Class<T> classs, String tableName, List<Colinfo> colinfo,
+  public GetFieldCallback(Class<T> classs, String tableName, List<ColInfo> colInfo,
       String gettingField, Object... fieldValuePairs) {
     this.classs = classs;
     this.tableName = tableName;
@@ -30,14 +30,14 @@ public final class GetFieldCallback<T> implements ConnectionCallback<T> {
     this.gettingField = gettingField;
     
     colinfoMap = new HashMap<>();
-    for (Colinfo x : colinfo) {
+    for (ColInfo x : colInfo) {
       colinfoMap.put(x.name.toLowerCase(), x);
     }
   }
   
   public GetFieldCallback(SqlViewer sqlViewer, Class<T> classs, String tableName,
-      List<Colinfo> colinfo, String gettingField, Object... fieldValuePairs) {
-    this(classs, tableName, colinfo, gettingField, fieldValuePairs);
+      List<ColInfo> colInfo, String gettingField, Object... fieldValuePairs) {
+    this(classs, tableName, colInfo, gettingField, fieldValuePairs);
     this.sqlViewer = sqlViewer;
   }
   
@@ -46,9 +46,9 @@ public final class GetFieldCallback<T> implements ConnectionCallback<T> {
     class Data {
       final Object value;
       @SuppressWarnings("unused")
-      final Colinfo colinfo;
+      final ColInfo colinfo;
       
-      public Data(Object value, Colinfo colinfo) {
+      public Data(Object value, ColInfo colinfo) {
         this.value = value;
         this.colinfo = colinfo;
       }

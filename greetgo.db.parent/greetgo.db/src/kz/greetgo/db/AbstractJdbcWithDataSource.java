@@ -10,7 +10,7 @@ public abstract class AbstractJdbcWithDataSource implements Jdbc {
   protected abstract TransactionManager getTransactionManager();
 
   @Override
-  public <T> T executeConnection(ConnectionCallback<T> connectionCallback) {
+  public <T> T execute(ConnectionCallback<T> connectionCallback) {
     final TransactionManager tm = getTransactionManager();
     final DataSource dataSource = getDataSource();
 

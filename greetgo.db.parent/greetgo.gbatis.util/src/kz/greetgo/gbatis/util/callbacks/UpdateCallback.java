@@ -4,7 +4,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import kz.greetgo.db.ConnectionCallback;
 import kz.greetgo.gbatis.futurecall.SqlViewer;
 import kz.greetgo.gbatis.util.SqlUtil;
-import kz.greetgo.gbatis.util.model.Colinfo;
+import kz.greetgo.gbatis.util.model.ColInfo;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -17,10 +17,10 @@ public final class UpdateCallback implements ConnectionCallback<Integer> {
 
   private final String tableName;
   private final Object object;
-  private final Map<String, Colinfo> colinfoMap;
+  private final Map<String, ColInfo> colinfoMap;
   private final Set<String> keyNamesInLowcase;
 
-  public UpdateCallback(String tableName, Collection<Colinfo> colinfo, Collection<String> keyNames,
+  public UpdateCallback(String tableName, Collection<ColInfo> colInfo, Collection<String> keyNames,
                         Object object) {
     this.tableName = tableName;
     this.object = object;
@@ -28,7 +28,7 @@ public final class UpdateCallback implements ConnectionCallback<Integer> {
     if (object == null) throw new IllegalArgumentException("object == null");
 
     colinfoMap = new HashMap<>();
-    for (Colinfo s : colinfo) {
+    for (ColInfo s : colInfo) {
       colinfoMap.put(s.name.toLowerCase(), s);
     }
 
@@ -38,9 +38,9 @@ public final class UpdateCallback implements ConnectionCallback<Integer> {
     }
   }
 
-  public UpdateCallback(SqlViewer sqlViewer, String tableName, Collection<Colinfo> colinfo,
+  public UpdateCallback(SqlViewer sqlViewer, String tableName, Collection<ColInfo> colInfo,
                         Collection<String> keyNames, Object object) {
-    this(tableName, colinfo, keyNames, object);
+    this(tableName, colInfo, keyNames, object);
     this.sqlViewer = sqlViewer;
   }
 
@@ -51,9 +51,9 @@ public final class UpdateCallback implements ConnectionCallback<Integer> {
     class Data {
       final Object value;
       @SuppressWarnings("unused")
-      final Colinfo colinfo;
+      final ColInfo colinfo;
 
-      public Data(Object value, Colinfo colinfo) {
+      public Data(Object value, ColInfo colinfo) {
         this.value = value;
         this.colinfo = colinfo;
       }

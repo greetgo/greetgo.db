@@ -28,6 +28,7 @@ allprojects {
 
 subprojects {
   repositories {
+    mavenLocal()
     maven {
       name 'Our repository'
       url System.getenv('GG_REPO')
@@ -35,7 +36,10 @@ subprojects {
   }
 
   dependencies {
-    ext.greetgoUtilVersion = "0.0.17"
+    ext.greetgoUtilVersion = "0.0.20"
+    ext.depinjectVersion = "0.1.2"
+    ext.classScannerVersion = "0.0.1"
+
     compile 'com.google.code.findbugs:annotations:2.0.1'
 
     testCompile 'org.testng:testng:6.5.1'

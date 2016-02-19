@@ -41,7 +41,7 @@
     and p.CONSTRAINT_TYPE = 'P'
   ]]></sql>
 
-  <sql id="colinfo" type="Sele"><![CDATA[
+  <sql id="colInfo" type="Sele"><![CDATA[
     select
       column_name name,
       data_type type,
