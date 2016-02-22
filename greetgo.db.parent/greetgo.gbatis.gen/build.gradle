@@ -18,9 +18,9 @@ dependencies {
   compile project(':greetgo.gbatis')
 
   compile "kz.greetgo.depinject:greetgo.depinject:${depinjectVersion}"
+  compile "kz.greetgo.class_scanner:greetgo.class_scanner:${classScannerVersion}"
 
   testCompile 'com.h2database:h2:1.4.191'
-
 }
 
 test { useTestNG() }
