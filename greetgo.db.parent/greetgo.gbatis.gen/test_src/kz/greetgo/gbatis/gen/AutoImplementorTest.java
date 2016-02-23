@@ -1,11 +1,11 @@
 package kz.greetgo.gbatis.gen;
 
 import kz.greetgo.gbatis.gen.autoimpl_for_tests.TestDao6;
+import kz.greetgo.java_compiler.JavaCompiler;
+import kz.greetgo.java_compiler.JavaCompilerFactory;
 import kz.greetgo.util.ServerUtil;
 import org.testng.annotations.Test;
 
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
 import java.io.File;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -33,9 +33,8 @@ public class AutoImplementorTest {
 
     if (needCompile) {
       System.out.println("--- COMPILING " + gr.javaFile());
-      final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-      final int exitCode = compiler.run(System.in, System.out, System.err, gr.javaFile().getPath());
-      if (exitCode != 0) throw new RuntimeException("exitCode = " + exitCode);
+      final JavaCompiler compiler = JavaCompilerFactory.createDefault();
+      compiler.compile(gr.javaFile());
     }
 
     ServerUtil.addToClasspath(new File(srcDir));
