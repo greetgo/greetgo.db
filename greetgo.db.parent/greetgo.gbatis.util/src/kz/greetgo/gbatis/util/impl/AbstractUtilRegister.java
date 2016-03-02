@@ -10,7 +10,7 @@ import kz.greetgo.gbatis.model.SqlWithParams;
 import kz.greetgo.gbatis.util.OperUtil;
 import kz.greetgo.gbatis.util.callbacks.*;
 import kz.greetgo.gbatis.util.callbacks.meta.AllReferencesCallback;
-import kz.greetgo.gbatis.util.callbacks.meta.ColinfoCallback;
+import kz.greetgo.gbatis.util.callbacks.meta.ColInfoCallback;
 import kz.greetgo.gbatis.util.callbacks.meta.KeyNamesCallback;
 import kz.greetgo.gbatis.util.iface.UtilRegister;
 import kz.greetgo.gbatis.util.model.ColInfo;
@@ -105,7 +105,7 @@ public abstract class AbstractUtilRegister implements UtilRegister {
       if (ret != null) return ret;
     }
     {
-      List<ColInfo> ret = jdbc().execute(new ColinfoCallback(sqlViewer(), tableName));
+      List<ColInfo> ret = jdbc().execute(new ColInfoCallback(sqlViewer(), tableName));
       colInfoCache.put(tableName, ret);
       return ret;
     }
