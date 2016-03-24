@@ -1,44 +1,43 @@
 package kz.greetgo.sqlmanager.gen;
 
-import static kz.greetgo.util.ServerUtil.dummyCheck;
+import kz.greetgo.sqlmanager.parser.StruShaper;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.PrintStream;
 import java.net.URL;
 
-import kz.greetgo.sqlmanager.parser.StruShaper;
-
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import static kz.greetgo.util.ServerUtil.dummyCheck;
 
 public class Nf6GeneratorTest {
-  
+
   @DataProvider
   public Object[][] dataProvider() {
-    return new Object[][] {
-    
-    new Object[] { null },
-    
-    new Object[] { UserIdFieldType.Long },
-    
-    new Object[] { UserIdFieldType.Str },
-    
+    return new Object[][]{
+
+        new Object[]{null},
+
+        new Object[]{UserIdFieldType.Long},
+
+        new Object[]{UserIdFieldType.Str},
+
     };
   }
-  
+
   @Test(dataProvider = "dataProvider")
   public void postgres(UserIdFieldType uift) throws Exception {
     URL url = getClass().getResource("example.nf3");
     StruShaper sg = new StruShaper();
     sg.printPStru = false;
     sg.parse(url);
-    
+
     dummyCheck(new File("build").mkdir());
-    
+
     Conf conf = new Conf();
     conf.genOperTables = true;
     conf.userIdFieldType = uift;
-    
+
     Nf6Generator nf6generator = new Nf6GeneratorPostgres(conf, sg);
     nf6generator.libType = LibType.GBATIS;
     String fp = uiftToPrefix(uift);
@@ -55,39 +54,47 @@ public class Nf6GeneratorTest {
     outP.close();
     outComment.close();
     outCopy.close();
-    
-    nf6generator.conf.javaGenDir = "gensrc";
+
+    String buildFolder = "build/";
+    if (new File("greetgo.sqlmanager").isDirectory()) {
+      buildFolder = "greetgo.sqlmanager/" + buildFolder;
+    }
+
+    nf6generator.conf.javaGenDir = buildFolder + "gen_src";
     nf6generator.conf.modelPackage = "kz.pompei.dbmodel";
     nf6generator.conf.daoPackage = "kz.pompei.dao";
-    
-    nf6generator.conf.javaGenStruDir = "gensrcstru";
+
+    nf6generator.conf.javaGenStruDir = buildFolder + "gen_src_struct";
     nf6generator.conf.modelStruPackage = "kz.pompei.dbmodelstru";
     nf6generator.conf.modelStruExtends = "kz.greetgo.sqlmanager.gen.ModelParent";
     //nf6generator.conf.modelStruImplements = "kz.greetgo.sqlmanager.gen.ModelParent";
-    
+
+    nf6generator.generateJavaCodeForPostgres = true;
+    nf6generator.generateJavaCodeForOracle = false;
     nf6generator.generateJava();
   }
-  
+
   private String uiftToPrefix(UserIdFieldType uift) {
     if (uift == null) return "";
     return "modi-" + uift.name() + "-";
   }
-  
+
   @Test(dataProvider = "dataProvider")
   public void oracle(UserIdFieldType uift) throws Exception {
     URL url = getClass().getResource("example.nf3");
     StruShaper sg = new StruShaper();
     sg.printPStru = false;
     sg.parse(url);
-    
+
     dummyCheck(new File("build").mkdir());
-    
+
     Conf conf = new Conf();
     conf.genOperTables = true;
     conf.oracleInsertDupValues = true;
     conf.userIdFieldType = uift;
-    
+
     Nf6Generator nf6generator = new Nf6GeneratorOracle(conf, sg);
+    nf6generator.libType = LibType.GBATIS;
     String fp = uiftToPrefix(uift);
     PrintStream out = new PrintStream("build/ddl-" + fp + "oracle-nf6.sql", "UTF-8");
     PrintStream outCopy = new PrintStream("build/ddl-" + fp + "oracle-copy.sql", "UTF-8");
@@ -98,16 +105,23 @@ public class Nf6GeneratorTest {
     out.close();
     outP.close();
     outCopy.close();
-    
-    nf6generator.conf.javaGenDir = "gensrc";
+
+    String buildFolder = "build/";
+    if (new File("greetgo.sqlmanager").isDirectory()) {
+      buildFolder = "greetgo.sqlmanager/" + buildFolder;
+    }
+
+    nf6generator.conf.javaGenDir = buildFolder + "gen_src";
     nf6generator.conf.modelPackage = "kz.pompei.dbmodel";
     nf6generator.conf.daoPackage = "kz.pompei.dao";
-    
-    nf6generator.conf.javaGenStruDir = "gensrcstru";
+
+    nf6generator.conf.javaGenStruDir = buildFolder + "gen_src_struct";
     nf6generator.conf.modelStruPackage = "kz.pompei.dbmodelstru";
     nf6generator.conf.modelStruExtends = "kz.greetgo.sqlmanager.gen.ModelParent";
     //nf6generator.conf.modelStruImplements = "kz.greetgo.sqlmanager.gen.ModelParent";
-    
-    //nf6generator.generateJava();
+
+    nf6generator.generateJavaCodeForPostgres = false;
+    nf6generator.generateJavaCodeForOracle = true;
+    nf6generator.generateJava();
   }
 }
