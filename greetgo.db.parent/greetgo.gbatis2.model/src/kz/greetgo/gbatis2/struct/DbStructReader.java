@@ -113,7 +113,7 @@ public class DbStructReader {
 
     public ResourceRefLine(String line, ResourceRef ref, int lineNumber) {
       this.line = line;
-      place = new Place(ref, lineNumber);
+      place = new PlaceInResourceRef(ref, lineNumber);
     }
 
     @Override

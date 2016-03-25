@@ -9,4 +9,8 @@ public class AliasDot {
     this.target = target;
     this.place = place;
   }
+
+  public String display() {
+    return name + " " + target + " at " + place.placement();
+  }
 }
