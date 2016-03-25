@@ -7,6 +7,10 @@ public class DbStruct {
 
   final Options options = new Options();
 
+  final Aliases aliases = new Aliases();
+
+  final Enums enums = new Enums();
+
   final Map<String, ParsedType> typeMap = new HashMap<>();
 
 }

@@ -9,11 +9,11 @@ import java.util.Objects;
 
 public class Options {
 
-  private final Map<String, Option> storage = new HashMap<>();
+  private final Map<String, OptionDot> storage = new HashMap<>();
 
   public void parseLine(String key, String value, Place place) {
-    Option option = new Option(key, value, place);
-    Option alreadyDefined = storage.get(key);
+    OptionDot option = new OptionDot(key, value, place);
+    OptionDot alreadyDefined = storage.get(key);
     if (alreadyDefined != null) {
       if (Objects.equals(option.value, alreadyDefined.value)) return;
       throw new OptionAlreadyDefined(option, alreadyDefined);
@@ -23,7 +23,7 @@ public class Options {
   }
 
   private String getStrOrThrow(String key) {
-    Option option = storage.get(key);
+    OptionDot option = storage.get(key);
     if (option == null) throw new OptionIsNotDefined(key);
     return option.value;
   }

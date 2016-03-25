@@ -1,11 +1,17 @@
 package kz.greetgo.gbatis2.struct;
 
-import kz.greetgo.gbatis2.struct.exceptions.*;
+import kz.greetgo.gbatis2.struct.exceptions.DuplicateType;
+import kz.greetgo.gbatis2.struct.exceptions.FieldAlreadyExists;
+import kz.greetgo.gbatis2.struct.exceptions.NoCurrentTypeToAddField;
+import kz.greetgo.gbatis2.struct.exceptions.UnknownLine;
 import kz.greetgo.gbatis2.struct.resource.ResourceRef;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,42 +95,6 @@ public class DbStructReader {
 
   Current current = Current.NONE;
 
-  private static Class<? extends Enum> loadClass(String enumClassName, Place place) {
-    try {
-      //noinspection unchecked
-      return (Class<? extends Enum>) Class.forName(enumClassName);
-    } catch (ClassNotFoundException e) {
-      throw new EnumClassNotFound(enumClassName, place, e);
-    }
-  }
-
-  class EnumDot {
-    final String name;
-    final Class<? extends Enum> enumClass;
-    final Place place;
-
-    public EnumDot(String name, String enumClassName, Place place) {
-      this.name = name;
-      this.enumClass = loadClass(enumClassName, place);
-      this.place = place;
-    }
-  }
-
-  private final Map<String, EnumDot> enumMap = new HashMap<>();
-
-  class AliasDot {
-    final String name, target;
-    final Place place;
-
-    public AliasDot(String name, String target, Place place) {
-      this.name = name;
-      this.target = target;
-      this.place = place;
-    }
-  }
-
-  private final Map<String, AliasDot> aliasMap = new HashMap<>();
-
   class AutomaticallyFinishInclude implements Line {
     @Override
     public void parse() {
@@ -196,7 +166,7 @@ public class DbStructReader {
           }
 
           ParsedField field = new ParsedField(matcher.group(1), matcher.group(2),
-            matcher.group(3), matcher.group(5), place);
+              matcher.group(3), matcher.group(5), place);
 
           for (ParsedField f : currentType.fieldList) {
             if (f.name.equals(field.name)) {
@@ -220,17 +190,7 @@ public class DbStructReader {
       {
         Matcher matcher = ENUM.matcher(line);
         if (matcher.matches()) {
-
-          EnumDot enumDot = new EnumDot(matcher.group(1), matcher.group(2), place);
-
-          EnumDot alreadyExistsEnumDot = enumMap.get(enumDot.name);
-          if (alreadyExistsEnumDot != null) {
-            if (alreadyExistsEnumDot.enumClass.equals(enumDot.enumClass)) return;
-            throw new DuplicateEnumAlias(enumDot.name, enumDot.place, alreadyExistsEnumDot.place);
-          }
-
-          enumMap.put(enumDot.name, enumDot);
-
+          dbStruct.enums.append(new EnumDot(matcher.group(1), matcher.group(2), place));
           return;
         }
       }
@@ -246,17 +206,7 @@ public class DbStructReader {
       {
         Matcher matcher = ALIAS.matcher(line);
         if (matcher.matches()) {
-
-          AliasDot aliasDot = new AliasDot(matcher.group(1), matcher.group(2), place);
-
-          AliasDot alreadyExistsAlias = aliasMap.get(aliasDot.name);
-          if (alreadyExistsAlias != null) {
-            if (alreadyExistsAlias.target.equals(aliasDot.target)) return;
-            throw new AliasAlreadyDefined(aliasDot.name, aliasDot.place, alreadyExistsAlias.place);
-          }
-
-          aliasMap.put(aliasDot.name, aliasDot);
-
+          dbStruct.aliases.append(new AliasDot(matcher.group(1), matcher.group(2), place));
           return;
         }
       }
