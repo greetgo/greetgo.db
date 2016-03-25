@@ -1,6 +1,6 @@
 package kz.greetgo.gbatis2.struct;
 
-import kz.greetgo.gbatis2.struct.exceptions.DuplicateEnumAlias;
+import kz.greetgo.gbatis2.struct.exceptions.EnumAlreadyDefined;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ public class Enums {
     
     if (alreadyExistsEnumDot != null) {
       if (alreadyExistsEnumDot.enumClass.equals(enumDot.enumClass)) return;
-      throw new DuplicateEnumAlias(enumDot.name, enumDot.place, alreadyExistsEnumDot.place);
+      throw new EnumAlreadyDefined(enumDot.name, enumDot.place, alreadyExistsEnumDot.place);
     }
 
     enumMap.put(enumDot.name, enumDot);

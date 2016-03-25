@@ -1,5 +1,5 @@
 
-@enum TransferStatus kz.greetgo.gbatis.struct.TransferStatus
+@enum TransferStatus kz.greetgo.gbatis2.struct.TransferStatus
 
 @alias line str500
 @alias word str100 # короткая строка

@@ -11,6 +11,6 @@ public class DbStruct {
 
   final Enums enums = new Enums();
 
-  final Map<String, ParsedType> typeMap = new HashMap<>();
+  final Map<String, ParsedEssence> typeMap = new HashMap<>();
 
 }

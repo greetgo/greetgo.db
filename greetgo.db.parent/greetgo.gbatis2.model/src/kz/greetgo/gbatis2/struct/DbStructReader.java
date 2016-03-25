@@ -1,8 +1,7 @@
 package kz.greetgo.gbatis2.struct;
 
-import kz.greetgo.gbatis2.struct.exceptions.DuplicateType;
+import kz.greetgo.gbatis2.struct.exceptions.EssenceAlreadyDefined;
 import kz.greetgo.gbatis2.struct.exceptions.FieldAlreadyExists;
-import kz.greetgo.gbatis2.struct.exceptions.NoCurrentTypeToAddField;
 import kz.greetgo.gbatis2.struct.exceptions.UnknownLine;
 import kz.greetgo.gbatis2.struct.resource.ResourceRef;
 
@@ -22,17 +21,11 @@ public class DbStructReader {
 
   private final DbStruct dbStruct = new DbStruct();
 
-  public static DbStruct read(ResourceRef ref) {
+  public static DbStruct read(ResourceRef ref) throws Exception {
 
     DbStructReader reader = new DbStructReader();
 
-    try {
-      reader.readLines(ref);
-    } catch (Exception e) {
-      if (e instanceof RuntimeException) throw (RuntimeException) e;
-      throw new RuntimeException(e);
-    }
-
+    reader.readLines(ref);
     reader.readFromLines();
 
     return reader.dbStruct;
@@ -87,20 +80,20 @@ public class DbStructReader {
   }
 
   private String currentSubpackage = null;
-  private ParsedType currentType = null;
+  private ParsedEssence currentEssence = null;
 
-  enum Current {
+  enum State {
     NONE, OPTIONS, ESSENCE
   }
 
-  Current current = Current.NONE;
+  State state = State.NONE;
 
   class AutomaticallyFinishInclude implements Line {
     @Override
     public void parse() {
-      currentType = null;
+      currentEssence = null;
       currentSubpackage = null;
-      current = Current.NONE;
+      state = State.NONE;
     }
   }
 
@@ -134,17 +127,17 @@ public class DbStructReader {
       {
         Matcher matcher = ESSENCE.matcher(line);
         if (matcher.matches()) {
-          currentType = new ParsedType(currentSubpackage, matcher.group(1), matcher.group(2), matcher.group(4), place);
-          current = Current.ESSENCE;
+          currentEssence = new ParsedEssence(currentSubpackage, matcher.group(1), matcher.group(2), matcher.group(4), place);
+          state = State.ESSENCE;
 
           {
-            ParsedType alreadyExistsType = dbStruct.typeMap.get(currentType.name);
+            ParsedEssence alreadyExistsType = dbStruct.typeMap.get(currentEssence.name);
             if (alreadyExistsType != null) {
-              throw new DuplicateType(currentType, alreadyExistsType);
+              throw new EssenceAlreadyDefined(currentEssence, alreadyExistsType);
             }
           }
 
-          dbStruct.typeMap.put(currentType.name, currentType);
+          dbStruct.typeMap.put(currentEssence.name, currentEssence);
           return;
         }
       }
@@ -152,34 +145,30 @@ public class DbStructReader {
       {
         Matcher matcher = OPTIONS.matcher(line);
         if (matcher.matches()) {
-          current = Current.OPTIONS;
+          state = State.OPTIONS;
           return;
         }
       }
 
-      if (current == Current.ESSENCE) {
+      if (state == State.ESSENCE) {
         Matcher matcher = FIELD.matcher(line);
         if (matcher.matches()) {
-
-          if (currentType == null) {
-            throw new NoCurrentTypeToAddField(matcher.group(2), place);
-          }
 
           ParsedField field = new ParsedField(matcher.group(1), matcher.group(2),
               matcher.group(3), matcher.group(5), place);
 
-          for (ParsedField f : currentType.fieldList) {
+          for (ParsedField f : currentEssence.fieldList) {
             if (f.name.equals(field.name)) {
               throw new FieldAlreadyExists(field, f);
             }
           }
 
-          currentType.fieldList.add(field);
+          currentEssence.fieldList.add(field);
           return;
         }
       }
 
-      if (current == Current.OPTIONS) {
+      if (state == State.OPTIONS) {
         Matcher matcher = OPTION.matcher(line);
         if (matcher.matches()) {
           dbStruct.options.parseLine(matcher.group(1), matcher.group(2), place);
