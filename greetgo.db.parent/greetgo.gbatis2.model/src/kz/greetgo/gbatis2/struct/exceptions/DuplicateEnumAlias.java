@@ -2,7 +2,7 @@ package kz.greetgo.gbatis2.struct.exceptions;
 
 import kz.greetgo.gbatis2.struct.Place;
 
-public class DuplicateEnumAlias extends SyntaxException {
+public class DuplicateEnumAlias extends GbatisException {
   public final String name;
   public final Place place1;
   public final Place place2;

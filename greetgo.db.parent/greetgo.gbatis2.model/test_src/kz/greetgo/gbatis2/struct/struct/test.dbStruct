@@ -1,8 +1,7 @@
+
+@include options.dbStruct
+
 @options
-  identification         id
-  table_prefix_id        m_
-  table_prefix_memory    m_
-  table_prefix_operative o_
-  concatenation_suffix   _
+  empty_key
 
 @include source/main.core.dbStruct

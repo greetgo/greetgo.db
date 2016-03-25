@@ -15,7 +15,7 @@ eclipse {
 configurations { repoUpload }
 
 dependencies {
-  
+  compile "kz.greetgo:greetgo.util:${greetgoUtilVersion}"
 }
 
 test { useTestNG() }

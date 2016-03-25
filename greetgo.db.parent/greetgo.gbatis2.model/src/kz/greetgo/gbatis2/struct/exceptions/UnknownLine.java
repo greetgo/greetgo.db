@@ -2,7 +2,7 @@ package kz.greetgo.gbatis2.struct.exceptions;
 
 import kz.greetgo.gbatis2.struct.Place;
 
-public class UnknownLine extends SyntaxException {
+public class UnknownLine extends GbatisException {
   public final String line;
   public final Place place;
 

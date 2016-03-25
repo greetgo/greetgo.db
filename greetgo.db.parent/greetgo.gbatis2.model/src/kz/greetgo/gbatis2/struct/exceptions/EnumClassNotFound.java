@@ -2,7 +2,7 @@ package kz.greetgo.gbatis2.struct.exceptions;
 
 import kz.greetgo.gbatis2.struct.Place;
 
-public class EnumClassNotFound extends SyntaxException {
+public class EnumClassNotFound extends GbatisException {
   public final String enumClassName;
   public final Place place;
 

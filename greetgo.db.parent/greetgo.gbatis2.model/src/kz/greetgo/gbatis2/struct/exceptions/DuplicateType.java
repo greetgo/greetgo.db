@@ -2,7 +2,7 @@ package kz.greetgo.gbatis2.struct.exceptions;
 
 import kz.greetgo.gbatis2.struct.ParsedType;
 
-public class DuplicateType extends SyntaxException {
+public class DuplicateType extends GbatisException {
   public final ParsedType currentType;
   public final ParsedType alreadyExistsType;
 

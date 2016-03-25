@@ -1,5 +1,7 @@
 package kz.greetgo.gbatis2.struct;
 
+import kz.greetgo.util.ServerUtil;
+
 public class ParsedField {
   public final String name, type, comment;
   public final boolean key;
@@ -7,9 +9,9 @@ public class ParsedField {
 
   public ParsedField(String keyStr, String name, String type, String comment, Place place) {
     key = keyStr != null;
-    this.name = UtilGbatis.trim(name);
-    this.type = UtilGbatis.trim(type);
-    this.comment = UtilGbatis.trim(comment);
+    this.name = ServerUtil.trim(name);
+    this.type = ServerUtil.trim(type);
+    this.comment = ServerUtil.trim(comment);
     this.place = place;
   }
 }

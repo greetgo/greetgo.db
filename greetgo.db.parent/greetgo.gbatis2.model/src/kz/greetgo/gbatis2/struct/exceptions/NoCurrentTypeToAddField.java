@@ -2,7 +2,7 @@ package kz.greetgo.gbatis2.struct.exceptions;
 
 import kz.greetgo.gbatis2.struct.Place;
 
-public class NoCurrentTypeToAddField extends SyntaxException {
+public class NoCurrentTypeToAddField extends GbatisException {
   public final String fieldName;
   public final Place place;
 

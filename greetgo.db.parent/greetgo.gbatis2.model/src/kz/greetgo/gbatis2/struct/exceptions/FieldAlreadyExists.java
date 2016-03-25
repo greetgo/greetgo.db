@@ -2,7 +2,7 @@ package kz.greetgo.gbatis2.struct.exceptions;
 
 import kz.greetgo.gbatis2.struct.ParsedField;
 
-public class FieldAlreadyExists extends SyntaxException {
+public class FieldAlreadyExists extends GbatisException {
   public final ParsedField field;
   public final ParsedField alreadyExistsField;
 
