@@ -1,0 +1,24 @@
+
+@enum TransferStatus kz.greetgo.gbatis.struct.TransferStatus
+
+@alias line str500
+@alias word str100 # короткая строка
+
+@subpackage main.core
+
+client str50         -- сущность клиент
+  surname    str500  -- фамилия клиента
+  name       str500  -- имя
+  patronymic line    -- отчество
+
+color long
+  red   int
+  green int
+  blue  int
+
+contract str50
+  number str100
+  client
+  color
+
+@include main.score.dbStruct
