@@ -3,9 +3,9 @@ package kz.greetgo.gbatis2.struct;
 import kz.greetgo.gbatis2.struct.exceptions.EnumClassNotFound;
 
 public class EnumDot {
-  final String name;
-  final Class<? extends Enum> enumClass;
-  final Place place;
+  public final String name;
+  public final Class<? extends Enum> enumClass;
+  public final Place place;
 
   public EnumDot(String name, String enumClassName, Place place) {
     this.name = name;

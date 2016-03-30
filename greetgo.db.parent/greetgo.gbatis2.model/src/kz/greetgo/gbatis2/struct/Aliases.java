@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Aliases {
-  private final Map<String, AliasDot> aliasMap = new HashMap<>();
+  final Map<String, AliasDot> aliasMap = new HashMap<>();
 
   public void append(AliasDot aliasDot) {
     AliasDot alreadyExistsAlias = aliasMap.get(aliasDot.name);
@@ -27,10 +27,10 @@ public class Aliases {
       if (circlingTracer.containsKey(name)) {
         throw new AliasSetContainsCircling(circlingTracer.values());
       }
-      
+
       AliasDot aliasDot = aliasMap.get(name);
       if (aliasDot == null) return name;
-      
+
       circlingTracer.put(name, aliasDot);
       name = aliasDot.target;
     }

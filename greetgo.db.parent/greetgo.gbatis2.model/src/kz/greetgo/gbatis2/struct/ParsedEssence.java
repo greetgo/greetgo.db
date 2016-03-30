@@ -1,5 +1,6 @@
 package kz.greetgo.gbatis2.struct;
 
+import kz.greetgo.gbatis2.struct.model.DbEssence;
 import kz.greetgo.util.ServerUtil;
 
 import java.util.ArrayList;
@@ -21,4 +22,6 @@ public class ParsedEssence {
     this.comment = ServerUtil.trim(comment);
     this.place = place;
   }
+
+  public DbEssence dbEssence;
 }

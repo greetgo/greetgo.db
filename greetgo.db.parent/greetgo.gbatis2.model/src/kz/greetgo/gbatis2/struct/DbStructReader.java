@@ -131,13 +131,13 @@ public class DbStructReader {
           state = State.ESSENCE;
 
           {
-            ParsedEssence alreadyExistsType = dbStruct.typeMap.get(currentEssence.name);
+            ParsedEssence alreadyExistsType = dbStruct.essenceMap.get(currentEssence.name);
             if (alreadyExistsType != null) {
               throw new EssenceAlreadyDefined(currentEssence, alreadyExistsType);
             }
           }
 
-          dbStruct.typeMap.put(currentEssence.name, currentEssence);
+          dbStruct.essenceMap.put(currentEssence.name, currentEssence);
           return;
         }
       }
