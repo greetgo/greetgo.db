@@ -135,9 +135,7 @@ public class DbStructReaderTest {
   public void prepareDbEssenceList_keyFromTop() throws Exception {
     ResourceRef ref = ClassResourceRef.create(TestDbStruct.class, "prepareDbEssenceList/essences5.dbStruct");
 
-    DbStruct dbStruct = DbStructReader.read(ref);
-
-    dbStruct.prepareDbEssenceList();
+    DbStruct dbStruct = DbStructReader.load(ref);
 
     assertThat(dbStruct.dbEssenceList).hasSize(5);
 

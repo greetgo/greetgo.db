@@ -1,0 +1,27 @@
+@options
+  sequencePrefix s_
+  tablePrefixId  m_
+  keyTableCreatedAt createdAt
+  keyTableCreatedBy createdBy
+
+@alias word str50
+@alias bool int
+
+client long
+  surname str100
+  name str100
+
+contract word
+  number word
+  clientWrittenAt time
+
+baseClass
+  * keyOne long
+  * keyTwo word
+    actual int
+
+childClass1 baseClass
+  client
+  contract
+  moonCount int
+

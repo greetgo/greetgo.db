@@ -21,7 +21,7 @@ public class DbStructReader {
 
   private final DbStruct dbStruct = new DbStruct();
 
-  public static DbStruct read(ResourceRef ref) throws Exception {
+  static DbStruct read(ResourceRef ref) throws Exception {
 
     DbStructReader reader = new DbStructReader();
 
@@ -29,6 +29,12 @@ public class DbStructReader {
     reader.readFromLines();
 
     return reader.dbStruct;
+  }
+  
+  public static DbStruct load(ResourceRef ref) throws Exception {
+    DbStruct dbStruct = read(ref);
+    dbStruct.prepareDbEssenceList();
+    return dbStruct;
   }
 
   interface Line {

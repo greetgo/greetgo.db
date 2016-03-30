@@ -1,7 +1,6 @@
 package kz.greetgo.gbatis2.struct.model.std;
 
-import kz.greetgo.gbatis2.struct.model.Essence;
+import kz.greetgo.gbatis2.struct.model.SimpleEssence;
 
-public interface StdEssence extends Essence {
-  
+public interface StdEssence extends SimpleEssence {
 }

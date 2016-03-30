@@ -12,7 +12,7 @@ eclipse {
 configurations { repoUpload }
 
 dependencies {
-  compile project(':greetgo.gbatis2.struct')
+  compile project(':greetgo.gbatis2.gen_sql')
 }
 
 test { useTestNG() }

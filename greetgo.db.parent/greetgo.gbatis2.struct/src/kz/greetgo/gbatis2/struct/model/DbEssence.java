@@ -13,4 +13,40 @@ public class DbEssence implements Essence {
     this.name = name;
     this.comment = comment;
   }
+
+  @Override
+  public boolean isSequential() {
+    for (DbField dbField : fieldList) {
+      if (dbField.key && dbField.type.isSequential()) return true;
+    }
+    return false;
+  }
+
+  List<KeyField> keyFieldsCache = null;
+
+  public List<KeyField> keyFields() {
+    if (keyFieldsCache != null) return keyFieldsCache;
+
+    List<KeyField> ret = new ArrayList<>();
+
+    for (DbField dbField : fieldList) {
+      if (dbField.key) {
+
+        if (dbField.type instanceof SimpleEssence) {
+          ret.add(new KeyField(dbField));
+          continue;
+        }
+
+        if (dbField.type instanceof DbEssence) {
+          DbEssence typeEssence = (DbEssence) dbField.type;
+          ret.addAll(typeEssence.keyFields());
+          continue;
+        }
+
+        throw new RuntimeException("Unknown essence class: " + dbField.type);
+      }
+    }
+
+    return keyFieldsCache = ret;
+  }
 }

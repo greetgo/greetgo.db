@@ -11,7 +11,7 @@ public class Options {
 
   private final Map<String, OptionDot> storage = new HashMap<>();
 
-  public void parseLine(String key, String value, Place place) {
+  void parseLine(String key, String value, Place place) {
     OptionDot option = new OptionDot(key, value, place);
     OptionDot alreadyDefined = storage.get(key);
     if (alreadyDefined != null) {
@@ -36,6 +36,14 @@ public class Options {
     return getStrOrThrow("tablePrefixId");
   }
 
+  public String keyTableCreatedAt() {
+    return getStrOrThrow("keyTableCreatedAt");
+  }
+
+  public String keyTableCreatedBy() {
+    return getStrOrThrow("keyTableCreatedBy");
+  }
+
   public String tablePrefixMemory() {
     return getStrOrThrow("tablePrefixMemory");
   }
@@ -46,5 +54,9 @@ public class Options {
 
   public String concatenationSuffix() {
     return getStrOrThrow("concatenationSuffix");
+  }
+
+  public String sequencePrefix() {
+    return getStrOrThrow("sequencePrefix");
   }
 }

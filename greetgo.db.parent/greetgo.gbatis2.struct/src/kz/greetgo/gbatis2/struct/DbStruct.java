@@ -16,7 +16,7 @@ public class DbStruct {
 
   private final StdEssenceFactory stdFactory = new StdEssenceFactory();
 
-  final Options options = new Options();
+  public final Options options = new Options();
 
   final Aliases aliases = new Aliases();
 
@@ -24,7 +24,7 @@ public class DbStruct {
 
   final Map<String, ParsedEssence> essenceMap = new HashMap<>();
 
-  final List<DbEssence> dbEssenceList = new ArrayList<>();
+  public final List<DbEssence> dbEssenceList = new ArrayList<>();
 
   void prepareDbEssenceList() {
 
