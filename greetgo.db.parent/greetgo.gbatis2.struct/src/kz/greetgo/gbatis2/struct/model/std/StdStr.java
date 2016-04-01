@@ -32,7 +32,7 @@ public class StdStr implements StdEssence {
   private List<SimpleEssence> simpleEssenceListCache = null;
 
   @Override
-  public List<SimpleEssence> simpleEssenceList() {
+  public List<SimpleEssence> keySimpleEssenceList() {
     if (simpleEssenceListCache == null) {
       List<SimpleEssence> ret = new ArrayList<>();
       ret.add(this);
@@ -40,5 +40,21 @@ public class StdStr implements StdEssence {
     }
 
     return simpleEssenceListCache;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    StdStr stdStr = (StdStr) o;
+
+    return length == stdStr.length;
+
+  }
+
+  @Override
+  public int hashCode() {
+    return length;
   }
 }

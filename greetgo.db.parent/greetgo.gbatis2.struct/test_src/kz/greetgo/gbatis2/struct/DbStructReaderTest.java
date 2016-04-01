@@ -99,7 +99,8 @@ public class DbStructReaderTest {
   @Test(expectedExceptions = EnumClassNotFound.class)
   public void read_EnumClassNotFound() throws Exception {
     ResourceRef ref = ClassResourceRef.create(TestDbStruct.class, "enum.class.not.found.dbStruct");
-    DbStructReader.read(ref);
+    DbStruct dbStruct = DbStructReader.read(ref);
+    dbStruct.enums.take("asd").enumClass();
   }
 
   @Test(expectedExceptions = EssenceAlreadyDefined.class)

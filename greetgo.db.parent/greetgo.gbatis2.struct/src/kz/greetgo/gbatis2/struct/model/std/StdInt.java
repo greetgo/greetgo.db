@@ -30,7 +30,7 @@ public class StdInt implements StdEssence {
   private List<SimpleEssence> simpleEssenceListCache = null;
 
   @Override
-  public List<SimpleEssence> simpleEssenceList() {
+  public List<SimpleEssence> keySimpleEssenceList() {
     if (simpleEssenceListCache == null) {
       List<SimpleEssence> ret = new ArrayList<>();
       ret.add(this);

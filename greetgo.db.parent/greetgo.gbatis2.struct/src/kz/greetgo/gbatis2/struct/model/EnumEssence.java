@@ -1,14 +1,19 @@
 package kz.greetgo.gbatis2.struct.model;
 
+import kz.greetgo.gbatis2.struct.Place;
+import kz.greetgo.gbatis2.struct.exceptions.EnumClassNotFound;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class EnumEssence implements SimpleEssence {
-  public final String fullClassName;
+  public final String enumClassName;
+  private final Place place;
 
-  public EnumEssence(String fullClassName) {
-    this.fullClassName = fullClassName;
+  public EnumEssence(String enumClassName, Place place) {
+    this.enumClassName = enumClassName;
+    this.place = place;
   }
 
   @Override
@@ -18,7 +23,7 @@ public class EnumEssence implements SimpleEssence {
 
   @Override
   public String toString() {
-    return "ENUM " + fullClassName;
+    return "ENUM " + enumClassName;
   }
 
   @Override
@@ -29,7 +34,7 @@ public class EnumEssence implements SimpleEssence {
   private List<SimpleEssence> simpleEssenceListCache = null;
 
   @Override
-  public List<SimpleEssence> simpleEssenceList() {
+  public List<SimpleEssence> keySimpleEssenceList() {
     if (simpleEssenceListCache == null) {
       List<SimpleEssence> ret = new ArrayList<>();
       ret.add(this);
@@ -37,5 +42,37 @@ public class EnumEssence implements SimpleEssence {
     }
 
     return simpleEssenceListCache;
+  }
+
+  public static Class<? extends Enum> loadClass(String enumClassName, Place place) {
+    try {
+      //noinspection unchecked
+      return (Class<? extends Enum>) Class.forName(enumClassName);
+    } catch (ClassNotFoundException e) {
+      throw new EnumClassNotFound(enumClassName, place, e);
+    }
+  }
+
+  private Class<? extends Enum> enumClassCache = null;
+
+  public Class<? extends Enum> enumClass() {
+    if (enumClassCache == null) enumClassCache = loadClass(enumClassName, place);
+    return enumClassCache;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    EnumEssence that = (EnumEssence) o;
+
+    return enumClassName != null ? enumClassName.equals(that.enumClassName) : that.enumClassName == null;
+
+  }
+
+  @Override
+  public int hashCode() {
+    return enumClassName != null ? enumClassName.hashCode() : 0;
   }
 }

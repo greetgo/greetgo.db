@@ -110,9 +110,9 @@ public class DbStructToDdl {
       createTable.addPrimaryKeyName(dbStruct.options.tsFieldName());
     }
 
-    List<SimpleEssence> typeList = dbField.type.simpleEssenceList();
+    List<SimpleEssence> typeList = dbField.type.keySimpleEssenceList();
     int index = 0, size = typeList.size();
-    if (size == 0) throw new RuntimeException("simpleEssenceList.size == 0");
+    if (size == 0) throw new RuntimeException("keySimpleEssenceList.size == 0");
     for (SimpleEssence simpleEssence : typeList) {
       index++;
       String name = dbField.name;
@@ -149,9 +149,9 @@ public class DbStructToDdl {
       createTable.addPrimaryKeyName(keyField.name());
     }
 
-    List<SimpleEssence> typeList = dbField.type.simpleEssenceList();
+    List<SimpleEssence> typeList = dbField.type.keySimpleEssenceList();
     int index = 1, size = typeList.size();
-    if (size == 0) throw new RuntimeException("simpleEssenceList.size == 0");
+    if (size == 0) throw new RuntimeException("keySimpleEssenceList.size == 0");
     for (SimpleEssence simpleEssence : typeList) {
       String name = dbField.name;
       if (size > 1) name += index;

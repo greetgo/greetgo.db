@@ -5,5 +5,5 @@ import java.util.List;
 public interface Essence {
   boolean isSequential();
 
-  List<SimpleEssence> simpleEssenceList();
+  List<SimpleEssence> keySimpleEssenceList();
 }

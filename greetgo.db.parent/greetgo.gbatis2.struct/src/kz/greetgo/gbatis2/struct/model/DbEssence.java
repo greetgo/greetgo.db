@@ -44,7 +44,7 @@ public class DbEssence implements Essence {
           continue;
         }
 
-        throw new RuntimeException("Unknown essence class: " + dbField.type);
+        throw new UnknownEssence(dbField.type);
       }
     }
 
@@ -54,7 +54,7 @@ public class DbEssence implements Essence {
   private List<SimpleEssence> simpleEssenceListCache = null;
 
   @Override
-  public List<SimpleEssence> simpleEssenceList() {
+  public List<SimpleEssence> keySimpleEssenceList() {
     if (simpleEssenceListCache == null) {
       List<SimpleEssence> ret = new ArrayList<>();
       for (KeyField keyField : keyFields()) {

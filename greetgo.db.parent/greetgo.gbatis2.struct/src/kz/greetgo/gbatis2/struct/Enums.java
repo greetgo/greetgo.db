@@ -5,6 +5,7 @@ import kz.greetgo.gbatis2.struct.model.EnumEssence;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Enums {
   final Map<String, EnumDot> enumMap = new HashMap<>();
@@ -13,7 +14,7 @@ public class Enums {
     EnumDot alreadyExistsEnumDot = enumMap.get(enumDot.name);
 
     if (alreadyExistsEnumDot != null) {
-      if (alreadyExistsEnumDot.enumClass.equals(enumDot.enumClass)) return;
+      if (Objects.equals(alreadyExistsEnumDot.enumClassName, enumDot.enumClassName)) return;
       throw new EnumAlreadyDefined(enumDot.name, enumDot.place, alreadyExistsEnumDot.place);
     }
 
@@ -23,6 +24,6 @@ public class Enums {
   public EnumEssence take(String name) {
     EnumDot enumDot = enumMap.get(name);
     if (enumDot == null) return null;
-    return new EnumEssence(enumDot.enumClass);
+    return enumDot.essence();
   }
 }
