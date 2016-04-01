@@ -1,8 +1,12 @@
 @options
-  sequencePrefix s_
-  tablePrefixId  m_
-  keyTableCreatedAt createdAt
-  keyTableCreatedBy createdBy
+  sequencePrefix       s_
+  tablePrefixId        m_
+  tablePrefixMemory    m_
+  tablePrefixOperative o_
+  concatenationSuffix  _
+  keyTableCreatedAt    createdAt
+  keyTableCreatedBy    createdBy
+  tsFieldName          ts
 
 @alias word str50
 @alias bool int
@@ -25,3 +29,22 @@ childClass1 baseClass
   contract
   moonCount int
 
+one
+  *one1 int
+  *one2 int
+   name str100
+
+two
+  *two1 int
+  *two2 int
+   description text
+
+three
+  *one
+  *two
+  *contract
+   actual bool
+
+zFore three
+  asd int
+  stand three

@@ -13,6 +13,8 @@ configurations { repoUpload }
 
 dependencies {
   compile project(':greetgo.gbatis2.struct')
+
+  testCompile 'postgresql:postgresql:9.1-901.jdbc4'
 }
 
 test { useTestNG() }

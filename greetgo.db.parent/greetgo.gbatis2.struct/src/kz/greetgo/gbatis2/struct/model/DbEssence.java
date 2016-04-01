@@ -1,6 +1,7 @@
 package kz.greetgo.gbatis2.struct.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DbEssence implements Essence {
@@ -48,5 +49,20 @@ public class DbEssence implements Essence {
     }
 
     return keyFieldsCache = ret;
+  }
+
+  private List<SimpleEssence> simpleEssenceListCache = null;
+
+  @Override
+  public List<SimpleEssence> simpleEssenceList() {
+    if (simpleEssenceListCache == null) {
+      List<SimpleEssence> ret = new ArrayList<>();
+      for (KeyField keyField : keyFields()) {
+        ret.add(keyField.type());
+      }
+      simpleEssenceListCache = Collections.unmodifiableList(ret);
+    }
+
+    return simpleEssenceListCache;
   }
 }

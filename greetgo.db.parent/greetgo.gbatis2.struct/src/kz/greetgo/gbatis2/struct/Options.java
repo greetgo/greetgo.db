@@ -59,4 +59,8 @@ public class Options {
   public String sequencePrefix() {
     return getStrOrThrow("sequencePrefix");
   }
+
+  public String tsFieldName() {
+    return getStrOrThrow("tsFieldName");
+  }
 }

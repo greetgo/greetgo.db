@@ -1,10 +1,14 @@
 package kz.greetgo.gbatis2.struct.model;
 
-public class EnumEssence implements SimpleEssence {
-  public final Class<? extends Enum> source;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-  public EnumEssence(Class<? extends Enum> source) {
-    this.source = source;
+public class EnumEssence implements SimpleEssence {
+  public final String fullClassName;
+
+  public EnumEssence(String fullClassName) {
+    this.fullClassName = fullClassName;
   }
 
   @Override
@@ -14,11 +18,24 @@ public class EnumEssence implements SimpleEssence {
 
   @Override
   public String toString() {
-    return "ENUM " + source.getName();
+    return "ENUM " + fullClassName;
   }
 
   @Override
   public <T> T visit(EssenceVisitor<T> visitor) {
     return visitor.visitEnum(this);
+  }
+
+  private List<SimpleEssence> simpleEssenceListCache = null;
+
+  @Override
+  public List<SimpleEssence> simpleEssenceList() {
+    if (simpleEssenceListCache == null) {
+      List<SimpleEssence> ret = new ArrayList<>();
+      ret.add(this);
+      simpleEssenceListCache = Collections.unmodifiableList(ret);
+    }
+
+    return simpleEssenceListCache;
   }
 }

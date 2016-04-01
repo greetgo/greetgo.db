@@ -1,5 +1,7 @@
 package kz.greetgo.gbatis2.gen_sql.ddl;
 
+import kz.greetgo.gbatis2.struct.model.SimpleEssence;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,5 +36,15 @@ public class CreateTable implements Ddl {
   @Override
   public <T> T visit(DdlVisitor<T> visitor) {
     return visitor.visitCreateTable(this);
+  }
+
+  public CreateTableField addNewField(String name, SimpleEssence type, boolean notNull, FieldDefault fieldDefault) {
+    CreateTableField ret = new CreateTableField(name, type, notNull, fieldDefault);
+    fields.add(ret);
+    return ret;
+  }
+
+  public void addPrimaryKeyName(String name) {
+    primaryKey.add(name);
   }
 }
