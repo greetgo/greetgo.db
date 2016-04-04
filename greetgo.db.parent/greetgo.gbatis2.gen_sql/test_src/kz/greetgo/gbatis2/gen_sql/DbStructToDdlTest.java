@@ -28,18 +28,4 @@ public class DbStructToDdlTest {
     }
   }
 
-  @Test
-  public void ins() throws Exception {
-
-    Class.forName("org.postgresql.Driver");
-    try (Connection con = DriverManager.getConnection("jdbc:postgresql://localhost/gcorebs", "gcorebs", "gcorebs")) {
-
-      try (CallableStatement cs = con.prepareCall("{call aaa_set_row(?)}")) {
-        cs.setString(1, "ПРИВЕТ Мир, Hi World");
-
-        cs.execute();
-      }
-    }
-
-  }
 }

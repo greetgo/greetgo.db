@@ -15,6 +15,7 @@ import kz.greetgo.gbatis.util.callbacks.meta.KeyNamesCallback;
 import kz.greetgo.gbatis.util.iface.UtilRegister;
 import kz.greetgo.gbatis.util.model.ColInfo;
 import kz.greetgo.gbatis.util.model.ForeignKey;
+import kz.greetgo.gbatis.util.model.ProceduresCaller;
 import kz.greetgo.gbatis.util.model.TableReference;
 import kz.greetgo.util.db.DbTypeDetector;
 
@@ -35,6 +36,11 @@ public abstract class AbstractUtilRegister implements UtilRegister {
     for (String tn : tableName) {
       cleanTable(hashSet, tn);
     }
+  }
+
+  @Override
+  public ProceduresCaller callProcedures() {
+    return new ProceduresCaller(jdbc());
   }
 
   private void cleanTable(Set<String> nameSet, String tableName) {
@@ -87,8 +93,8 @@ public abstract class AbstractUtilRegister implements UtilRegister {
       throw new IllegalArgumentException("fieldValuePairs must contains odd elements");
     }
     return jdbc().execute(
-      new GetFieldCallback<>(sqlViewer(), cl, tableName, getColInfo(tableName), gettingField,
-        fieldValuePairs));
+        new GetFieldCallback<>(sqlViewer(), cl, tableName, getColInfo(tableName), gettingField,
+            fieldValuePairs));
   }
 
   @Override
@@ -114,7 +120,7 @@ public abstract class AbstractUtilRegister implements UtilRegister {
   @Override
   public int update(String tableName, Object object) {
     return jdbc().execute(
-      new UpdateCallback(tableName, getColInfo(tableName), getKeyNames(tableName), object));
+        new UpdateCallback(tableName, getColInfo(tableName), getKeyNames(tableName), object));
   }
 
   @Override
@@ -167,7 +173,7 @@ public abstract class AbstractUtilRegister implements UtilRegister {
     for (String key : getKeyNames(tableName)) {
       Field field = fieldMap.get(key.toLowerCase());
       if (field == null) throw new IllegalArgumentException("No key field " + key
-        + " in object with class " + object.getClass());
+          + " in object with class " + object.getClass());
 
       final Object value;
       try {
@@ -176,7 +182,7 @@ public abstract class AbstractUtilRegister implements UtilRegister {
         throw new RuntimeException(e);
       }
       if (value == null) throw new IllegalArgumentException("Field " + key
-        + " is null in object with class " + object.getClass());
+          + " is null in object with class " + object.getClass());
 
       if (where.length() > 0) where.append(" and ");
       where.append(field.getName()).append(" = ?");
