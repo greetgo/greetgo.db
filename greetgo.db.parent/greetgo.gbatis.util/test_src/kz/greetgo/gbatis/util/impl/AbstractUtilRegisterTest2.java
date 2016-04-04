@@ -87,9 +87,7 @@ public class AbstractUtilRegisterTest2 extends MyTestBase {
 
     List<String> lines = th.readTempStorage();
 
-    for (String line : lines) {
-      //System.out.println(line);
-    }
+    //for (String line : lines) {System.out.println(line);}
 
     assertThat(lines.get(0)).isEqualTo("I am saying: \"Hello world, 你好世界\"");
     assertThat(lines.get(1)).isEqualTo("I am saying qu with str str: s1 = 你好世界 - העלא וועלט, s2 = <NULL>");
@@ -133,9 +131,7 @@ public class AbstractUtilRegisterTest2 extends MyTestBase {
 
     List<String> lines = th.readTempStorage();
 
-    for (String line : lines) {
-      //System.out.println(line);
-    }
+    //for (String line : lines) {System.out.println(line);}
 
     assertThat(lines.get(0)).isEqualTo("I am saying: \"Hello world, 你好世界\"");
     assertThat(lines.get(1)).isEqualTo("I am saying qu with str str: s1 = 你好世界, s2 = <NULL>");
