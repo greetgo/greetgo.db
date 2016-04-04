@@ -5,14 +5,12 @@ import kz.greetgo.gbatis.util.model.ProceduresCaller;
 import kz.greetgo.gbatis.util.sqls.SqlSrc;
 import kz.greetgo.gbatis.util.test.MyTestBase;
 import kz.greetgo.util.db.DbType;
-import org.fest.assertions.api.Assertions;
 import org.testng.annotations.Test;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import static kz.greetgo.gbatis.util.impl.BinUtil.*;
@@ -119,13 +117,13 @@ public class AbstractUtilRegisterTest2 extends MyTestBase {
     pc.callProcedure("say_qu_with_long_long").paramLong(-987234L).paramLong(123_098_001L);
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    
+
     pc.callProcedure("say_qu_with_time_time").paramTime(null).paramTime(sdf.parse("1991-05-11 18:00:21.876"));
-    
+
     pc.run();
 
     List<String> lines = th.readTempStorage();
-    
+
     for (String line : lines) {
       System.out.println(line);
     }
