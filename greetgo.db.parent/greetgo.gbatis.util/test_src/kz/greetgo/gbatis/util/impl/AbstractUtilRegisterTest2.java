@@ -85,9 +85,18 @@ public class AbstractUtilRegisterTest2 extends MyTestBase {
 
     th.executeCommandList(DatatypeConverter.printBase64Binary(bout.toByteArray()));
 
-    for (String line : th.readTempStorage()) {
-      System.out.println(line);
+    List<String> lines = th.readTempStorage();
+
+    for (String line : lines) {
+      //System.out.println(line);
     }
+
+    assertThat(lines.get(0)).isEqualTo("I am saying: \"Hello world, 你好世界\"");
+    assertThat(lines.get(1)).isEqualTo("I am saying qu with str str: s1 = 你好世界 - העלא וועלט, s2 = <NULL>");
+    assertThat(lines.get(2)).isEqualTo("I am saying qu with int str: i1 = -3, s2 = До свидания");
+    assertThat(lines.get(3)).isEqualTo("I am saying qu with long long: long1 = 78286201, long2 = -201");
+    assertThat(lines.get(4)).isEqualTo("I am saying qu with time time: time1 = <NULL>, time2 = 1991-05-11 18:00:21.876");
+
   }
 
   @Test(dataProvider = CONNECT_PROVIDER)
@@ -125,7 +134,7 @@ public class AbstractUtilRegisterTest2 extends MyTestBase {
     List<String> lines = th.readTempStorage();
 
     for (String line : lines) {
-      System.out.println(line);
+      //System.out.println(line);
     }
 
     assertThat(lines.get(0)).isEqualTo("I am saying: \"Hello world, 你好世界\"");
