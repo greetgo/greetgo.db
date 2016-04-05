@@ -47,19 +47,14 @@ public class TestHelper {
     }
   }
 
-  private static boolean ignore(Exception e) {
-    return "ERROR: relation \"temp_storage\" already exists".equals(e.getMessage());
-  }
-
   public void prepareTempStorage() throws SQLException {
     try {
-      //executeSql(sql("listExecutor/createTempStorage"));
+      executeSql(sql("listExecutor/dropTempStorage"));
     } catch (Exception e) {
-      if (ignore(e)) return;
-      throw e;
+      //ignore
     }
 
-    executeSql(sql("listExecutor/clear_temp_storage"));
+    executeSql(sql("listExecutor/createTempStorage"));
   }
 
   public void executeCommandList(String commands) throws SQLException {

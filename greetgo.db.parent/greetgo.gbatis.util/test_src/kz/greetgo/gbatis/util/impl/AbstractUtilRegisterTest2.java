@@ -21,6 +21,7 @@ public class AbstractUtilRegisterTest2 extends MyTestBase {
   @Override
   protected DbType[] usingDbTypes() {
     return new DbType[]{DbType.PostgreSQL};
+    //return new DbType[]{DbType.Oracle};
   }
 
   @Test(dataProvider = CONNECT_PROVIDER)

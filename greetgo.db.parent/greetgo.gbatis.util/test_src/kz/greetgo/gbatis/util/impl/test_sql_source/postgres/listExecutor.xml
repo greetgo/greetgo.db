@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sql-set>
 
+  <sql id="dropTempStorage" type="Sele"><![CDATA[
+    drop table temp_storage
+  ]]></sql>
+
   <sql id="createTempStorage" type="Sele"><![CDATA[
-    CREATE TEMPORARY TABLE temp_storage (
+    CREATE TABLE temp_storage (
       txt TEXT,
-      ts  TIMESTAMP without timezone NOT NULL DEFAULT current_timestamp
+      ts  TIMESTAMP without time zone NOT NULL DEFAULT current_timestamp
     )
   ]]></sql>
 
   <sql id="readTempStorage" type="Sele"><![CDATA[
     SELECT txt FROM temp_storage ORDER BY ts
-  ]]></sql>
-
-  <sql id="clear_temp_storage" type="Sele"><![CDATA[
-    delete FROM temp_storage
   ]]></sql>
 
   <sql id="procedure_sayHelloWorld" type="Sele"><![CDATA[
