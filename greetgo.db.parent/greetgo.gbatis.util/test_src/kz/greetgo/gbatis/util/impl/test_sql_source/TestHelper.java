@@ -58,12 +58,10 @@ public class TestHelper {
   }
 
   public void executeCommandList(String commands) throws SQLException {
-
     try (CallableStatement cs = con.prepareCall("{call q_executeCommandList(?)}")) {
       cs.setString(1, commands);
       cs.execute();
     }
-
   }
 
   public void prepareProcedure_sayHelloWorld() throws SQLException {
