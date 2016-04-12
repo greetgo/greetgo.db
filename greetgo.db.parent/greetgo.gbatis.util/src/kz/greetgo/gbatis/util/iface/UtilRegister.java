@@ -1,7 +1,6 @@
 package kz.greetgo.gbatis.util.iface;
 
 import kz.greetgo.gbatis.model.Creator;
-import kz.greetgo.gbatis.util.model.ProceduresCaller;
 
 import java.util.Date;
 import java.util.List;
@@ -84,11 +83,4 @@ public interface UtilRegister {
   int execUpdate(CharSequence sql, Object... params);
 
   int executeUpdate(CharSequence sql, List<Object> params);
-
-  /**
-   * Позволяет скопом вызвать несколько процедур с параметрами
-   *
-   * @return экзкутер вызова процедур
-   */
-  ProceduresCaller callProcedures();
 }

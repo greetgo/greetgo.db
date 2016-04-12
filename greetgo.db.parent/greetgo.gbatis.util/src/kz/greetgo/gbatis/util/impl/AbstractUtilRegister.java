@@ -15,7 +15,6 @@ import kz.greetgo.gbatis.util.callbacks.meta.KeyNamesCallback;
 import kz.greetgo.gbatis.util.iface.UtilRegister;
 import kz.greetgo.gbatis.util.model.ColInfo;
 import kz.greetgo.gbatis.util.model.ForeignKey;
-import kz.greetgo.gbatis.util.model.ProceduresCaller;
 import kz.greetgo.gbatis.util.model.TableReference;
 import kz.greetgo.util.db.DbTypeDetector;
 
@@ -36,11 +35,6 @@ public abstract class AbstractUtilRegister implements UtilRegister {
     for (String tn : tableName) {
       cleanTable(hashSet, tn);
     }
-  }
-
-  @Override
-  public ProceduresCaller callProcedures() {
-    return new ProceduresCaller(jdbc());
   }
 
   private void cleanTable(Set<String> nameSet, String tableName) {
