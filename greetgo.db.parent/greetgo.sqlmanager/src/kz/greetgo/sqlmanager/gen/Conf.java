@@ -39,7 +39,7 @@ public class Conf {
   /**
    * Префикс оперативной таблицы
    */
-  public String oPref = "o_";
+  public String oPrefix = "o_";
 
   /**
    * Префикс with-вьюшки

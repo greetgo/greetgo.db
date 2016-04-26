@@ -150,7 +150,7 @@ public class Nf6GeneratorPostgres extends Nf6Generator {
 
     if (conf.genOperTables) {
       out.println();
-      String oname = conf.oPref + field.table.name + "_" + field.name;
+      String oname = conf.oPrefix + field.table.name + "_" + field.name;
       out.print("  select count(1) into doit from " + oname);
       {
         printWhereSqlForKeys(out, field);

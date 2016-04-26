@@ -119,7 +119,7 @@ public abstract class Nf6Generator {
 
   private void printHistToOperField(PrintStream out, Field field) {
     String mName = conf.mPrefix + field.table.name + "_" + field.name;
-    String oName = conf.oPref + field.table.name + "_" + field.name;
+    String oName = conf.oPrefix + field.table.name + "_" + field.name;
 
     String ins = conf.insertedAt;
     String modi = conf.lastModifiedAt;
@@ -246,7 +246,7 @@ public abstract class Nf6Generator {
           }
 
           if (conf.genOperTables) {
-            out.println("alter table " + conf.oPref + tName + "_" + field.name + " add "
+            out.println("alter table " + conf.oPrefix + tName + "_" + field.name + " add "
                 + formForeignKey(fieldNames, (Table) field.type) + conf.separator);
           }
         }
@@ -346,7 +346,7 @@ public abstract class Nf6Generator {
 
     List<String> keyFields = new ArrayList<>();
 
-    out.println("create table " + conf.oPref + field.table.name + "_" + field.name + " (");
+    out.println("create table " + conf.oPrefix + field.table.name + "_" + field.name + " (");
 
     printKeyFields(field, out, keyFields);
 
@@ -509,7 +509,7 @@ public abstract class Nf6Generator {
 
   private void printFieldViewToOper(PrintStream out, Field field) {
     out.println("create     view " + conf.vPrefix + field.table.name + "_" + field.name + " as");
-    out.println("  select * from " + conf.oPref + field.table.name + "_" + field.name
+    out.println("  select * from " + conf.oPrefix + field.table.name + "_" + field.name
         + conf.separator);
   }
 
