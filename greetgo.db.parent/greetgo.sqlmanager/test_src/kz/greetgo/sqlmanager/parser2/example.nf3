@@ -34,7 +34,7 @@ address long
   street line
   flat word
 
-subpackage dsa.dsa
+subpackage dsa.dsa.sinus
 
 phone
   *person

@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 public class ParseTest {
   @Test
   public void parse() throws Exception {
-    URL url = getClass().getResource("example.nf3");
+    URL url = getClass().getResource("example2.nf3");
     StruShaper sg = new StruShaper();
     sg.printPStru = false;
     sg.parse(url);

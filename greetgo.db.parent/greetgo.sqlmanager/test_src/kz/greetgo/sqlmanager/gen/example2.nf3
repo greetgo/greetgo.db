@@ -33,6 +33,8 @@ address long
    street line
    flat word
 
+subpackage sinus
+
 phone
   *person
   *annType AnnotationType

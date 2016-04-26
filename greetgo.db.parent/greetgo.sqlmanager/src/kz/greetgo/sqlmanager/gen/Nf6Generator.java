@@ -90,6 +90,11 @@ public abstract class Nf6Generator {
   public boolean generateJavaCodeForPostgres = true;
   public boolean generateJavaCodeForOracle = true;
 
+  public boolean generateDao = true;
+  public boolean generateVT = true;
+  public boolean generateChanges = false;
+  public String changeImplementInfo = null;
+
   /**
    * Распечатка SQL-ей, для копирования данных из исторических таблиц в оперативные
    *
@@ -98,12 +103,12 @@ public abstract class Nf6Generator {
   public void printHistToOperSqls(PrintStream out, String separator) {
     if (separator == null) separator = conf.separator;
 
-    List<String> tnames = getTnames();
+    List<String> tNames = getTnames();
 
-    for (String tname : tnames) {
-      Table table = sg.stru.tables.get(tname);
+    for (String tName : tNames) {
+      Table table = sg.stru.tables.get(tName);
       for (Field field : table.fields) {
-        out.println(separator.replaceAll("NAME", tname + "_" + field.name));
+        out.println(separator.replaceAll("NAME", tName + "_" + field.name));
         printHistToOperField(out, field);
       }
     }
@@ -252,15 +257,15 @@ public abstract class Nf6Generator {
    * @param out место вывода SQL-ей
    */
   public void printPrograms(PrintStream out) {
-    List<String> tnames = getTnames();
-    printInsertFunctions(tnames, out);
+    List<String> tNames = getTnames();
+    printInsertFunctions(tNames, out);
   }
 
   private List<String> getTnames() {
-    List<String> tnames = new ArrayList<>();
-    tnames.addAll(sg.stru.tables.keySet());
-    Collections.sort(tnames);
-    return tnames;
+    List<String> tNames = new ArrayList<>();
+    tNames.addAll(sg.stru.tables.keySet());
+    Collections.sort(tNames);
+    return tNames;
   }
 
   protected abstract void printPrepareSqls(PrintStream out);
@@ -533,21 +538,22 @@ public abstract class Nf6Generator {
 
   private void printFieldView(PrintStream out, Field field) {
     StringBuilder sb = new StringBuilder();
-    sb.append("create view " + conf.vPrefix + field.table.name + "_" + field.name + " as\n");
+    sb.append("create view ").append(conf.vPrefix).append(field.table.name)
+        .append("_").append(field.name).append(" as\n");
     viewFormer.formFieldSelect(sb, field, null, 2, 0);
     out.println(sb + conf.separator);
   }
 
   private void printTableView(PrintStream out, Table table) {
     StringBuilder sb = new StringBuilder();
-    sb.append("create view " + conf.vPrefix + table.name + " as\n");
+    sb.append("create view ").append(conf.vPrefix).append(table.name).append(" as\n");
     viewFormer.formTableSelect(sb, table, null, 2, 0);
     out.println(sb + conf.separator);
   }
 
-  private void printInsertFunctions(List<String> tnames, PrintStream out) {
-    for (String tname : tnames) {
-      Table table = sg.stru.tables.get(tname);
+  private void printInsertFunctions(List<String> tNames, PrintStream out) {
+    for (String tName : tNames) {
+      Table table = sg.stru.tables.get(tName);
       printTableInsertFunction(out, table);
       for (Field field : table.fields) {
         printFieldInsertFunction(out, field);
@@ -610,12 +616,25 @@ public abstract class Nf6Generator {
 
     for (Table table : sg.stru.tables.values()) {
       ClassOuter fieldsClass = generateFieldsJava(table);
+      fieldsClass.generateTo(conf.javaGenStruDir);
       ClassOuter java = generateJava(table, fieldsClass);
-      generateDao(table, java, fieldsClass);
+      java.generateTo(conf.javaGenDir);
+      if (generateDao) generateDao(table, java, fieldsClass);
+      if (generateChanges) {
+        ClassOuter abstractChangeClass = generateAbstractChangeClass(table);
+        abstractChangeClass.generateTo(conf.javaGenStruDir);
+
+        for (Field field : table.fields) {
+          ClassOuter changeClass = generateChangeClass(field, abstractChangeClass);
+          changeClass.generateTo(conf.javaGenStruDir);
+        }
+
+      }
     }
 
     generateIfaces();
   }
+
 
   private void checkIdLengths() {
     if (conf.maxIdLength == null) return;
@@ -631,6 +650,7 @@ public abstract class Nf6Generator {
   }
 
   private void checkIdLength(String id) {
+    if (conf.maxIdLength == null) return;
     if (id.length() > conf.maxIdLength) throw new TooLongIdException(id);
   }
 
@@ -678,9 +698,115 @@ public abstract class Nf6Generator {
       }
     }
 
-    ou.generateTo(conf.javaGenStruDir);
-
     return ou;
+  }
+
+  private ClassOuter generateChangeClass(Field field, ClassOuter parent) {
+    ClassOuter java = new ClassOuter(conf.modelPackage + field.table.subpackage(), "Change", field.javaTableFieldName());
+
+    java.println();
+    java.println("public class " + java.className + " extends " + java._(parent.name()) + " {");
+
+    for (FieldDb fieldDb : field.dbFields()) {
+      java.println("  public " + java._(fieldDb.javaType.javaType()) + " " + fieldDb.name + ";");
+    }
+
+    java.println();
+    java.println("  public " + java.className + "() {}");
+
+    java.println();
+    java.print("  public " + java.className + "(");
+    boolean first = true;
+    for (Field key : field.table.keys) {
+      for (FieldDb fieldDb : key.dbFields()) {
+        if (first) {
+          first = false;
+        } else {
+          java.print(", ");
+        }
+        java.print(java._(fieldDb.javaType.javaType()) + " " + fieldDb.name);
+      }
+    }
+    for (FieldDb fieldDb : field.dbFields()) {
+      java.print(", " + java._(fieldDb.javaType.javaType()) + " " + fieldDb.name);
+    }
+    java.println(") {");
+
+    for (Field key : field.table.keys) {
+      for (FieldDb fieldDb : key.dbFields()) {
+        java.println("    this." + fieldDb.name + " = " + fieldDb.name + ";");
+      }
+    }
+    for (FieldDb fieldDb : field.dbFields()) {
+      java.println("    this." + fieldDb.name + " = " + fieldDb.name + ";");
+    }
+
+    java.println("  }");
+
+    return java;
+  }
+
+  private ClassOuter generateAbstractChangeClass(Table table) {
+    ClassOuter java = new ClassOuter(conf.modelPackage + table.subpackage(), "Change", table.name);
+
+    String interfaceClass = null;
+    String getIdName = null;
+    if (changeImplementInfo != null) {
+      String[] split = changeImplementInfo.split(";");
+      interfaceClass = split[0];
+      getIdName = split[1];
+    }
+
+    java.println();
+
+    java.print("public abstract class " + java.className);
+    if (interfaceClass != null) {
+      java.print(" implements " + java._(interfaceClass));
+    }
+    java.println(" {");
+
+    java.println();
+
+    int stringCount = 0, anotherCount = 0;
+
+    for (Field f : table.keys) {
+      for (FieldDb fi : f.dbFields()) {
+        if (fi.stype.isString()) {
+          stringCount++;
+        } else {
+          anotherCount++;
+        }
+        java.println("  public " + java._(fi.javaType.javaType()) + " " + fi.name + ";");
+      }
+    }
+
+    if (getIdName != null) {
+      java.println();
+      java.println("  @Override");
+      java.println("  public String " + getIdName + "() {");
+      if (stringCount == 1 && anotherCount == 0) {
+        java.println("    return " + table.keys.get(0).dbFields().get(0).name + ";");
+      } else {
+        boolean first = true;
+        for (Field f : table.keys) {
+          for (FieldDb fi : f.dbFields()) {
+            if (first) {
+              java.print("    return \"\" + ");
+              first = false;
+            } else {
+              java.print(" + \"-\" + ");
+            }
+            java.print(fi.name);
+          }
+        }
+        java.println(";");
+      }
+      java.println("  }");
+    }
+
+    java.println();
+
+    return java;
   }
 
   private ClassOuter generateJava(Table table, ClassOuter fieldsClass) {
@@ -753,7 +879,7 @@ public abstract class Nf6Generator {
       }
     }
 
-    java.generateTo(conf.javaGenDir);
+
     return java;
   }
 
@@ -1198,7 +1324,7 @@ public abstract class Nf6Generator {
 
   private void generateIfaces() {
     generateTandV();
-    generateVT();
+    if (generateVT) generateVT();
   }
 
   private void generateTandV() {

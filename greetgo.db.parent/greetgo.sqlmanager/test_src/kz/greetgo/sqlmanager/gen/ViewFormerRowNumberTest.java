@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 public class ViewFormerRowNumberTest {
   @Test
   public void formTableSelect() throws Exception {
-    URL url = getClass().getResource("example.nf3");
+    URL url = getClass().getResource("example2.nf3");
     StruShaper sg = new StruShaper();
     sg.printPStru = false;
     sg.parse(url);
@@ -27,7 +27,7 @@ public class ViewFormerRowNumberTest {
   
   @Test
   public void formFieldSelect() throws Exception {
-    URL url = getClass().getResource("example.nf3");
+    URL url = getClass().getResource("example2.nf3");
     StruShaper sg = new StruShaper();
     sg.printPStru = false;
     sg.parse(url);
