@@ -118,7 +118,7 @@ public abstract class Nf6Generator {
   }
 
   private void printHistToOperField(PrintStream out, Field field) {
-    String mName = conf.tabPrefix + field.table.name + "_" + field.name;
+    String mName = conf.mPrefix + field.table.name + "_" + field.name;
     String oName = conf.oPref + field.table.name + "_" + field.name;
 
     String ins = conf.insertedAt;
@@ -236,12 +236,15 @@ public abstract class Nf6Generator {
           List<String> fieldNames = new ArrayList<>();
           if (types.size() == 1) {
             fieldNames.add(field.name);
-          } else
+          } else {
             for (int i = 1, C = types.size(); i <= C; i++) {
               fieldNames.add(field.name + i);
             }
-          out.println("alter table " + conf.tabPrefix + tName + "_" + field.name + " add "
+          }
+          
+          out.println("alter table " + conf.mPrefix + tName + "_" + field.name + " add "
               + formForeignKey(fieldNames, (Table) field.type) + conf.separator);
+          
           if (conf.genOperTables) {
             out.println("alter table " + conf.oPref + tName + "_" + field.name + " add "
                 + formForeignKey(fieldNames, (Table) field.type) + conf.separator);
@@ -277,7 +280,7 @@ public abstract class Nf6Generator {
     for (Field field : table.keys) {
       if (field.type instanceof Table) {
         List<Field> keys = ((Table) field.type).keys;
-        out.print("alter table " + conf.tabPrefix + table.name + " add foreign key (");
+        out.print("alter table " + conf.kPrefix + table.name + " add foreign key (");
         if (keys.size() == 1) {
           out.print(field.name);
         } else
@@ -285,7 +288,7 @@ public abstract class Nf6Generator {
             out.print(i == 0 ? "" : ", ");
             out.print(field.name + (i + 1));
           }
-        out.print(") references " + conf.tabPrefix + field.type.name + " (");
+        out.print(") references " + conf.kPrefix + field.type.name + " (");
         boolean first = true;
         for (Field key : keys) {
           out.print(first ? "" : ", ");
@@ -298,7 +301,7 @@ public abstract class Nf6Generator {
   }
 
   private void printKeyTable(Table table, PrintStream out) {
-    out.println("create table " + conf.tabPrefix + table.name + " (");
+    out.println("create table " + conf.kPrefix + table.name + " (");
     List<String> keyNames = new ArrayList<>();
 
     for (Field field : table.keys) {
@@ -413,7 +416,7 @@ public abstract class Nf6Generator {
 
     List<String> keyFields = new ArrayList<>();
 
-    out.println("create table " + conf.tabPrefix + field.table.name + "_" + field.name + " (");
+    out.println("create table " + conf.mPrefix + field.table.name + "_" + field.name + " (");
 
     printKeyFields(field, out, keyFields);
 
@@ -469,7 +472,7 @@ public abstract class Nf6Generator {
       sb.append(key).append(", ");
     }
     sb.setLength(sb.length() - 2);
-    sb.append(") references ").append(conf.tabPrefix).append(table.name).append(" (");
+    sb.append(") references ").append(conf.kPrefix).append(table.name).append(" (");
     for (Field field : table.keys) {
       List<SimpleType> types = new ArrayList<>();
       field.type.assignSimpleTypes(types);
@@ -614,7 +617,7 @@ public abstract class Nf6Generator {
     for (Table table : sg.stru.tables.values()) {
       for (Field field : table.fields) {
         checkIdLength(conf.vPrefix + table.name + '_' + field.name);
-        checkIdLength(conf.tabPrefix + table.name + '_' + field.name);
+        checkIdLength(conf.mPrefix + table.name + '_' + field.name);
         checkIdLength(conf._p_ + table.name + '_' + field.name);
       }
     }
@@ -1298,10 +1301,10 @@ public abstract class Nf6Generator {
     v.println("public interface " + v.className + " {");
 
     for (Table table : sortTablesByName(sg.stru.tables.values())) {
-      t.println("  String " + table.name + " = \"" + conf.tabPrefix + table.name + "\";");
+      t.println("  String " + table.name + " = \"" + conf.mPrefix + table.name + "\";");
       v.println("  String " + table.name + " = \"" + conf.vPrefix + table.name + "\";");
       for (Field field : sortFieldsByName(table.fields)) {
-        t.println("  String " + table.name + "_" + field.name + " = \"" + conf.tabPrefix
+        t.println("  String " + table.name + "_" + field.name + " = \"" + conf.mPrefix
             + table.name + "_" + field.name + "\";");
         v.println("  String " + table.name + "_" + field.name + " = \"" + conf.vPrefix + table.name
             + "_" + field.name + "\";");
@@ -1421,7 +1424,7 @@ public abstract class Nf6Generator {
   }
 
   private void printTableComments(PrintStream out, Table table) {
-    String tableName = conf.tabPrefix + table.name;
+    String tableName = conf.mPrefix + table.name;
     {
       String comment = sg.stru.tableComment.get(table.name);
       if (def(comment)) {
@@ -1437,7 +1440,7 @@ public abstract class Nf6Generator {
   }
 
   private void printFieldComments(PrintStream out, Table table) {
-    String tableName = conf.tabPrefix + table.name;
+    String tableName = conf.mPrefix + table.name;
     for (Field field : table.fields) {
       String fieldTableName = tableName + "_" + field.name;
       {

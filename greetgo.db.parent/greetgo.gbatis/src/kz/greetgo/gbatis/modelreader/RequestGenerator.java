@@ -250,12 +250,12 @@ public class RequestGenerator {
       }
     }
     
-    if (!tableName.startsWith(conf.tabPrefix)) {
+    if (!tableName.startsWith(conf.mPrefix)) {
       throw new RequestGeneratorException("Table " + tableName + " is not started with "
-          + conf.tabPrefix);
+          + conf.mPrefix);
     }
     
-    Table table = stru.tables.get(tableName.substring(conf.tabPrefix.length()));
+    Table table = stru.tables.get(tableName.substring(conf.mPrefix.length()));
     
     if (table == null) {
       throw new RequestGeneratorException("No table " + tableName);
@@ -263,7 +263,7 @@ public class RequestGenerator {
     
     if (name == null || name.trim().length() == 0) {
       name = tableName;
-      name = name.substring(conf.tabPrefix.length());
+      name = name.substring(conf.mPrefix.length());
       name = conf.withPrefix + name;
     }
     

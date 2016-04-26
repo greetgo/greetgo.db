@@ -26,7 +26,7 @@ public class ModelReaderTest {
   public void setup() throws Exception {
     conf = new Conf();
     conf.separator = ";;";
-    conf.tabPrefix = "m_";
+    conf.mPrefix = "m_";
     conf.seqPrefix = "s_";
     conf.vPrefix = "v_";
     conf.withPrefix = "x_";

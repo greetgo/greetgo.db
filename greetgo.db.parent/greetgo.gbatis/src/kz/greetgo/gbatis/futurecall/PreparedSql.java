@@ -78,7 +78,7 @@ class PreparedSql {
   
   private String createWithSql(WithView withView) {
     
-    String tableName = withView.table.substring(conf.tabPrefix.length());
+    String tableName = withView.table.substring(conf.mPrefix.length());
     Table table = stru.tables.get(tableName);
     if (table == null) throw new IllegalArgumentException("No table " + tableName);
     
@@ -143,7 +143,7 @@ class PreparedSql {
       }
       
       sb.append(" order by y.").append(conf.ts).append(" desc) as rn__ from ").append(conf.tsTab)
-        .append(", ").append(conf.tabPrefix).append(field.table.name).append("_").append(field.name)
+        .append(", ").append(conf.mPrefix).append(field.table.name).append("_").append(field.name)
         .append(" y where y.").append(conf.ts).append(" <= ").append(conf.tsTab).append('.').append(conf.ts);
       
       sb.append(" ) yy where yy.rn__ = 1)");

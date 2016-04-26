@@ -34,7 +34,7 @@ public class ViewFormerMax extends ViewFormerAbstract {
     
     final String fieldTableTS;
     if (time == null || time.trim().length() == 0) {
-      fieldTableTS = conf.tabPrefix + field.table.name + "_" + field.name;
+      fieldTableTS = conf.mPrefix + field.table.name + "_" + field.name;
     } else {
       int idx = time.indexOf('.');
       if (idx < 0) {
@@ -44,7 +44,7 @@ public class ViewFormerMax extends ViewFormerAbstract {
         T = time.substring(0, idx);
         TF = time;
       }
-      fieldTableTS = "(select x.* from " + conf.tabPrefix + field.table.name + "_" + field.name
+      fieldTableTS = "(select x.* from " + conf.mPrefix + field.table.name + "_" + field.name
           + " x, " + T + " where x." + conf.ts + " <= " + TF + ')';
     }
     
@@ -64,10 +64,10 @@ public class ViewFormerMax extends ViewFormerAbstract {
     sb.append(s0 + "select" + nl);
     {
       boolean first = true;
-      for (String tname : keyNames) {
+      for (String tName : keyNames) {
         String k = first ? " " :",";
         first = false;
-        sb.append(s1 + k + "aa." + tname + nl);
+        sb.append(s1 + k + "aa." + tName + nl);
       }
     }
     for (String name : names) {
@@ -75,11 +75,11 @@ public class ViewFormerMax extends ViewFormerAbstract {
     }
     sb.append(s0 + "from (" + nl);
     sb.append(s1 + "select" + nl);
-    for (String tname : keyNames) {
-      sb.append(s2 + "a." + tname + "," + nl);
+    for (String tName : keyNames) {
+      sb.append(s2 + "a." + tName + "," + nl);
     }
     sb.append(s2 + "max(b." + conf.ts + ") ts" + nl);
-    sb.append(s1 + "from " + conf.tabPrefix + field.table.name + " a" + nl);
+    sb.append(s1 + "from " + conf.kPrefix + field.table.name + " a" + nl);
     sb.append(s1 + "left join " + fieldTableTS + " b" + nl);
     for (int i = 0, C = keyNames.size(); i < C; i++) {
       sb.append(s1).append(i == 0 ? "on" :"and");
@@ -93,7 +93,7 @@ public class ViewFormerMax extends ViewFormerAbstract {
       String k = i == 0 ? " " :",";
       sb.append(s2 + k + "a." + keyNames.get(i) + nl);
     }
-    sb.append(s0 + ") aa left join " + conf.tabPrefix + field.table.name + "_" + field.name + " bb"
+    sb.append(s0 + ") aa left join " + conf.mPrefix + field.table.name + "_" + field.name + " bb"
         + nl);
     for (int i = 0, C = keyNames.size(); i < C; i++) {
       String tname = keyNames.get(i);
@@ -128,8 +128,8 @@ public class ViewFormerMax extends ViewFormerAbstract {
     List<String> keyNames = table.keyNames();
     
     sb.append(s0 + "select" + nl);
-    for (String fname : keyNames) {
-      sb.append(s1 + " x." + fname + ',' + nl);
+    for (String fName : keyNames) {
+      sb.append(s1 + " x." + fName + ',' + nl);
     }
     sb.append(s1 + " x." + conf.cre + nl);
     {
@@ -148,7 +148,7 @@ public class ViewFormerMax extends ViewFormerAbstract {
     }
     {
       sb.append(s0 + "from ");
-      String t = conf.tabPrefix + table.name;
+      String t = conf.kPrefix + table.name;
       if (T == null) {
         sb.append(t);
       } else {

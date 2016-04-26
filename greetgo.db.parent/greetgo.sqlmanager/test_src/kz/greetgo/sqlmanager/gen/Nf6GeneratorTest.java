@@ -37,6 +37,7 @@ public class Nf6GeneratorTest {
     new File(buildDir).mkdirs();
 
     Conf conf = new Conf();
+    conf.kPrefix = "k_";
     conf.genOperTables = true;
     conf.userIdFieldType = userIdFieldType;
     conf.useNf6 = useNf6;
@@ -82,6 +83,11 @@ public class Nf6GeneratorTest {
     postgres(false, UserIdFieldType.Str);
   }
 
+  @Test
+  public void oracle_noNf6() throws Exception {
+    oracle(false, UserIdFieldType.Str);
+  }
+
   private static final String GBATIS_MODULE_NAME = "greetgo.gbatis";
 
   private String srcOutDir() {
@@ -104,7 +110,7 @@ public class Nf6GeneratorTest {
   }
 
   @Test(dataProvider = "dataProvider")
-  public void oracle(UserIdFieldType userIdFieldType) throws Exception {
+  public void oracle(boolean useNf6, UserIdFieldType userIdFieldType) throws Exception {
     String buildDir = buildDir();
 
     URL url = getClass().getResource("example2.nf3");
@@ -118,6 +124,7 @@ public class Nf6GeneratorTest {
     conf.genOperTables = true;
     conf.oracleInsertDupValues = true;
     conf.userIdFieldType = userIdFieldType;
+    conf.useNf6 = useNf6;
 
     Nf6Generator nf6generator = new Nf6GeneratorOracle(conf, sg);
     nf6generator.libType = LibType.GBATIS;
@@ -145,6 +152,12 @@ public class Nf6GeneratorTest {
 
     nf6generator.generateJavaCodeForPostgres = false;
     nf6generator.generateJavaCodeForOracle = true;
+    if (!useNf6) {
+      nf6generator.generateDao = false;
+      nf6generator.generateVT = false;
+      nf6generator.generateChanges = true;
+      nf6generator.changeImplementInfo = "kz.greetgo.gbatis.util.HasIdForTests;getId_forTests";
+    }
     nf6generator.generateJava();
   }
 }

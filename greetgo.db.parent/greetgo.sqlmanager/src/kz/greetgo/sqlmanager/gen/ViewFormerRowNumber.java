@@ -53,8 +53,8 @@ public class ViewFormerRowNumber extends ViewFormerMax {
         }
       }
     }
-    String tname = conf.tabPrefix + field.table.name + "_" + field.name;
-    sb.append(" order by m." + conf.ts + " desc ) as rn__ from " + tname + " m" + nl);
+    String tName = conf.mPrefix + field.table.name + "_" + field.name;
+    sb.append(" order by m." + conf.ts + " desc ) as rn__ from " + tName + " m" + nl);
     
     if (time != null && time.trim().length() > 0) {
       String T = "", TF = "";//T - table, TF - table.field

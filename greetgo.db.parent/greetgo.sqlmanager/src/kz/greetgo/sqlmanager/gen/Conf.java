@@ -16,9 +16,13 @@ public class Conf {
    */
   public String separator = ";;";
   /**
-   * Префикс таблицы
+   * Префикс ключевой таблицы
    */
-  public String tabPrefix = "m_";
+  public String kPrefix = "m_";
+  /**
+   * Префикс таблицы памяти
+   */
+  public String mPrefix = "m_";
   /**
    * Префикс секвенса (sequence)
    */
