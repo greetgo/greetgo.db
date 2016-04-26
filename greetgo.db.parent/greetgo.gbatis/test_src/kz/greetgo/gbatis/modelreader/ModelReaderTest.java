@@ -31,7 +31,7 @@ public class ModelReaderTest {
     conf.vPrefix = "v_";
     conf.withPrefix = "x_";
     conf.ts = "ts";
-    conf.cre = "createdAt";
+    conf.createdAt = "createdAt";
     conf.bigQuote = "big_quote";
     conf._ins_ = "ins_";
     conf._p_ = "p_";

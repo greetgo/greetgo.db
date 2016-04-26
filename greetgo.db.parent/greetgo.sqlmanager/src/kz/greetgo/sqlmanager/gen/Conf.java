@@ -6,31 +6,36 @@ package kz.greetgo.sqlmanager.gen;
  * @author pompei
  */
 public class Conf {
+
   /**
-   * Символы-сепараторы SQL-команд
-   * <p/>
+   * <p>Символы-сепараторы SQL-команд</p>
    * <p>
    * <i>При генераии SQL-файла, содержащего несколько SQL-команд, используется эта строка для
    * разделения SQL-команд между собой</i>
    * </p>
    */
   public String separator = ";;";
+
   /**
    * Префикс ключевой таблицы
    */
   public String kPrefix = "m_";
+
   /**
    * Префикс таблицы памяти
    */
   public String mPrefix = "m_";
+
   /**
    * Префикс секвенса (sequence)
    */
   public String seqPrefix = "s_";
+
   /**
    * Префикс вьюшки
    */
   public String vPrefix = "v_";
+
   /**
    * Префикс оперативной таблицы
    */
@@ -43,6 +48,7 @@ public class Conf {
    * </p>
    */
   public String withPrefix = "x_";
+
   /**
    * Имя поля для хранения момента вставки записи.
    * <p>
@@ -50,14 +56,17 @@ public class Conf {
    * </p>
    */
   public String ts = "ts";
+
   /**
    * <i>(Не используется)</i>
    */
   public String tsTab = "ts";
+
   /**
    * Имя поля для хранения момента создания записи
    */
-  public String cre = "createdAt";
+  public String createdAt = "createdAt";
+
   /**
    * Строка-кавычка для формирования реализации хранимой процедуры/функции.
    * <p/>
@@ -66,18 +75,22 @@ public class Conf {
    * </p>
    */
   public String bigQuote = "big_quote";
+
   /**
    * <i>(Не используется)</i>
    */
   public String _ins_ = "ins_";
+
   /**
    * Префикс для названия хранимой процедуры
    */
   public String _p_ = "p_";
+
   /**
    * <i>(Не используется)</i>
    */
   public String _value_ = "__value__";
+
   /**
    * Префикс интерфейсов, генерируемых для библиотеки-gbatis, через которые будет формироваться
    * базовое взаимодействие с БД
@@ -87,6 +100,7 @@ public class Conf {
    * </p>
    */
   public String daoSuffix = "Dao";
+
   /**
    * Ограничитель, на максимальную длину имен таблиц, вьюшек и хранимых процедур/функций.
    * <p/>
@@ -103,10 +117,12 @@ public class Conf {
    * </p>
    */
   public String javaGenDir;
+
   /**
    * Префикс пакетов классов модели
    */
   public String modelPackage;
+
   /**
    * Директория, куда генерируются исходники java-классов
    * <p>
@@ -118,6 +134,7 @@ public class Conf {
    * </p>
    */
   public String javaGenStruDir;
+
   /**
    * Префикс пакетов классов модели
    * <p>
@@ -127,10 +144,12 @@ public class Conf {
    * </p>
    */
   public String modelStruPackage;
+
   /**
    * Префикс пакетов Dao-классов
    */
   public String daoPackage;
+
   /**
    * Базовый класс классов модели.
    * <p>
@@ -138,6 +157,7 @@ public class Conf {
    * </p>
    */
   public String modelStruExtends;
+
   /**
    * Интерфейс, которые реализуют все классы модели
    * <p>
@@ -196,22 +216,22 @@ public class Conf {
   public String set_changer = "set_changer";
 
   /**
-   * Поле центральной таблицы m_ - хранит ИД того, кто создаёт сущность
+   * Поле ключевой таблицы - хранит ИД того, кто создаёт сущность
    */
   public String createdBy = "createdBy";
 
   /**
-   * Поле таблицы m_ с атрибутом - хранит ИД того, кто меняет значение поля
+   * Поле хронологической таблицы с атрибутом - хранит ИД того, кто меняет значение поля
    */
   public String modi = "modi";
 
   /**
-   * Поле таблицы o_ - хранит ИД того, что формирует новое значение поля
+   * Поле оперативной таблицы - хранит ИД того, что формирует новое значение поля
    */
   public String insertedBy = "inserted_by";
 
   /**
-   * Поле таблицы o_ - хранит ИД того, что изменяет значение поля
+   * Поле оперативной таблицы - хранит ИД того, что изменяет значение поля
    */
   public String lastModifiedBy = "last_modified_by";
 

@@ -131,7 +131,7 @@ public class ViewFormerMax extends ViewFormerAbstract {
     for (String fName : keyNames) {
       sb.append(s1 + " x." + fName + ',' + nl);
     }
-    sb.append(s1 + " x." + conf.cre + nl);
+    sb.append(s1 + " x." + conf.createdAt + nl);
     {
       int i = 1;
       for (Field field : table.fields) {
@@ -152,7 +152,7 @@ public class ViewFormerMax extends ViewFormerAbstract {
       if (T == null) {
         sb.append(t);
       } else {
-        sb.append("(select u.* from " + t + " u, " + T + " where u." + conf.cre + " <= " + TF + ")");
+        sb.append("(select u.* from " + t + " u, " + T + " where u." + conf.createdAt + " <= " + TF + ")");
       }
       sb.append(" x" + nl);
     }

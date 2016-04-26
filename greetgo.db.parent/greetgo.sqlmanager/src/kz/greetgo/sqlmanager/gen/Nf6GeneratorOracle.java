@@ -204,7 +204,7 @@ public class Nf6GeneratorOracle extends Nf6Generator {
     out.println(conf.separator);
     out.println();
 
-    if (conf.userIdFieldType != null) {
+    if (conf.userIdFieldType != null && conf.get_changer != null && conf.set_changer != null) {
       for (String sql : Changer.forOracle(conf.userIdFieldType)) {
         sql = sql.replaceAll("__GET_CHANGER__", conf.get_changer);
         sql = sql.replaceAll("__SET_CHANGER__", conf.set_changer);

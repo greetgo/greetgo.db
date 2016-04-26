@@ -147,7 +147,7 @@ public class Nf6GeneratorPostgres extends Nf6Generator {
       printInsertSql(out, tname, field, conf.modi);
       out.println("  end if ; ");
     }
-    
+
     if (conf.genOperTables) {
       out.println();
       String oname = conf.oPref + field.table.name + "_" + field.name;
@@ -177,7 +177,7 @@ public class Nf6GeneratorPostgres extends Nf6Generator {
 
     out.println();
 
-    if (conf.userIdFieldType != null) {
+    if (conf.userIdFieldType != null && conf.get_changer != null && conf.set_changer != null) {
       for (String sql : Changer.forPostgres(conf.userIdFieldType)) {
         sql = sql.replaceAll("__GET_CHANGER__", conf.get_changer);
         sql = sql.replaceAll("__SET_CHANGER__", conf.set_changer);

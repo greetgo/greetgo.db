@@ -85,7 +85,7 @@ class PreparedSql {
     StringBuilder select = new StringBuilder();
     StringBuilder from = new StringBuilder();
     
-    select.append("select x.").append(conf.cre);
+    select.append("select x.").append(conf.createdAt);
     for (FieldDb fieldInfo : table.dbKeys()) {
       select.append(", x.").append(fieldInfo.name);
     }
@@ -115,7 +115,7 @@ class PreparedSql {
     
     select.append(from);
     if (at != null) {
-      select.append(" where x.").append(conf.cre).append(" <= ").append(conf.tsTab).append(".").append(conf.ts);
+      select.append(" where x.").append(conf.createdAt).append(" <= ").append(conf.tsTab).append(".").append(conf.ts);
     }
     return select.toString();
   }

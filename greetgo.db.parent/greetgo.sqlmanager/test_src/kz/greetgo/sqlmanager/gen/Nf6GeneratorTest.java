@@ -41,6 +41,16 @@ public class Nf6GeneratorTest {
     conf.genOperTables = true;
     conf.userIdFieldType = userIdFieldType;
     conf.useNf6 = useNf6;
+    if (!useNf6) {
+      conf.createdAt = null;
+      conf.createdBy = null;
+      conf.insertedAt = null;
+      conf.lastModifiedAt = null;
+      conf.insertedBy = null;
+      conf.lastModifiedBy = null;
+      conf.get_changer = null;
+      conf.set_changer = null;
+    }
 
     Nf6Generator nf6generator = new Nf6GeneratorPostgres(conf, sg);
     nf6generator.libType = LibType.GBATIS;
@@ -124,6 +134,7 @@ public class Nf6GeneratorTest {
     conf.genOperTables = true;
     conf.oracleInsertDupValues = true;
     conf.userIdFieldType = userIdFieldType;
+    conf.kPrefix = "k_";
     conf.useNf6 = useNf6;
 
     Nf6Generator nf6generator = new Nf6GeneratorOracle(conf, sg);

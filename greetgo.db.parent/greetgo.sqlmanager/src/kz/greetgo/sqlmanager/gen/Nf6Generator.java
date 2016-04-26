@@ -195,15 +195,13 @@ public abstract class Nf6Generator {
    */
   public void printSqls(PrintStream out) {
 
-    printPrepareSqls(out);
-
     List<String> tNames = getTNames();
 
     for (String name : tNames) {
       Table table = sg.stru.tables.get(name);
       printKeyTable(table, out);
       for (Field field : table.fields) {
-        printFieldsTable(field, out);
+        if (conf.useNf6) printFieldsTable(field, out);
         if (conf.genOperTables) {
           printFieldsOperTable(field, out);
         }
@@ -241,10 +239,12 @@ public abstract class Nf6Generator {
               fieldNames.add(field.name + i);
             }
           }
-          
-          out.println("alter table " + conf.mPrefix + tName + "_" + field.name + " add "
-              + formForeignKey(fieldNames, (Table) field.type) + conf.separator);
-          
+
+          if (conf.useNf6) {
+            out.println("alter table " + conf.mPrefix + tName + "_" + field.name + " add "
+                + formForeignKey(fieldNames, (Table) field.type) + conf.separator);
+          }
+
           if (conf.genOperTables) {
             out.println("alter table " + conf.oPref + tName + "_" + field.name + " add "
                 + formForeignKey(fieldNames, (Table) field.type) + conf.separator);
@@ -254,7 +254,7 @@ public abstract class Nf6Generator {
     }
     out.println();
 
-    printViews(tNames, out);
+    if (conf.useNf6) printViews(tNames, out);
   }
 
   /**
@@ -263,6 +263,8 @@ public abstract class Nf6Generator {
    * @param out место вывода SQL-ей
    */
   public void printPrograms(PrintStream out) {
+    printPrepareSqls(out);
+
     List<String> tNames = getTNames();
     printInsertFunctions(tNames, out);
   }
@@ -321,8 +323,8 @@ public abstract class Nf6Generator {
       }
     }
 
-    if (conf.cre != null) {
-      out.println("  " + conf.cre + ' ' + dialect().timestamp() + " default "
+    if (conf.createdAt != null) {
+      out.println("  " + conf.createdAt + ' ' + dialect().timestamp() + " default "
           + dialect().current_timestamp() + " not null,");
     }
     if (conf.userIdFieldType != null && conf.createdBy != null) {
@@ -1435,7 +1437,7 @@ public abstract class Nf6Generator {
       out.println("comment on column " + tableName + '.' + fi.name
           + " is 'Ключевое поле материнской таблицы'" + conf.separator);
     }
-    out.println("comment on column " + tableName + '.' + conf.cre + " is 'Момент создания записи'"
+    out.println("comment on column " + tableName + '.' + conf.createdAt + " is 'Момент создания записи'"
         + conf.separator);
   }
 
