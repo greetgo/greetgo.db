@@ -22,6 +22,7 @@ import static kz.greetgo.util.ServerUtil.firstUpper;
  *
  * @author pompei
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class Nf6Generator {
 
   /**
@@ -39,7 +40,9 @@ public abstract class Nf6Generator {
   public static final String MYBATIS_OPTIONS = "org.apache.ibatis.annotations.Options";
   public static final String MYBATIS_SELECT = "org.apache.ibatis.annotations.Select";
   public static final String MYBATIS_UPDATE = "org.apache.ibatis.annotations.Update";
+  @SuppressWarnings("unused")
   public static final String MYBATIS_DELETE = "org.apache.ibatis.annotations.Delete";
+  @SuppressWarnings("unused")
   public static final String MYBATIS_INSERT = "org.apache.ibatis.annotations.Insert";
   public static final String MYBATIS_PARAM = "org.apache.ibatis.annotations.Param";
 
@@ -63,7 +66,7 @@ public abstract class Nf6Generator {
    *
    * @return Получает {@link SqlDialect}
    */
-  protected abstract SqlDialect sqld();
+  protected abstract SqlDialect dialect();
 
   /**
    * Содежрит конфигурацию генератора
@@ -103,7 +106,7 @@ public abstract class Nf6Generator {
   public void printHistToOperSqls(PrintStream out, String separator) {
     if (separator == null) separator = conf.separator;
 
-    List<String> tNames = getTnames();
+    List<String> tNames = getTNames();
 
     for (String tName : tNames) {
       Table table = sg.stru.tables.get(tName);
@@ -115,8 +118,8 @@ public abstract class Nf6Generator {
   }
 
   private void printHistToOperField(PrintStream out, Field field) {
-    String mname = conf.tabPrefix + field.table.name + "_" + field.name;
-    String oname = conf.oPref + field.table.name + "_" + field.name;
+    String mName = conf.tabPrefix + field.table.name + "_" + field.name;
+    String oName = conf.oPref + field.table.name + "_" + field.name;
 
     String ins = conf.insertedAt;
     String modi = conf.lastModifiedAt;
@@ -150,15 +153,15 @@ public abstract class Nf6Generator {
 
     String ts = conf.ts;
 
-    out.println("insert into " + oname + '(');
+    out.println("insert into " + oName + '(');
     out.println(copy);
     out.println(") select");
     out.println(copy);
     out.println("from");
     out.println('(');
-    out.println("  select distinct " + keys + " from " + mname);
+    out.println("  select distinct " + keys + " from " + mName);
     out.println("  " + minus());
-    out.println("  select " + keys + " from " + oname);
+    out.println("  select " + keys + " from " + oName);
     out.println(") x1");
     out.println("natural join");
     out.println('(');
@@ -167,7 +170,7 @@ public abstract class Nf6Generator {
     out.println(',');
     out.println("    row_number() over (partition by " + keys + " order by " + ts
         + " desc) as modi_nom");
-    out.println("  from " + mname);
+    out.println("  from " + mName);
     out.println(") x2");
     if (ins != null) {
       out.println("natural join");
@@ -176,7 +179,7 @@ public abstract class Nf6Generator {
       out.println("  select " + keys + ", " + ts + " as " + ins + ',');
       out.println("    row_number() over (partition by " + keys + " order by " + ts
           + " asc) as ins_nom");
-      out.println("  from " + mname);
+      out.println("  from " + mName);
       out.println(") x3");
     }
     out.println("where modi_nom = 1");
@@ -194,9 +197,9 @@ public abstract class Nf6Generator {
 
     printPrepareSqls(out);
 
-    List<String> tnames = getTnames();
+    List<String> tNames = getTNames();
 
-    for (String name : tnames) {
+    for (String name : tNames) {
       Table table = sg.stru.tables.get(name);
       printKeyTable(table, out);
       for (Field field : table.fields) {
@@ -208,7 +211,7 @@ public abstract class Nf6Generator {
       out.println();
     }
 
-    for (String name : tnames) {
+    for (String name : tNames) {
       Table table = sg.stru.tables.get(name);
       if (table.keys.size() == 1) {
         Type keyType = table.keys.get(0).type;
@@ -223,8 +226,8 @@ public abstract class Nf6Generator {
     }
 
     out.println();
-    for (String tname : tnames) {
-      Table table = sg.stru.tables.get(tname);
+    for (String tName : tNames) {
+      Table table = sg.stru.tables.get(tName);
       printPrimaryForeignKey(table, out);
       for (Field field : table.fields) {
         if (field.type instanceof Table) {
@@ -237,10 +240,10 @@ public abstract class Nf6Generator {
             for (int i = 1, C = types.size(); i <= C; i++) {
               fieldNames.add(field.name + i);
             }
-          out.println("alter table " + conf.tabPrefix + tname + "_" + field.name + " add "
+          out.println("alter table " + conf.tabPrefix + tName + "_" + field.name + " add "
               + formForeignKey(fieldNames, (Table) field.type) + conf.separator);
           if (conf.genOperTables) {
-            out.println("alter table " + conf.oPref + tname + "_" + field.name + " add "
+            out.println("alter table " + conf.oPref + tName + "_" + field.name + " add "
                 + formForeignKey(fieldNames, (Table) field.type) + conf.separator);
           }
         }
@@ -248,7 +251,7 @@ public abstract class Nf6Generator {
     }
     out.println();
 
-    printViews(tnames, out);
+    printViews(tNames, out);
   }
 
   /**
@@ -257,11 +260,11 @@ public abstract class Nf6Generator {
    * @param out место вывода SQL-ей
    */
   public void printPrograms(PrintStream out) {
-    List<String> tNames = getTnames();
+    List<String> tNames = getTNames();
     printInsertFunctions(tNames, out);
   }
 
-  private List<String> getTnames() {
+  private List<String> getTNames() {
     List<String> tNames = new ArrayList<>();
     tNames.addAll(sg.stru.tables.keySet());
     Collections.sort(tNames);
@@ -303,24 +306,24 @@ public abstract class Nf6Generator {
       field.type.assignSimpleTypes(types);
       if (types.size() == 0) throw new StruParseException("No key types for " + field.type);
       if (types.size() == 1) {
-        out.println("  " + field.name + ' ' + sqld().sqlType(types.get(0)) + " not null,");
+        out.println("  " + field.name + ' ' + dialect().sqlType(types.get(0)) + " not null,");
         keyNames.add(field.name);
       } else {
         int index = 1;
         for (SimpleType st : types) {
           String keyName = field.name + index++;
-          out.println("  " + keyName + ' ' + sqld().sqlType(st) + " not null,");
+          out.println("  " + keyName + ' ' + dialect().sqlType(st) + " not null,");
           keyNames.add(keyName);
         }
       }
     }
 
     if (conf.cre != null) {
-      out.println("  " + conf.cre + ' ' + sqld().timestamp() + " default "
-          + sqld().current_timestamp() + " not null,");
+      out.println("  " + conf.cre + ' ' + dialect().timestamp() + " default "
+          + dialect().current_timestamp() + " not null,");
     }
     if (conf.userIdFieldType != null && conf.createdBy != null) {
-      String type = sqld().userIdFieldType(conf.userIdFieldType, conf.userIdLength);
+      String type = dialect().userIdFieldType(conf.userIdFieldType, conf.userIdLength);
 
       out.println("  " + conf.createdBy + ' ' + type + ',');
     }
@@ -340,62 +343,25 @@ public abstract class Nf6Generator {
 
     out.println("create table " + conf.oPref + field.table.name + "_" + field.name + " (");
 
-    for (Field key : field.table.keys) {
-      List<SimpleType> types = new ArrayList<>();
-      key.type.assignSimpleTypes(types);
+    printKeyFields(field, out, keyFields);
 
-      if (types.size() == 0) throw new StruParseException("No simple type for " + key.type.name);
-
-      if (types.size() == 1) {
-        String sqlType = sqld().sqlType(types.get(0));
-        out.println("  " + key.name + " " + sqlType + " not null,");
-        keyFields.add(key.name);
-      } else {
-        int i = 1;
-        for (SimpleType stype : types) {
-          String name = key.name + i++;
-          keyFields.add(name);
-          String sqlType = sqld().sqlType(stype);
-          out.println("  " + name + " " + sqlType + " not null,");
-        }
-      }
-    }
-
-    {
-      List<SimpleType> types = new ArrayList<>();
-      field.type.assignSimpleTypes(types);
-
-      if (types.size() == 0) throw new StruParseException("No simple type for field "
-          + field.table.name + "." + field.name);
-
-      if (types.size() == 1) {
-        String sqlType = sqld().sqlType(types.get(0));
-        out.println("  " + field.name + " " + sqlType + ",");
-      } else {
-        int i = 1;
-        for (SimpleType stype : types) {
-          String name = field.name + i++;
-          String sqlType = sqld().sqlType(stype);
-          out.println("  " + name + " " + sqlType + ",");
-        }
-      }
-    }
+    printDataFields(field, out);
 
     if (conf.insertedAt != null) {
-      out.println("  " + conf.insertedAt + ' ' + sqld().timestamp() + " default "
-          + sqld().current_timestamp() + " not null,");
+      out.println("  " + conf.insertedAt + ' ' + dialect().timestamp() + " default "
+          + dialect().current_timestamp() + " not null,");
     }
     if (conf.lastModifiedAt != null) {
-      out.println("  " + conf.lastModifiedAt + ' ' + sqld().timestamp() + " default "
-          + sqld().current_timestamp() + " not null,");
+      out.println("  " + conf.lastModifiedAt + ' ' + dialect().timestamp() + " default "
+          + dialect().current_timestamp() + " not null,");
     }
     if (conf.userIdFieldType != null && conf.insertedBy != null) {
-      String type = sqld().userIdFieldType(conf.userIdFieldType, conf.userIdLength);
+      String type = dialect().userIdFieldType(conf.userIdFieldType, conf.userIdLength);
 
       out.println("  " + conf.insertedBy + ' ' + type + ',');
     }
     if (conf.userIdFieldType != null && conf.lastModifiedBy != null) {
-      String type = sqld().userIdFieldType(conf.userIdFieldType, conf.userIdLength);
+      String type = dialect().userIdFieldType(conf.userIdFieldType, conf.userIdLength);
 
       out.println("  " + conf.lastModifiedBy + ' ' + type + ',');
     }
@@ -420,12 +386,7 @@ public abstract class Nf6Generator {
     out.println(")" + conf.separator);
   }
 
-  private void printFieldsTable(Field field, PrintStream out) {
-
-    List<String> keyFields = new ArrayList<>();
-
-    out.println("create table " + conf.tabPrefix + field.table.name + "_" + field.name + " (");
-
+  private void printKeyFields(Field field, PrintStream out, List<String> keyFields) {
     for (Field key : field.table.keys) {
       List<SimpleType> types = new ArrayList<>();
       key.type.assignSimpleTypes(types);
@@ -433,48 +394,39 @@ public abstract class Nf6Generator {
       if (types.size() == 0) throw new StruParseException("No simple type for " + key.type.name);
 
       if (types.size() == 1) {
-        String sqlType = sqld().sqlType(types.get(0));
+        String sqlType = dialect().sqlType(types.get(0));
         out.println("  " + key.name + " " + sqlType + " not null,");
         keyFields.add(key.name);
       } else {
         int i = 1;
-        for (SimpleType stype : types) {
+        for (SimpleType sType : types) {
           String name = key.name + i++;
           keyFields.add(name);
-          String sqlType = sqld().sqlType(stype);
+          String sqlType = dialect().sqlType(sType);
           out.println("  " + name + " " + sqlType + " not null,");
         }
       }
     }
+  }
 
-    out.println("  " + conf.ts + " " + sqld().timestamp() + " default "
-        + sqld().current_timestamp() + " not null,");
+  private void printFieldsTable(Field field, PrintStream out) {
+
+    List<String> keyFields = new ArrayList<>();
+
+    out.println("create table " + conf.tabPrefix + field.table.name + "_" + field.name + " (");
+
+    printKeyFields(field, out, keyFields);
+
+    out.println("  " + conf.ts + " " + dialect().timestamp() + " default "
+        + dialect().current_timestamp() + " not null,");
 
     if (conf.userIdFieldType != null && conf.modi != null) {
-      String type = sqld().userIdFieldType(conf.userIdFieldType, conf.userIdLength);
+      String type = dialect().userIdFieldType(conf.userIdFieldType, conf.userIdLength);
 
       out.println("  " + conf.modi + ' ' + type + ',');
     }
 
-    {
-      List<SimpleType> types = new ArrayList<>();
-      field.type.assignSimpleTypes(types);
-
-      if (types.size() == 0) throw new StruParseException("No simple type for field "
-          + field.table.name + "." + field.name);
-
-      if (types.size() == 1) {
-        String sqlType = sqld().sqlType(types.get(0));
-        out.println("  " + field.name + " " + sqlType + ",");
-      } else {
-        int i = 1;
-        for (SimpleType stype : types) {
-          String name = field.name + i++;
-          String sqlType = sqld().sqlType(stype);
-          out.println("  " + name + " " + sqlType + ",");
-        }
-      }
-    }
+    printDataFields(field, out);
 
     {
       out.print("  primary key (");
@@ -488,6 +440,26 @@ public abstract class Nf6Generator {
     }
 
     out.println(")" + conf.separator);
+  }
+
+  private void printDataFields(Field field, PrintStream out) {
+    List<SimpleType> types = new ArrayList<>();
+    field.type.assignSimpleTypes(types);
+
+    if (types.size() == 0) throw new StruParseException("No simple type for field "
+        + field.table.name + "." + field.name);
+
+    if (types.size() == 1) {
+      String sqlType = dialect().sqlType(types.get(0));
+      out.println("  " + field.name + " " + sqlType + ",");
+    } else {
+      int i = 1;
+      for (SimpleType sType : types) {
+        String name = field.name + i++;
+        String sqlType = dialect().sqlType(sType);
+        out.println("  " + name + " " + sqlType + ",");
+      }
+    }
   }
 
   private String formForeignKey(List<String> fieldNames, Table table) {
@@ -505,7 +477,7 @@ public abstract class Nf6Generator {
         sb.append(field.name).append(", ");
       } else {
         for (int i = 1, C = types.size(); i <= C; i++) {
-          sb.append(field.name + i).append(", ");
+          sb.append(field.name).append(i).append(", ");
         }
       }
     }
@@ -514,9 +486,9 @@ public abstract class Nf6Generator {
     return sb.toString();
   }
 
-  private void printViews(List<String> tnames, PrintStream out) {
-    for (String tname : tnames) {
-      Table table = sg.stru.tables.get(tname);
+  private void printViews(List<String> tNames, PrintStream out) {
+    for (String tName : tNames) {
+      Table table = sg.stru.tables.get(tName);
       for (Field field : table.fields) {
         if (conf.genOperTables) {
           printFieldViewToOper(out, field);
@@ -632,7 +604,7 @@ public abstract class Nf6Generator {
       }
     }
 
-    generateIfaces();
+    generateInterfaces();
   }
 
 
@@ -905,6 +877,7 @@ public abstract class Nf6Generator {
     ret.generateTo(conf.javaGenStruDir);
   }
 
+  @SuppressWarnings({"CanBeFinal", "unused"})
   class DaoClasses {
     ClassOuter commonDao;
     ClassOuter postgres;
@@ -917,6 +890,7 @@ public abstract class Nf6Generator {
     }
   }
 
+  @SuppressWarnings("UnusedReturnValue")
   private DaoClasses generateDao(Table table, ClassOuter java, ClassOuter fieldsClass) {
 
     ClassOuter comm = new ClassOuter(conf.daoPackage + table.subpackage(), "", table.name
@@ -980,6 +954,7 @@ public abstract class Nf6Generator {
     return new DaoClasses(comm, postgres, oracle);
   }
 
+  @SuppressWarnings("UnusedParameters")
   private void generateDaoTableLoad(ClassOuter comm, Table table, ClassOuter java,
                                     ClassOuter fieldsClass) {
 
@@ -998,13 +973,7 @@ public abstract class Nf6Generator {
 
       comm.print("  " + comm._(java.name()) + " load(");
       {
-        boolean first = true;
-        for (FieldDb fi : keyInfo) {
-          comm.print(first ? "" : ", ");
-          first = false;
-          comm.print("@" + annPrm(comm) + "(\"" + fi.name + "\")");
-          comm.print(comm._(fi.javaType.javaType()) + " " + fi.name);
-        }
+        printKeysAsMethodArguments(comm, keyInfo);
       }
       comm.println(");");
     }
@@ -1029,16 +998,20 @@ public abstract class Nf6Generator {
       comm.println("\")");
 
       comm.print("  " + comm._(LIST) + "<" + comm._(java.name()) + "> loadList(");
-      {
-        boolean first = true;
-        for (FieldDb fi : keyInfo) {
-          comm.print(first ? "" : ", ");
-          first = false;
-          comm.print("@" + annPrm(comm) + "(\"" + fi.name + "\")");
-          comm.print(comm._(fi.javaType.javaType()) + " " + fi.name);
-        }
-      }
+
+      printKeysAsMethodArguments(comm, keyInfo);
+
       comm.println(");");
+    }
+  }
+
+  private void printKeysAsMethodArguments(ClassOuter comm, List<FieldDb> keyInfo) {
+    boolean first = true;
+    for (FieldDb fi : keyInfo) {
+      comm.print(first ? "" : ", ");
+      first = false;
+      comm.print("@" + annPrm(comm) + "(\"" + fi.name + "\")");
+      comm.print(comm._(fi.javaType.javaType()) + " " + fi.name);
     }
   }
 
@@ -1050,6 +1023,7 @@ public abstract class Nf6Generator {
     return libType == LibType.MYBATIS ? comm._(MYBATIS_PARAM) : comm._(GBATIS_PRM);
   }
 
+  @SuppressWarnings("UnusedParameters")
   private void generateDaoTableInserts(ClassOuter comm, Table table, ClassOuter java,
                                        ClassOuter fieldsClass) {
 
@@ -1093,16 +1067,9 @@ public abstract class Nf6Generator {
       comm.println(")}\")");
       comm.print("  void add(");
 
-      {
-        boolean first = true;
-        for (FieldDb fi : keyInfo) {
-          comm.print(first ? "" : ", ");
-          first = false;
 
-          comm.print("@" + annPrm(comm) + "(\"" + fi.name + "\")");
-          comm.print(comm._(fi.javaType.javaType()) + " " + fi.name);
-        }
-      }
+      printKeysAsMethodArguments(comm, keyInfo);
+
       comm.println(");");
     }
   }
@@ -1111,6 +1078,7 @@ public abstract class Nf6Generator {
     return libType == LibType.MYBATIS ? comm._(MYBATIS_UPDATE) : comm._(GBATIS_CALL);
   }
 
+  @SuppressWarnings("UnusedParameters")
   private void generateDaoFieldInserts(ClassOuter comm, Field field, ClassOuter java,
                                        ClassOuter fieldsClass) {
 
@@ -1133,6 +1101,7 @@ public abstract class Nf6Generator {
     }
   }
 
+  @SuppressWarnings("UnusedParameters")
   private void setFieldWithNow(ClassOuter comm, Field field, List<FieldDb> keyInfo,
                                List<FieldDb> all) {
 
@@ -1179,16 +1148,7 @@ public abstract class Nf6Generator {
 
     comm.print(" (");
     {
-      boolean first = true;
-      for (FieldDb fi : all) {
-        comm.print(first ? "" : ", ");
-        first = false;
-        if (SimpleType.tbool.equals(fi.javaType)) {
-          comm.print("#{" + fi.name + "Int}");
-        } else {
-          comm.print("#{" + fi.name + "}");
-        }
-      }
+      printFieldsWithGbatisParameters(comm, all);
     }
     comm.println(")}\")");
     comm.print("  void set" + firstUpper(field.name) + "(");
@@ -1214,6 +1174,20 @@ public abstract class Nf6Generator {
     comm.println(");");
   }
 
+  private void printFieldsWithGbatisParameters(ClassOuter comm, List<FieldDb> all) {
+    boolean first = true;
+    for (FieldDb fi : all) {
+      comm.print(first ? "" : ", ");
+      first = false;
+      if (SimpleType.tbool.equals(fi.javaType)) {
+        comm.print("#{" + fi.name + "Int}");
+      } else {
+        comm.print("#{" + fi.name + "}");
+      }
+    }
+  }
+
+  @SuppressWarnings("UnusedParameters")
   private void insFieldWithNow(ClassOuter comm, Field field, ClassOuter java,
                                List<FieldDb> keyInfo, List<FieldDb> all) {
 
@@ -1247,23 +1221,13 @@ public abstract class Nf6Generator {
     comm.print("  @" + annCall(comm) + "(\"{call " + conf._p_ + field.table.name + "_" + field.name);
 
     comm.print(" (");
-    {
-      boolean first = true;
-      for (FieldDb fi : all) {
-        comm.print(first ? "" : ", ");
-        first = false;
-        if (SimpleType.tbool.equals(fi.javaType)) {
-          comm.print("#{" + fi.name + "Int}");
-        } else {
-          comm.print("#{" + fi.name + "}");
-        }
-      }
-    }
+    printFieldsWithGbatisParameters(comm, all);
     comm.println(")}\")");
     comm.println("  void ins" + firstUpper(field.name) + "(" + comm._(java.name()) + " "
         + field.table.name + ");");
   }
 
+  @SuppressWarnings("UnusedParameters")
   private void generateDaoTableLoadAt(ClassOuter comm, Table table, ClassOuter java,
                                       ClassOuter fieldsClass) {
     StringBuilder sb = new StringBuilder();
@@ -1322,12 +1286,12 @@ public abstract class Nf6Generator {
     }
   }
 
-  private void generateIfaces() {
-    generateTandV();
+  private void generateInterfaces() {
+    generateTAndV();
     if (generateVT) generateVT();
   }
 
-  private void generateTandV() {
+  private void generateTAndV() {
     ClassOuter t = new ClassOuter(conf.daoPackage + ".i", "", "T");
     ClassOuter v = new ClassOuter(conf.daoPackage + ".i", "", "V");
     t.println("public interface " + t.className + " {");
@@ -1397,6 +1361,7 @@ public abstract class Nf6Generator {
     vt.generateTo(conf.javaGenDir);
   }
 
+  @SuppressWarnings("UnusedParameters")
   private void generateDaoTableCommands(ClassOuter comm, Table table, ClassOuter java,
                                         ClassOuter fieldsClass) {
     for (Command command : table.commands) {
@@ -1418,19 +1383,19 @@ public abstract class Nf6Generator {
     comm.println(comm._(LIST) + "<" + java.className + "> " + command.methodName + "();");
   }
 
-  private void generateJavaToDictionary(ClassOuter java, Table table, ToDictionary todict) {
-    java.println("public " + java._(todict.toClass) + " toDictionary() {");
+  private void generateJavaToDictionary(ClassOuter java, Table table, ToDictionary toDict) {
+    java.println("public " + java._(toDict.toClass) + " toDictionary() {");
 
     {
-      java.print("  return new " + java._(todict.toClass) + "(");
+      java.print("  return new " + java._(toDict.toClass) + "(");
       boolean first = true;
       for (FieldDb fi : table.dbKeys()) {
         java.print(first ? "" : ", ");
         first = false;
         java.print(fi.name);
       }
-      if (todict.more != null && todict.more.trim().length() > 0) {
-        java.print(", " + todict.more);
+      if (toDict.more != null && toDict.more.trim().length() > 0) {
+        java.print(", " + toDict.more);
       }
       java.println(");");
     }
@@ -1497,8 +1462,8 @@ public abstract class Nf6Generator {
     }
   }
 
-  protected void printUpdateSql(PrintStream out, String tname, Field field) {
-    out.print("    update " + tname);
+  protected void printUpdateSql(PrintStream out, String tName, Field field) {
+    out.print("    update " + tName);
     {
       {
         boolean first = true;
@@ -1508,34 +1473,38 @@ public abstract class Nf6Generator {
           out.print(fi.name + " = " + fi.name + "__");
         }
         if (conf.lastModifiedAt != null) {
-          out.print(", " + conf.lastModifiedAt + " = " + sqld().current_timestamp());
+          out.print(", " + conf.lastModifiedAt + " = " + dialect().current_timestamp());
         }
         if (conf.userIdFieldType != null && conf.lastModifiedBy != null) {
           out.print(", " + conf.lastModifiedBy + " = " + conf.get_changer + "()");
         }
       }
       {
-        boolean first = true;
-        for (Field key : field.table.keys) {
-          for (FieldDb fi : key.dbFields()) {
-            out.print(first ? " where " : " and ");
-            first = false;
-            out.print(fi.name + " = " + fi.name + "__");
-          }
-        }
+        printWhereSqlForKeys(out, field);
       }
     }
     out.println(" ; ");
   }
 
+  protected void printWhereSqlForKeys(PrintStream out, Field field) {
+    boolean first = true;
+    for (Field key : field.table.keys) {
+      for (FieldDb fi : key.dbFields()) {
+        out.print(first ? " where " : " and ");
+        first = false;
+        out.print(fi.name + " = " + fi.name + "__");
+      }
+    }
+  }
+
   protected void printInsertSql(PrintStream out, //
-                                String tname, Field field, String... changerFields) {
-    printInsertCommand("      ", out, tname, field, changerFields);
+                                String tName, Field field, String... changerFields) {
+    printInsertCommand("      ", out, tName, field, changerFields);
   }
 
   protected void printInsertCommand(String s, PrintStream out, //
-                                    String tname, Field field, String... changerFields) {
-    out.print(s + "insert into " + tname + " (");
+                                    String tName, Field field, String... changerFields) {
+    out.print(s + "insert into " + tName + " (");
     {
       boolean first = true;
       for (Field key : field.table.keys) {

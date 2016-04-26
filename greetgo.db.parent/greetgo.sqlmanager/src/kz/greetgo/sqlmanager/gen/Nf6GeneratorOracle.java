@@ -13,7 +13,7 @@ public class Nf6GeneratorOracle extends Nf6Generator {
   private SqlDialect sqlDialect = null;
   
   @Override
-  protected SqlDialect sqld() {
+  protected SqlDialect dialect() {
     if (sqlDialect == null) sqlDialect = new SqlDialectOracle();
     return sqlDialect;
   }
@@ -33,7 +33,7 @@ public class Nf6GeneratorOracle extends Nf6Generator {
         for (FieldDb fi : key.dbFields()) {
           out.print(first ? "" :", ");
           first = false;
-          out.print(fi.name + "__ " + sqld().procType(fi.stype));
+          out.print(fi.name + "__ " + dialect().procType(fi.stype));
         }
       }
     }
@@ -94,11 +94,11 @@ public class Nf6GeneratorOracle extends Nf6Generator {
         for (FieldDb fi : key.dbFields()) {
           out.print(first ? "" :", ");
           first = false;
-          out.print(fi.name + "__ " + sqld().procType(fi.stype));
+          out.print(fi.name + "__ " + dialect().procType(fi.stype));
         }
       }
       for (FieldDb fi : field.dbFields()) {
-        out.print(", " + fi.name + "__ " + sqld().procType(fi.stype));
+        out.print(", " + fi.name + "__ " + dialect().procType(fi.stype));
       }
     }
     
@@ -180,14 +180,7 @@ public class Nf6GeneratorOracle extends Nf6Generator {
       String oname = conf.oPref + field.table.name + "_" + field.name;
       out.print("  select count(1) into doit from " + oname);
       {
-        boolean first = true;
-        for (Field key : field.table.keys) {
-          for (FieldDb fi : key.dbFields()) {
-            out.print(first ? " where " :" and ");
-            first = false;
-            out.print(fi.name + " = " + fi.name + "__");
-          }
-        }
+        printWhereSqlForKeys(out, field);
       }
       out.println(" ; ");
       out.println("  if doit = 0 then");
