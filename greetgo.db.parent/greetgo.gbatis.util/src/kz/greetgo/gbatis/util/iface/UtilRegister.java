@@ -1,6 +1,7 @@
 package kz.greetgo.gbatis.util.iface;
 
 import kz.greetgo.gbatis.model.Creator;
+import kz.greetgo.gbatis.util.impl.InsertOrUpdate;
 
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,8 @@ public interface UtilRegister {
   <T> T insert(String tableName, T object);
 
   int update(String tableName, Object object);
+
+  InsertOrUpdate insertOrUpdate();
 
   int deleteWhere(String tableName, String where, Object... values);
 

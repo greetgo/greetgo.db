@@ -1,6 +1,7 @@
 package kz.greetgo.gbatis.util.callbacks;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -22,27 +23,6 @@ public class U {
       
       if (sql == null) sql = "sql == null";
       sqlViewer.view(sql.toString(), params, System.currentTimeMillis() - startedAt, err);
-      
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    
-  }
-  
-  public static void view(long startedAt, SqlViewer sqlViewer, Exception err, Object sql,
-      Object[] params) {
-    if (sqlViewer == null) return;
-    
-    try {
-      long delay = System.currentTimeMillis() - startedAt;
-      if (!sqlViewer.needView()) return;
-      List<Object> list = new ArrayList<>();
-      for (Object p : params) {
-        list.add(p);
-      }
-      
-      if (sql == null) sql = "sql == null";
-      sqlViewer.view(sql.toString(), list, delay, err);
       
     } catch (Exception e) {
       e.printStackTrace();

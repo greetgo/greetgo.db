@@ -10,10 +10,7 @@ import kz.greetgo.gbatis.model.SqlWithParams;
 import kz.greetgo.gbatis.util.OperUtil;
 import kz.greetgo.gbatis.util.callbacks.*;
 import kz.greetgo.gbatis.util.callbacks.meta.AllReferencesCallback;
-import kz.greetgo.gbatis.util.callbacks.meta.ColInfoCallback;
-import kz.greetgo.gbatis.util.callbacks.meta.KeyNamesCallback;
 import kz.greetgo.gbatis.util.iface.UtilRegister;
-import kz.greetgo.gbatis.util.model.ColInfo;
 import kz.greetgo.gbatis.util.model.ForeignKey;
 import kz.greetgo.gbatis.util.model.TableReference;
 import kz.greetgo.util.db.DbTypeDetector;
@@ -83,38 +80,46 @@ public abstract class AbstractUtilRegister implements UtilRegister {
   @Override
   public <T> T getField(Class<T> cl, final String tableName, final String gettingField,
                         final Object... fieldValuePairs) {
+
     if (fieldValuePairs.length % 2 > 0) {
       throw new IllegalArgumentException("fieldValuePairs must contains odd elements");
     }
-    return jdbc().execute(
-        new GetFieldCallback<>(sqlViewer(), cl, tableName, getColInfo(tableName), gettingField,
-            fieldValuePairs));
+
+    return jdbc().execute(new GetFieldCallback<>(
+        sqlViewer(), cl, tableName, dbInfo.getColInfo(tableName), gettingField, fieldValuePairs
+    ));
+
   }
 
   @Override
   public <T> T insert(String tableName, T object) {
-    jdbc().execute(new InsertCallback(sqlViewer(), tableName, getColInfo(tableName), object));
+    jdbc().execute(new InsertCallback(sqlViewer(), tableName, dbInfo.getColInfo(tableName), object));
     return object;
   }
 
-  private final Map<String, List<ColInfo>> colInfoCache = new HashMap<>();
-
-  private synchronized List<ColInfo> getColInfo(String tableName) {
-    {
-      List<ColInfo> ret = colInfoCache.get(tableName);
-      if (ret != null) return ret;
-    }
-    {
-      List<ColInfo> ret = jdbc().execute(new ColInfoCallback(sqlViewer(), tableName));
-      colInfoCache.put(tableName, ret);
-      return ret;
-    }
+  @Override
+  public InsertOrUpdate insertOrUpdate() {
+    return new InsertOrUpdate(dbInfo, classInfo);
   }
+
+  private final DbInfo dbInfo = new DbInfo() {
+    @Override
+    public Jdbc jdbc() {
+      return AbstractUtilRegister.this.jdbc();
+    }
+
+    @Override
+    public SqlViewer sqlViewer() {
+      return AbstractUtilRegister.this.sqlViewer();
+    }
+  };
+  private final ClassInfo classInfo = new ClassInfo();
 
   @Override
   public int update(String tableName, Object object) {
-    return jdbc().execute(
-        new UpdateCallback(tableName, getColInfo(tableName), getKeyNames(tableName), object));
+    return jdbc().execute(new UpdateCallback(
+        tableName, dbInfo.getColInfo(tableName), dbInfo.getKeyNames(tableName), object
+    ));
   }
 
   @Override
@@ -128,19 +133,6 @@ public abstract class AbstractUtilRegister implements UtilRegister {
     }
   }
 
-  private final Map<String, List<String>> keyNameCache = new HashMap<>();
-
-  private synchronized List<String> getKeyNames(String tableName) {
-    {
-      List<String> ret = keyNameCache.get(tableName);
-      if (ret != null) return ret;
-    }
-    {
-      List<String> ret = jdbc().execute(new KeyNamesCallback(sqlViewer(), tableName));
-      keyNameCache.put(tableName, ret);
-      return ret;
-    }
-  }
 
   @Override
   public int deleteWhere(String tableName, String where, Object... values) {
@@ -164,7 +156,7 @@ public abstract class AbstractUtilRegister implements UtilRegister {
     List<Object> values = new ArrayList<>();
 
     StringBuilder where = new StringBuilder();
-    for (String key : getKeyNames(tableName)) {
+    for (String key : dbInfo.getKeyNames(tableName)) {
       Field field = fieldMap.get(key.toLowerCase());
       if (field == null) throw new IllegalArgumentException("No key field " + key
           + " in object with class " + object.getClass());

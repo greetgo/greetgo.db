@@ -4,7 +4,7 @@ public class ColInfo {
   public String name;
   public String type;
   public boolean canNull;
-  public int nomer;
+  public int index;
   
   public boolean isStr() {
     if (type == null) return false;
