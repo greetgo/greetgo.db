@@ -36,14 +36,15 @@ public class InsertOrUpdate {
   private final List<TableModification> modificationList = new ArrayList<>();
 
   public void objectTable(Object object, String tableName, Object... params) {
+    tableName = tableName.toUpperCase();
 
     Set<String> columns = new LinkedHashSet<>();
     List<String> keys = new ArrayList<>();
     for (ColInfo info : dbInfo.getColInfo(tableName)) {
-      columns.add(info.name);
+      columns.add(info.name.toUpperCase());
     }
     for (String keyName : dbInfo.getKeyNames(tableName)) {
-      keys.add(keyName);
+      keys.add(keyName.toUpperCase());
     }
 
     TableModification tableModification = new TableModification(tableName, keys);
@@ -59,8 +60,10 @@ public class InsertOrUpdate {
     for (int i = 0, c = params.length / 2; i < c; i++) {
       String attributeName = (String) params[2 * i + 0];
 
+      attributeName = attributeName.toUpperCase();
+
       if (!columns.contains(attributeName)) {
-        throw new RuntimeException("No column " + attributeName + " in table " + tableName);
+        throw new RuntimeException("No column " + attributeName + " in table " + tableName + ", columns: " + columns);
       }
 
       Object attributeValue = params[2 * i + 1];
@@ -77,6 +80,8 @@ public class InsertOrUpdate {
     switch (dbType) {
       case PostgreSQL:
         return new ModificationListApplierPostgres(dbInfo.sqlViewer());
+      case Oracle:
+        return new ModificationListApplierOracle(dbInfo.sqlViewer());
     }
     throw new IllegalArgumentException("No ModificationListApplier for db type = " + dbType);
   }

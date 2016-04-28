@@ -28,7 +28,7 @@ public class AbstractUtilRegisterTest2 extends MyTestBase {
 
   @Override
   protected DbType[] usingDbTypes() {
-    return new DbType[]{DbType.PostgreSQL};
+    return new DbType[]{DbType.Oracle, DbType.PostgreSQL};
   }
 
   @Test(dataProvider = CONNECT_PROVIDER)
@@ -37,7 +37,7 @@ public class AbstractUtilRegisterTest2 extends MyTestBase {
     r.sqlViewer = new SqlViewer() {
       @Override
       public boolean needView() {
-        return true;
+        return false;
       }
 
       @Override
@@ -110,8 +110,8 @@ public class AbstractUtilRegisterTest2 extends MyTestBase {
     assertThat(r.getStrField("test_client4", "surname", "id", "cl_01")).isEqualTo("Sun");
   }
 
-  @Test(dataProvider = CONNECT_PROVIDER)
-  public void testPostgres(Connection con) throws Exception {
+  @Test(dataProvider = CONNECT_PROVIDER, enabled = false)
+  public void testSql(Connection con) throws Exception {
     queryForce(con, "drop table asd");
     query(con, "create table asd(asd varchar(1000))");
 
@@ -122,21 +122,17 @@ public class AbstractUtilRegisterTest2 extends MyTestBase {
     query(con, "insert into test_client values ('cl_01', 'Down', 'Up', 100, 200)");
 
     StringBuilder sql = new StringBuilder();
-    sql.append("with new_client as (select ? as id, ? as surname, ? as name) \n");
-    sql.append(", upsert as (\n");
-    sql.append("       update test_client m\n");
-    sql.append("          set surname = nc.surname\n");
-    sql.append("            , name    = nc.name\n");
-    sql.append("       from new_client nc\n");
-    sql.append("       where m.id = nc.id\n");
-    sql.append("       returning m.*\n");
+    sql.append("merge /*+ parallel(des, 4) */ into test_client des using (\n");
+    sql.append(" select ? as id, ? as surname, ? as name from dual\n");
+    sql.append(") src ON (des.id = src.id)\n");
+    sql.append("when matched then update\n");
+    sql.append("  set des.surname = src.surname\n");
+    sql.append("  ,   des.name    = src.name\n");
+    sql.append("when not matched then insert (\n");
+    sql.append("  des.id, des.surname, des.name\n");
+    sql.append(") values (\n");
+    sql.append("  src.id, src.surname, src.name\n");
     sql.append(")\n");
-    sql.append("insert into test_client (id, surname, name)\n");
-    sql.append("select id, surname, name\n");
-    sql.append("from new_client\n");
-    sql.append("where not exists (select 1\n");
-    sql.append("                  from upsert\n");
-    sql.append("                  where upsert.id = new_client.id)\n");
 
     try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
       ps.setString(1, "cl_01");

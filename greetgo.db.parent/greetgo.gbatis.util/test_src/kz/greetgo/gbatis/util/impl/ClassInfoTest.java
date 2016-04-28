@@ -43,7 +43,7 @@ public class ClassInfoTest {
     ClassAcceptor classAcceptor = classInfo.getClassAcceptor(Client.class);
     Client client = new Client();
     client.id = "abra 295";
-    assertThat(classAcceptor.get(client, "id")).isEqualTo("abra 295");
+    assertThat(classAcceptor.get(client, "ID")).isEqualTo("abra 295");
   }
 
   @Test
@@ -51,7 +51,7 @@ public class ClassInfoTest {
     ClassInfo classInfo = new ClassInfo();
     ClassAcceptor classAcceptor = classInfo.getClassAcceptor(Client.class);
     Client client = new Client();
-    classAcceptor.set(client, "id", "Hello");
+    classAcceptor.set(client, "ID", "Hello");
     assertThat(client.id).isEqualTo("Hello");
 
   }
@@ -61,7 +61,7 @@ public class ClassInfoTest {
     ClassInfo classInfo = new ClassInfo();
     ClassAcceptor classAcceptor = classInfo.getClassAcceptor(Client.class);
     Client client = new Client();
-    assertThat(classAcceptor.get(client, "name")).isEqualTo("Hello name");
+    assertThat(classAcceptor.get(client, "NAME")).isEqualTo("Hello name");
   }
 
 
@@ -70,7 +70,7 @@ public class ClassInfoTest {
     ClassInfo classInfo = new ClassInfo();
     ClassAcceptor classAcceptor = classInfo.getClassAcceptor(Client.class);
     Client client = new Client();
-    classAcceptor.set(client, "name", "Insert world");
+    classAcceptor.set(client, "NAME", "Insert world");
     assertThat(client.wasSetName).isEqualTo("Insert world");
   }
 
@@ -88,7 +88,7 @@ public class ClassInfoTest {
     ClassAcceptor classAcceptor = classInfo.getClassAcceptor(Client.class);
     Client client = new Client();
     client.forReturnIsSinus = RND.bool();
-    assertThat(classAcceptor.get(client, "sinus")).isEqualTo(client.forReturnIsSinus);
+    assertThat(classAcceptor.get(client, "SINUS")).isEqualTo(client.forReturnIsSinus);
   }
 
   @Test
@@ -97,6 +97,6 @@ public class ClassInfoTest {
     ClassAcceptor classAcceptor = classInfo.getClassAcceptor(Client.class);
     Client client = new Client();
     client.forReturnIsCoSinus = RND.bool();
-    assertThat(classAcceptor.get(client, "coSinus")).isEqualTo(client.forReturnIsCoSinus);
+    assertThat(classAcceptor.get(client, "COSINUS")).isEqualTo(client.forReturnIsCoSinus);
   }
 }

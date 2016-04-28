@@ -15,14 +15,15 @@ public class TableModification {
 
   public void setValue(String attributeName, Object value) {
     keyUniqueness = null;
-    attributeValues.put(attributeName, value);
+    attributeValues.put(attributeName.toUpperCase(), value);
   }
 
   public void checkAllKeyValuesExists() {
     for (String key : keys) {
       Object keyValue = attributeValues.get(key);
       if (keyValue == null) {
-        throw new RuntimeException("No value for key " + key + " while changing table " + tableName);
+        throw new RuntimeException("No value for key " + key + " while changing table " + tableName
+            + ", exists attributeNames: " + attributeValues.keySet());
       }
     }
   }

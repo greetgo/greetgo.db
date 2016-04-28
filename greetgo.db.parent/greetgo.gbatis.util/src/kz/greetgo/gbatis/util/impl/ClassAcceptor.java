@@ -29,6 +29,7 @@ public class ClassAcceptor {
     appendForFields(aClass);
 
     appendForMethods(aClass);
+
   }
 
   public List<String> getReadAttributes() {
@@ -39,7 +40,7 @@ public class ClassAcceptor {
 
   private void appendForFields(Class<?> aClass) {
     for (final Field field : aClass.getFields()) {
-      getterMap.put(field.getName(), new Getter() {
+      getterMap.put(field.getName().toUpperCase(), new Getter() {
         @Override
         public <T> T get(Object object) {
           try {
@@ -49,7 +50,7 @@ public class ClassAcceptor {
           }
         }
       });
-      setterMap.put(field.getName(), new Setter() {
+      setterMap.put(field.getName().toUpperCase(), new Setter() {
         @Override
         public void set(Object object, Object value) {
           try {
@@ -71,7 +72,7 @@ public class ClassAcceptor {
     for (final Method method : aClass.getMethods()) {
       String methodName = method.getName();
       if (methodName.length() > 3 && methodName.startsWith("get") && method.getParameterTypes().length == 0) {
-        String attributeName = methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
+        String attributeName = methodName.substring(3).toUpperCase();
         getterMap.put(attributeName, new Getter() {
           @Override
           public <T> T get(Object object) {
@@ -87,7 +88,7 @@ public class ClassAcceptor {
 
       if (methodName.length() > 2 && methodName.startsWith("is") && method.getParameterTypes().length == 0
           && (method.getReturnType() == Boolean.class || method.getReturnType() == Boolean.TYPE)) {
-        String attributeName = methodName.substring(2, 3).toLowerCase() + methodName.substring(3);
+        String attributeName = methodName.substring(2).toUpperCase();
         getterMap.put(attributeName, new Getter() {
           @Override
           public <T> T get(Object object) {
@@ -102,7 +103,7 @@ public class ClassAcceptor {
       }
 
       if (methodName.length() > 3 && methodName.startsWith("set") && method.getParameterTypes().length == 1) {
-        String attributeName = methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
+        String attributeName = methodName.substring(3).toUpperCase();
         setterMap.put(attributeName, new Setter() {
           @Override
           public void set(Object object, Object value) {
