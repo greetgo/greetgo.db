@@ -18,8 +18,6 @@ dependencies {
   compile project(':greetgo.gbatis')
   compile project(':greetgo.db')
 
-  compile 'org.jooq:jooq:3.7.3'
-
   testCompile 'kz.greetgo:greetgo.test.db_providers:0.0.6'
 
   testCompile 'postgresql:postgresql:9.1-901.jdbc4'

@@ -574,7 +574,6 @@ public abstract class Nf6Generator {
     Set<String> set = new HashSet<>();
 
     for (Table table : sg.stru.tables.values()) {
-
       List<Field> fields = new ArrayList<>();
       fields.addAll(table.fields);
       fields.addAll(table.keys);
@@ -648,30 +647,34 @@ public abstract class Nf6Generator {
       _parent_ = " implements " + ou._(conf.modelStruImplements);
     }
 
+    ou.println();
     ou.println("public abstract class " + ou.className + _parent_ + " {");
 
+    ou.println();
     for (Field field : table.fields) {
       for (FieldDb fi : field.dbFields()) {
         FieldOuter f = ou.addField(fi.javaType, fi.name);
-        ou.println("public " + ou._(f.type.objectType()) + " " + f.name + ";");
+        ou.println("  public " + ou._(f.type.objectType()) + " " + f.name + ";");
       }
     }
 
     {
-      ou.println("public " + ou.className + " assign(" + ou.className + " from) {");
-      ou.println("if (from == null) return this;");
+      ou.println();
+      ou.println("  public " + ou.className + " assign(" + ou.className + " from) {");
+      ou.println("    if (from == null) return this;");
       for (FieldOuter f : ou.fields) {
-        ou.println("this." + f.name + " = from." + f.name + ";");
+        ou.println("    this." + f.name + " = from." + f.name + ";");
       }
-      ou.println("return this;");
-      ou.println("}");
+      ou.println("    return this;");
+      ou.println("  }");
     }
 
     for (FieldOuter fo : ou.fields) {
       if (SimpleType.tbool.equals(fo.type)) {
-        ou.println("public int get" + firstUpper(fo.name) + "Int() {");
-        ou.println("  return (" + fo.name + " != null && " + fo.name + ")?1:0;");
-        ou.println("}");
+        ou.println();
+        ou.println("  public int get" + firstUpper(fo.name) + "Int() {");
+        ou.println("    return (" + fo.name + " != null && " + fo.name + ")?1:0;");
+        ou.println("  }");
       }
     }
 
@@ -679,9 +682,14 @@ public abstract class Nf6Generator {
   }
 
   private ClassOuter generateChangeClass(Field field, ClassOuter parent) {
-    ClassOuter java = new ClassOuter(conf.modelPackage + field.table.subpackage(), "Change", field.javaTableFieldName());
+    ClassOuter java = new ClassOuter(conf.changeModelPackage + field.table.subpackage(),
+        "Change", field.javaTableFieldName());
 
     java.println();
+    if (conf.changeModelTableNameAnnotation != null) {
+      java.println("@" + conf.changeModelTableNameAnnotation + "(\""
+          + conf.oPrefix + field.table.name + "_" + field.name + "\")");
+    }
     java.println("public class " + java.className + " extends " + java._(parent.name()) + " {");
 
     for (FieldDb fieldDb : field.dbFields()) {
@@ -724,7 +732,7 @@ public abstract class Nf6Generator {
   }
 
   private ClassOuter generateAbstractChangeClass(Table table) {
-    ClassOuter java = new ClassOuter(conf.modelPackage + table.subpackage(), "Change", table.name);
+    ClassOuter java = new ClassOuter(conf.changeModelPackage + table.subpackage(), "Change", table.name);
 
     String interfaceClass = null;
     String getIdName = null;
@@ -736,7 +744,10 @@ public abstract class Nf6Generator {
 
     java.println();
 
-    java.print("public abstract class " + java.className);
+    if (conf.changeModelTableNameAnnotation != null) {
+      java.println("@" + java._(conf.changeModelTableNameAnnotation) + "(\"" + conf.kPrefix + table.name + "\")");
+    }
+    java.print("public class " + java.className);
     if (interfaceClass != null) {
       java.print(" implements " + java._(interfaceClass));
     }
@@ -788,49 +799,56 @@ public abstract class Nf6Generator {
 
   private ClassOuter generateJava(Table table, ClassOuter fieldsClass) {
     ClassOuter java = new ClassOuter(conf.modelPackage + table.subpackage(), "", table.name);
+
+    java.println();
     java.println("public class " + java.className + " extends " + java._(fieldsClass.name()) + " {");
 
+    java.println();
     for (Field f : table.keys) {
       for (FieldDb fi : f.dbFields()) {
-        java.println("public " + java._(fi.javaType.javaType()) + " " + fi.name + ";");
+        java.println("  public " + java._(fi.javaType.javaType()) + " " + fi.name + ";");
       }
     }
 
     {
-      java.println("@Override public int hashCode() {");
-      java.print("return " + java._(ARRAYS) + ".hashCode(new Object[] {");
+      java.println();
+      java.println("  @Override");
+      java.println("  public int hashCode() {");
+      java.print("    return " + java._(ARRAYS) + ".hashCode(new Object[] {");
       for (Field f : table.keys) {
         for (FieldDb fi : f.dbFields()) {
           java.print(fi.name + ",");
         }
       }
-      java.println(" });");
-      java.println("}");
+      java.println("});");
+      java.println("  }");
     }
     {
-      java.println("@Override public boolean equals(Object obj) {");
-      java.println("if (this == obj) return true;");
-      java.println("if (obj == null) return false;");
-      java.println("if (getClass() != obj.getClass()) return false;");
-      java.println(java.className + " other = (" + java.className + ")obj;");
+      java.println();
+      java.println("  @Override");
+      java.println("  public boolean equals(Object obj) {");
+      java.println("    if (this == obj) return true;");
+      java.println("    if (obj == null) return false;");
+      java.println("    if (getClass() != obj.getClass()) return false;");
+      java.println("    " + java.className + " other = (" + java.className + ")obj;");
       boolean first = true;
       for (Field field : table.keys) {
         for (FieldDb fi : field.dbFields()) {
-          java.print(first ? "return " : "&& ");
+          java.print(first ? "    return " : "&& ");
           first = false;
           java.print(java._(OBJECTS) + ".equals(" + fi.name + ", other." + fi.name + ")");
         }
       }
       java.println(";");
-      java.println("}");
+      java.println("  }");
     }
 
     java.println();
-    java.println("public " + java.className + "() {}");
+    java.println("  public " + java.className + "() {}");
     java.println();
 
     {
-      java.print("public " + java.className + "(");
+      java.print("  public " + java.className + "(");
       boolean first = true;
       for (Field field : table.keys) {
         for (FieldDb fi : field.dbFields()) {
@@ -843,11 +861,11 @@ public abstract class Nf6Generator {
 
       for (Field field : table.keys) {
         for (FieldDb fi : field.dbFields()) {
-          java.println("this." + fi.name + " = " + fi.name + ";");
+          java.println("    this." + fi.name + " = " + fi.name + ";");
         }
       }
 
-      java.println("}");
+      java.println("  }");
     }
 
     for (Command command : table.commands) {
@@ -1298,25 +1316,36 @@ public abstract class Nf6Generator {
 
   private void generateTAndV() {
     ClassOuter t = new ClassOuter(conf.daoPackage + ".i", "", "T");
-    ClassOuter v = new ClassOuter(conf.daoPackage + ".i", "", "V");
+    ClassOuter v = !conf.useNf6 ? new ClassOuter(conf.daoPackage + ".i", "", "V") : null;
+
+    t.println();
     t.println("public interface " + t.className + " {");
-    v.println("public interface " + v.className + " {");
+    t.println();
+    if (v != null) v.println();
+    if (v != null) v.println("public interface " + v.className + " {");
+    if (v != null) v.println();
+
+    String prefix = conf.useNf6 ? conf.mPrefix : conf.oPrefix;
 
     for (Table table : sortTablesByName(sg.stru.tables.values())) {
-      t.println("  String " + table.name + " = \"" + conf.mPrefix + table.name + "\";");
-      v.println("  String " + table.name + " = \"" + conf.vPrefix + table.name + "\";");
+      t.println("  String " + table.name + " = \"" + conf.kPrefix + table.name + "\";");
+      if (v != null) v.println("  String " + table.name + " = \"" + conf.vPrefix + table.name + "\";");
+      
       for (Field field : sortFieldsByName(table.fields)) {
-        t.println("  String " + table.name + "_" + field.name + " = \"" + conf.mPrefix
+        
+        t.println("  String " + table.name + "_" + field.name + " = \"" + prefix
             + table.name + "_" + field.name + "\";");
-        v.println("  String " + table.name + "_" + field.name + " = \"" + conf.vPrefix + table.name
+        
+        if (v != null) v.println("  String " + table.name + "_" + field.name + " = \"" + conf.vPrefix + table.name
             + "_" + field.name + "\";");
+        
       }
       t.println();
-      v.println();
+      if (v != null) v.println();
     }
 
     t.generateTo(conf.javaGenDir);
-    v.generateTo(conf.javaGenDir);
+    if (v != null) v.generateTo(conf.javaGenDir);
   }
 
   private List<Field> sortFieldsByName(List<Field> fields) {

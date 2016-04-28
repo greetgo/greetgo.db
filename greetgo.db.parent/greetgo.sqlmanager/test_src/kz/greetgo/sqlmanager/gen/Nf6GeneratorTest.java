@@ -70,12 +70,15 @@ public class Nf6GeneratorTest {
 
     nf6generator.conf.javaGenDir = srcOutDir + "/gen_src";
     nf6generator.conf.modelPackage = "kz.pompei.db_model";
+    nf6generator.conf.changeModelPackage = "kz.pompei.db_change_model";
     nf6generator.conf.daoPackage = "kz.pompei.dao";
 
     nf6generator.conf.javaGenStruDir = srcOutDir + "/gen_src_struct";
     nf6generator.conf.modelStruPackage = "kz.pompei.db_model_stru";
     nf6generator.conf.modelStruExtends = "kz.greetgo.gbatis.util.ModelParent";
     //nf6generator.conf.modelStruImplements = "kz.greetgo.sql_manager.gen.ModelParent";
+
+    nf6generator.conf.changeModelTableNameAnnotation = "kz.greetgo.gbatis.util.TableNameChange";
 
     nf6generator.generateJavaCodeForPostgres = true;
     nf6generator.generateJavaCodeForOracle = false;
