@@ -62,6 +62,17 @@ public abstract class Nf6Generator {
   private final StruShaper sg;
 
   /**
+   * Если определён - генерирует продюсеры для change-классов. Содержит пакет, в нутрь которого будет происходить
+   * генерация и, через точку с запятой, полное имя класса наследника
+   */
+  public String producerExtendsAndPackage;
+
+  /**
+   * Аннотация, которую нужно добавить каждому продюссеру
+   */
+  public String producerAnnotation = null;
+
+  /**
    * Получет диалект для рабочей БД
    *
    * @return Получает {@link SqlDialect}
@@ -597,7 +608,7 @@ public abstract class Nf6Generator {
       java.generateTo(conf.javaGenDir);
       if (generateDao) generateDao(table, java, fieldsClass);
       if (generateChanges) {
-        ClassOuter abstractChangeClass = generateAbstractChangeClass(table);
+        ClassOuter abstractChangeClass = generateKeyChangeClass(table);
         abstractChangeClass.generateTo(conf.javaGenStruDir);
 
         for (Field field : table.fields) {
@@ -609,8 +620,151 @@ public abstract class Nf6Generator {
     }
 
     generateInterfaces();
+
+    if (producerExtendsAndPackage != null) {
+      generateProducers();
+    }
   }
 
+  private void generateProducers() {
+    String[] split = producerExtendsAndPackage.split(";");
+
+    String packageName = split[0];
+    String parentClass = split[1];
+
+    for (Table table : sg.stru.tables.values()) {
+      ClassOuter ou = generateProducer(table, packageName, parentClass);
+      ou.generateTo(conf.javaGenStruDir);
+    }
+
+  }
+
+  private ClassOuter generateProducer(Table table, String packageName, String parentClass) {
+    ClassOuter ou = new ClassOuter(packageName + table.subpackage(), "Producer", table.name);
+
+    ou.println();
+    if (producerAnnotation != null) ou.println("@" + ou._(producerAnnotation));
+    ou.println("public class " + ou.className + " extends " + ou._(parentClass) + " {");
+
+    ou.println();
+    ou.println("  @Override");
+    ou.println("  protected String __topic__() {");
+    ou.println("    return \"" + table.topic() + "\";");
+    ou.println("  }");
+
+    {
+      ou.println();
+      ou.print("  public Sender begin(");
+      boolean first = true;
+      for (Field key : table.keys) {
+        for (FieldDb keyPart : key.dbFields()) {
+          if (first) {
+            first = false;
+          } else {
+            ou.print(", ");
+          }
+          ou.print(keyPart.javaType.javaType() + ' ' + keyPart.name);
+        }
+      }
+
+      ou.println(") {");
+    }
+    ou.println("    Sender sender = new Sender();");
+    for (Field key : table.keys) {
+      for (FieldDb keyPart : key.dbFields()) {
+        ou.println("    sender." + keyPart.name + " = " + keyPart.name + ';');
+      }
+    }
+
+    ou.print("    sender.__list__.add(new " + ou._(table.changeClassName) + "(");
+    {
+      boolean first = true;
+      for (Field key : table.keys) {
+        for (FieldDb keyPart : key.dbFields()) {
+          if (first) {
+            first = false;
+          } else {
+            ou.print(", ");
+          }
+          ou.print(keyPart.name);
+        }
+      }
+    }
+    ou.println("));");
+
+    ou.println("    return sender;");
+    ou.println("  }");
+
+    ou.println();
+    ou.println("  public class Sender {");
+    for (Field key : table.keys) {
+      for (FieldDb keyPart : key.dbFields()) {
+        ou.println("    private " + keyPart.javaType.javaType() + ' ' + keyPart.name + ';');
+      }
+    }
+
+    ou.println();
+    ou.println("    private final " + ou._(List.class.getName()) + "<Object>"
+        + " __list__ = new " + ou._(ArrayList.class.getName()) + "<>();");
+
+    for (Field field : table.fields) {
+      ou.println();
+      ou.print("    public Sender " + field.name + "(");
+      boolean first = true;
+      for (FieldDb fieldDb : field.dbFields()) {
+        if (first) {
+          first = false;
+        } else {
+          ou.print(", ");
+        }
+        ou.print(fieldDb.javaType.javaType() + " " + fieldDb.name);
+      }
+      ou.println(") {");
+      ou.print("      __list__.add(new " + ou._(field.changeClassName) + "(");
+      first = true;
+      for (Field key : table.keys) {
+        for (FieldDb keyPart : key.dbFields()) {
+          if (first) {
+            first = false;
+          } else {
+            ou.print(", ");
+          }
+          ou.print(keyPart.name);
+        }
+      }
+      for (FieldDb fieldDb : field.dbFields()) {
+        if (first) {
+          first = false;
+        } else {
+          ou.print(", ");
+        }
+        ou.print(fieldDb.name);
+      }
+      ou.println("));");
+      ou.println("      return this;");
+      ou.println("    }");
+    }
+
+    ou.println();
+    ou.println("    public Sender go() {");
+    ou.println("      try {");
+    ou.println("        __goListFromSender__(__list__);");
+    ou.println("      } catch (Exception e) {");
+    ou.println("        throw new RuntimeException(e);");
+    ou.println("      }");
+    ou.println("      return this;");
+    ou.println("    }");
+
+    ou.println();
+    ou.println("    public " + ou._(List.class.getName()) + "<Object> __getList__() {");
+    ou.println("      return __list__;");
+    ou.println("    }");
+
+    ou.println("  }");
+
+
+    return ou;
+  }
 
   private void checkIdLengths() {
     if (conf.maxIdLength == null) return;
@@ -685,9 +839,11 @@ public abstract class Nf6Generator {
     ClassOuter java = new ClassOuter(conf.changeModelPackage + field.table.subpackage(),
         "Change", field.javaTableFieldName());
 
+    field.changeClassName = java.name();
+
     java.println();
     if (conf.changeModelTableNameAnnotation != null) {
-      java.println("@" + conf.changeModelTableNameAnnotation + "(\""
+      java.println("@" + java._(conf.changeModelTableNameAnnotation) + "(\""
           + conf.oPrefix + field.table.name + "_" + field.name + "\")");
     }
     java.println("public class " + java.className + " extends " + java._(parent.name()) + " {");
@@ -731,8 +887,9 @@ public abstract class Nf6Generator {
     return java;
   }
 
-  private ClassOuter generateAbstractChangeClass(Table table) {
+  private ClassOuter generateKeyChangeClass(Table table) {
     ClassOuter java = new ClassOuter(conf.changeModelPackage + table.subpackage(), "Change", table.name);
+    table.changeClassName = java.name();
 
     String interfaceClass = null;
     String getIdName = null;
@@ -766,6 +923,33 @@ public abstract class Nf6Generator {
         }
         java.println("  public " + java._(fi.javaType.javaType()) + " " + fi.name + ";");
       }
+    }
+
+    java.println();
+    java.println("  public " + java.className + "(){}");
+
+
+    {
+      java.println();
+      java.print("  public " + java.className + "(");
+      boolean first = true;
+      for (Field f : table.keys) {
+        for (FieldDb fi : f.dbFields()) {
+          if (first) {
+            first = false;
+          } else {
+            java.print(", ");
+          }
+          java.print(java._(fi.javaType.javaType()) + ' ' + fi.name);
+        }
+      }
+      java.println(") {");
+      for (Field f : table.keys) {
+        for (FieldDb fi : f.dbFields()) {
+          java.println("    this." + fi.name + " = " + fi.name + ";");
+        }
+      }
+      java.println("  }");
     }
 
     if (getIdName != null) {
@@ -1330,15 +1514,15 @@ public abstract class Nf6Generator {
     for (Table table : sortTablesByName(sg.stru.tables.values())) {
       t.println("  String " + table.name + " = \"" + conf.kPrefix + table.name + "\";");
       if (v != null) v.println("  String " + table.name + " = \"" + conf.vPrefix + table.name + "\";");
-      
+
       for (Field field : sortFieldsByName(table.fields)) {
-        
+
         t.println("  String " + table.name + "_" + field.name + " = \"" + prefix
             + table.name + "_" + field.name + "\";");
-        
+
         if (v != null) v.println("  String " + table.name + "_" + field.name + " = \"" + conf.vPrefix + table.name
             + "_" + field.name + "\";");
-        
+
       }
       t.println();
       if (v != null) v.println();

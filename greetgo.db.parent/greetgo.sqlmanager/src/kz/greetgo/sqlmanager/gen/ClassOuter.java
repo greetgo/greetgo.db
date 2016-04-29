@@ -120,26 +120,26 @@ public class ClassOuter {
    * Формирует короткое имя объекта, путём формирования импорта. Если такое короткое имя уже есть
    * среди импортов, то возвращается исходное (длинное)
    *
-   * @param fullname длинное имя объекта
+   * @param fullName длинное имя объекта
    * @return короткое имя объекта (если добавили в импорты), или исходное (длинное) имя объекта
    * (иначе)
    */
-  public String _(String fullname) {
-    int idx = fullname.lastIndexOf('.');
-    if (idx < 0) return fullname;
+  public String _(String fullName) {
+    int idx = fullName.lastIndexOf('.');
+    if (idx < 0) return fullName;
 
-    String name = fullname.substring(idx + 1);
+    String name = fullName.substring(idx + 1);
 
     String imFullName = imports.get(name);
 
     if (imFullName == null) {
-      imports.put(name, fullname);
+      imports.put(name, fullName);
       return name;
     }
 
-    if (imFullName.equals(fullname)) return name;
+    if (imFullName.equals(fullName)) return name;
 
-    return fullname;
+    return fullName;
   }
 
   /**

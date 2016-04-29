@@ -14,6 +14,8 @@ public class Field {
   public final Table table;
   public final String name;
   public final Type type;
+  
+  public String changeClassName = null;
 
   public Field(Table table, String name, Type type) {
     this.table = table;

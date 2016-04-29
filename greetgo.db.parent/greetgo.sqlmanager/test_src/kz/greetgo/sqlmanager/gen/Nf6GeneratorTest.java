@@ -87,6 +87,10 @@ public class Nf6GeneratorTest {
       nf6generator.generateVT = false;
       nf6generator.generateChanges = true;
       nf6generator.changeImplementInfo = "kz.greetgo.gbatis.util.HasIdForTests;getId_forTests";
+
+      nf6generator.producerExtendsAndPackage = "kz.pompei.producers;kz.greetgo.gbatis.util.ProducerParent";
+      nf6generator.producerAnnotation = "kz.greetgo.sqlmanager.gen.ProducerAnnotation";
+      
     }
     nf6generator.generateJava();
   }
