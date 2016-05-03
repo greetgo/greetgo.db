@@ -1,6 +1,7 @@
 package kz.greetgo.gbatis.util.impl;
 
 import kz.greetgo.db.ConnectionCallback;
+import kz.greetgo.gbatis.util.Getter;
 import kz.greetgo.gbatis.util.iface.TableName;
 import kz.greetgo.gbatis.util.model.ColInfo;
 import kz.greetgo.util.db.DbType;
@@ -35,7 +36,7 @@ public class InsertOrUpdate {
 
   private final List<TableModification> modificationList = new ArrayList<>();
 
-  public void objectTable(Object object, String tableName, Object... params) {
+  public void objectTable(final Object object, String tableName, Object... params) {
     tableName = tableName.toUpperCase();
 
     Set<String> columns = new LinkedHashSet<>();
@@ -47,7 +48,12 @@ public class InsertOrUpdate {
       keys.add(keyName.toUpperCase());
     }
 
-    TableModification tableModification = new TableModification(tableName, keys);
+    TableModification tableModification = new TableModification(tableName, keys, new Getter<String>() {
+      @Override
+      public String get() {
+        return "" + object;
+      }
+    });
 
     ClassAcceptor classAcceptor = classInfo.getClassAcceptor(object.getClass());
     for (String attributeName : classAcceptor.getReadAttributes()) {

@@ -7,7 +7,7 @@ public abstract class ProducerParent {
 
   protected abstract String __topic__();
 
-  protected void __goListFromSender__(List<Object> list) throws Exception {
-
+  protected List<Object> __goListFromSender__(List<Object> list) throws Exception {
+    return list;
   }
 }

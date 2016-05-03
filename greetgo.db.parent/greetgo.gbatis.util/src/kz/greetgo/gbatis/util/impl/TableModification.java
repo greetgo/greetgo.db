@@ -1,13 +1,17 @@
 package kz.greetgo.gbatis.util.impl;
 
+import kz.greetgo.gbatis.util.Getter;
+
 import java.util.*;
 
 public class TableModification {
   public final String tableName;
+  private final Getter<String> objectInfo;
   public final List<String> keys = new ArrayList<>();
 
-  public TableModification(String tableName, Collection<String> keys) {
+  public TableModification(String tableName, Collection<String> keys, Getter<String> objectInfo) {
     this.tableName = tableName;
+    this.objectInfo = objectInfo;
     this.keys.addAll(keys);
   }
 
@@ -45,4 +49,8 @@ public class TableModification {
     return keyUniqueness = sb.toString();
   }
 
+  public String info() {
+    if (objectInfo == null) return "Changing table " + tableName;
+    return "Changing table " + tableName + " from " + objectInfo.get();
+  }
 }

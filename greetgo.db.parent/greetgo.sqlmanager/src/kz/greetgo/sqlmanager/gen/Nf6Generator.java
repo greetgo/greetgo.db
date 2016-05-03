@@ -746,18 +746,12 @@ public abstract class Nf6Generator {
     }
 
     ou.println();
-    ou.println("    public Sender go() {");
+    ou.println("    public " + ou._(List.class.getName()) + "<Object> go() {");
     ou.println("      try {");
-    ou.println("        __goListFromSender__(__list__);");
+    ou.println("        return __goListFromSender__(__list__);");
     ou.println("      } catch (Exception e) {");
     ou.println("        throw new RuntimeException(e);");
     ou.println("      }");
-    ou.println("      return this;");
-    ou.println("    }");
-
-    ou.println();
-    ou.println("    public " + ou._(List.class.getName()) + "<Object> __getList__() {");
-    ou.println("      return __list__;");
     ou.println("    }");
 
     ou.println("  }");
@@ -884,6 +878,34 @@ public abstract class Nf6Generator {
 
     java.println("  }");
 
+    {
+      java.println();
+      java.println("  @Override");
+      java.println("  public String toString() {");
+      java.print("    return \"" + java.className + "{");
+      first = true;
+      for (Field key : field.table.keys) {
+        for (FieldDb fieldDb : key.dbFields()) {
+          if (first) {
+            first = false;
+          } else {
+            java.print(" + \", ");
+          }
+          java.print(fieldDb.name + "=\" + " + fieldDb.name);
+        }
+      }
+      for (FieldDb fieldDb : field.dbFields()) {
+        if (first) {
+          first = false;
+        } else {
+          java.print(" + \", ");
+        }
+        java.print(fieldDb.name + "=\" + " + fieldDb.name);
+      }
+      java.println(" + \"}\";");
+      java.println("  }");
+    }
+
     return java;
   }
 
@@ -973,6 +995,26 @@ public abstract class Nf6Generator {
         }
         java.println(";");
       }
+      java.println("  }");
+    }
+
+    {
+      java.println();
+      java.println("  @Override");
+      java.println("  public String toString() {");
+      java.print("    return \"" + java.className + "{");
+      boolean first = true;
+      for (Field key : table.keys) {
+        for (FieldDb fieldDb : key.dbFields()) {
+          if (first) {
+            first = false;
+          } else {
+            java.print(" + \", ");
+          }
+          java.print(fieldDb.name + "=\" + " + fieldDb.name);
+        }
+      }
+      java.println(" + \"}\";");
       java.println("  }");
     }
 

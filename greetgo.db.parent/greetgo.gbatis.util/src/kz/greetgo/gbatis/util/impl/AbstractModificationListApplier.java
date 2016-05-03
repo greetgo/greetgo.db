@@ -22,18 +22,21 @@ public abstract class AbstractModificationListApplier implements ModificationLis
 
     Map<String, List<TableModification>> groupedByKeyUniqueness = new HashMap<>();
 
+    List<String> orderedKeys = new ArrayList<>();
+
     for (TableModification tableModification : tableModificationList) {
       String keyUniqueness = tableModification.keyUniqueness();
       List<TableModification> localList = groupedByKeyUniqueness.get(keyUniqueness);
       if (localList == null) {
         localList = new ArrayList<>();
         groupedByKeyUniqueness.put(keyUniqueness, localList);
+        orderedKeys.add(keyUniqueness);
       }
       localList.add(tableModification);
     }
 
-    for (List<TableModification> list : groupedByKeyUniqueness.values()) {
-      merge(connection, list);
+    for (String key : orderedKeys) {
+      merge(connection, groupedByKeyUniqueness.get(key));
     }
   }
 
@@ -86,8 +89,12 @@ public abstract class AbstractModificationListApplier implements ModificationLis
       if (e instanceof BatchUpdateException) {
         e = ((BatchUpdateException) e).getNextException();
       }
-      if (U.need(sqlViewer)) U.view(startedAt, sqlViewer, e, sql, null);
-      throw e;
+      try {
+        throw new RuntimeException("Insert ot update: " + tableModification.info(), e);
+      } catch (RuntimeException re) {
+        if (U.need(sqlViewer)) U.view(startedAt, sqlViewer, re, sql, null);
+        throw re;
+      }
     }
   }
 
