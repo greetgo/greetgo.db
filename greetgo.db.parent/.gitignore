@@ -18,3 +18,5 @@
 /*.out
 /*.ids
 /out/
+/.ideaDataSources
+/dataSources
