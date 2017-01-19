@@ -2,6 +2,10 @@ package kz.greetgo.db;
 
 import net.sf.cglib.proxy.Enhancer;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
 public class DbProxyFactory {
 
   private final TransactionManager transactionManager;
@@ -15,6 +19,19 @@ public class DbProxyFactory {
     enhancer.setSuperclass(object.getClass());
     enhancer.setCallback(new TransactionMediator(transactionManager, object));
     return enhancer.create();
+  }
+
+  @SafeVarargs
+  public final <T, WO extends T> T createProxyFor(WO wrappingObject, Class<T>... interfaces) {
+    if (interfaces.length == 0) throw new IllegalArgumentException("No interfaces");
+    final TransactionInvoker transactionInvoker = new TransactionInvoker(transactionManager, wrappingObject);
+    //noinspection unchecked
+    return (T) Proxy.newProxyInstance(getClass().getClassLoader(), interfaces, new InvocationHandler() {
+      @Override
+      public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        return transactionInvoker.invoke(method, args);
+      }
+    });
   }
 
 }

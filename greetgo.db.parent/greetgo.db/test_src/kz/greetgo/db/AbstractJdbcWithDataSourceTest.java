@@ -30,13 +30,13 @@ public class AbstractJdbcWithDataSourceTest {
     testDataSource = new TestDataSource();
     Jdbc jdbc = new MyAbstractJdbcWithDataSource();
 
-    final TestDataSource.TestConnection testConnection[] = new TestDataSource.TestConnection[]{null};
+    final TestConnection testConnection[] = new TestConnection[]{null};
 
     jdbc.execute(new ConnectionCallback<Object>() {
       @Override
       public Object doInConnection(Connection connection) throws Exception {
         connection.prepareStatement("select 1 from dual");
-        testConnection[0] = TestDataSource.extractTestConnection(connection);
+        testConnection[0] = TestConnection.extractTestConnection(connection);
         return null;
       }
     });
@@ -53,13 +53,13 @@ public class AbstractJdbcWithDataSourceTest {
     testDataSource = new TestDataSource();
     Jdbc jdbc = new MyAbstractJdbcWithDataSource();
 
-    final TestDataSource.TestConnection testConnection[] = new TestDataSource.TestConnection[]{null};
+    final TestConnection testConnection[] = new TestConnection[]{null};
 
     jdbc.execute(new ConnectionCallback<Object>() {
       @Override
       public Object doInConnection(Connection connection) throws Exception {
         connection.prepareStatement("select 1 from dual");
-        testConnection[0] = TestDataSource.extractTestConnection(connection);
+        testConnection[0] = TestConnection.extractTestConnection(connection);
         return null;
       }
     });

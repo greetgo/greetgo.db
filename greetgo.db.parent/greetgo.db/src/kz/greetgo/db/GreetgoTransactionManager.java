@@ -6,62 +6,59 @@ import java.sql.SQLException;
 
 public class GreetgoTransactionManager implements TransactionManager {
 
-  private ExceptionCatcher exceptionCatcher = new ExceptionCatcher() {
+  private static final ExceptionCatcher DEFAULT_EXCEPTION_CATCHER = new ExceptionCatcher() {
     @Override
     public void catchException(Throwable e) {
       e.printStackTrace();
     }
   };
-  private boolean exceptionCatcherUsed = false;
+
+  private ExceptionCatcher exceptionCatcher = DEFAULT_EXCEPTION_CATCHER;
+
+  private final ExceptionCatcherGetter exceptionCatcherGetter = new ExceptionCatcherGetter() {
+    @Override
+    public ExceptionCatcher get() {
+      return exceptionCatcher;
+    }
+  };
 
   public void setExceptionCatcher(ExceptionCatcher exceptionCatcher) {
-    if (exceptionCatcher == null) throw new IllegalArgumentException("exceptionCatcher == null");
-    if (exceptionCatcherUsed) throw new RuntimeException("exceptionCatcher already used");
-    this.exceptionCatcher = exceptionCatcher;
+    this.exceptionCatcher = exceptionCatcher == null ? DEFAULT_EXCEPTION_CATCHER : exceptionCatcher;
   }
 
-  private final ThreadLocal<ThreadLocalTM> localTMStore = new ThreadLocal<>();
+  private final ThreadLocal<ThreadLocalTransactionManager> threadLocalTM
+    = new ThreadLocal<ThreadLocalTransactionManager>() {
+    @Override
+    protected ThreadLocalTransactionManager initialValue() {
+      return new ThreadLocalTransactionManager(exceptionCatcherGetter);
+    }
+  };
 
   @Override
   public Connection getConnection(DataSource dataSource) {
-    final ThreadLocalTM localTM = localTMStore.get();
-    if (localTM == null) try {
-      return dataSource.getConnection();
+    try {
+      return threadLocalTM.get().getConnection(dataSource);
     } catch (SQLException e) {
-      throw new RuntimeException(e);
+      throw new SQLRuntimeException(e);
     }
-    return localTM.getConnection(dataSource);
   }
 
   @Override
   public void upLevel(CallMeta callMeta) {
-    ThreadLocalTM threadTM = localTMStore.get();
-    if (threadTM == null) {
-      threadTM = new ThreadLocalTM(exceptionCatcher);
-      exceptionCatcherUsed = true;
-      localTMStore.set(threadTM);
-    }
-
-    threadTM.upLevel(callMeta);
+    threadLocalTM.get().upLevel(callMeta);
   }
 
   @Override
   public void downLevel(Throwable throwable) {
-    localTMStore.get().downLevel(throwable);
+    threadLocalTM.get().downLevel(throwable);
   }
 
   @Override
   public void closeConnection(DataSource dataSource, Connection connection) {
-    final ThreadLocalTM localTM = localTMStore.get();
-    if (localTM == null) try {
-      connection.close();
-      return;
+    try {
+      threadLocalTM.get().closeConnection(dataSource, connection);
     } catch (SQLException e) {
-      throw new RuntimeException(e);
+      throw new SQLRuntimeException(e);
     }
-
-    localTM.closeConnection(dataSource, connection);
   }
-
-
 }
