@@ -149,6 +149,12 @@ class ThreadLocalTransactionManager {
         }
 
         try {
+          if (!connection.getAutoCommit()) connection.setAutoCommit(true);
+        } catch (SQLException e) {
+          exceptionCatcherGetter.get().catchException(e);
+        }
+
+        try {
           connection.close();
         } catch (SQLException e) {
           exceptionCatcherGetter.get().catchException(e);

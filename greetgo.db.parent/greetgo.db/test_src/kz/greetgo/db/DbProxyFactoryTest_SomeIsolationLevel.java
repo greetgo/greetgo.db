@@ -65,11 +65,12 @@ public class DbProxyFactoryTest_SomeIsolationLevel {
 
     proxy.method();
 
-    assertThat(original.testConnection1.events).hasSize(4);
+    assertThat(original.testConnection1.events).hasSize(5);
     assertThat(original.testConnection1.events.get(0)).isEqualTo("SET TransactionIsolation TO READ_COMMITTED");
     assertThat(original.testConnection1.events.get(1)).isEqualTo("SET AutoCommit TO false");
     assertThat(original.testConnection1.events.get(2)).isEqualTo("COMMIT");
-    assertThat(original.testConnection1.events.get(3)).isEqualTo("CLOSE");
+    assertThat(original.testConnection1.events.get(3)).isEqualTo("SET AutoCommit TO true");
+    assertThat(original.testConnection1.events.get(4)).isEqualTo("CLOSE");
 
     assertThat(original.testConnection1.name).isEqualTo(original.testConnection2.name);
   }
