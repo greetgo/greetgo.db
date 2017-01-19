@@ -61,7 +61,7 @@ public class DbProxyFactoryTest_SomeIsolationLevel {
     DbProxyFactory dbProxyFactory = new DbProxyFactory(transactionManager);
 
     Impl original = new Impl(dataSource, transactionManager);
-    Iface proxy = dbProxyFactory.createProxyFor(original, Iface.class);
+    Iface proxy = (Iface) dbProxyFactory.createProxyFor(original, Iface.class);
 
     proxy.method();
 

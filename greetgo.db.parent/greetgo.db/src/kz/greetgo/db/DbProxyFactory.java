@@ -21,12 +21,11 @@ public class DbProxyFactory {
     return enhancer.create();
   }
 
-  @SafeVarargs
-  public final <T, WO extends T> T createProxyFor(WO wrappingObject, Class<T>... interfaces) {
+  public final Object createProxyFor(Object wrappingObject, Class<?>... interfaces) {
     if (interfaces.length == 0) throw new IllegalArgumentException("No interfaces");
     final TransactionInvoker transactionInvoker = new TransactionInvoker(transactionManager, wrappingObject);
     //noinspection unchecked
-    return (T) Proxy.newProxyInstance(getClass().getClassLoader(), interfaces, new InvocationHandler() {
+    return Proxy.newProxyInstance(getClass().getClassLoader(), interfaces, new InvocationHandler() {
       @Override
       public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         return transactionInvoker.invoke(method, args);
