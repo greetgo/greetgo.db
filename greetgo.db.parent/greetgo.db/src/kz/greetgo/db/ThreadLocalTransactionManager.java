@@ -116,17 +116,17 @@ class ThreadLocalTransactionManager {
 
     void closeConnection(Connection connection) throws SQLException {
       if (!callMetaStack.isTransactional()) {
-        connection.close();
+        if (!connection.isClosed()) connection.close();
         return;
       }
 
       if (!busyConnections.contains(connection)) {
-        connection.close();
+        if (!connection.isClosed()) connection.close();
         return;
       }
 
       busyConnections.remove(connection);
-      freeConnections.add(connection);
+      if (!connection.isClosed()) freeConnections.add(connection);
     }
 
     public void downLevel(CallMeta lastCallMeta, Throwable throwable) {
@@ -138,6 +138,13 @@ class ThreadLocalTransactionManager {
       boolean toCommit = throwable == null || lastCallMeta.needToCommit(throwable);
 
       for (Connection connection : freeConnections) {
+
+        try {
+          if (connection.isClosed()) continue;
+        } catch (SQLException e) {
+          exceptionCatcherGetter.get().catchException(e);
+        }
+
         try {
           if (toCommit) {
             connection.commit();
