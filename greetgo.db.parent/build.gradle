@@ -2,6 +2,8 @@ def nowDate = new Date()
 def nowFormattedDate = nowDate.format("yyyy-MM-dd/HH:mm:ss")
 def vendorName = "greetgo!"
 
+// Mock commit
+
 allprojects {
   apply plugin: 'java'
   apply plugin: 'idea'
