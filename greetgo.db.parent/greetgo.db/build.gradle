@@ -15,7 +15,6 @@ eclipse {
 configurations { repoUpload }
 
 dependencies {
-  //compile project(':greetgo.depinject')
 
   compile 'cglib:cglib:3.2.0'
 
