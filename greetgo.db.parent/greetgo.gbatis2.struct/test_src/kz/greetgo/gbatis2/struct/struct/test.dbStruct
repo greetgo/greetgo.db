@@ -1,7 +1,0 @@
-
-@include options.dbStruct
-
-@options
-  empty_key
-
-@include source/main.core.dbStruct

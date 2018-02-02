@@ -1,5 +1,0 @@
-
-client long
-  *id long
-  name str100
-

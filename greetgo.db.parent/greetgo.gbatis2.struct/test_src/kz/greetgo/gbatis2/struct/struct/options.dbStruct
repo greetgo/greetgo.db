@@ -1,6 +1,0 @@
-@options
-  identification       id
-  tablePrefixId        m_
-  tablePrefixMemory    m_
-  tablePrefixOperative o_
-  concatenationSuffix   _
