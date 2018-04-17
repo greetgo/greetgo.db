@@ -1,3 +1,16 @@
+buildscript {
+  repositories {
+    mavenLocal()
+    if (System.getenv('GG_REPO')?.trim()) maven { url System.getenv('GG_REPO') }
+    mavenCentral()
+  }
+  dependencies {
+    classpath "kz.greetgo.plugins:greetgo.gradle.plugins:0.0.2"
+  }
+}
+
+import kz.greetgo.gradle.plugins.ShortJavaPathPlugin
+
 def nowDate = new Date()
 def nowFormattedDate = nowDate.format("yyyy-MM-dd/HH:mm:ss")
 def vendorName = "greetgo!"
@@ -10,6 +23,7 @@ allprojects {
   apply plugin: 'eclipse'
   apply plugin: 'maven'
   apply plugin: 'signing'
+  apply plugin: ShortJavaPathPlugin
 
   version = '2.0.0'
 
@@ -43,13 +57,6 @@ subprojects {
     testCompile 'org.easytesting:fest-assert-core:2.0M10'
   }
 
-  compileJava {
-    options.encoding = "UTF-8"
-  }
-  compileTestJava {
-    options.encoding = "UTF-8"
-  }
-
   project.eclipse.classpath.file.whenMerged { cp ->
     if (project.hasProperty("sourceCompatibility")) {
       cp.entries.findAll { it.path.contains('JRE_CONTAINER') }.each {
@@ -65,17 +72,6 @@ subprojects {
       attributes 'Implementation-Title': project.name,
           'Implementation-Version': version, 'Implementation-Vendor': vendorName,
           'Built-By': System.getProperty("user.name"), 'Built-At': nowFormattedDate
-    }
-  }
-
-  sourceSets {
-    main {
-      java.srcDirs = ["src", "src_resources"]
-      resources.srcDirs = ["src", "src_resources"]
-    }
-    test {
-      java.srcDirs = ["test_src", "test_src_resources"]
-      resources.srcDirs = ["test_src", "test_src_resources"]
     }
   }
 
