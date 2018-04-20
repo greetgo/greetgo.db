@@ -188,7 +188,7 @@ public class JavaGenerator {
     for (Nf3Field f : fields) {
       String fieldType = p.i(f.javaTypeName());
       String fieldName = f.javaName();
-      p.ofs(1).prn(info.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ");");
+      p.ofs(1).prn(info.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ");").prn();
     }
 
     p.ofs(1).prn("void " + goMethod + "();");
@@ -196,7 +196,7 @@ public class JavaGenerator {
     p.printToFile(info.interfaceJavaFile());
   }
 
-  String goMethod = "__go";
+  String goMethod = "go";
 
   @SuppressWarnings("unused")
   public JavaGenerator setGoMethod(String goMethod) {
@@ -241,7 +241,7 @@ public class JavaGenerator {
     p.ofs(1).prn("}");
   }
 
-  String upserterField = "__upserter__";
+  String upserterField = "upserter";
 
   @SuppressWarnings("unused")
   public JavaGenerator setUpserterField(String upserterField) {
@@ -313,7 +313,7 @@ public class JavaGenerator {
     p.printToFile(UtilsNf36.resolveJavaFile(implOutDir, implBasePackage, mainNf36ImplClassName()));
   }
 
-  String upserterCreateMethod = "__createUpserter__";
+  String upserterCreateMethod = "createUpserter";
 
   @SuppressWarnings("unused")
   public JavaGenerator setUpserterCreateMethod(String upserterCreateMethod) {
@@ -385,5 +385,4 @@ public class JavaGenerator {
 
     p.ofs(1).prn("}").prn();
   }
-
 }

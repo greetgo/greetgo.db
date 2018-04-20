@@ -4,6 +4,7 @@ import kz.greetgo.db.nf36.gen.example.structure.Client;
 import kz.greetgo.db.nf36.gen.example.structure.Street;
 import kz.greetgo.db.nf36.gen.example.structure.inner.Chair;
 import kz.greetgo.db.nf36.gen.example.structure.inner.ClientAddress;
+import kz.greetgo.db.nf36.gen.example.structure.inner.Wow;
 import kz.greetgo.db.nf36.model.Nf3Table;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class GenerateExample {
       .register(new ClientAddress())
       .register(new Street())
       .register(new Chair())
+      .register(new Wow())
       .collect();
 
     JavaGenerator.newGenerator()
