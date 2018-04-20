@@ -21,12 +21,46 @@ public class JavaGeneratorTest {
       .collect();
 
     JavaGenerator.newGenerator()
+      .setInterfaceOutDir("left 1")
+      .setImplOutDir("left 2")
       .setOutDir("greetgo.nf36.gen/build/java_generated")
+      .setCleanOutDirsBeforeGeneration(false)
       .setInterfaceBasePackage("kz.greetgo.db.nf36.test.generated.faces")
       .setImplBasePackage("kz.greetgo.db.nf36.test.generated.impl")
       .setSourceBasePackage(Client.class.getPackage().getName())
+      .setMainNf36ClassName("TestNf3Door")
+      .setJdbcDefinition(jdbcDefinition())
       .generate(nf3TableList)
     ;
+  }
+
+  private JdbcDefinition jdbcDefinition() {
+    return new JdbcDefinition() {
+      @Override
+      public String jdbcClassName() {
+        return "kz.greetgo.db.Jdbc";
+      }
+
+      @Override
+      public String executeMethodName() {
+        return "execute";
+      }
+
+      @Override
+      public String jdbcAccessMethod() {
+        return "__getJdbc__";
+      }
+
+      @Override
+      public String jdbcVar() {
+        return "__jdbc__";
+      }
+
+      @Override
+      public String connectionCallbackClassName() {
+        return "kz.greetgo.db.ConnectionCallback";
+      }
+    };
   }
 
 }

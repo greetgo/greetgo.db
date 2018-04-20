@@ -55,4 +55,17 @@ public class UtilsNf36Test {
     String name = UtilsNf36.extractSimpleName("HelloWorld");
     assertThat(name).isEqualTo("HelloWorld");
   }
+
+  @Test
+  public void resolveFullName_1() throws Exception {
+    String fullName = UtilsNf36.resolveFullName("asd.dsa", "Hello");
+    assertThat(fullName).isEqualTo("asd.dsa.Hello");
+  }
+
+  @Test
+  public void resolveFullName_2() throws Exception {
+    String fullName = UtilsNf36.resolveFullName(null, "Hello");
+    assertThat(fullName).isEqualTo("Hello");
+  }
+
 }

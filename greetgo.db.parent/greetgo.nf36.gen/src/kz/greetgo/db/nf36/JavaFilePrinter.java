@@ -28,6 +28,11 @@ public class JavaFilePrinter {
     return this;
   }
 
+  public JavaFilePrinter prn() {
+    content.append("\n");
+    return this;
+  }
+
   public JavaFilePrinter ofs(int tabCount) {
     for (int i = 0; i < tabCount; i++) {
       content.append("  ");
@@ -63,7 +68,7 @@ public class JavaFilePrinter {
 
     result.append(imports.values().stream().sorted().map(fn -> "import " + fn + ";").collect(Collectors.joining("\n")));
 
-    result.append("\n");
+    result.append("\n\n");
 
     result.append(classHeader).append(" {\n");
 
@@ -90,4 +95,5 @@ public class JavaFilePrinter {
       throw new RuntimeException(e);
     }
   }
+
 }

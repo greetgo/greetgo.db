@@ -47,4 +47,9 @@ public class UtilsNf36 {
 
     if (killMe) file.delete();
   }
+
+  public static String resolveFullName(String packageName, String className) {
+    if (packageName == null) return className;
+    return packageName + "." + className;
+  }
 }
