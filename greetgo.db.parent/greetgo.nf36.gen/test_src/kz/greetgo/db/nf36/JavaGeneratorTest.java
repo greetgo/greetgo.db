@@ -1,10 +1,10 @@
 package kz.greetgo.db.nf36;
 
 import kz.greetgo.db.nf36.model.Nf3Table;
-import kz.greetgo.db.nf36.structure.inner.Chair;
 import kz.greetgo.db.nf36.structure.Client;
-import kz.greetgo.db.nf36.structure.inner.ClientAddress;
 import kz.greetgo.db.nf36.structure.Street;
+import kz.greetgo.db.nf36.structure.inner.Chair;
+import kz.greetgo.db.nf36.structure.inner.ClientAddress;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -32,7 +32,8 @@ public class JavaGeneratorTest {
       .setSourceBasePackage(Client.class.getPackage().getName())
       .setMainNf36ClassName("TestNf3Door")
       .setMainNf36ClassAbstract(true)
-      .generate(nf3TableList)
+      .setNf3TableList(nf3TableList)
+      .generate()
     ;
   }
 

@@ -7,6 +7,7 @@ import kz.greetgo.db.nf36.gen.example.structure.inner.ClientAddress;
 import kz.greetgo.db.nf36.gen.example.structure.inner.Wow;
 import kz.greetgo.db.nf36.model.Nf3Table;
 
+import java.io.File;
 import java.util.List;
 
 public class GenerateExample {
@@ -32,7 +33,13 @@ public class GenerateExample {
       .setSourceBasePackage(Client.class.getPackage().getName())
       .setMainNf36ClassName("TestNf3Door")
       .setMainNf36ClassAbstract(true)
-      .generate(nf3TableList)
+      .setNf3TableList(nf3TableList)
+      .generate()
+    ;
+
+    DdlGenerator.newGenerator()
+      .setNf3TableList(nf3TableList)
+      .generateCreateTables(new File("greetgo.nf36.gen.example/build/create_tables.sql"))
     ;
   }
 }

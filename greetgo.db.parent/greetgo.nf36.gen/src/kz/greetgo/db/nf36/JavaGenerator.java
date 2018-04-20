@@ -23,6 +23,8 @@ public class JavaGenerator {
 
   String mainNf36ImplClassName = null;
 
+  List<Nf3Table> nf3TableList = null;
+
   private String mainNf36ImplClassName() {
     if (mainNf36ClassName == null) {
       throw new RuntimeException("Не определён mainNf36ClassName:" +
@@ -56,6 +58,11 @@ public class JavaGenerator {
     return this;
   }
 
+  public JavaGenerator setNf3TableList(List<Nf3Table> nf3TableList) {
+    this.nf3TableList = nf3TableList;
+    return this;
+  }
+
   public JavaGenerator setInterfaceOutDir(String interfaceOutDir) {
     this.interfaceOutDir = interfaceOutDir;
     return this;
@@ -76,12 +83,12 @@ public class JavaGenerator {
     return this;
   }
 
-  public void generate(List<Nf3Table> nf3TableList) {
+  public void generate() {
 
     if (cleanOutDirsBeforeGeneration) cleanOutDirs();
 
-    String mainInterfaceClassName = generateMainInterface(nf3TableList);
-    generateMainImpl(nf3TableList, mainInterfaceClassName);
+    String mainInterfaceClassName = generateMainInterface();
+    generateMainImpl(mainInterfaceClassName);
 
     for (Nf3Table nf3Table : nf3TableList) {
       UpsertInfo info = getUpsertInfo(nf3Table);
@@ -186,7 +193,7 @@ public class JavaGenerator {
       .collect(Collectors.toList());
 
     for (Nf3Field f : fields) {
-      String fieldType = p.i(f.javaTypeName());
+      String fieldType = p.i(f.javaType().getName());
       String fieldName = f.javaName();
       p.ofs(1).prn(info.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ");").prn();
     }
@@ -217,7 +224,7 @@ public class JavaGenerator {
       .collect(Collectors.toList());
 
     for (Nf3Field f : fields) {
-      String fieldType = p.i(f.javaTypeName());
+      String fieldType = p.i(f.javaType().getName());
       String fieldName = f.javaName();
       p.ofs(1).prn("@Override");
       p.ofs(1).prn("public " + info.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ") {");
@@ -265,7 +272,7 @@ public class JavaGenerator {
       nf3Table.fields().stream()
         .filter(Nf3Field::isId)
         .sorted(Comparator.comparing(Nf3Field::idOrder))
-        .map(f -> p.i(f.javaTypeName()) + " " + f.javaName())
+        .map(f -> p.i(f.javaType().getName()) + " " + f.javaName())
         .collect(Collectors.joining(", "))
 
     ) + ") {");
@@ -276,7 +283,7 @@ public class JavaGenerator {
     p.ofs(1).prn("}").prn();
   }
 
-  private String generateMainInterface(List<Nf3Table> nf3TableList) {
+  private String generateMainInterface() {
 
     if (mainNf36ClassName == null) {
       throw new RuntimeException("Не определён mainNf36ClassName:" +
@@ -296,7 +303,7 @@ public class JavaGenerator {
     return UtilsNf36.resolveFullName(interfaceBasePackage, mainNf36ClassName);
   }
 
-  private void generateMainImpl(List<Nf3Table> nf3TableList, String mainInterfaceClassName) {
+  private void generateMainImpl(String mainInterfaceClassName) {
 
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = implBasePackage;
@@ -352,7 +359,7 @@ public class JavaGenerator {
       nf3Table.fields().stream()
         .filter(Nf3Field::isId)
         .sorted(Comparator.comparing(Nf3Field::idOrder))
-        .map(f -> p.i(f.javaTypeName()) + " " + f.javaName())
+        .map(f -> p.i(f.javaType().getName()) + " " + f.javaName())
         .collect(Collectors.joining(", "))
 
     ) + ");").prn();
@@ -368,7 +375,7 @@ public class JavaGenerator {
       nf3Table.fields().stream()
         .filter(Nf3Field::isId)
         .sorted(Comparator.comparing(Nf3Field::idOrder))
-        .map(f -> p.i(f.javaTypeName()) + " " + f.javaName())
+        .map(f -> p.i(f.javaType().getName()) + " " + f.javaName())
         .collect(Collectors.joining(", "))
 
     ) + ") {");

@@ -13,6 +13,7 @@ import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.StreetUpsertImpl;
 import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.inner.ChairUpsertImpl;
 import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.inner.ClientAddressUpsertImpl;
 import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.inner.WowUpsertImpl;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public abstract class AbstractTestNf3Door implements TestNf3Door {
   protected abstract Nf36Upserter createUpserter();

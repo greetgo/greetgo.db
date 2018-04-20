@@ -2,6 +2,8 @@ package kz.greetgo.db.nf36.utils;
 
 
 import kz.greetgo.db.nf36.errors.CannotConvertFromSql;
+import kz.greetgo.db.nf36.model.DbType;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -228,4 +230,7 @@ public class SqlUtil {
     return null;
   }
 
+  public static DbType convertType(Class<?> javaClass) {
+    throw new NotImplementedException();
+  }
 }

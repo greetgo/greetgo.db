@@ -10,5 +10,7 @@ public interface Nf3Field {
 
   String dbName();
 
-  String javaTypeName();
+  Class<?> javaType();
+
+  DbType dbType();
 }
