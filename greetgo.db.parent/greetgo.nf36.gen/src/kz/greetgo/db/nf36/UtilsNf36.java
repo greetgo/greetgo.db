@@ -52,4 +52,23 @@ public class UtilsNf36 {
     if (packageName == null) return className;
     return packageName + "." + className;
   }
+
+  public static String javaNameToDbName(String javaName) {
+    int sourceLen = javaName.length();
+    char source[] = new char[sourceLen];
+    javaName.getChars(0, sourceLen, source, 0);
+    char dest[] = new char[source.length * 2];
+    int j = 0;
+    for (int i = 0; i < sourceLen; i++) {
+      char c = source[i];
+      char lowC = Character.toLowerCase(c);
+      if (lowC == c) {
+        dest[j++] = lowC;
+      } else {
+        dest[j++] = '_';
+        dest[j++] = lowC;
+      }
+    }
+    return new String(dest, 0, j);
+  }
 }

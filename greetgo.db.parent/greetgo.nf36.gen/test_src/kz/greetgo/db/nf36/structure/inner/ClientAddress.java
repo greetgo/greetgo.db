@@ -1,4 +1,4 @@
-package kz.greetgo.db.nf36.structure;
+package kz.greetgo.db.nf36.structure.inner;
 
 import kz.greetgo.db.nf36.core.Nf3DefaultNow;
 import kz.greetgo.db.nf36.core.Nf3Description;
@@ -6,6 +6,9 @@ import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3NotNull;
 import kz.greetgo.db.nf36.core.Nf3References;
 import kz.greetgo.db.nf36.core.Nf3Short;
+import kz.greetgo.db.nf36.structure.AddressType;
+import kz.greetgo.db.nf36.structure.Client;
+import kz.greetgo.db.nf36.structure.Street;
 
 import java.util.Date;
 

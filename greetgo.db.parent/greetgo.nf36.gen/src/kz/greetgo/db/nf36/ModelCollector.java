@@ -1,9 +1,14 @@
 package kz.greetgo.db.nf36;
 
+import kz.greetgo.db.nf36.core.Nf3ID;
+import kz.greetgo.db.nf36.model.Nf3Field;
 import kz.greetgo.db.nf36.model.Nf3Table;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ModelCollector {
 
@@ -44,14 +49,52 @@ public class ModelCollector {
 
     for (Object object : registeredObjects) {
       ret.add(new Nf3Table() {
-
         @Override
         public Class<?> source() {
           return object.getClass();
+        }
+
+        @Override
+        public List<Nf3Field> fields() {
+          return Arrays.stream(object.getClass().getFields())
+            .map(f -> convertField(f))
+            .collect(Collectors.toList());
         }
       });
     }
 
     return ret;
   }
+
+  private Nf3Field convertField(Field f) {
+    Nf3ID nf3ID = f.getAnnotation(Nf3ID.class);
+
+    return new Nf3Field() {
+      @Override
+      public boolean isId() {
+        return nf3ID != null;
+      }
+
+      @Override
+      public int idOrder() {
+        return nf3ID == null ? 0 : nf3ID.order();
+      }
+
+      @Override
+      public String javaName() {
+        return f.getName();
+      }
+
+      @Override
+      public String dbName() {
+        return UtilsNf36.javaNameToDbName(javaName());
+      }
+
+      @Override
+      public String javaTypeName() {
+        return f.getType().getName();
+      }
+    };
+  }
+
 }

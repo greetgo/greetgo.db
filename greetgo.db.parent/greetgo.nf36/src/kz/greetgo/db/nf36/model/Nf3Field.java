@@ -2,13 +2,13 @@ package kz.greetgo.db.nf36.model;
 
 public interface Nf3Field {
 
-  boolean primaryKey();
+  boolean isId();
 
-  String name();
+  int idOrder();
 
-  DbField db();
+  String javaName();
 
-  DbTable nf6Table();
+  String dbName();
 
-  Nf3Table references();
+  String javaTypeName();
 }

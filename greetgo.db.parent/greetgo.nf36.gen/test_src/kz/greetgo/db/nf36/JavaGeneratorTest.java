@@ -1,8 +1,9 @@
 package kz.greetgo.db.nf36;
 
 import kz.greetgo.db.nf36.model.Nf3Table;
+import kz.greetgo.db.nf36.structure.inner.Chair;
 import kz.greetgo.db.nf36.structure.Client;
-import kz.greetgo.db.nf36.structure.ClientAddress;
+import kz.greetgo.db.nf36.structure.inner.ClientAddress;
 import kz.greetgo.db.nf36.structure.Street;
 import org.testng.annotations.Test;
 
@@ -18,6 +19,7 @@ public class JavaGeneratorTest {
       .register(new Client())
       .register(new ClientAddress())
       .register(new Street())
+      .register(new Chair())
       .collect();
 
     JavaGenerator.newGenerator()

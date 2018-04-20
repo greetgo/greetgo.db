@@ -124,7 +124,7 @@ public class ClassOuter {
    * @return короткое имя объекта (если добавили в импорты), или исходное (длинное) имя объекта
    * (иначе)
    */
-  public String _(String fullName) {
+  public String i(String fullName) {
     int idx = fullName.lastIndexOf('.');
     if (idx < 0) return fullName;
 
