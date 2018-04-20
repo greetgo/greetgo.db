@@ -1,0 +1,6 @@
+configurations { repoUpload }
+
+dependencies {
+  compile project(':greetgo.nf36.gen')
+  testCompile project(':greetgo.db')
+}

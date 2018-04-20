@@ -1,0 +1,36 @@
+package kz.greetgo.db.nf36;
+
+import kz.greetgo.db.nf36.gen.example.structure.Client;
+import kz.greetgo.db.nf36.gen.example.structure.Street;
+import kz.greetgo.db.nf36.gen.example.structure.inner.Chair;
+import kz.greetgo.db.nf36.gen.example.structure.inner.ClientAddress;
+import kz.greetgo.db.nf36.model.Nf3Table;
+
+import java.util.List;
+
+public class GenerateExample {
+  public static void main(String[] args) {
+    List<Nf3Table> nf3TableList = ModelCollector
+      .newCollector()
+      .setNf3Prefix(/*empty*/"")
+      .setNf6Prefix("m_")
+      .register(new Client())
+      .register(new ClientAddress())
+      .register(new Street())
+      .register(new Chair())
+      .collect();
+
+    JavaGenerator.newGenerator()
+      .setInterfaceOutDir("left 1")
+      .setImplOutDir("left 2")
+      .setOutDir("greetgo.nf36.gen.example/src")
+      .setCleanOutDirsBeforeGeneration(true)
+      .setInterfaceBasePackage("kz.greetgo.db.nf36.gen.example.generated.faces")
+      .setImplBasePackage("kz.greetgo.db.nf36.gen.example.generated.impl")
+      .setSourceBasePackage(Client.class.getPackage().getName())
+      .setMainNf36ClassName("TestNf3Door")
+      .setMainNf36ClassAbstract(true)
+      .generate(nf3TableList)
+    ;
+  }
+}
