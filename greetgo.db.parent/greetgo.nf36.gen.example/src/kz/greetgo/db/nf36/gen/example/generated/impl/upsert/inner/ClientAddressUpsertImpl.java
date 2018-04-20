@@ -2,14 +2,14 @@ package kz.greetgo.db.nf36.gen.example.generated.impl.upsert.inner;
 
 import java.lang.String;
 import java.util.Date;
-import kz.greetgo.db.nf36.core.Upserter;
+import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.ClientAddressUpsert;
 import kz.greetgo.db.nf36.gen.example.structure.AddressType;
 
 public class ClientAddressUpsertImpl implements ClientAddressUpsert {
-  private final Upserter upserter;
+  private final Nf36Upserter upserter;
 
-  public ClientAddressUpsertImpl(Upserter upserter, long clientId) {
+  public ClientAddressUpsertImpl(Nf36Upserter upserter, long clientId) {
     this.upserter = upserter;
     upserter.putId("client_id", clientId);
   }

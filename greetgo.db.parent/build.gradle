@@ -43,7 +43,7 @@ subprojects {
 
   dependencies {
     ext.greetgoUtilVersion = "0.0.25"
-    ext.depinjectVersion = "0.1.2"
+    ext.depinjectVersion = "2.0.1"
     ext.classScannerVersion = "0.0.1"
     ext.greetgoJavaCompilerVersion = "0.0.1"
 

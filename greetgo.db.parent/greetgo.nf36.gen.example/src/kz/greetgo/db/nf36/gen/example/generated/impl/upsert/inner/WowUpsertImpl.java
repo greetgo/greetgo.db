@@ -1,13 +1,13 @@
 package kz.greetgo.db.nf36.gen.example.generated.impl.upsert.inner;
 
 import java.lang.String;
-import kz.greetgo.db.nf36.core.Upserter;
+import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.WowUpsert;
 
 public class WowUpsertImpl implements WowUpsert {
-  private final Upserter upserter;
+  private final Nf36Upserter upserter;
 
-  public WowUpsertImpl(Upserter upserter, String wowId) {
+  public WowUpsertImpl(Nf36Upserter upserter, String wowId) {
     this.upserter = upserter;
     upserter.putId("wow_id", wowId);
   }

@@ -1,14 +1,14 @@
 package kz.greetgo.db.nf36.gen.example.generated.impl.upsert;
 
 import java.lang.String;
-import kz.greetgo.db.nf36.core.Upserter;
+import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.StreetUpsert;
 import kz.greetgo.db.nf36.gen.example.structure.StreetType;
 
 public class StreetUpsertImpl implements StreetUpsert {
-  private final Upserter upserter;
+  private final Nf36Upserter upserter;
 
-  public StreetUpsertImpl(Upserter upserter, long id) {
+  public StreetUpsertImpl(Nf36Upserter upserter, long id) {
     this.upserter = upserter;
     upserter.putId("id", id);
   }

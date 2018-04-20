@@ -2,13 +2,13 @@ package kz.greetgo.db.nf36.gen.example.generated.impl.upsert;
 
 import java.lang.Long;
 import java.lang.String;
-import kz.greetgo.db.nf36.core.Upserter;
+import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.ClientUpsert;
 
 public class ClientUpsertImpl implements ClientUpsert {
-  private final Upserter upserter;
+  private final Nf36Upserter upserter;
 
-  public ClientUpsertImpl(Upserter upserter, long id) {
+  public ClientUpsertImpl(Nf36Upserter upserter, long id) {
     this.upserter = upserter;
     upserter.putId("id", id);
   }

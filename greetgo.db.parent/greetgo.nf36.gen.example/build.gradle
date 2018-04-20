@@ -2,5 +2,9 @@ configurations { repoUpload }
 
 dependencies {
   compile project(':greetgo.nf36.gen')
-  testCompile project(':greetgo.db')
+  compile project(':greetgo.db')
+
+  compile "kz.greetgo.depinject:greetgo.depinject.testng:$depinjectVersion"
+  compile group: 'kz.greetgo.conf', name: 'greetgo.sys_params', version: '1.0.2'
+  compile group: 'org.postgresql', name: 'postgresql', version: '9.4-1202-jdbc42'
 }

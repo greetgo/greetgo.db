@@ -1,6 +1,6 @@
 package kz.greetgo.db.nf36;
 
-import kz.greetgo.db.nf36.core.Upserter;
+import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.model.Nf3Field;
 import kz.greetgo.db.nf36.model.Nf3Table;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -250,7 +250,7 @@ public class JavaGenerator {
   }
 
   private void printUpsertImplConstructor(JavaFilePrinter p, UpsertInfo info, Nf3Table nf3Table) {
-    String upserterClassName = p.i(Upserter.class.getName());
+    String upserterClassName = p.i(Nf36Upserter.class.getName());
 
     p.ofs(1).prn("private final " + upserterClassName + " " + upserterField + ";");
     p.prn();
@@ -329,7 +329,7 @@ public class JavaGenerator {
   }
 
   private void printCreateUpserterMethod(JavaFilePrinter p) {
-    String upserterClassName = p.i(Upserter.class.getName());
+    String upserterClassName = p.i(Nf36Upserter.class.getName());
     String notImplError = p.i(NotImplementedException.class.getName());
 
     p.ofs(1).prn("protected " + (mainNf36ClassAbstract ? "abstract " : "")

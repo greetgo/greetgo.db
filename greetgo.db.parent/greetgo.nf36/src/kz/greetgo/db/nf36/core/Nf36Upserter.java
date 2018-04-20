@@ -1,6 +1,6 @@
 package kz.greetgo.db.nf36.core;
 
-public interface Upserter {
+public interface Nf36Upserter {
   void setTableName(String tableName);
 
   void putId(String idName, Object idValue);
