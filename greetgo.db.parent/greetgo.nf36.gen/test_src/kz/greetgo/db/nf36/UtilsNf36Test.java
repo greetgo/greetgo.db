@@ -115,4 +115,16 @@ public class UtilsNf36Test {
     String dbName = UtilsNf36.javaNameToDbName("ПриветМир");
     assertThat(dbName).isEqualTo("_привет_мир");
   }
+
+  @Test
+  public void packageDir_1() throws Exception {
+    String dir = UtilsNf36.packageDir("build/src", "kz.greetgo.asd.dsa");
+    assertThat(dir).isEqualTo("build/src/kz/greetgo/asd/dsa");
+  }
+
+  @Test
+  public void packageDir_2() throws Exception {
+    String dir = UtilsNf36.packageDir("build/src", null);
+    assertThat(dir).isEqualTo("build/src");
+  }
 }

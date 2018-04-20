@@ -92,8 +92,8 @@ public class JavaGenerator {
   }
 
   private void cleanOutDirs() {
-    UtilsNf36.cleanDir(implOutDir);
-    UtilsNf36.cleanDir(interfaceOutDir);
+    UtilsNf36.cleanDir(UtilsNf36.packageDir(implOutDir, implBasePackage));
+    UtilsNf36.cleanDir(UtilsNf36.packageDir(interfaceOutDir, interfaceBasePackage));
   }
 
   public JavaGenerator setSourceBasePackage(String sourceBasePackage) {

@@ -71,4 +71,9 @@ public class UtilsNf36 {
     }
     return new String(dest, 0, j);
   }
+
+  public static String packageDir(String srcDir, String packageName) {
+    if (packageName == null) return srcDir;
+    return srcDir + "/" + packageName.replace('.', '/');
+  }
 }
