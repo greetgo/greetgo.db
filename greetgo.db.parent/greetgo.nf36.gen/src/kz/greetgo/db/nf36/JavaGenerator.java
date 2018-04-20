@@ -1,15 +1,13 @@
 package kz.greetgo.db.nf36;
 
+import kz.greetgo.db.nf36.core.Upserter;
 import kz.greetgo.db.nf36.model.Nf3Field;
 import kz.greetgo.db.nf36.model.Nf3Table;
-import kz.greetgo.db.nf36.utils.SqlUtil;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JavaGenerator {
@@ -23,9 +21,17 @@ public class JavaGenerator {
 
   String mainNf36ClassName;
 
-  String mainNf36ImplClassName;
+  String mainNf36ImplClassName = null;
 
-  JdbcDefinition jdbcDefinition;
+  private String mainNf36ImplClassName() {
+    if (mainNf36ClassName == null) {
+      throw new RuntimeException("Не определён mainNf36ClassName:" +
+        " Вызовете метод JavaGenerator.setMainNf36ClassName(...)");
+    }
+    if (mainNf36ImplClassName != null) return mainNf36ImplClassName;
+
+    return mainNf36ClassAbstract ? "Abstract" + mainNf36ClassName : mainNf36ClassName + "Impl";
+  }
 
   private JavaGenerator() {}
 
@@ -41,18 +47,12 @@ public class JavaGenerator {
 
   public JavaGenerator setMainNf36ClassName(String mainNf36ClassName) {
     this.mainNf36ClassName = mainNf36ClassName;
-    this.mainNf36ImplClassName = mainNf36ClassName + "Impl";
     return this;
   }
 
   @SuppressWarnings("unused")
   public JavaGenerator setMainNf36ImplClassName(String mainNf36ImplClassName) {
     this.mainNf36ImplClassName = mainNf36ImplClassName;
-    return this;
-  }
-
-  public JavaGenerator setJdbcDefinition(JdbcDefinition jdbcDefinition) {
-    this.jdbcDefinition = jdbcDefinition;
     return this;
   }
 
@@ -77,7 +77,6 @@ public class JavaGenerator {
   }
 
   public void generate(List<Nf3Table> nf3TableList) {
-    check();
 
     if (cleanOutDirsBeforeGeneration) cleanOutDirs();
 
@@ -91,13 +90,6 @@ public class JavaGenerator {
       generateUpsertImpl(info, nf3Table);
     }
   }
-
-  private void check() {
-    if (jdbcDefinition == null) {
-      throw new RuntimeException("Please call method JavaGenerator.setJdbcDefinition(JdbcDefinition)");
-    }
-  }
-
 
   private void cleanOutDirs() {
     UtilsNf36.cleanDir(implOutDir);
@@ -132,9 +124,9 @@ public class JavaGenerator {
 
     String upsertMethodName = "upsert" + nf3Table.source().getSimpleName();
 
-    String interfaceName = UtilsNf36.resolveFullName(interfacePackageName, interfaceClassName);
+    String interfaceFullName = UtilsNf36.resolveFullName(interfacePackageName, interfaceClassName);
 
-    String implName = UtilsNf36.resolveFullName(implPackageName, implClassName);
+    String implFullName = UtilsNf36.resolveFullName(implPackageName, implClassName);
 
     return new UpsertInfo() {
       @Override
@@ -174,12 +166,12 @@ public class JavaGenerator {
 
       @Override
       public String interfaceFullName() {
-        return interfaceName;
+        return interfaceFullName;
       }
 
       @Override
       public String implFullName() {
-        return implName;
+        return implFullName;
       }
     };
   }
@@ -199,11 +191,18 @@ public class JavaGenerator {
       p.ofs(1).prn(info.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ");");
     }
 
+    p.ofs(1).prn("void " + goMethod + "();");
+
     p.printToFile(info.interfaceJavaFile());
   }
 
-  String fIdMap = "idMap";
-  String fFieldMap = "fieldMap";
+  String goMethod = "__go";
+
+  @SuppressWarnings("unused")
+  public JavaGenerator setGoMethod(String goMethod) {
+    this.goMethod = goMethod;
+    return this;
+  }
 
   private void generateUpsertImpl(UpsertInfo info, Nf3Table nf3Table) {
     JavaFilePrinter p = new JavaFilePrinter();
@@ -211,16 +210,7 @@ public class JavaGenerator {
     p.classHeader = "public class " + info.implClassName() + " implements "
       + p.i(UtilsNf36.resolveFullName(info.interfacePackageName(), info.interfaceClassName()));
 
-    String mapClass = p.i(Map.class.getName());
-    String hashMapClass = p.i(HashMap.class.getName());
-    String sqlUtilClass = p.i(SqlUtil.class.getName());
-
-    p.ofs(1).prn("private final " + mapClass + "<String, Object> " + fIdMap + " = new " + hashMapClass + "<>();");
-
     printUpsertImplConstructor(p, info, nf3Table);
-
-    p.ofs(1).prn("private final " + mapClass + "<String, Object> " + fFieldMap + " = new " + hashMapClass + "<>();");
-    p.prn();
 
     List<Nf3Field> fields = nf3Table.fields().stream()
       .filter(f -> !f.isId())
@@ -231,20 +221,38 @@ public class JavaGenerator {
       String fieldName = f.javaName();
       p.ofs(1).prn("@Override");
       p.ofs(1).prn("public " + info.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ") {");
-      p.ofs(2).prn(fFieldMap + ".put(\"" + f.dbName() + "\", " + sqlUtilClass + ".forSql(" + fieldName + "));");
+      p.ofs(2).prn(upserterField + ".putField(\"" + f.dbName() + "\", " + fieldName + ");");
       p.ofs(2).prn("return this;");
       p.ofs(1).prn("}").prn();
     }
 
+    printGoMethodImpl(p, nf3Table);
+
     p.printToFile(info.implJavaFile());
   }
 
-  private void printUpsertImplConstructor(JavaFilePrinter p, UpsertInfo info, Nf3Table nf3Table) {
-    String jdbcVar = jdbcDefinition.jdbcVar();
-    String jdbcClass = p.i(jdbcDefinition.jdbcClassName());
-    String sqlUtilClass = p.i(SqlUtil.class.getName());
+  private void printGoMethodImpl(JavaFilePrinter p, Nf3Table nf3Table) {
+    p.ofs(1).prn("@Override");
+    p.ofs(1).prn("public void " + goMethod + "() {");
+    p.ofs(2).prn(upserterField + ".setTableName(\"" + nf3Table.tableName() + "\");");
+    p.ofs(2).prn(upserterField + ".setNf3Prefix(\"" + nf3Table.nf3prefix() + "\");");
+    p.ofs(2).prn(upserterField + ".setNf6Prefix(\"" + nf3Table.nf6prefix() + "\");");
+    p.ofs(2).prn(upserterField + ".go();");
+    p.ofs(1).prn("}");
+  }
 
-    p.ofs(1).prn("private final " + jdbcClass + " " + jdbcVar + ";");
+  String upserterField = "__upserter__";
+
+  @SuppressWarnings("unused")
+  public JavaGenerator setUpserterField(String upserterField) {
+    this.upserterField = upserterField;
+    return this;
+  }
+
+  private void printUpsertImplConstructor(JavaFilePrinter p, UpsertInfo info, Nf3Table nf3Table) {
+    String upserterClassName = p.i(Upserter.class.getName());
+
+    p.ofs(1).prn("private final " + upserterClassName + " " + upserterField + ";");
     p.prn();
 
     List<Nf3Field> idFields = nf3Table.fields().stream()
@@ -252,7 +260,7 @@ public class JavaGenerator {
       .sorted(Comparator.comparing(Nf3Field::idOrder))
       .collect(Collectors.toList());
 
-    p.ofs(1).prn("public " + info.implClassName() + "(" + jdbcClass + " " + jdbcVar + ", " + (
+    p.ofs(1).prn("public " + info.implClassName() + "(" + upserterClassName + " " + upserterField + ", " + (
 
       nf3Table.fields().stream()
         .filter(Nf3Field::isId)
@@ -261,9 +269,9 @@ public class JavaGenerator {
         .collect(Collectors.joining(", "))
 
     ) + ") {");
-    p.ofs(2).prn("this." + jdbcVar + " = " + jdbcVar + ";");
+    p.ofs(2).prn("this." + upserterField + " = " + upserterField + ";");
     for (Nf3Field f : idFields) {
-      p.ofs(2).prn(fIdMap + ".put(\"" + f.dbName() + "\", " + sqlUtilClass + ".fromSql(" + f.javaName() + "));");
+      p.ofs(2).prn(upserterField + ".putId(\"" + f.dbName() + "\", " + f.javaName() + ");");
     }
     p.ofs(1).prn("}").prn();
   }
@@ -275,46 +283,62 @@ public class JavaGenerator {
         " Вызовете метод JavaGenerator.setMainNf36ClassName(...)");
     }
 
-    JavaFilePrinter printer = new JavaFilePrinter();
-    printer.packageName = interfaceBasePackage;
-    printer.classHeader = "public interface " + mainNf36ClassName;
+    JavaFilePrinter p = new JavaFilePrinter();
+    p.packageName = interfaceBasePackage;
+    p.classHeader = "public interface " + mainNf36ClassName;
 
     for (Nf3Table nf3Table : nf3TableList) {
-      printUpsertInterfaceMethod(printer, nf3Table);
+      printUpsertInterfaceMethod(p, nf3Table);
     }
 
-    printer.printToFile(UtilsNf36.resolveJavaFile(interfaceOutDir, interfaceBasePackage, mainNf36ClassName));
+    p.printToFile(UtilsNf36.resolveJavaFile(interfaceOutDir, interfaceBasePackage, mainNf36ClassName));
 
     return UtilsNf36.resolveFullName(interfaceBasePackage, mainNf36ClassName);
   }
 
-
   private void generateMainImpl(List<Nf3Table> nf3TableList, String mainInterfaceClassName) {
-    if (mainNf36ImplClassName == null) {
-      throw new RuntimeException("Не определён mainNf36ImplClassName:" +
-        " Вызовете метод JavaGenerator.setMainNf36ClassName(...)");
-    }
 
-    JavaFilePrinter printer = new JavaFilePrinter();
-    printer.packageName = implBasePackage;
-    printer.classHeader = "public class " + mainNf36ImplClassName
-      + " implements " + printer.i(mainInterfaceClassName);
+    JavaFilePrinter p = new JavaFilePrinter();
+    p.packageName = implBasePackage;
+    p.classHeader = "public" + (mainNf36ClassAbstract ? " abstract" : "")
+      + " class " + mainNf36ImplClassName()
+      + " implements " + p.i(mainInterfaceClassName);
 
-    printJdbcAccessMethod(printer);
+    printCreateUpserterMethod(p);
 
     for (Nf3Table nf3Table : nf3TableList) {
-      printUpsertImplMethod(printer, nf3Table);
+      printUpsertImplMethod(p, nf3Table);
     }
 
-    printer.printToFile(UtilsNf36.resolveJavaFile(implOutDir, implBasePackage, mainNf36ImplClassName));
+    p.printToFile(UtilsNf36.resolveJavaFile(implOutDir, implBasePackage, mainNf36ImplClassName()));
   }
 
-  private void printJdbcAccessMethod(JavaFilePrinter p) {
-    String jdbcClassName = p.i(jdbcDefinition.jdbcClassName());
-    String accessMethod = jdbcDefinition.jdbcAccessMethod();
+  String upserterCreateMethod = "__createUpserter__";
+
+  @SuppressWarnings("unused")
+  public JavaGenerator setUpserterCreateMethod(String upserterCreateMethod) {
+    this.upserterCreateMethod = upserterCreateMethod;
+    return this;
+  }
+
+  boolean mainNf36ClassAbstract = false;
+
+  public JavaGenerator setMainNf36ClassAbstract(boolean mainNf36ClassAbstract) {
+    this.mainNf36ClassAbstract = mainNf36ClassAbstract;
+    return this;
+  }
+
+  private void printCreateUpserterMethod(JavaFilePrinter p) {
+    String upserterClassName = p.i(Upserter.class.getName());
     String notImplError = p.i(NotImplementedException.class.getName());
 
-    p.ofs(1).prn("protected " + jdbcClassName + " " + accessMethod + "() {");
+    p.ofs(1).prn("protected " + (mainNf36ClassAbstract ? "abstract " : "")
+      + upserterClassName + " " + upserterCreateMethod + "()"
+      + (mainNf36ClassAbstract ? ";\n" : " {")
+    );
+
+    if (mainNf36ClassAbstract) return;
+
     p.ofs(2).prn("throw new " + notImplError + "();");
     p.ofs(1).prn("}").prn();
   }
@@ -349,7 +373,7 @@ public class JavaGenerator {
 
     ) + ") {");
 
-    p.ofs(2).prn("return new " + p.i(ui.implFullName()) + "(" + jdbcDefinition.jdbcAccessMethod() + "(), " + (
+    p.ofs(2).prn("return new " + p.i(ui.implFullName()) + "(" + upserterCreateMethod + "(), " + (
 
       nf3Table.fields().stream()
         .filter(Nf3Field::isId)
@@ -361,4 +385,5 @@ public class JavaGenerator {
 
     p.ofs(1).prn("}").prn();
   }
+
 }

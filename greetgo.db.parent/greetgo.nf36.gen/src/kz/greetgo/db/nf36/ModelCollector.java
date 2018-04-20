@@ -60,6 +60,23 @@ public class ModelCollector {
             .map(f -> convertField(f))
             .collect(Collectors.toList());
         }
+
+        @Override
+        public String nf3prefix() {
+          return nf3prefix;
+        }
+
+        @Override
+        public String nf6prefix() {
+          return nf6prefix;
+        }
+
+        @Override
+        public String tableName() {
+          String ret = UtilsNf36.javaNameToDbName(object.getClass().getSimpleName());
+          if (ret.startsWith("_")) return ret.substring(1);
+          return ret;
+        }
       });
     }
 
