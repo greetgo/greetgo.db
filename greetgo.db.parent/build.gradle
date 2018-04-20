@@ -15,8 +15,6 @@ def nowDate = new Date()
 def nowFormattedDate = nowDate.format("yyyy-MM-dd/HH:mm:ss")
 def vendorName = "greetgo!"
 
-// И снова заглушечный коммит
-
 allprojects {
   apply plugin: 'java'
   apply plugin: 'idea'
@@ -25,9 +23,9 @@ allprojects {
   apply plugin: 'signing'
   apply plugin: ShortJavaPathPlugin
 
-  version = '2.0.0'
+  version = '2.0.1'
 
-  sourceCompatibility = 1.7
+  sourceCompatibility = 1.8
 
   group = "kz.greetgo.db"
 
@@ -39,10 +37,8 @@ allprojects {
 subprojects {
   repositories {
     mavenLocal()
-    maven {
-      name 'Our repository'
-      url System.getenv('GG_REPO')
-    }
+    maven { url System.getenv('GG_REPO') }
+    mavenCentral()
   }
 
   dependencies {
@@ -62,16 +58,18 @@ subprojects {
       cp.entries.findAll { it.path.contains('JRE_CONTAINER') }.each {
 
         it.path += "/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/" +
-            "JavaSE-$project.sourceCompatibility"
+          "JavaSE-$project.sourceCompatibility"
       }
     }
   }
 
   jar {
     manifest {
-      attributes 'Implementation-Title': project.name,
-          'Implementation-Version': version, 'Implementation-Vendor': vendorName,
-          'Built-By': System.getProperty("user.name"), 'Built-At': nowFormattedDate
+      attributes 'Implementation-Title': project.name
+      attributes 'Implementation-Version': version
+      attributes 'Implementation-Vendor': vendorName
+      attributes 'Created-By': System.getProperty("user.name")
+      attributes 'Created-At': nowFormattedDate
     }
   }
 
