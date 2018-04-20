@@ -31,4 +31,20 @@ public class UtilsNf36 {
     if (index < 0) return fullName;
     return fullName.substring(index + 1);
   }
+
+  public static void cleanDir(String dir) {
+    removeFile(new File(dir), false);
+  }
+
+  private static void removeFile(File file, boolean killMe) {
+
+    if (file.isDirectory()) {
+      File[] files = file.listFiles();
+      if (files != null) for (File subFile : files) {
+        removeFile(subFile, true);
+      }
+    }
+
+    if (killMe) file.delete();
+  }
 }

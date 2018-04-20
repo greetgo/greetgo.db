@@ -47,9 +47,17 @@ public class JavaGenerator {
   }
 
   public void generate(List<Nf3Table> nf3TableList) {
+
+    cleanOutDirs();
+
     for (Nf3Table nf3Table : nf3TableList) {
       generateOne(nf3Table);
     }
+  }
+
+  private void cleanOutDirs() {
+    UtilsNf36.cleanDir(implOutDir);
+    UtilsNf36.cleanDir(interfaceOutDir);
   }
 
   public JavaGenerator setSourceBasePackage(String sourceBasePackage) {
@@ -80,7 +88,7 @@ public class JavaGenerator {
     String interfacePackageName = UtilsNf36.resolvePackage(interfaceBasePackage, subPackage);
     File interfaceJavaFile = UtilsNf36.resolveJavaFile(interfaceOutDir, interfacePackageName, interfaceClassName);
 
-    String implClassName = interfaceClassName + "DoorImpl";
+    String implClassName = interfaceClassName + "Impl";
     String implPackageName = UtilsNf36.resolvePackage(implBasePackage, subPackage);
     File implJavaFile = UtilsNf36.resolveJavaFile(implOutDir, implPackageName, implClassName);
 

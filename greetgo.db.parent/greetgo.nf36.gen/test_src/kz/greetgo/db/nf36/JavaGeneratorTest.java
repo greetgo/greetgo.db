@@ -10,7 +10,7 @@ import java.util.List;
 
 public class JavaGeneratorTest {
   @Test
-  public void testName() throws Exception {
+  public void generate() throws Exception {
     List<Nf3Table> nf3TableList = ModelCollector
       .newCollector()
       .setNf3Prefix(/*empty*/"")
