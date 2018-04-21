@@ -16,6 +16,6 @@ public interface TestNf3Door {
 
   ChairUpsert upsertChair(long id1, String id2);
 
-  WowUpsert upsertWow(String wowId);
+  WowUpsert upsertWow(String wowId, String wowId2);
 
 }

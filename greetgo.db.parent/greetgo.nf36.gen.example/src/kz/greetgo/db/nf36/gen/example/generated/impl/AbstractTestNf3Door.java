@@ -39,8 +39,8 @@ public abstract class AbstractTestNf3Door implements TestNf3Door {
   }
 
   @Override
-  public WowUpsert upsertWow(String wowId) {
-    return new WowUpsertImpl(createUpserter(), wowId);
+  public WowUpsert upsertWow(String wowId, String wowId2) {
+    return new WowUpsertImpl(createUpserter(), wowId, wowId2);
   }
 
 }

@@ -1,6 +1,7 @@
 package kz.greetgo.db.nf36.utils;
 
 import kz.greetgo.db.nf36.core.Nf3DefaultNow;
+import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3Long;
 import kz.greetgo.db.nf36.core.Nf3NotNull;
 import kz.greetgo.db.nf36.core.Nf3Short;
@@ -47,7 +48,7 @@ public class SqlTypeUtil {
     }
   }
 
-  public static DbType extractDbType(Field field) {
+  public static DbType extractDbType(Field field, int enumLength) {
     if (String.class.equals(field.getType())) {
       boolean nullable = field.getAnnotation(Nf3NotNull.class) == null;
       if (field.getAnnotation(Nf3Text.class) != null) {
@@ -59,11 +60,14 @@ public class SqlTypeUtil {
       if (field.getAnnotation(Nf3Long.class) != null) {
         return new DbTypeImpl(SqlType.VARCHAR, 2000, nullable);
       }
-      return new DbTypeImpl(SqlType.VARCHAR, 300, nullable);
+
+      boolean id = field.getAnnotation(Nf3ID.class) != null;
+
+      return new DbTypeImpl(SqlType.VARCHAR, id ? 30 : 300, !id && nullable);
     }
 
-    if (Integer.class.equals(field.getType())) return new DbTypeImpl(SqlType.INT, 0, true);
-    if (int.class.equals(field.getType())) return new DbTypeImpl(SqlType.INT, 0, false);
+    if (Integer.class.equals(field.getType())) return new DbTypeImpl(SqlType.INT, intLen(field), true);
+    if (int.class.equals(field.getType())) return new DbTypeImpl(SqlType.INT, intLen(field), false);
     if (Long.class.equals(field.getType())) return new DbTypeImpl(SqlType.BIGINT, 0, true);
     if (long.class.equals(field.getType())) return new DbTypeImpl(SqlType.BIGINT, 0, false);
     if (Boolean.class.equals(field.getType())) return new DbTypeImpl(SqlType.BOOL, 0, true);
@@ -76,6 +80,16 @@ public class SqlTypeUtil {
       return ret;
     }
 
+    if (Enum.class.isAssignableFrom(field.getType())) {
+      if (enumLength < 10) throw new RuntimeException("enumLength must be >= 10");
+      boolean nullable = field.getAnnotation(Nf3NotNull.class) == null;
+      return new DbTypeImpl(SqlType.VARCHAR, enumLength, nullable);
+    }
+
     throw new RuntimeException("Cannot extract DbType from " + field);
+  }
+
+  private static int intLen(Field field) {
+    return field.getAnnotation(Nf3Short.class) == null ? 4 : 8;
   }
 }

@@ -7,9 +7,10 @@ import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.WowUpsert;
 public class WowUpsertImpl implements WowUpsert {
   private final Nf36Upserter upserter;
 
-  public WowUpsertImpl(Nf36Upserter upserter, String wowId) {
+  public WowUpsertImpl(Nf36Upserter upserter, String wowId, String wowId2) {
     this.upserter = upserter;
     upserter.putId("wow_id", wowId);
+    upserter.putId("wow_id2", wowId2);
   }
 
   @Override

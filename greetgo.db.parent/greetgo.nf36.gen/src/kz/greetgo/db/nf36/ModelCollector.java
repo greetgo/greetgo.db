@@ -16,12 +16,18 @@ public class ModelCollector {
 
   String nf3prefix;
   String nf6prefix;
+  int enumLength = 0;
 
   private ModelCollector() {
   }
 
   public static ModelCollector newCollector() {
     return new ModelCollector();
+  }
+
+  public ModelCollector setEnumLength(int enumLength) {
+    this.enumLength = enumLength;
+    return this;
   }
 
   public ModelCollector setNf3Prefix(String nf3prefix) {
@@ -116,7 +122,7 @@ public class ModelCollector {
 
       @Override
       public DbType dbType() {
-        return SqlTypeUtil.extractDbType(f);
+        return SqlTypeUtil.extractDbType(f, enumLength);
       }
     };
   }

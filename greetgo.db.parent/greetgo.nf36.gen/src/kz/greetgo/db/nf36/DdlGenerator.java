@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 public class DdlGenerator {
   private Map<Class<?>, Nf3Table> nf3TableMap;
   private SqlDialect sqlDialect;
+  private String commandSeparator = ";;";
 
   private DdlGenerator() {}
 
@@ -28,6 +30,11 @@ public class DdlGenerator {
 
   public DdlGenerator setNf3TableList(List<Nf3Table> nf3TableList) {
     nf3TableMap = nf3TableList.stream().collect(Collectors.toMap(Nf3Table::source, t -> t));
+    return this;
+  }
+
+  public DdlGenerator setCommandSeparator(String commandSeparator) {
+    this.commandSeparator = commandSeparator;
     return this;
   }
 
@@ -47,20 +54,50 @@ public class DdlGenerator {
   }
 
   private void generateCreateTablesTo(PrintStream out) {
-    for (Nf3Table nf3Table : nf3TableMap.values()) {
-      printCreateTableFor(nf3Table, out);
-    }
+
+    nf3TableMap.values().stream()
+      .sorted(Comparator.comparing(Nf3Table::tableName))
+      .forEachOrdered(nf3Table -> printCreateTableFor(nf3Table, out));
+
   }
 
   private void printCreateTableFor(Nf3Table nf3Table, PrintStream out) {
+    sqlDialect.checkObjectName(nf3Table.tableName(), ObjectNameType.TABLE_NAME);
+
     out.println("create table " + nf3Table.nf3prefix() + nf3Table.tableName() + " (");
+
     for (Nf3Field field : nf3Table.fields()) {
       printCreateField(field, out);
     }
-    out.println(");;");
+
+    checkIdOrdering(nf3Table.source(), nf3Table.fields().stream()
+      .filter(Nf3Field::isId)
+      .mapToInt(Nf3Field::idOrder)
+      .sorted()
+      .toArray());
+
+    out.println("  primary key(" + (
+
+      nf3Table.fields().stream()
+        .filter(Nf3Field::isId)
+        .sorted(Comparator.comparing(Nf3Field::idOrder))
+        .map(Nf3Field::dbName)
+        .collect(Collectors.joining(", "))
+
+    ) + ")");
+
+    out.println(")" + commandSeparator);
+  }
+
+  private void checkIdOrdering(Class<?> source, int[] idArray) {
+    for (int i = 1; i <= idArray.length; i++) {
+      if (i != idArray[i - 1]) throw new RuntimeException("Incorrect id ordering in " + source);
+    }
   }
 
   private void printCreateField(Nf3Field field, PrintStream out) {
-
+    sqlDialect.checkObjectName(field.dbName(), ObjectNameType.TABLE_FIELD_NAME);
+    String fieldDefinition = sqlDialect.createFieldDefinition(field.dbType(), field.dbName());
+    out.println("  " + fieldDefinition + ",");
   }
 }

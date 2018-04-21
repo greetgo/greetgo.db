@@ -16,6 +16,7 @@ public class GenerateExample {
       .newCollector()
       .setNf3Prefix(/*empty*/"")
       .setNf6Prefix("m_")
+      .setEnumLength(50)
       .register(new Client())
       .register(new ClientAddress())
       .register(new Street())
@@ -40,6 +41,7 @@ public class GenerateExample {
     DdlGenerator.newGenerator()
       .setNf3TableList(nf3TableList)
       .setSqlDialect(new SqlDialectPostgres())
+      .setCommandSeparator(";;;;")
       .generateCreateTables(new File("greetgo.nf36.gen.example/build/create_tables.sql"))
     ;
   }
