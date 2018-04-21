@@ -4,7 +4,7 @@ import kz.greetgo.db.nf36.core.Nf3DefaultNow;
 import kz.greetgo.db.nf36.core.Nf3Description;
 import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3NotNull;
-import kz.greetgo.db.nf36.core.Nf3References;
+import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
 import kz.greetgo.db.nf36.core.Nf3Short;
 import kz.greetgo.db.nf36.gen.example.structure.AddressType;
 import kz.greetgo.db.nf36.gen.example.structure.Client;
@@ -24,7 +24,7 @@ public class ClientAddress {
   public AddressType type;
 
   @Nf3Description("Улица")
-  @Nf3References(Street.class)
+  @Nf3ReferenceTo(Street.class)
   public long streetId;
 
   @Nf3Description("Дом")

@@ -3,6 +3,7 @@ package kz.greetgo.db.nf36;
 import kz.greetgo.db.nf36.gen.example.structure.Client;
 import kz.greetgo.db.nf36.gen.example.structure.Street;
 import kz.greetgo.db.nf36.gen.example.structure.inner.Chair;
+import kz.greetgo.db.nf36.gen.example.structure.inner.Charm;
 import kz.greetgo.db.nf36.gen.example.structure.inner.ClientAddress;
 import kz.greetgo.db.nf36.gen.example.structure.inner.Wow;
 import kz.greetgo.db.nf36.model.Nf3Table;
@@ -22,6 +23,7 @@ public class GenerateExample {
       .register(new Street())
       .register(new Chair())
       .register(new Wow())
+      .register(new Charm())
       .collect();
 
     JavaGenerator.newGenerator()
@@ -42,7 +44,8 @@ public class GenerateExample {
       .setNf3TableList(nf3TableList)
       .setSqlDialect(new SqlDialectPostgres())
       .setCommandSeparator(";;;;")
-      .generateCreateTables(new File("greetgo.nf36.gen.example/build/create_tables.sql"))
+      .generateCreateTables(new File("greetgo.nf36.gen.example/build/001_create_tables.sql"))
+      .generateReferences(new File("greetgo.nf36.gen.example/build/002_references.sql"))
     ;
   }
 }

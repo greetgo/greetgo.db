@@ -10,6 +10,8 @@ public interface ClientUpsert {
 
   ClientUpsert patronymic(String patronymic);
 
+  ClientUpsert charmId(String charmId);
+
   ClientUpsert longDescription(String longDescription);
 
   ClientUpsert myChairId1(Long myChairId1);

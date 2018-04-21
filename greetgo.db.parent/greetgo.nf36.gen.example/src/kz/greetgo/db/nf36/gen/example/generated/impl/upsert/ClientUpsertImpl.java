@@ -32,6 +32,12 @@ public class ClientUpsertImpl implements ClientUpsert {
   }
 
   @Override
+  public ClientUpsert charmId(String charmId) {
+    upserter.putField("charm_id", charmId);
+    return this;
+  }
+
+  @Override
   public ClientUpsert longDescription(String longDescription) {
     upserter.putField("long_description", longDescription);
     return this;

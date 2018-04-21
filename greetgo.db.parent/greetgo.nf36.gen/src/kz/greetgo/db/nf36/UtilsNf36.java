@@ -3,6 +3,8 @@ package kz.greetgo.db.nf36;
 import kz.greetgo.db.nf36.errors.IllegalPackage;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UtilsNf36 {
   public static String calcSubPackage(String basePackageName, String packageName) {
@@ -75,5 +77,11 @@ public class UtilsNf36 {
   public static String packageDir(String srcDir, String packageName) {
     if (packageName == null) return srcDir;
     return srcDir + "/" + packageName.replace('.', '/');
+  }
+
+  public static <E> List<E> mutableList(E element) {
+    List<E> ret = new ArrayList<>();
+    ret.add(element);
+    return ret;
   }
 }

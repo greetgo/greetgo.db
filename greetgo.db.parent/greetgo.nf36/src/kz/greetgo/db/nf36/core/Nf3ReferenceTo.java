@@ -10,6 +10,8 @@ import static java.lang.annotation.ElementType.FIELD;
 @Documented
 @Target({FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Nf3References {
+public @interface Nf3ReferenceTo {
   Class<?> value();
+
+  String nextPart() default "";
 }

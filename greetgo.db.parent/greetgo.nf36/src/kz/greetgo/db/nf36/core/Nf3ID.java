@@ -15,5 +15,7 @@ public @interface Nf3ID {
 
   Class<?> ref() default Object.class;
 
+  String nextPart() default "";
+
   int order() default 1;
 }

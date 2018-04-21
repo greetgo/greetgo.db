@@ -13,4 +13,12 @@ public interface Nf3Field {
   Class<?> javaType();
 
   DbType dbType();
+
+  Class<?> referenceTo();
+
+  String nextPart();
+
+  boolean isReference();
+
+  boolean hasNextPart();
 }

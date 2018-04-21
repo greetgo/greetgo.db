@@ -6,11 +6,13 @@ import kz.greetgo.db.nf36.gen.example.generated.faces.TestNf3Door;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.ClientUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.StreetUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.ChairUpsert;
+import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.CharmUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.ClientAddressUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.WowUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.ClientUpsertImpl;
 import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.StreetUpsertImpl;
 import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.inner.ChairUpsertImpl;
+import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.inner.CharmUpsertImpl;
 import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.inner.ClientAddressUpsertImpl;
 import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.inner.WowUpsertImpl;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -41,6 +43,11 @@ public abstract class AbstractTestNf3Door implements TestNf3Door {
   @Override
   public WowUpsert upsertWow(String wowId, String wowId2) {
     return new WowUpsertImpl(createUpserter(), wowId, wowId2);
+  }
+
+  @Override
+  public CharmUpsert upsertCharm(String id) {
+    return new CharmUpsertImpl(createUpserter(), id);
   }
 
 }

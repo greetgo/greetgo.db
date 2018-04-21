@@ -2,9 +2,8 @@ package kz.greetgo.db.nf36.structure;
 
 import kz.greetgo.db.nf36.core.Nf3Description;
 import kz.greetgo.db.nf36.core.Nf3ID;
-import kz.greetgo.db.nf36.core.Nf3NextPart;
 import kz.greetgo.db.nf36.core.Nf3NotNull;
-import kz.greetgo.db.nf36.core.Nf3References;
+import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
 import kz.greetgo.db.nf36.core.Nf3Text;
 import kz.greetgo.db.nf36.structure.inner.Chair;
 
@@ -30,18 +29,16 @@ public class Client {
   public String longDescription;
 
   @Nf3Description("Ссылка на мой стул")
-  @Nf3References(Chair.class)
-  @Nf3NextPart("myChairId2")
+  @Nf3ReferenceTo(Chair.class)
   public Long myChairId1;
 
-  @Nf3References(Chair.class)
+  @Nf3ReferenceTo(Chair.class)
   public String myChairId2;
 
   @Nf3Description("Ссылка на его стул")
-  @Nf3References(Chair.class)
-  @Nf3NextPart("hisChairStrId")
+  @Nf3ReferenceTo(Chair.class)
   public Long hisChairLongId;
 
-  @Nf3References(Chair.class)
+  @Nf3ReferenceTo(Chair.class)
   public String hisChairStrId;
 }

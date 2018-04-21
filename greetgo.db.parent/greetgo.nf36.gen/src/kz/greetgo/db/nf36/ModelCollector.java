@@ -1,6 +1,7 @@
 package kz.greetgo.db.nf36;
 
 import kz.greetgo.db.nf36.core.Nf3ID;
+import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
 import kz.greetgo.db.nf36.model.DbType;
 import kz.greetgo.db.nf36.model.Nf3Field;
 import kz.greetgo.db.nf36.model.Nf3Table;
@@ -123,6 +124,42 @@ public class ModelCollector {
       @Override
       public DbType dbType() {
         return SqlTypeUtil.extractDbType(f, enumLength);
+      }
+
+      @Override
+      public Class<?> referenceTo() {
+        {
+          Nf3ReferenceTo a = f.getAnnotation(Nf3ReferenceTo.class);
+          if (a != null) return a.value();
+        }
+        {
+          Nf3ID a = f.getAnnotation(Nf3ID.class);
+          if (a != null && a.ref() != Object.class) return a.ref();
+        }
+        return null;
+      }
+
+      @Override
+      public String nextPart() {
+        {
+          Nf3ReferenceTo a = f.getAnnotation(Nf3ReferenceTo.class);
+          if (a != null && a.nextPart().length() > 0) return a.nextPart();
+        }
+        {
+          Nf3ID a = f.getAnnotation(Nf3ID.class);
+          if (a != null && a.nextPart().length() > 0) return a.nextPart();
+        }
+        return null;
+      }
+
+      @Override
+      public boolean isReference() {
+        return referenceTo() != null;
+      }
+
+      @Override
+      public boolean hasNextPart() {
+        return nextPart() != null;
       }
     };
   }

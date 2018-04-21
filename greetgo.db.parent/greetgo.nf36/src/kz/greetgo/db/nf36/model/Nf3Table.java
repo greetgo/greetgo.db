@@ -12,4 +12,21 @@ public interface Nf3Table {
   String nf3prefix();
 
   String nf6prefix();
+
+  default String getDbNameByJavaName(String javaName) {
+    if (javaName == null) throw new IllegalArgumentException("javaName == null");
+    return fields().stream()
+      .filter(f -> javaName.equals(f.javaName()))
+      .map(Nf3Field::dbName)
+      .findAny()
+      .orElseThrow(() -> new RuntimeException("No field " + javaName + " in " + source().getSimpleName()));
+  }
+
+  default Nf3Field getByJavaName(String javaName) {
+    if (javaName == null) throw new IllegalArgumentException("javaName == null");
+    return fields().stream()
+      .filter(f -> javaName.equals(f.javaName()))
+      .findAny()
+      .orElseThrow(() -> new RuntimeException("No field " + javaName + " in " + source().getSimpleName()));
+  }
 }
