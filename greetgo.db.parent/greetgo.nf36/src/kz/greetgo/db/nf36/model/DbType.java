@@ -4,4 +4,8 @@ public interface DbType {
   SqlType sqlType();
 
   int len();
+
+  boolean nullable();
+
+  boolean defaultNow();
 }

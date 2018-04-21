@@ -39,6 +39,7 @@ public class GenerateExample {
 
     DdlGenerator.newGenerator()
       .setNf3TableList(nf3TableList)
+      .setSqlDialect(new SqlDialectPostgres())
       .generateCreateTables(new File("greetgo.nf36.gen.example/build/create_tables.sql"))
     ;
   }

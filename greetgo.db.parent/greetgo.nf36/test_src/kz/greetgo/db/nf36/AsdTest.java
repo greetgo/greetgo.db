@@ -1,3 +1,10 @@
 package kz.greetgo.db.nf36;
 
-public class AsdTest {}
+import org.testng.annotations.Test;
+
+public class AsdTest {
+  @Test
+  public void testName() throws Exception {
+
+  }
+}

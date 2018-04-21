@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 @SuppressWarnings("Duplicates")
-public class SqlUtil {
+public class SqlConvertUtil {
 
   public static Object forSql(Object value) {
     if (value == null) return null;
@@ -230,7 +230,4 @@ public class SqlUtil {
     return null;
   }
 
-  public static DbType convertType(Class<?> javaClass) {
-    throw new NotImplementedException();
-  }
 }

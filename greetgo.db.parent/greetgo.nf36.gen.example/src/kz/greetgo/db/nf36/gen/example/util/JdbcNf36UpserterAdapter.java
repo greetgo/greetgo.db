@@ -3,7 +3,7 @@ package kz.greetgo.db.nf36.gen.example.util;
 import kz.greetgo.db.ConnectionCallback;
 import kz.greetgo.db.Jdbc;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
-import kz.greetgo.db.nf36.utils.SqlUtil;
+import kz.greetgo.db.nf36.utils.SqlConvertUtil;
 
 import java.sql.Connection;
 import java.util.HashMap;
@@ -30,12 +30,12 @@ public class JdbcNf36UpserterAdapter implements Nf36Upserter, ConnectionCallback
 
   @Override
   public void putId(String idName, Object idValue) {
-    idValueMap.put(idName, SqlUtil.forSql(idValue));
+    idValueMap.put(idName, SqlConvertUtil.forSql(idValue));
   }
 
   @Override
   public void putField(String fieldName, Object fieldValue) {
-    fieldValueMap.put(fieldName, SqlUtil.forSql(fieldValue));
+    fieldValueMap.put(fieldName, SqlConvertUtil.forSql(fieldValue));
   }
 
   @Override

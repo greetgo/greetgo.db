@@ -13,11 +13,17 @@ import java.util.stream.Collectors;
 
 public class DdlGenerator {
   private Map<Class<?>, Nf3Table> nf3TableMap;
+  private SqlDialect sqlDialect;
 
   private DdlGenerator() {}
 
   public static DdlGenerator newGenerator() {
     return new DdlGenerator();
+  }
+
+  public DdlGenerator setSqlDialect(SqlDialect sqlDialect) {
+    this.sqlDialect = sqlDialect;
+    return this;
   }
 
   public DdlGenerator setNf3TableList(List<Nf3Table> nf3TableList) {

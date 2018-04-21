@@ -4,7 +4,7 @@ import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.model.DbType;
 import kz.greetgo.db.nf36.model.Nf3Field;
 import kz.greetgo.db.nf36.model.Nf3Table;
-import kz.greetgo.db.nf36.utils.SqlUtil;
+import kz.greetgo.db.nf36.utils.SqlTypeUtil;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -116,7 +116,7 @@ public class ModelCollector {
 
       @Override
       public DbType dbType() {
-        return SqlUtil.convertType(javaType());
+        return SqlTypeUtil.extractDbType(f);
       }
     };
   }
