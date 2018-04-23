@@ -2,6 +2,7 @@ package kz.greetgo.db.nf36.gen.example.structure.inner;
 
 import kz.greetgo.db.nf36.core.Nf3Description;
 import kz.greetgo.db.nf36.core.Nf3ID;
+import kz.greetgo.db.nf36.core.Nf3Text;
 
 @Nf3Description("Это стул")
 @SuppressWarnings("unused")
@@ -16,4 +17,8 @@ public class Chair {
 
   @Nf3Description("Имя стула")
   public String name = "Мой стул";
+
+  @Nf3Description("Описание стула")
+  @Nf3Text
+  public String description = "Длинное описание стула";
 }

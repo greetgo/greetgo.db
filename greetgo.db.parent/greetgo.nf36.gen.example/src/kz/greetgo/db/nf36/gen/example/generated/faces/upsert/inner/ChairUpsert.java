@@ -5,5 +5,7 @@ import java.lang.String;
 public interface ChairUpsert {
   ChairUpsert name(String name);
 
+  ChairUpsert description(String description);
+
   void commit();
 }

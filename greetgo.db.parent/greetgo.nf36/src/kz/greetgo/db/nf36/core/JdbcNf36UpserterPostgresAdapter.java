@@ -35,6 +35,7 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
 
   private final Map<String, Object> idValueMap = new HashMap<>();
   private final Map<String, Object> fieldValueMap = new HashMap<>();
+  private final Map<String, Object> nf6ValueMap = new HashMap<>();
 
   @Override
   public void putId(String idName, Object idValue) {
@@ -44,6 +45,7 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
   @Override
   public void putField(String nf6TableName, String fieldName, Object fieldValue) {
     fieldValueMap.put(fieldName, SqlConvertUtil.forSql(fieldValue));
+    nf6ValueMap.put(nf6TableName + ";" + fieldName, SqlConvertUtil.forSql(fieldValue));
   }
 
   @Override
@@ -54,7 +56,7 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
   @Override
   public Void doInConnection(Connection con) throws Exception {
 
-    String sql = "insert into " + nf3TableName + "("
+    String sql = "insert into " + nf3TableName + " ("
       + idValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))
       + ", "
       + fieldValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))

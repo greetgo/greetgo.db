@@ -21,6 +21,12 @@ public class ChairUpsertImpl implements ChairUpsert {
   }
 
   @Override
+  public ChairUpsert description(String description) {
+    upserter.putField("m_chair_description", "description", description);
+    return this;
+  }
+
+  @Override
   public void commit() {
     upserter.commit();
   }
