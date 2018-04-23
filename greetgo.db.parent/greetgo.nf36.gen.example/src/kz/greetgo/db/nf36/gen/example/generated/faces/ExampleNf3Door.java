@@ -8,7 +8,7 @@ import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.CharmUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.ClientAddressUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.WowUpsert;
 
-public interface TestNf3Door {
+public interface ExampleNf3Door {
   ClientUpsert upsertClient(long id);
 
   ClientAddressUpsert upsertClientAddress(long clientId);

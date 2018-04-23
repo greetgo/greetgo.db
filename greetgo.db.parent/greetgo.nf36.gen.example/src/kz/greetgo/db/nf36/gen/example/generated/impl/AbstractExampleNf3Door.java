@@ -2,7 +2,7 @@ package kz.greetgo.db.nf36.gen.example.generated.impl;
 
 import java.lang.String;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
-import kz.greetgo.db.nf36.gen.example.generated.faces.TestNf3Door;
+import kz.greetgo.db.nf36.gen.example.generated.faces.ExampleNf3Door;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.ClientUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.StreetUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.ChairUpsert;
@@ -17,7 +17,7 @@ import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.inner.ClientAddressU
 import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.inner.WowUpsertImpl;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-public abstract class AbstractTestNf3Door implements TestNf3Door {
+public abstract class AbstractExampleNf3Door implements ExampleNf3Door {
   protected abstract Nf36Upserter createUpserter();
 
   @Override
