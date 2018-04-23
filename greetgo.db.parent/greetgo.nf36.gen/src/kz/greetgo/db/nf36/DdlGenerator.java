@@ -17,7 +17,6 @@ public class DdlGenerator {
   private SqlDialect sqlDialect;
   private String commandSeparator = ";;";
 
-  private String nf6timeField = "ts";
   private final ModelCollector collector;
 
   private DdlGenerator(ModelCollector collector) {
@@ -34,11 +33,6 @@ public class DdlGenerator {
     return this;
   }
 
-  @SuppressWarnings("unused")
-  public DdlGenerator setNf6timeField(String nf6timeField) {
-    this.nf6timeField = nf6timeField;
-    return this;
-  }
 
   public DdlGenerator setCommandSeparator(String commandSeparator) {
     this.commandSeparator = commandSeparator;
@@ -145,7 +139,7 @@ public class DdlGenerator {
       .sorted(Comparator.comparing(Nf3Field::idOrder))
       .forEachOrdered(f -> printCreateField(f, out));
 
-    out.println("  " + sqlDialect.fieldTimestampWithDefaultNow(nf6timeField) + ",");
+    out.println("  " + sqlDialect.fieldTimestampWithDefaultNow(collector.nf6timeField) + ",");
 
     if (field.isRootReference()) {
       for (Nf3Field f : field.referenceFields()) {
@@ -155,7 +149,7 @@ public class DdlGenerator {
       printCreateField(field, out);
     }
 
-    out.println("  primary key(" + nf3Table.commaSeparatedIdDbNames() + ", " + nf6timeField + ")");
+    out.println("  primary key(" + nf3Table.commaSeparatedIdDbNames() + ", " + collector.nf6timeField + ")");
 
     out.println(")" + commandSeparator);
   }

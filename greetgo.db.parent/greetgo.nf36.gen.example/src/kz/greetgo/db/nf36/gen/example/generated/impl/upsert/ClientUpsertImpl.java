@@ -12,6 +12,7 @@ public class ClientUpsertImpl implements ClientUpsert {
   public ClientUpsertImpl(Nf36Upserter upserter, long id) {
     this.upserter = upserter;
     upserter.setNf3TableName("client");
+    upserter.setTimeFieldName("ts");
     upserter.putId("id", id);
   }
 

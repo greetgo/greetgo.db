@@ -10,6 +10,7 @@ public class WowUpsertImpl implements WowUpsert {
   public WowUpsertImpl(Nf36Upserter upserter, String wowId, String wowId2) {
     this.upserter = upserter;
     upserter.setNf3TableName("wow");
+    upserter.setTimeFieldName("ts");
     upserter.putId("wow_id", wowId);
     upserter.putId("wow_id2", wowId2);
   }

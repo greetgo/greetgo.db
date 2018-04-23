@@ -12,6 +12,7 @@ public class StreetUpsertImpl implements StreetUpsert {
   public StreetUpsertImpl(Nf36Upserter upserter, long id) {
     this.upserter = upserter;
     upserter.setNf3TableName("street");
+    upserter.setTimeFieldName("ts");
     upserter.putId("id", id);
   }
 

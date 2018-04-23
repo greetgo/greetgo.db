@@ -19,11 +19,18 @@ public class ModelCollector {
   String nf6prefix;
   int enumLength = 0;
   private String nf6TableSeparator = "_";
+  String nf6timeField = "ts";
 
   private ModelCollector() {}
 
   public static ModelCollector newCollector() {
     return new ModelCollector();
+  }
+
+  @SuppressWarnings("unused")
+  public ModelCollector setNf6timeField(String nf6timeField) {
+    this.nf6timeField = nf6timeField;
+    return this;
   }
 
   public ModelCollector setEnumLength(int enumLength) {

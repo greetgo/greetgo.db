@@ -242,4 +242,32 @@ public class ExampleUpserterTest extends AbstractDepinjectTestNg {
       assertThat(countDescription).isEqualTo(3);
     }
   }
+
+  @Test
+  public void upsertClient_chair() throws Exception {
+    long chairId1 = RND.plusLong(1_000_000_000_000L);
+    String chairId2 = RND.str(10);
+
+    exampleUpserter.get().chair(chairId1, chairId2)
+      .name(RND.str(10))
+      .commit()
+    ;
+
+    long clientId = RND.plusLong(1_000_000_000_000L);
+
+    exampleUpserter.get().client(clientId)
+      .myChairId1(chairId1)
+      .myChairId2(chairId2)
+      .commit()
+    ;
+
+    {
+      long actual = jdbc.get().execute(new ByOneLast<>("id", clientId, "m_client_my_chair_id1", "my_chair_id1"));
+      assertThat(actual).isEqualTo(chairId1);
+    }
+    {
+      String actual = jdbc.get().execute(new ByOneLast<>("id", clientId, "m_client_my_chair_id1", "my_chair_id2"));
+      assertThat(actual).isEqualTo(chairId2);
+    }
+  }
 }

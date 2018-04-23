@@ -10,6 +10,7 @@ public class CharmUpsertImpl implements CharmUpsert {
   public CharmUpsertImpl(Nf36Upserter upserter, String id) {
     this.upserter = upserter;
     upserter.setNf3TableName("charm");
+    upserter.setTimeFieldName("ts");
     upserter.putId("id", id);
   }
 

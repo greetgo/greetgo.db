@@ -10,6 +10,7 @@ public class ChairUpsertImpl implements ChairUpsert {
   public ChairUpsertImpl(Nf36Upserter upserter, long id1, String id2) {
     this.upserter = upserter;
     upserter.setNf3TableName("chair");
+    upserter.setTimeFieldName("ts");
     upserter.putId("id1", id1);
     upserter.putId("id2", id2);
   }
