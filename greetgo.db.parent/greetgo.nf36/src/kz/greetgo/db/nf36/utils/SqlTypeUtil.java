@@ -4,6 +4,7 @@ import kz.greetgo.db.nf36.core.Nf3DefaultNow;
 import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3Long;
 import kz.greetgo.db.nf36.core.Nf3NotNull;
+import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
 import kz.greetgo.db.nf36.core.Nf3Short;
 import kz.greetgo.db.nf36.core.Nf3Text;
 import kz.greetgo.db.nf36.model.DbType;
@@ -61,9 +62,10 @@ public class SqlTypeUtil {
         return new DbTypeImpl(SqlType.VARCHAR, 2000, nullable);
       }
 
-      boolean id = field.getAnnotation(Nf3ID.class) != null;
+      boolean idOrReference = field.getAnnotation(Nf3ID.class) != null
+        || field.getAnnotation(Nf3ReferenceTo.class) != null;
 
-      return new DbTypeImpl(SqlType.VARCHAR, id ? 30 : 300, !id && nullable);
+      return new DbTypeImpl(SqlType.VARCHAR, idOrReference ? 30 : 300, !idOrReference && nullable);
     }
 
     if (Integer.class.equals(field.getType())) return new DbTypeImpl(SqlType.INT, intLen(field), true);
