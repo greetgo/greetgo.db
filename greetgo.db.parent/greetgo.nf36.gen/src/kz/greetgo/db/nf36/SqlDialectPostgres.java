@@ -32,4 +32,9 @@ public class SqlDialectPostgres implements SqlDialect {
         throw new IllegalArgumentException("Cannot create type for " + sqlType);
     }
   }
+
+  @Override
+  public String fieldTimestampWithDefaultNow(String fieldName) {
+    return fieldName + " timestamp not null default clock_timestamp()";
+  }
 }

@@ -123,8 +123,8 @@ public class ModelCollector {
         }
       }
       rootField.isRootReference = true;
-      rootField.referenceDbNames = referenceJavaNames.stream()
-        .map(nf3Table::getDbNameByJavaName)
+      rootField.referenceFields = referenceJavaNames.stream()
+        .map(nf3Table::getByJavaName)
         .collect(Collectors.toList());
     }
   }

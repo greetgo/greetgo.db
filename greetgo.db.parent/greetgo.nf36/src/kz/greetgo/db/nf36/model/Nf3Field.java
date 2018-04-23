@@ -1,6 +1,7 @@
 package kz.greetgo.db.nf36.model;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public interface Nf3Field {
 
@@ -24,7 +25,11 @@ public interface Nf3Field {
 
   boolean isRootReference();
 
-  List<String> referenceDbNames();
+  List<Nf3Field> referenceFields();
+
+  default List<String> referenceDbNames() {
+    return referenceFields().stream().map(Nf3Field::dbName).collect(Collectors.toList());
+  }
 
   Nf3Table referenceTo();
 

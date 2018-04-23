@@ -89,12 +89,12 @@ class Nf3FieldImpl implements Nf3Field {
     return isRootReference;
   }
 
-  List<String> referenceDbNames = null;
+  List<Nf3Field> referenceFields = null;
 
   @Override
-  public List<String> referenceDbNames() {
-    if (referenceDbNames == null) throw new RuntimeException("No referenceNames");
-    return referenceDbNames;
+  public List<Nf3Field> referenceFields() {
+    if (referenceFields == null) throw new RuntimeException("No referenceFields");
+    return referenceFields;
   }
 
   Nf3Table referenceTo = null;

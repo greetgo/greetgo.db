@@ -6,4 +6,6 @@ public interface SqlDialect {
   String createFieldDefinition(DbType dbType, String name);
 
   void checkObjectName(String objectName, ObjectNameType objectNameType);
+
+  String fieldTimestampWithDefaultNow(String fieldName);
 }
