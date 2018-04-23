@@ -16,7 +16,7 @@ public class WowUpsertImpl implements WowUpsert {
 
   @Override
   public WowUpsert hello(String hello) {
-    upserter.putField("LEFT", "hello", hello);
+    upserter.putField("m_wow_hello", "hello", hello);
     return this;
   }
 

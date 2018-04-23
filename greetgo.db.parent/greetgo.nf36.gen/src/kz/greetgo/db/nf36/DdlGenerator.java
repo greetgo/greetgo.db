@@ -47,22 +47,26 @@ public class DdlGenerator {
 
   @SuppressWarnings("UnusedReturnValue")
   public DdlGenerator generateNf3Tables(File outFile) {
+    collector.collect();
     return pushInFile(outFile, this::generateNf3TablesTo);
   }
 
   @SuppressWarnings("UnusedReturnValue")
   public DdlGenerator generateNf6Tables(File outFile) {
+    collector.collect();
     return pushInFile(outFile, this::generateNf6TablesTo);
   }
 
 
   @SuppressWarnings("UnusedReturnValue")
   public DdlGenerator generateNf3References(File outFile) {
+    collector.collect();
     return pushInFile(outFile, this::generateNf3ReferencesTo);
   }
 
   @SuppressWarnings("UnusedReturnValue")
   public DdlGenerator generateNf6IdReferences(File outFile) {
+    collector.collect();
     return pushInFile(outFile, this::generateNf6IdReferencesTo);
   }
 

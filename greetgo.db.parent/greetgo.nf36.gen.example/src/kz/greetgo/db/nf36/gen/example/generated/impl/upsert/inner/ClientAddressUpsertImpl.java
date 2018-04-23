@@ -18,25 +18,25 @@ public class ClientAddressUpsertImpl implements ClientAddressUpsert {
 
   @Override
   public ClientAddressUpsert type(AddressType type) {
-    upserter.putField("LEFT", "type", type);
+    upserter.putField("m_client_address_type", "type", type);
     return this;
   }
 
   @Override
   public ClientAddressUpsert streetId(long streetId) {
-    upserter.putField("LEFT", "street_id", streetId);
+    upserter.putField("m_client_address_street_id", "street_id", streetId);
     return this;
   }
 
   @Override
   public ClientAddressUpsert house(String house) {
-    upserter.putField("LEFT", "house", house);
+    upserter.putField("m_client_address_house", "house", house);
     return this;
   }
 
   @Override
   public ClientAddressUpsert flat(String flat) {
-    upserter.putField("LEFT", "flat", flat);
+    upserter.putField("m_client_address_flat", "flat", flat);
     return this;
   }
 
@@ -45,7 +45,7 @@ public class ClientAddressUpsertImpl implements ClientAddressUpsert {
     if (birthDate == null) {
       throw new CannotBeNull("Field ClientAddress.birthDate cannot be null");
     }
-    upserter.putField("LEFT", "birth_date", birthDate);
+    upserter.putField("m_client_address_birth_date", "birth_date", birthDate);
     return this;
   }
 

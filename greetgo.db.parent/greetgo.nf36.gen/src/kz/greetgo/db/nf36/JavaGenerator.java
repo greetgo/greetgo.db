@@ -80,6 +80,7 @@ public class JavaGenerator {
   }
 
   public void generate() {
+    collector.collect();
 
     if (cleanOutDirsBeforeGeneration) cleanOutDirs();
 
@@ -232,7 +233,8 @@ public class JavaGenerator {
         p.ofs(2).prn("}");
       }
 
-      p.ofs(2).prn(upserterField + ".putField(\"LEFT\", \"" + f.dbName() + "\", " + fieldName + ");");
+      p.ofs(2).prn(upserterField + ".putField(\"" + collector.getNf6TableName(nf3Table, f)
+        + "\", \"" + f.dbName() + "\", " + fieldName + ");");
       p.ofs(2).prn("return this;");
       p.ofs(1).prn("}").prn();
     }

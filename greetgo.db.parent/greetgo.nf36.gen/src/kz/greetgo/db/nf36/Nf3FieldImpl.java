@@ -105,6 +105,13 @@ class Nf3FieldImpl implements Nf3Field {
     return referenceTo;
   }
 
+  Nf3Field rootField = this;
+
+  @Override
+  public Nf3Field rootField() {
+    return rootField;
+  }
+
   @Override
   public boolean hasNextPart() {
     return nextPart() != null;

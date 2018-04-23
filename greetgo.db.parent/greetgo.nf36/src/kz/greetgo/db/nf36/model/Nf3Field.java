@@ -27,6 +27,8 @@ public interface Nf3Field {
 
   List<Nf3Field> referenceFields();
 
+  Nf3Field rootField();
+
   default List<String> referenceDbNames() {
     return referenceFields().stream().map(Nf3Field::dbName).collect(Collectors.toList());
   }

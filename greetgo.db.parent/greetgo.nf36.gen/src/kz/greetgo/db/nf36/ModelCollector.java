@@ -32,7 +32,7 @@ public class ModelCollector {
   }
 
   public String getNf6TableName(Nf3Table nf3Table, Nf3Field field) {
-    return nf3Table.nf6prefix() + nf3Table.tableName() + nf6TableSeparator + field.dbName();
+    return nf3Table.nf6prefix() + nf3Table.tableName() + nf6TableSeparator + field.rootField().dbName();
   }
 
   @SuppressWarnings("unused")
@@ -137,6 +137,9 @@ public class ModelCollector {
       rootField.referenceFields = referenceJavaNames.stream()
         .map(nf3Table::getByJavaName)
         .collect(Collectors.toList());
+      for (Nf3Field referenceField : rootField.referenceFields) {
+        ((Nf3FieldImpl) referenceField).rootField = rootField;
+      }
     }
   }
 

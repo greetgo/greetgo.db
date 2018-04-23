@@ -48,7 +48,8 @@ public class ExampleGenerators {
 
     ddlGenerator = DdlGenerator.newGenerator(collector)
       .setSqlDialect(new SqlDialectPostgres())
-      .setCommandSeparator(";;");
+      .setCommandSeparator(";;")
+    ;
   }
 
   private DdlGenerator ddlGenerator;
@@ -64,9 +65,9 @@ public class ExampleGenerators {
     javaGenerator.generate();
   }
 
-  public final List<File> sqlFileList = new ArrayList<>();
 
   public List<File> generateSqlFiles() {
+    List<File> sqlFileList = new ArrayList<>();
     {
       File outFile = new File(exampleDir() + "/build/gen_sql/001_nf3_tables.sql");
       ddlGenerator.generateNf3Tables(outFile);

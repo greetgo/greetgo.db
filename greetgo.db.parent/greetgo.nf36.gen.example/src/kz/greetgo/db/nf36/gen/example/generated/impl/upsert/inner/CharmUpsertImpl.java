@@ -15,7 +15,7 @@ public class CharmUpsertImpl implements CharmUpsert {
 
   @Override
   public CharmUpsert name(String name) {
-    upserter.putField("LEFT", "name", name);
+    upserter.putField("m_charm_name", "name", name);
     return this;
   }
 

@@ -16,7 +16,7 @@ public class ChairUpsertImpl implements ChairUpsert {
 
   @Override
   public ChairUpsert name(String name) {
-    upserter.putField("LEFT", "name", name);
+    upserter.putField("m_chair_name", "name", name);
     return this;
   }
 
