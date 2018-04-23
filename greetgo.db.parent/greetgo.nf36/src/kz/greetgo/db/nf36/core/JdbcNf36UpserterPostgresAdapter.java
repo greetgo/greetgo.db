@@ -2,6 +2,7 @@ package kz.greetgo.db.nf36.core;
 
 import kz.greetgo.db.ConnectionCallback;
 import kz.greetgo.db.Jdbc;
+import kz.greetgo.db.nf36.model.SqlLog;
 import kz.greetgo.db.nf36.utils.SqlConvertUtil;
 
 import java.sql.Connection;
@@ -12,17 +13,21 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
 
 public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, ConnectionCallback<Void> {
 
-  private Jdbc jdbc;
+  private final Jdbc jdbc;
+  private final SqlLogAcceptor logAcceptor;
   private String tableName;
   private String nf3prefix;
   private String nf6prefix;
 
-  public JdbcNf36UpserterPostgresAdapter(Jdbc jdbc) {
+  public JdbcNf36UpserterPostgresAdapter(Jdbc jdbc, SqlLogAcceptor logAcceptor) {
+    if (jdbc == null) throw new IllegalArgumentException("jdbc cannot be null");
     this.jdbc = jdbc;
+    this.logAcceptor = logAcceptor;
   }
 
   @Override
@@ -83,13 +88,7 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
       )
     ).collect(Collectors.toList());
 
-    {
-      System.out.println("sql: " + sql);
-      int index = 1;
-      for (Object param : params) {
-        System.out.println(" param " + index++ + " = " + param);
-      }
-    }
+    long startedAt = System.nanoTime();
 
     try (PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -99,6 +98,17 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
       }
 
       ps.executeUpdate();
+
+      long delay = System.nanoTime() - startedAt;
+      if (logAcceptor != null && logAcceptor.isTraceEnabled()) {
+        logAcceptor.accept(new SqlLog(sql, unmodifiableList(params), null, delay));
+      }
+    } catch (Exception e) {
+      long delay = System.nanoTime() - startedAt;
+      if (logAcceptor != null && logAcceptor.isErrorEnabled()) {
+        logAcceptor.accept(new SqlLog(sql, unmodifiableList(params), e, delay));
+      }
+      throw e;
     }
 
     return null;

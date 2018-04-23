@@ -26,7 +26,6 @@ public class ExampleNf3DoorTest extends AbstractDepinjectTestNg {
     long id = RND.plusLong(1_000_000_000_000L);
     String expectedName1 = "name1 " + RND.str(10);
 
-
     exampleNf3Door.get().upsertClient(id)
       .name(expectedName1)
       .go();
