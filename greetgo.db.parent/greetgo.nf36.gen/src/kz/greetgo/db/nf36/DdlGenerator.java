@@ -40,13 +40,13 @@ public class DdlGenerator {
   }
 
   @SuppressWarnings("UnusedReturnValue")
-  public DdlGenerator generateCreateNf3Tables(File createTablesFile) {
-    return pushInFile(createTablesFile, this::generateCreateTablesTo);
+  public DdlGenerator generateNf3Tables(File outFile) {
+    return pushInFile(outFile, this::generateNf3TablesTo);
   }
 
   @SuppressWarnings("UnusedReturnValue")
-  public DdlGenerator generateNf3References(File referencesFile) {
-    return pushInFile(referencesFile, this::generateReferencesTo);
+  public DdlGenerator generateNf3References(File outFile) {
+    return pushInFile(outFile, this::generateNf3ReferencesTo);
   }
 
   private DdlGenerator pushInFile(File file, Consumer<PrintStream> consumer) {
@@ -62,15 +62,15 @@ public class DdlGenerator {
     return this;
   }
 
-  private void generateCreateTablesTo(PrintStream out) {
+  private void generateNf3TablesTo(PrintStream out) {
 
     nf3TableMap.values().stream()
       .sorted(Comparator.comparing(Nf3Table::tableName))
-      .forEachOrdered(nf3Table -> printCreateTableFor(nf3Table, out));
+      .forEachOrdered(nf3Table -> printCreateNf3TableFor(nf3Table, out));
 
   }
 
-  private void printCreateTableFor(Nf3Table nf3Table, PrintStream out) {
+  private void printCreateNf3TableFor(Nf3Table nf3Table, PrintStream out) {
     sqlDialect.checkObjectName(nf3Table.tableName(), ObjectNameType.TABLE_NAME);
 
     out.println("create table " + nf3Table.nf3prefix() + nf3Table.tableName() + " (");
@@ -110,14 +110,14 @@ public class DdlGenerator {
     out.println("  " + fieldDefinition + ",");
   }
 
-  private void generateReferencesTo(PrintStream out) {
+  private void generateNf3ReferencesTo(PrintStream out) {
     nf3TableMap.values().stream()
       .sorted(Comparator.comparing(Nf3Table::tableName))
-      .forEachOrdered(nf3Table -> printReferenceFor(nf3Table, out));
+      .forEachOrdered(nf3Table -> printNf3ReferenceFor(nf3Table, out));
 
   }
 
-  private void printReferenceFor(Nf3Table nf3Table, PrintStream out) {
+  private void printNf3ReferenceFor(Nf3Table nf3Table, PrintStream out) {
 
     nf3Table.fields().stream().filter(Nf3Field::isRootReference).forEachOrdered(root ->
 

@@ -71,15 +71,15 @@ public class ExampleGenerators {
 
   public List<File> generateSqlFiles() {
     {
-      File createTablesFile = new File(exampleDir() + "/build/gen_sql/001_create_nf3_tables.sql");
-      ddlGenerator.generateCreateNf3Tables(createTablesFile);
-      sqlFileList.add(createTablesFile);
+      File outFile = new File(exampleDir() + "/build/gen_sql/001_create_nf3_tables.sql");
+      ddlGenerator.generateNf3Tables(outFile);
+      sqlFileList.add(outFile);
     }
 
     {
-      File referencesFile = new File(exampleDir() + "/build/gen_sql/002_add_table_nf3_references.sql");
-      ddlGenerator.generateNf3References(referencesFile);
-      sqlFileList.add(referencesFile);
+      File outFile = new File(exampleDir() + "/build/gen_sql/002_add_table_nf3_references.sql");
+      ddlGenerator.generateNf3References(outFile);
+      sqlFileList.add(outFile);
     }
 
     return sqlFileList;
