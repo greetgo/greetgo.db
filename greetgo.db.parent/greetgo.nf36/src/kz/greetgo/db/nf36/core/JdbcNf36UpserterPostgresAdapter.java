@@ -72,7 +72,7 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
       + ") on conflict ("
       + idValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))
       + ") do update set "
-      + fieldValueMap.keySet().stream().map(k -> k + " = ?").collect(Collectors.joining(", "))
+      + fieldValueMap.keySet().stream().sorted().map(k -> k + " = ?").collect(Collectors.joining(", "))
       + "";
 
     List<Object> params = Stream.concat(
@@ -83,7 +83,13 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
       )
     ).collect(Collectors.toList());
 
-    System.out.println("sql: " + sql);
+    {
+      System.out.println("sql: " + sql);
+      int index = 1;
+      for (Object param : params) {
+        System.out.println(" param " + index++ + " = " + param);
+      }
+    }
 
     try (PreparedStatement ps = con.prepareStatement(sql)) {
 

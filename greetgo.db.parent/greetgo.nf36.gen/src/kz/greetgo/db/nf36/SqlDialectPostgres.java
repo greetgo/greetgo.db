@@ -7,9 +7,8 @@ public class SqlDialectPostgres implements SqlDialect {
   @Override
   public String createFieldDefinition(DbType dbType, String name) {
     String type = extractType(dbType.sqlType(), dbType.len());
-    String notNull = dbType.nullable() ? "" : " not null";
-    String def = dbType.defaultNow() ? " default clock_timestamp()" : "";
-    return name + " " + type + notNull + def;
+    String def = dbType.defaultNow() ? " not null default clock_timestamp()" : "";
+    return name + " " + type + def;
   }
 
   @Override
