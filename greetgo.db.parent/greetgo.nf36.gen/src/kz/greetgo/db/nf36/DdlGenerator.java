@@ -8,22 +8,25 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class DdlGenerator {
-  private Map<Class<?>, Nf3Table> nf3TableMap;
+  private final Map<Class<?>, Nf3Table> nf3TableMap;
   private SqlDialect sqlDialect;
   private String commandSeparator = ";;";
-  private String nf6TableSeparator = "_";
+
   private String nf6timeField = "ts";
+  private final ModelCollector collector;
 
-  private DdlGenerator() {}
+  private DdlGenerator(ModelCollector collector) {
+    this.collector = collector;
+    nf3TableMap = collector.collect().stream().collect(Collectors.toMap(Nf3Table::source, t -> t));
+  }
 
-  public static DdlGenerator newGenerator() {
-    return new DdlGenerator();
+  public static DdlGenerator newGenerator(ModelCollector modelCollector) {
+    return new DdlGenerator(modelCollector);
   }
 
   public DdlGenerator setSqlDialect(SqlDialect sqlDialect) {
@@ -34,17 +37,6 @@ public class DdlGenerator {
   @SuppressWarnings("unused")
   public DdlGenerator setNf6timeField(String nf6timeField) {
     this.nf6timeField = nf6timeField;
-    return this;
-  }
-
-  @SuppressWarnings("unused")
-  public DdlGenerator setNf6TableSeparator(String nf6TableSeparator) {
-    this.nf6TableSeparator = nf6TableSeparator;
-    return this;
-  }
-
-  public DdlGenerator setNf3TableList(List<Nf3Table> nf3TableList) {
-    nf3TableMap = nf3TableList.stream().collect(Collectors.toMap(Nf3Table::source, t -> t));
     return this;
   }
 
@@ -139,7 +131,7 @@ public class DdlGenerator {
   }
 
   private void printCreateNf6Table(Nf3Table nf3Table, Nf3Field field, PrintStream out) {
-    String nf6tableName = getNf6TableName(nf3Table, field);
+    String nf6tableName = collector.getNf6TableName(nf3Table, field);
     sqlDialect.checkObjectName(nf6tableName, ObjectNameType.TABLE_NAME);
 
     out.println("create table " + nf6tableName + " (");
@@ -208,17 +200,12 @@ public class DdlGenerator {
 
   }
 
-
-  private String getNf6TableName(Nf3Table nf3Table, Nf3Field field) {
-    return nf3Table.nf6prefix() + nf3Table.tableName() + nf6TableSeparator + field.dbName();
-  }
-
   private void printNf6IdReferenceFor(Nf3Table nf3Table, PrintStream out) {
     nf3Table.fields().stream()
       .filter(f -> !f.isId() && (!f.isReference() || f.isRootReference()))
       .forEachOrdered(field ->
 
-        out.println("alter table " + getNf6TableName(nf3Table, field) + " add foreign key"
+        out.println("alter table " + collector.getNf6TableName(nf3Table, field) + " add foreign key"
           + " (" + nf3Table.commaSeparatedIdDbNames() + ") references " + nf3Table.nf3TableName()
           + " (" + nf3Table.commaSeparatedIdDbNames() + ")" + commandSeparator
         )

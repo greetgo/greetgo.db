@@ -10,7 +10,6 @@ import kz.greetgo.db.nf36.gen.example.structure.inner.Chair;
 import kz.greetgo.db.nf36.gen.example.structure.inner.Charm;
 import kz.greetgo.db.nf36.gen.example.structure.inner.ClientAddress;
 import kz.greetgo.db.nf36.gen.example.structure.inner.Wow;
-import kz.greetgo.db.nf36.model.Nf3Table;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class ExampleGenerators {
   private JavaGenerator javaGenerator;
 
   public ExampleGenerators() {
-    List<Nf3Table> nf3TableList = ModelCollector
+    ModelCollector collector = ModelCollector
       .newCollector()
       .setNf3Prefix(/*empty*/"")
       .setNf6Prefix("m_")
@@ -33,10 +32,9 @@ public class ExampleGenerators {
       .register(new Street())
       .register(new Chair())
       .register(new Wow())
-      .register(new Charm())
-      .collect();
+      .register(new Charm());
 
-    javaGenerator = JavaGenerator.newGenerator()
+    javaGenerator = JavaGenerator.newGenerator(collector)
       .setInterfaceOutDir("left 1")
       .setImplOutDir("left 2")
       .setOutDir(exampleDir() + "/src")
@@ -46,10 +44,9 @@ public class ExampleGenerators {
       .setSourceBasePackage(Client.class.getPackage().getName())
       .setMainNf36ClassName("ExampleUpserter")
       .setMainNf36ClassAbstract(true)
-      .setNf3TableList(nf3TableList);
+    ;
 
-    ddlGenerator = DdlGenerator.newGenerator()
-      .setNf3TableList(nf3TableList)
+    ddlGenerator = DdlGenerator.newGenerator(collector)
       .setSqlDialect(new SqlDialectPostgres())
       .setCommandSeparator(";;");
   }

@@ -24,7 +24,7 @@ public class JavaGenerator {
 
   String mainNf36ImplClassName = null;
 
-  List<Nf3Table> nf3TableList = null;
+  private final ModelCollector collector;
 
   private String mainNf36ImplClassName() {
     if (mainNf36ClassName == null) {
@@ -36,10 +36,10 @@ public class JavaGenerator {
     return mainNf36ClassAbstract ? "Abstract" + mainNf36ClassName : mainNf36ClassName + "Impl";
   }
 
-  private JavaGenerator() {}
+  private JavaGenerator(ModelCollector collector) {this.collector = collector;}
 
-  public static JavaGenerator newGenerator() {
-    return new JavaGenerator();
+  public static JavaGenerator newGenerator(ModelCollector collector) {
+    return new JavaGenerator(collector);
   }
 
   public JavaGenerator setOutDir(String outDir) {
@@ -56,11 +56,6 @@ public class JavaGenerator {
   @SuppressWarnings("unused")
   public JavaGenerator setMainNf36ImplClassName(String mainNf36ImplClassName) {
     this.mainNf36ImplClassName = mainNf36ImplClassName;
-    return this;
-  }
-
-  public JavaGenerator setNf3TableList(List<Nf3Table> nf3TableList) {
-    this.nf3TableList = nf3TableList;
     return this;
   }
 
@@ -91,7 +86,7 @@ public class JavaGenerator {
     String mainInterfaceClassName = generateMainInterface();
     generateMainImpl(mainInterfaceClassName);
 
-    for (Nf3Table nf3Table : nf3TableList) {
+    for (Nf3Table nf3Table : collector.collect()) {
       UpsertInfo info = getUpsertInfo(nf3Table);
 
       generateUpsertInterface(info, nf3Table);
@@ -301,7 +296,7 @@ public class JavaGenerator {
     p.packageName = interfaceBasePackage;
     p.classHeader = "public interface " + mainNf36ClassName;
 
-    for (Nf3Table nf3Table : nf3TableList) {
+    for (Nf3Table nf3Table : collector.collect()) {
       printUpsertInterfaceMethod(p, nf3Table);
     }
 
@@ -320,7 +315,7 @@ public class JavaGenerator {
 
     printCreateUpserterMethod(p);
 
-    for (Nf3Table nf3Table : nf3TableList) {
+    for (Nf3Table nf3Table : collector.collect()) {
       printUpsertImplMethod(p, nf3Table);
     }
 

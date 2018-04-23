@@ -18,6 +18,7 @@ public class ModelCollector {
   String nf3prefix;
   String nf6prefix;
   int enumLength = 0;
+  private String nf6TableSeparator = "_";
 
   private ModelCollector() {}
 
@@ -27,6 +28,16 @@ public class ModelCollector {
 
   public ModelCollector setEnumLength(int enumLength) {
     this.enumLength = enumLength;
+    return this;
+  }
+
+  public String getNf6TableName(Nf3Table nf3Table, Nf3Field field) {
+    return nf3Table.nf6prefix() + nf3Table.tableName() + nf6TableSeparator + field.dbName();
+  }
+
+  @SuppressWarnings("unused")
+  public ModelCollector setNf6TableSeparator(String nf6TableSeparator) {
+    this.nf6TableSeparator = nf6TableSeparator;
     return this;
   }
 
