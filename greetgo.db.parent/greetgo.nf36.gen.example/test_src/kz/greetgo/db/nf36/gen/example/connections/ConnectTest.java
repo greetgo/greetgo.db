@@ -1,4 +1,4 @@
-package kz.greetgo.db.nf36;
+package kz.greetgo.db.nf36.gen.example.connections;
 
 import kz.greetgo.db.nf36.gen.example.beans.BeanConfigAll;
 import kz.greetgo.db.nf36.gen.example.generated.faces.TestNf3Door;

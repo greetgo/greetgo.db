@@ -41,12 +41,12 @@ public class DdlGenerator {
     return this;
   }
 
-  public DdlGenerator generateCreateTables(File createTablesFile) {
+  public DdlGenerator generateCreateNf3Tables(File createTablesFile) {
     return pushInFile(createTablesFile, this::generateCreateTablesTo);
   }
 
   @SuppressWarnings("UnusedReturnValue")
-  public DdlGenerator generateReferences(File referencesFile) {
+  public DdlGenerator generateNf3References(File referencesFile) {
     return pushInFile(referencesFile, this::generateReferencesTo);
   }
 
