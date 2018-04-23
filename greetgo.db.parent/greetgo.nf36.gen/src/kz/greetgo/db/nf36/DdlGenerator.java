@@ -69,6 +69,12 @@ public class DdlGenerator {
     return pushInFile(outFile, this::generateNf3ReferencesTo);
   }
 
+  @SuppressWarnings("UnusedReturnValue")
+  public DdlGenerator generateNf6IdReferences(File outFile) {
+    return pushInFile(outFile, this::generateNf6IdReferencesTo);
+  }
+
+
   private DdlGenerator pushInFile(File file, Consumer<PrintStream> consumer) {
     file.getParentFile().mkdirs();
 
@@ -133,7 +139,7 @@ public class DdlGenerator {
   }
 
   private void printCreateNf6Table(Nf3Table nf3Table, Nf3Field field, PrintStream out) {
-    String nf6tableName = nf3Table.nf6prefix() + nf3Table.tableName() + nf6TableSeparator + field.dbName();
+    String nf6tableName = getNf6TableName(nf3Table, field);
     sqlDialect.checkObjectName(nf6tableName, ObjectNameType.TABLE_NAME);
 
     out.println("create table " + nf6tableName + " (");
@@ -175,8 +181,14 @@ public class DdlGenerator {
     nf3TableMap.values().stream()
       .sorted(Comparator.comparing(Nf3Table::tableName))
       .forEachOrdered(nf3Table -> printNf3ReferenceFor(nf3Table, out));
-
   }
+
+  private void generateNf6IdReferencesTo(PrintStream out) {
+    nf3TableMap.values().stream()
+      .sorted(Comparator.comparing(Nf3Table::tableName))
+      .forEachOrdered(nf3Table -> printNf6IdReferenceFor(nf3Table, out));
+  }
+
 
   private void printNf3ReferenceFor(Nf3Table nf3Table, PrintStream out) {
 
@@ -194,6 +206,24 @@ public class DdlGenerator {
 
     );
 
+  }
+
+
+  private String getNf6TableName(Nf3Table nf3Table, Nf3Field field) {
+    return nf3Table.nf6prefix() + nf3Table.tableName() + nf6TableSeparator + field.dbName();
+  }
+
+  private void printNf6IdReferenceFor(Nf3Table nf3Table, PrintStream out) {
+    nf3Table.fields().stream()
+      .filter(f -> !f.isId() && (!f.isReference() || f.isRootReference()))
+      .forEachOrdered(field ->
+
+        out.println("alter table " + getNf6TableName(nf3Table, field) + " add foreign key"
+          + " (" + nf3Table.commaSeparatedIdDbNames() + ") references " + nf3Table.nf3TableName()
+          + " (" + nf3Table.commaSeparatedIdDbNames() + ")" + commandSeparator
+        )
+
+      );
   }
 
 }

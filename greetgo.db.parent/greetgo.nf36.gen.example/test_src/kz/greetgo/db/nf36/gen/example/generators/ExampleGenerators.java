@@ -88,6 +88,12 @@ public class ExampleGenerators {
       sqlFileList.add(outFile);
     }
 
+    {
+      File outFile = new File(exampleDir() + "/build/gen_sql/004_nf6_id_references.sql");
+      ddlGenerator.generateNf6IdReferences(outFile);
+      sqlFileList.add(outFile);
+    }
+
     return sqlFileList;
   }
 
