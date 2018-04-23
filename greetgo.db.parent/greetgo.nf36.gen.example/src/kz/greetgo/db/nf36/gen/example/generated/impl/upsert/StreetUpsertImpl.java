@@ -11,6 +11,7 @@ public class StreetUpsertImpl implements StreetUpsert {
 
   public StreetUpsertImpl(Nf36Upserter upserter, long id) {
     this.upserter = upserter;
+    upserter.setNf3TableName("street");
     upserter.putId("id", id);
   }
 
@@ -19,7 +20,7 @@ public class StreetUpsertImpl implements StreetUpsert {
     if (type == null) {
       throw new CannotBeNull("Field Street.type cannot be null");
     }
-    upserter.putField("type", type);
+    upserter.putField("LEFT", "type", type);
     return this;
   }
 
@@ -28,15 +29,12 @@ public class StreetUpsertImpl implements StreetUpsert {
     if (name == null) {
       throw new CannotBeNull("Field Street.name cannot be null");
     }
-    upserter.putField("name", name);
+    upserter.putField("LEFT", "name", name);
     return this;
   }
 
   @Override
   public void commit() {
-    upserter.setTableName("street");
-    upserter.setNf3Prefix("");
-    upserter.setNf6Prefix("m_");
     upserter.commit();
   }
 }

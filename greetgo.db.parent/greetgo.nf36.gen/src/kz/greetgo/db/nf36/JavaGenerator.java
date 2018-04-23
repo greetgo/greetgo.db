@@ -237,22 +237,19 @@ public class JavaGenerator {
         p.ofs(2).prn("}");
       }
 
-      p.ofs(2).prn(upserterField + ".putField(\"" + f.dbName() + "\", " + fieldName + ");");
+      p.ofs(2).prn(upserterField + ".putField(\"LEFT\", \"" + f.dbName() + "\", " + fieldName + ");");
       p.ofs(2).prn("return this;");
       p.ofs(1).prn("}").prn();
     }
 
-    printCommitMethodImpl(p, nf3Table);
+    printCommitMethodImpl(p);
 
     p.printToFile(info.implJavaFile());
   }
 
-  private void printCommitMethodImpl(JavaFilePrinter p, Nf3Table nf3Table) {
+  private void printCommitMethodImpl(JavaFilePrinter p) {
     p.ofs(1).prn("@Override");
     p.ofs(1).prn("public void " + commitMethod + "() {");
-    p.ofs(2).prn(upserterField + ".setTableName(\"" + nf3Table.tableName() + "\");");
-    p.ofs(2).prn(upserterField + ".setNf3Prefix(\"" + nf3Table.nf3prefix() + "\");");
-    p.ofs(2).prn(upserterField + ".setNf6Prefix(\"" + nf3Table.nf6prefix() + "\");");
     p.ofs(2).prn(upserterField + ".commit();");
     p.ofs(1).prn("}");
   }
@@ -286,6 +283,7 @@ public class JavaGenerator {
 
     ) + ") {");
     p.ofs(2).prn("this." + upserterField + " = " + upserterField + ";");
+    p.ofs(2).prn(upserterField + ".setNf3TableName(\"" + nf3Table.nf3TableName() + "\");");
     for (Nf3Field f : idFields) {
       p.ofs(2).prn(upserterField + ".putId(\"" + f.dbName() + "\", " + f.javaName() + ");");
     }

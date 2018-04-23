@@ -9,20 +9,18 @@ public class CharmUpsertImpl implements CharmUpsert {
 
   public CharmUpsertImpl(Nf36Upserter upserter, String id) {
     this.upserter = upserter;
+    upserter.setNf3TableName("charm");
     upserter.putId("id", id);
   }
 
   @Override
   public CharmUpsert name(String name) {
-    upserter.putField("name", name);
+    upserter.putField("LEFT", "name", name);
     return this;
   }
 
   @Override
   public void commit() {
-    upserter.setTableName("charm");
-    upserter.setNf3Prefix("");
-    upserter.setNf6Prefix("m_");
     upserter.commit();
   }
 }

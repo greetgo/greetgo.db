@@ -20,9 +20,7 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
 
   private final Jdbc jdbc;
   private final SqlLogAcceptor logAcceptor;
-  private String tableName;
-  private String nf3prefix;
-  private String nf6prefix;
+  private String nf3TableName;
 
   public JdbcNf36UpserterPostgresAdapter(Jdbc jdbc, SqlLogAcceptor logAcceptor) {
     if (jdbc == null) throw new IllegalArgumentException("jdbc cannot be null");
@@ -31,8 +29,8 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
   }
 
   @Override
-  public void setTableName(String tableName) {
-    this.tableName = tableName;
+  public void setNf3TableName(String nf3TableName) {
+    this.nf3TableName = nf3TableName;
   }
 
   private final Map<String, Object> idValueMap = new HashMap<>();
@@ -44,18 +42,8 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
   }
 
   @Override
-  public void putField(String fieldName, Object fieldValue) {
+  public void putField(String nf6TableName, String fieldName, Object fieldValue) {
     fieldValueMap.put(fieldName, SqlConvertUtil.forSql(fieldValue));
-  }
-
-  @Override
-  public void setNf3Prefix(String nf3prefix) {
-    this.nf3prefix = nf3prefix;
-  }
-
-  @Override
-  public void setNf6Prefix(String nf6prefix) {
-    this.nf6prefix = nf6prefix;
   }
 
   @Override
@@ -66,7 +54,7 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
   @Override
   public Void doInConnection(Connection con) throws Exception {
 
-    String sql = "insert into " + nf3prefix + tableName + "("
+    String sql = "insert into " + nf3TableName + "("
       + idValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))
       + ", "
       + fieldValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))

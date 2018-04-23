@@ -11,6 +11,7 @@ public class ClientUpsertImpl implements ClientUpsert {
 
   public ClientUpsertImpl(Nf36Upserter upserter, long id) {
     this.upserter = upserter;
+    upserter.setNf3TableName("client");
     upserter.putId("id", id);
   }
 
@@ -19,19 +20,19 @@ public class ClientUpsertImpl implements ClientUpsert {
     if (surname == null) {
       throw new CannotBeNull("Field Client.surname cannot be null");
     }
-    upserter.putField("surname", surname);
+    upserter.putField("LEFT", "surname", surname);
     return this;
   }
 
   @Override
   public ClientUpsert name(String name) {
-    upserter.putField("name", name);
+    upserter.putField("LEFT", "name", name);
     return this;
   }
 
   @Override
   public ClientUpsert patronymic(String patronymic) {
-    upserter.putField("patronymic", patronymic);
+    upserter.putField("LEFT", "patronymic", patronymic);
     return this;
   }
 
@@ -40,19 +41,19 @@ public class ClientUpsertImpl implements ClientUpsert {
     if (charmId == null) {
       throw new CannotBeNull("Field Client.charmId cannot be null");
     }
-    upserter.putField("charm_id", charmId);
+    upserter.putField("LEFT", "charm_id", charmId);
     return this;
   }
 
   @Override
   public ClientUpsert longDescription(String longDescription) {
-    upserter.putField("long_description", longDescription);
+    upserter.putField("LEFT", "long_description", longDescription);
     return this;
   }
 
   @Override
   public ClientUpsert myChairId1(Long myChairId1) {
-    upserter.putField("my_chair_id1", myChairId1);
+    upserter.putField("LEFT", "my_chair_id1", myChairId1);
     return this;
   }
 
@@ -61,13 +62,13 @@ public class ClientUpsertImpl implements ClientUpsert {
     if (myChairId2 == null) {
       throw new CannotBeNull("Field Client.myChairId2 cannot be null");
     }
-    upserter.putField("my_chair_id2", myChairId2);
+    upserter.putField("LEFT", "my_chair_id2", myChairId2);
     return this;
   }
 
   @Override
   public ClientUpsert hisChairLongId(Long hisChairLongId) {
-    upserter.putField("his_chair_long_id", hisChairLongId);
+    upserter.putField("LEFT", "his_chair_long_id", hisChairLongId);
     return this;
   }
 
@@ -76,15 +77,12 @@ public class ClientUpsertImpl implements ClientUpsert {
     if (hisChairStrId == null) {
       throw new CannotBeNull("Field Client.hisChairStrId cannot be null");
     }
-    upserter.putField("his_chair_str_id", hisChairStrId);
+    upserter.putField("LEFT", "his_chair_str_id", hisChairStrId);
     return this;
   }
 
   @Override
   public void commit() {
-    upserter.setTableName("client");
-    upserter.setNf3Prefix("");
-    upserter.setNf6Prefix("m_");
     upserter.commit();
   }
 }
