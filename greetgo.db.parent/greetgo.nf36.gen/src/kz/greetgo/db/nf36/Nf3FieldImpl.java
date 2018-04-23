@@ -4,9 +4,11 @@ import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
 import kz.greetgo.db.nf36.model.DbType;
 import kz.greetgo.db.nf36.model.Nf3Field;
+import kz.greetgo.db.nf36.model.Nf3Table;
 import kz.greetgo.db.nf36.utils.SqlTypeUtil;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 class Nf3FieldImpl implements Nf3Field {
   private final Field source;
@@ -50,7 +52,7 @@ class Nf3FieldImpl implements Nf3Field {
   }
 
   @Override
-  public Class<?> referenceTo() {
+  public Class<?> referenceToClass() {
     {
       Nf3ReferenceTo a = source.getAnnotation(Nf3ReferenceTo.class);
       if (a != null) return a.value();
@@ -77,7 +79,30 @@ class Nf3FieldImpl implements Nf3Field {
 
   @Override
   public boolean isReference() {
-    return referenceTo() != null;
+    return referenceToClass() != null;
+  }
+
+  boolean isRootReference = false;
+
+  @Override
+  public boolean isRootReference() {
+    return isRootReference;
+  }
+
+  List<String> referenceDbNames = null;
+
+  @Override
+  public List<String> referenceDbNames() {
+    if (referenceDbNames == null) throw new RuntimeException("No referenceNames");
+    return referenceDbNames;
+  }
+
+  Nf3Table referenceTo = null;
+
+  @Override
+  public Nf3Table referenceTo() {
+    if (referenceTo == null) throw new RuntimeException("No referenceTo");
+    return referenceTo;
   }
 
   @Override

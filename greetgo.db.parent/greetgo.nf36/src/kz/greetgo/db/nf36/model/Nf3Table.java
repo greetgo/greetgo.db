@@ -1,6 +1,8 @@
 package kz.greetgo.db.nf36.model;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public interface Nf3Table {
   Class<?> source();
@@ -28,5 +30,17 @@ public interface Nf3Table {
       .filter(f -> javaName.equals(f.javaName()))
       .findAny()
       .orElseThrow(() -> new RuntimeException("No field " + javaName + " in " + source().getSimpleName()));
+  }
+
+  default String nf3TableName() {
+    return nf3prefix() + tableName();
+  }
+
+  default String commaSeparatedIdDbNames() {
+    return fields().stream()
+      .filter(Nf3Field::isId)
+      .sorted(Comparator.comparing(Nf3Field::idOrder))
+      .map(Nf3Field::dbName)
+      .collect(Collectors.joining(", "));
   }
 }

@@ -1,5 +1,7 @@
 package kz.greetgo.db.nf36.model;
 
+import java.util.List;
+
 public interface Nf3Field {
 
   boolean isId();
@@ -14,11 +16,17 @@ public interface Nf3Field {
 
   DbType dbType();
 
-  Class<?> referenceTo();
+  Class<?> referenceToClass();
 
   String nextPart();
 
   boolean isReference();
+
+  boolean isRootReference();
+
+  List<String> referenceDbNames();
+
+  Nf3Table referenceTo();
 
   boolean hasNextPart();
 

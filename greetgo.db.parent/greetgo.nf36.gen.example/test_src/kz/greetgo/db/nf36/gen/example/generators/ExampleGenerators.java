@@ -59,7 +59,8 @@ public class ExampleGenerators {
   public static void main(String[] args) {
     ExampleGenerators exampleGenerators = new ExampleGenerators();
 
-    exampleGenerators.generateAll();
+    exampleGenerators.generateJava();
+    exampleGenerators.generateSqlFiles();
   }
 
   public void generateJava() {
@@ -84,8 +85,4 @@ public class ExampleGenerators {
     return sqlFileList;
   }
 
-  public void generateAll() {
-    generateJava();
-    generateSqlFiles();
-  }
 }
