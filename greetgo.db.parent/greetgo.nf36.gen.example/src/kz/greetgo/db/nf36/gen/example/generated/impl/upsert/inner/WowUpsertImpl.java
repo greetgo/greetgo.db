@@ -24,6 +24,6 @@ public class WowUpsertImpl implements WowUpsert {
     upserter.setTableName("wow");
     upserter.setNf3Prefix("");
     upserter.setNf6Prefix("m_");
-    upserter.go();
+    upserter.commit();
   }
 }

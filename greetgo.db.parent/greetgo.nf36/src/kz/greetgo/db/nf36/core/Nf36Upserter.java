@@ -7,7 +7,7 @@ public interface Nf36Upserter {
 
   void putField(String fieldName, Object fieldValue);
 
-  void go();
+  void commit();
 
   void setNf3Prefix(String nf3prefix);
 

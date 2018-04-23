@@ -59,7 +59,7 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
   }
 
   @Override
-  public void go() {
+  public void commit() {
     jdbc.execute(this);
   }
 

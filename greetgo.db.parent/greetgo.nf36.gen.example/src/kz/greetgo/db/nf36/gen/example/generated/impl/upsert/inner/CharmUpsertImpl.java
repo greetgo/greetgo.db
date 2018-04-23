@@ -23,6 +23,6 @@ public class CharmUpsertImpl implements CharmUpsert {
     upserter.setTableName("charm");
     upserter.setNf3Prefix("");
     upserter.setNf6Prefix("m_");
-    upserter.go();
+    upserter.commit();
   }
 }

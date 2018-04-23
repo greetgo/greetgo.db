@@ -37,6 +37,6 @@ public class StreetUpsertImpl implements StreetUpsert {
     upserter.setTableName("street");
     upserter.setNf3Prefix("");
     upserter.setNf6Prefix("m_");
-    upserter.go();
+    upserter.commit();
   }
 }

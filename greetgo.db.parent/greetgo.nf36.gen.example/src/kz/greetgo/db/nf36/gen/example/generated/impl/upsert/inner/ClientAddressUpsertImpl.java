@@ -53,6 +53,6 @@ public class ClientAddressUpsertImpl implements ClientAddressUpsert {
     upserter.setTableName("client_address");
     upserter.setNf3Prefix("");
     upserter.setNf6Prefix("m_");
-    upserter.go();
+    upserter.commit();
   }
 }

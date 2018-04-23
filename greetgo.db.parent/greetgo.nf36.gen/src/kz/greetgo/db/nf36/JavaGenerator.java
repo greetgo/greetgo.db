@@ -253,7 +253,7 @@ public class JavaGenerator {
     p.ofs(2).prn(upserterField + ".setTableName(\"" + nf3Table.tableName() + "\");");
     p.ofs(2).prn(upserterField + ".setNf3Prefix(\"" + nf3Table.nf3prefix() + "\");");
     p.ofs(2).prn(upserterField + ".setNf6Prefix(\"" + nf3Table.nf6prefix() + "\");");
-    p.ofs(2).prn(upserterField + ".go();");
+    p.ofs(2).prn(upserterField + ".commit();");
     p.ofs(1).prn("}");
   }
 

@@ -85,6 +85,6 @@ public class ClientUpsertImpl implements ClientUpsert {
     upserter.setTableName("client");
     upserter.setNf3Prefix("");
     upserter.setNf6Prefix("m_");
-    upserter.go();
+    upserter.commit();
   }
 }

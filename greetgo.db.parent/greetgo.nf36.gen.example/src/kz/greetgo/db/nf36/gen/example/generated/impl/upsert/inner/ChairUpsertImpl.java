@@ -24,6 +24,6 @@ public class ChairUpsertImpl implements ChairUpsert {
     upserter.setTableName("chair");
     upserter.setNf3Prefix("");
     upserter.setNf6Prefix("m_");
-    upserter.go();
+    upserter.commit();
   }
 }
