@@ -1,6 +1,7 @@
 package kz.greetgo.db.nf36;
 
 import kz.greetgo.db.nf36.core.Nf36Upserter;
+import kz.greetgo.db.nf36.errors.CannotBeNull;
 import kz.greetgo.db.nf36.model.Nf3Field;
 import kz.greetgo.db.nf36.model.Nf3Table;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -228,6 +229,14 @@ public class JavaGenerator {
       String fieldName = f.javaName();
       p.ofs(1).prn("@Override");
       p.ofs(1).prn("public " + info.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ") {");
+
+      if (f.notNullAndNotPrimitive()) {
+        p.ofs(2).prn("if (" + fieldName + " == null) {");
+        p.ofs(3).prn("throw new " + p.i(CannotBeNull.class.getName())
+          + "(\"Field " + nf3Table.source().getSimpleName() + "." + f.javaName() + " cannot be null\");");
+        p.ofs(2).prn("}");
+      }
+
       p.ofs(2).prn(upserterField + ".putField(\"" + f.dbName() + "\", " + fieldName + ");");
       p.ofs(2).prn("return this;");
       p.ofs(1).prn("}").prn();

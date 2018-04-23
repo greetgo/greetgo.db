@@ -161,6 +161,11 @@ public class ModelCollector {
       public boolean hasNextPart() {
         return nextPart() != null;
       }
+
+      @Override
+      public boolean notNullAndNotPrimitive() {
+        return !dbType().nullable() && !f.getType().isPrimitive();
+      }
     };
   }
 

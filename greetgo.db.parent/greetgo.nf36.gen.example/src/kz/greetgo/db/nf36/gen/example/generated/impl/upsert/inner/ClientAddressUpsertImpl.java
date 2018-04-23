@@ -3,6 +3,7 @@ package kz.greetgo.db.nf36.gen.example.generated.impl.upsert.inner;
 import java.lang.String;
 import java.util.Date;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
+import kz.greetgo.db.nf36.errors.CannotBeNull;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.ClientAddressUpsert;
 import kz.greetgo.db.nf36.gen.example.structure.AddressType;
 
@@ -40,6 +41,9 @@ public class ClientAddressUpsertImpl implements ClientAddressUpsert {
 
   @Override
   public ClientAddressUpsert birthDate(Date birthDate) {
+    if (birthDate == null) {
+      throw new CannotBeNull("Field ClientAddress.birthDate cannot be null");
+    }
     upserter.putField("birth_date", birthDate);
     return this;
   }

@@ -21,4 +21,6 @@ public interface Nf3Field {
   boolean isReference();
 
   boolean hasNextPart();
+
+  boolean notNullAndNotPrimitive();
 }
