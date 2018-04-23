@@ -199,16 +199,16 @@ public class JavaGenerator {
       p.ofs(1).prn(info.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ");").prn();
     }
 
-    p.ofs(1).prn("void " + goMethod + "();");
+    p.ofs(1).prn("void " + commitMethod + "();");
 
     p.printToFile(info.interfaceJavaFile());
   }
 
-  String goMethod = "go";
+  String commitMethod = "commit";
 
   @SuppressWarnings("unused")
-  public JavaGenerator setGoMethod(String goMethod) {
-    this.goMethod = goMethod;
+  public JavaGenerator setCommitMethod(String commitMethod) {
+    this.commitMethod = commitMethod;
     return this;
   }
 
@@ -242,14 +242,14 @@ public class JavaGenerator {
       p.ofs(1).prn("}").prn();
     }
 
-    printGoMethodImpl(p, nf3Table);
+    printCommitMethodImpl(p, nf3Table);
 
     p.printToFile(info.implJavaFile());
   }
 
-  private void printGoMethodImpl(JavaFilePrinter p, Nf3Table nf3Table) {
+  private void printCommitMethodImpl(JavaFilePrinter p, Nf3Table nf3Table) {
     p.ofs(1).prn("@Override");
-    p.ofs(1).prn("public void " + goMethod + "() {");
+    p.ofs(1).prn("public void " + commitMethod + "() {");
     p.ofs(2).prn(upserterField + ".setTableName(\"" + nf3Table.tableName() + "\");");
     p.ofs(2).prn(upserterField + ".setNf3Prefix(\"" + nf3Table.nf3prefix() + "\");");
     p.ofs(2).prn(upserterField + ".setNf6Prefix(\"" + nf3Table.nf6prefix() + "\");");

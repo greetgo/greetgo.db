@@ -5,5 +5,5 @@ import java.lang.String;
 public interface CharmUpsert {
   CharmUpsert name(String name);
 
-  void go();
+  void commit();
 }

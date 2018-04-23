@@ -20,7 +20,7 @@ public class WowUpsertImpl implements WowUpsert {
   }
 
   @Override
-  public void go() {
+  public void commit() {
     upserter.setTableName("wow");
     upserter.setNf3Prefix("");
     upserter.setNf6Prefix("m_");

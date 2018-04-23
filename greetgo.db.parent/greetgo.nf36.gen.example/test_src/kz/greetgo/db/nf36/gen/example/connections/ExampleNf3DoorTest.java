@@ -28,7 +28,7 @@ public class ExampleNf3DoorTest extends AbstractDepinjectTestNg {
 
     exampleNf3Door.get().upsertClient(id)
       .name(expectedName1)
-      .go();
+      .commit();
 
     {
       String actualName = jdbc.get().execute(new ByOne<String>("id", id, "client", "name"));
@@ -43,7 +43,7 @@ public class ExampleNf3DoorTest extends AbstractDepinjectTestNg {
 
     exampleNf3Door.get().upsertClient(id)
       .name(expectedName2)
-      .go();
+      .commit();
 
     {
       String actualName = jdbc.get().execute(new ByOne<String>("id", id, "client", "name"));
@@ -60,7 +60,7 @@ public class ExampleNf3DoorTest extends AbstractDepinjectTestNg {
     exampleNf3Door.get().upsertClient(id)
       .name(expectedName3)
       .surname(expectedSurname)
-      .go();
+      .commit();
 
     {
       String actualName = jdbc.get().execute(new ByOne<String>("id", id, "client", "name"));
@@ -78,7 +78,38 @@ public class ExampleNf3DoorTest extends AbstractDepinjectTestNg {
     exampleNf3Door.get().upsertClient(RND.plusLong(1_000_000_000L))
       .name("asd")
       .surname(null)
-      .go();
+      .commit();
 
+  }
+
+  @Test
+  public void insertSomeData() throws Exception {
+
+    long chairId1_1 = RND.plusLong(1_000_000_000_000L);
+    String chairId2_1 = RND.str(10);
+    long chairId1_2 = RND.plusLong(1_000_000_000_000L);
+    String chairId2_2 = RND.str(10);
+
+    exampleNf3Door.get().upsertChair(chairId1_1, chairId2_1)
+      .name(RND.str(10))
+      .commit()
+    ;
+
+    exampleNf3Door.get().upsertChair(chairId1_2, chairId2_2)
+      .name(RND.str(10))
+      .commit()
+    ;
+
+    long clientId = RND.plusLong(1_000_000_000_000L);
+
+    exampleNf3Door.get().upsertClient(clientId)
+      .name(RND.str(10))
+      .surname(RND.str(10))
+      .myChairId1(chairId1_1)
+      .myChairId2(chairId2_1)
+      .hisChairLongId(chairId1_2)
+      .hisChairStrId(chairId2_2)
+      .commit()
+    ;
   }
 }

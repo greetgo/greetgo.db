@@ -49,7 +49,7 @@ public class ClientAddressUpsertImpl implements ClientAddressUpsert {
   }
 
   @Override
-  public void go() {
+  public void commit() {
     upserter.setTableName("client_address");
     upserter.setNf3Prefix("");
     upserter.setNf6Prefix("m_");

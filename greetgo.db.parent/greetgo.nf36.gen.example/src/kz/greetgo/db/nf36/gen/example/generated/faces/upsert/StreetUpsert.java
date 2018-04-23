@@ -8,5 +8,5 @@ public interface StreetUpsert {
 
   StreetUpsert name(String name);
 
-  void go();
+  void commit();
 }

@@ -22,5 +22,5 @@ public interface ClientUpsert {
 
   ClientUpsert hisChairStrId(String hisChairStrId);
 
-  void go();
+  void commit();
 }

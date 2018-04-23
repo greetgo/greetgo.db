@@ -5,5 +5,5 @@ import java.lang.String;
 public interface WowUpsert {
   WowUpsert hello(String hello);
 
-  void go();
+  void commit();
 }

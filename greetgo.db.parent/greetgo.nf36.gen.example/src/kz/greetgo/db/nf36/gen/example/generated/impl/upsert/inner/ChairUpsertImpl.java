@@ -20,7 +20,7 @@ public class ChairUpsertImpl implements ChairUpsert {
   }
 
   @Override
-  public void go() {
+  public void commit() {
     upserter.setTableName("chair");
     upserter.setNf3Prefix("");
     upserter.setNf6Prefix("m_");

@@ -5,5 +5,5 @@ import java.lang.String;
 public interface ChairUpsert {
   ChairUpsert name(String name);
 
-  void go();
+  void commit();
 }

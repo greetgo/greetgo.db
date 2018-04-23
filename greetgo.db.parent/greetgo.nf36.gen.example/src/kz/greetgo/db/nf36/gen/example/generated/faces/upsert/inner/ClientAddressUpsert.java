@@ -15,5 +15,5 @@ public interface ClientAddressUpsert {
 
   ClientAddressUpsert birthDate(Date birthDate);
 
-  void go();
+  void commit();
 }

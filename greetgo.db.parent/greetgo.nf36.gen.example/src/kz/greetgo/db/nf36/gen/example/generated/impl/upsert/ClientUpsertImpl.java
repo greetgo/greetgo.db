@@ -72,7 +72,7 @@ public class ClientUpsertImpl implements ClientUpsert {
   }
 
   @Override
-  public void go() {
+  public void commit() {
     upserter.setTableName("client");
     upserter.setNf3Prefix("");
     upserter.setNf6Prefix("m_");

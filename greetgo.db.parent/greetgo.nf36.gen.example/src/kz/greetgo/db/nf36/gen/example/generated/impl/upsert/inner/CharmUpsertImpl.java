@@ -19,7 +19,7 @@ public class CharmUpsertImpl implements CharmUpsert {
   }
 
   @Override
-  public void go() {
+  public void commit() {
     upserter.setTableName("charm");
     upserter.setNf3Prefix("");
     upserter.setNf6Prefix("m_");
