@@ -1,5 +1,6 @@
 package kz.greetgo.db.nf36;
 
+import kz.greetgo.db.nf36.core.Nf3Description;
 import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
 import kz.greetgo.db.nf36.model.DbType;
@@ -11,11 +12,13 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 class Nf3FieldImpl implements Nf3Field {
+  private final Object definer;
   private final Field source;
   private final Nf3ID nf3ID;
   private final int enumLength;
 
-  public Nf3FieldImpl(Field source, int enumLength) {
+  public Nf3FieldImpl(Object definer, Field source, int enumLength) {
+    this.definer = definer;
     this.source = source;
     nf3ID = source.getAnnotation(Nf3ID.class);
     this.enumLength = enumLength;
@@ -120,5 +123,15 @@ class Nf3FieldImpl implements Nf3Field {
   @Override
   public boolean notNullAndNotPrimitive() {
     return !dbType().nullable() && !source.getType().isPrimitive();
+  }
+
+  @Override
+  public String commentQuotedForSql() {
+    Nf3Description d = source.getAnnotation(Nf3Description.class);
+    if (d == null) {
+      throw new RuntimeException("No description for field " + definer.getClass().getSimpleName()
+        + "." + source.getName());
+    }
+    return UtilsNf36.quoteForSql(d.value());
   }
 }

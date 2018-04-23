@@ -4,7 +4,7 @@ import kz.greetgo.db.nf36.core.Nf3Description;
 import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3Text;
 
-@Nf3Description("Это стул")
+@Nf3Description("Это стул ' и апостроф")
 @SuppressWarnings("unused")
 public class Chair {
   @Nf3Description("Первый идентификатор стула")

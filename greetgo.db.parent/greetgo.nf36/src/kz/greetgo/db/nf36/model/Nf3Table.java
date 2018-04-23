@@ -43,4 +43,6 @@ public interface Nf3Table {
       .map(Nf3Field::dbName)
       .collect(Collectors.joining(", "));
   }
+
+  String commentQuotedForSql();
 }

@@ -26,6 +26,7 @@ public class Client {
   public String patronymic;
 
   @Nf3ReferenceTo(Charm.class)
+  @Nf3Description("hi")
   public String charmId;
 
   @Nf3Description("Длинное описание")
@@ -37,6 +38,7 @@ public class Client {
   public Long myChairId1;
 
   @Nf3ReferenceTo(Chair.class)
+  @Nf3Description("hi")
   public String myChairId2;
 
   @Nf3Description("Ссылка на его стул")
@@ -44,5 +46,6 @@ public class Client {
   public Long hisChairLongId;
 
   @Nf3ReferenceTo(Chair.class)
+  @Nf3Description("hi")
   public String hisChairStrId;
 }

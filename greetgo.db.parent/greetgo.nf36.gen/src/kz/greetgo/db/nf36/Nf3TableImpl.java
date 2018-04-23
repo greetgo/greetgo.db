@@ -1,5 +1,6 @@
 package kz.greetgo.db.nf36;
 
+import kz.greetgo.db.nf36.core.Nf3Description;
 import kz.greetgo.db.nf36.model.Nf3Field;
 import kz.greetgo.db.nf36.model.Nf3Table;
 
@@ -19,7 +20,7 @@ class Nf3TableImpl implements Nf3Table {
     this.owner = owner;
 
     fields = Arrays.stream(definer.getClass().getFields())
-      .map(f -> new Nf3FieldImpl(f, owner.enumLength))
+      .map(f -> new Nf3FieldImpl(definer, f, owner.enumLength))
       .collect(Collectors.toList());
   }
 
@@ -47,5 +48,12 @@ class Nf3TableImpl implements Nf3Table {
   public String tableName() {
     String name = UtilsNf36.javaNameToDbName(definer.getClass().getSimpleName());
     return name.startsWith("_") ? name.substring(1) : name;
+  }
+
+  @Override
+  public String commentQuotedForSql() {
+    Nf3Description d = definer.getClass().getAnnotation(Nf3Description.class);
+    if (d == null) throw new RuntimeException("No description for class " + definer.getClass().getSimpleName());
+    return UtilsNf36.quoteForSql(d.value());
   }
 }

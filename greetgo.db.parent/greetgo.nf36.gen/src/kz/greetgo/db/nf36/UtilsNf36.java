@@ -90,4 +90,8 @@ public class UtilsNf36 {
     if (str.length() < 2) return str.toLowerCase();
     return str.substring(0, 1).toLowerCase() + str.substring(1);
   }
+
+  public static String quoteForSql(String comment) {
+    return comment.replaceAll("'", "''");
+  }
 }

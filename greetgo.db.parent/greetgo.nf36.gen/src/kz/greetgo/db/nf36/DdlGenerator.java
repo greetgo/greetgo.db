@@ -46,6 +46,13 @@ public class DdlGenerator {
   }
 
   @SuppressWarnings("UnusedReturnValue")
+  public DdlGenerator generateComments(File outFile) {
+    collector.collect();
+    return pushInFile(outFile, this::generateCommentsTo);
+  }
+
+
+  @SuppressWarnings("UnusedReturnValue")
   public DdlGenerator generateNf6Tables(File outFile) {
     collector.collect();
     return pushInFile(outFile, this::generateNf6TablesTo);
@@ -84,10 +91,28 @@ public class DdlGenerator {
       .forEachOrdered(nf3Table -> printCreateNf3TableFor(nf3Table, out));
   }
 
+  private void generateCommentsTo(PrintStream out) {
+    nf3TableMap.values().stream()
+      .sorted(Comparator.comparing(Nf3Table::tableName))
+      .forEachOrdered(nf3Table -> printCommentsFor(nf3Table, out));
+  }
+
+
   private void generateNf6TablesTo(PrintStream out) {
     nf3TableMap.values().stream()
       .sorted(Comparator.comparing(Nf3Table::tableName))
       .forEachOrdered(nf3Table -> printCreateNf6TableFor(nf3Table, out));
+  }
+
+  private void printCommentsFor(Nf3Table nf3Table, PrintStream out) {
+    out.println("comment on table " + nf3Table.nf3TableName()
+      + " is '" + nf3Table.commentQuotedForSql() + "'" + commandSeparator);
+
+    for (Nf3Field field : nf3Table.fields()) {
+      out.println("comment on column " + nf3Table.nf3TableName() + "." + field.dbName()
+        + " is '" + field.commentQuotedForSql() + "'" + commandSeparator);
+    }
+
   }
 
   private void printCreateNf3TableFor(Nf3Table nf3Table, PrintStream out) {
@@ -210,5 +235,4 @@ public class DdlGenerator {
 
       );
   }
-
 }

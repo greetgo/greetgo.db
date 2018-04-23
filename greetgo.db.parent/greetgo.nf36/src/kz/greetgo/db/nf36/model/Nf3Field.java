@@ -38,4 +38,6 @@ public interface Nf3Field {
   boolean hasNextPart();
 
   boolean notNullAndNotPrimitive();
+
+  String commentQuotedForSql();
 }
