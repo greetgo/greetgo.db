@@ -2,7 +2,7 @@ package kz.greetgo.db.nf36.gen.example.generated.impl;
 
 import java.lang.String;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
-import kz.greetgo.db.nf36.gen.example.generated.faces.ExampleNf3Door;
+import kz.greetgo.db.nf36.gen.example.generated.faces.ExampleUpserter;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.ClientUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.StreetUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.ChairUpsert;
@@ -17,37 +17,37 @@ import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.inner.ClientAddressU
 import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.inner.WowUpsertImpl;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-public abstract class AbstractExampleNf3Door implements ExampleNf3Door {
+public abstract class AbstractExampleUpserter implements ExampleUpserter {
   protected abstract Nf36Upserter createUpserter();
 
   @Override
-  public ClientUpsert upsertClient(long id) {
-    return new ClientUpsertImpl(createUpserter(), id);
-  }
-
-  @Override
-  public ClientAddressUpsert upsertClientAddress(long clientId) {
-    return new ClientAddressUpsertImpl(createUpserter(), clientId);
-  }
-
-  @Override
-  public StreetUpsert upsertStreet(long id) {
-    return new StreetUpsertImpl(createUpserter(), id);
-  }
-
-  @Override
-  public ChairUpsert upsertChair(long id1, String id2) {
+  public ChairUpsert chair(long id1, String id2) {
     return new ChairUpsertImpl(createUpserter(), id1, id2);
   }
 
   @Override
-  public WowUpsert upsertWow(String wowId, String wowId2) {
-    return new WowUpsertImpl(createUpserter(), wowId, wowId2);
+  public CharmUpsert charm(String id) {
+    return new CharmUpsertImpl(createUpserter(), id);
   }
 
   @Override
-  public CharmUpsert upsertCharm(String id) {
-    return new CharmUpsertImpl(createUpserter(), id);
+  public ClientUpsert client(long id) {
+    return new ClientUpsertImpl(createUpserter(), id);
+  }
+
+  @Override
+  public ClientAddressUpsert clientAddress(long clientId) {
+    return new ClientAddressUpsertImpl(createUpserter(), clientId);
+  }
+
+  @Override
+  public StreetUpsert street(long id) {
+    return new StreetUpsertImpl(createUpserter(), id);
+  }
+
+  @Override
+  public WowUpsert wow(String wowId, String wowId2) {
+    return new WowUpsertImpl(createUpserter(), wowId, wowId2);
   }
 
 }

@@ -4,13 +4,13 @@ import kz.greetgo.db.Jdbc;
 import kz.greetgo.db.nf36.core.JdbcNf36UpserterPostgresAdapter;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.core.SqlLogAcceptor;
-import kz.greetgo.db.nf36.gen.example.generated.impl.AbstractExampleNf3Door;
+import kz.greetgo.db.nf36.gen.example.generated.impl.AbstractExampleUpserter;
 import kz.greetgo.db.nf36.model.SqlLog;
 import kz.greetgo.depinject.core.Bean;
 import kz.greetgo.depinject.core.BeanGetter;
 
 @Bean
-public class ExampleNf3DoorConnector extends AbstractExampleNf3Door {
+public class ExampleNf3DoorConnector extends AbstractExampleUpserter {
 
   public BeanGetter<Jdbc> jdbc;
 

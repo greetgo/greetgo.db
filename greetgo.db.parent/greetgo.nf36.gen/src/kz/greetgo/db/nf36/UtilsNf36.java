@@ -84,4 +84,10 @@ public class UtilsNf36 {
     ret.add(element);
     return ret;
   }
+
+  public static String firstToLow(String str) {
+    if (str == null) return null;
+    if (str.length() < 2) return str.toLowerCase();
+    return str.substring(0, 1).toLowerCase() + str.substring(1);
+  }
 }

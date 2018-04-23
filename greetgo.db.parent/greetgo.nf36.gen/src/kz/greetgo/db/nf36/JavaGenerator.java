@@ -130,7 +130,7 @@ public class JavaGenerator {
     String implPackageName = UtilsNf36.resolvePackage(implBasePackage, subPackage);
     File implJavaFile = UtilsNf36.resolveJavaFile(implOutDir, implPackageName, implClassName);
 
-    String upsertMethodName = "upsert" + nf3Table.source().getSimpleName();
+    String upsertMethodName = UtilsNf36.firstToLow(nf3Table.source().getSimpleName());
 
     String interfaceFullName = UtilsNf36.resolveFullName(interfacePackageName, interfaceClassName);
 

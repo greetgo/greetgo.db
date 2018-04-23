@@ -37,6 +37,9 @@ public class ClientUpsertImpl implements ClientUpsert {
 
   @Override
   public ClientUpsert charmId(String charmId) {
+    if (charmId == null) {
+      throw new CannotBeNull("Field Client.charmId cannot be null");
+    }
     upserter.putField("charm_id", charmId);
     return this;
   }
@@ -55,6 +58,9 @@ public class ClientUpsertImpl implements ClientUpsert {
 
   @Override
   public ClientUpsert myChairId2(String myChairId2) {
+    if (myChairId2 == null) {
+      throw new CannotBeNull("Field Client.myChairId2 cannot be null");
+    }
     upserter.putField("my_chair_id2", myChairId2);
     return this;
   }
@@ -67,6 +73,9 @@ public class ClientUpsertImpl implements ClientUpsert {
 
   @Override
   public ClientUpsert hisChairStrId(String hisChairStrId) {
+    if (hisChairStrId == null) {
+      throw new CannotBeNull("Field Client.hisChairStrId cannot be null");
+    }
     upserter.putField("his_chair_str_id", hisChairStrId);
     return this;
   }

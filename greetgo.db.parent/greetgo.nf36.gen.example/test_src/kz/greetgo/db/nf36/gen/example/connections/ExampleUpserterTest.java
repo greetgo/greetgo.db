@@ -3,7 +3,7 @@ package kz.greetgo.db.nf36.gen.example.connections;
 import kz.greetgo.db.Jdbc;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
 import kz.greetgo.db.nf36.gen.example.beans.BeanConfigAll;
-import kz.greetgo.db.nf36.gen.example.generated.faces.ExampleNf3Door;
+import kz.greetgo.db.nf36.gen.example.generated.faces.ExampleUpserter;
 import kz.greetgo.db.nf36.gen.example.jdbc.ByOne;
 import kz.greetgo.depinject.core.BeanGetter;
 import kz.greetgo.depinject.testng.AbstractDepinjectTestNg;
@@ -14,9 +14,9 @@ import org.testng.annotations.Test;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @ContainerConfig(BeanConfigAll.class)
-public class ExampleNf3DoorTest extends AbstractDepinjectTestNg {
+public class ExampleUpserterTest extends AbstractDepinjectTestNg {
 
-  public BeanGetter<ExampleNf3Door> exampleNf3Door;
+  public BeanGetter<ExampleUpserter> exampleUpserter;
 
   public BeanGetter<Jdbc> jdbc;
 
@@ -26,7 +26,7 @@ public class ExampleNf3DoorTest extends AbstractDepinjectTestNg {
     long id = RND.plusLong(1_000_000_000_000L);
     String expectedName1 = "name1 " + RND.str(10);
 
-    exampleNf3Door.get().upsertClient(id)
+    exampleUpserter.get().client(id)
       .name(expectedName1)
       .commit();
 
@@ -41,7 +41,7 @@ public class ExampleNf3DoorTest extends AbstractDepinjectTestNg {
 
     String expectedName2 = "name2 " + RND.str(10);
 
-    exampleNf3Door.get().upsertClient(id)
+    exampleUpserter.get().client(id)
       .name(expectedName2)
       .commit();
 
@@ -57,7 +57,7 @@ public class ExampleNf3DoorTest extends AbstractDepinjectTestNg {
     String expectedSurname = "surname " + RND.str(10);
     String expectedName3 = "name2 " + RND.str(10);
 
-    exampleNf3Door.get().upsertClient(id)
+    exampleUpserter.get().client(id)
       .name(expectedName3)
       .surname(expectedSurname)
       .commit();
@@ -75,7 +75,7 @@ public class ExampleNf3DoorTest extends AbstractDepinjectTestNg {
   @Test(expectedExceptions = CannotBeNull.class)
   public void upsertClient_CannotBeNull_surname() throws Exception {
 
-    exampleNf3Door.get().upsertClient(RND.plusLong(1_000_000_000L))
+    exampleUpserter.get().client(RND.plusLong(1_000_000_000L))
       .name("asd")
       .surname(null)
       .commit();
@@ -90,19 +90,19 @@ public class ExampleNf3DoorTest extends AbstractDepinjectTestNg {
     long chairId1_2 = RND.plusLong(1_000_000_000_000L);
     String chairId2_2 = RND.str(10);
 
-    exampleNf3Door.get().upsertChair(chairId1_1, chairId2_1)
+    exampleUpserter.get().chair(chairId1_1, chairId2_1)
       .name(RND.str(10))
       .commit()
     ;
 
-    exampleNf3Door.get().upsertChair(chairId1_2, chairId2_2)
+    exampleUpserter.get().chair(chairId1_2, chairId2_2)
       .name(RND.str(10))
       .commit()
     ;
 
     long clientId = RND.plusLong(1_000_000_000_000L);
 
-    exampleNf3Door.get().upsertClient(clientId)
+    exampleUpserter.get().client(clientId)
       .name(RND.str(10))
       .surname(RND.str(10))
       .myChairId1(chairId1_1)

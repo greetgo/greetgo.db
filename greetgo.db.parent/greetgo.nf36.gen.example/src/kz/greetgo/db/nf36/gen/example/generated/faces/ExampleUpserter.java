@@ -8,17 +8,17 @@ import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.CharmUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.ClientAddressUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.WowUpsert;
 
-public interface ExampleNf3Door {
-  ClientUpsert upsertClient(long id);
+public interface ExampleUpserter {
+  ChairUpsert chair(long id1, String id2);
 
-  ClientAddressUpsert upsertClientAddress(long clientId);
+  CharmUpsert charm(String id);
 
-  StreetUpsert upsertStreet(long id);
+  ClientUpsert client(long id);
 
-  ChairUpsert upsertChair(long id1, String id2);
+  ClientAddressUpsert clientAddress(long clientId);
 
-  WowUpsert upsertWow(String wowId, String wowId2);
+  StreetUpsert street(long id);
 
-  CharmUpsert upsertCharm(String id);
+  WowUpsert wow(String wowId, String wowId2);
 
 }

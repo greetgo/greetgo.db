@@ -44,7 +44,7 @@ public class ExampleGenerators {
       .setInterfaceBasePackage("kz.greetgo.db.nf36.gen.example.generated.faces")
       .setImplBasePackage("kz.greetgo.db.nf36.gen.example.generated.impl")
       .setSourceBasePackage(Client.class.getPackage().getName())
-      .setMainNf36ClassName("ExampleNf3Door")
+      .setMainNf36ClassName("ExampleUpserter")
       .setMainNf36ClassAbstract(true)
       .setNf3TableList(nf3TableList);
 
