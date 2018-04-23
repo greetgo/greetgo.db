@@ -1,6 +1,7 @@
 package kz.greetgo.db.nf36.gen.example.connections;
 
 import kz.greetgo.db.Jdbc;
+import kz.greetgo.db.nf36.errors.CannotBeNull;
 import kz.greetgo.db.nf36.gen.example.beans.BeanConfigAll;
 import kz.greetgo.db.nf36.gen.example.generated.faces.ExampleNf3Door;
 import kz.greetgo.db.nf36.gen.example.jdbc.ByOne;
@@ -70,5 +71,15 @@ public class ExampleNf3DoorTest extends AbstractDepinjectTestNg {
       String actualSurname = jdbc.get().execute(new ByOne<String>("id", id, "client", "surname"));
       assertThat(actualSurname).isEqualTo(expectedSurname);
     }
+  }
+
+  @Test(expectedExceptions = CannotBeNull.class)
+  public void upsertClient_CannotBeNull_surname() throws Exception {
+
+    exampleNf3Door.get().upsertClient(RND.plusLong(1_000_000_000L))
+      .name("asd")
+      .surname(null)
+      .go();
+
   }
 }
