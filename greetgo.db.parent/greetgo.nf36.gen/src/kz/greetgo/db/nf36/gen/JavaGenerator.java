@@ -1,4 +1,4 @@
-package kz.greetgo.db.nf36;
+package kz.greetgo.db.nf36.gen;
 
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.errors.CannotBeNull;

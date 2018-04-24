@@ -1,4 +1,4 @@
-package kz.greetgo.db.nf36;
+package kz.greetgo.db.nf36.gen;
 
 import kz.greetgo.db.nf36.model.DbType;
 import kz.greetgo.db.nf36.model.SqlType;

@@ -1,4 +1,4 @@
-package kz.greetgo.db.nf36;
+package kz.greetgo.db.nf36.gen;
 
 import kz.greetgo.db.nf36.core.Nf3Description;
 import kz.greetgo.db.nf36.model.Nf3Field;

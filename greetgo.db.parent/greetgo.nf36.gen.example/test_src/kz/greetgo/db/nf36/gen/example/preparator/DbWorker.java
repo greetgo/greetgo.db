@@ -2,7 +2,7 @@ package kz.greetgo.db.nf36.gen.example.preparator;
 
 
 import kz.greetgo.conf.sys_params.SysParams;
-import kz.greetgo.db.nf36.UtilsFiles;
+import kz.greetgo.db.nf36.gen.UtilsFiles;
 import kz.greetgo.db.nf36.gen.example.env.DbParams;
 
 import java.io.File;

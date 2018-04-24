@@ -1,6 +1,6 @@
-package kz.greetgo.db.nf36;
+package kz.greetgo.db.nf36.gen;
 
-import kz.greetgo.db.nf36.errors.IllegalPackage;
+import kz.greetgo.db.nf36.gen.errors.IllegalPackage;
 
 import java.io.File;
 import java.util.ArrayList;

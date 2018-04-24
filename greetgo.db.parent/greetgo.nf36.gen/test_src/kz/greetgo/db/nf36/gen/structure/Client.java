@@ -1,11 +1,11 @@
-package kz.greetgo.db.nf36.structure;
+package kz.greetgo.db.nf36.gen.structure;
 
 import kz.greetgo.db.nf36.core.Nf3Description;
 import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3NotNull;
 import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
 import kz.greetgo.db.nf36.core.Nf3Text;
-import kz.greetgo.db.nf36.structure.inner.Chair;
+import kz.greetgo.db.nf36.gen.structure.inner.Chair;
 
 @Nf3Description("Это клиент")
 @SuppressWarnings("unused")

@@ -1,6 +1,7 @@
-package kz.greetgo.db.nf36;
+package kz.greetgo.db.nf36.gen;
 
-import kz.greetgo.db.nf36.errors.IllegalPackage;
+import kz.greetgo.db.nf36.gen.errors.IllegalPackage;
+import kz.greetgo.db.nf36.gen.UtilsNf36;
 import org.testng.annotations.Test;
 
 import java.io.File;

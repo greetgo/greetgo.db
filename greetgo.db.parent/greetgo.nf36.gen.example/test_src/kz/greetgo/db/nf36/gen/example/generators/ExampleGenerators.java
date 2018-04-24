@@ -1,9 +1,9 @@
 package kz.greetgo.db.nf36.gen.example.generators;
 
-import kz.greetgo.db.nf36.DdlGenerator;
-import kz.greetgo.db.nf36.JavaGenerator;
-import kz.greetgo.db.nf36.ModelCollector;
-import kz.greetgo.db.nf36.SqlDialectPostgres;
+import kz.greetgo.db.nf36.gen.DdlGenerator;
+import kz.greetgo.db.nf36.gen.JavaGenerator;
+import kz.greetgo.db.nf36.gen.ModelCollector;
+import kz.greetgo.db.nf36.gen.SqlDialectPostgres;
 import kz.greetgo.db.nf36.gen.example.structure.Client;
 import kz.greetgo.db.nf36.gen.example.structure.Street;
 import kz.greetgo.db.nf36.gen.example.structure.inner.Chair;
