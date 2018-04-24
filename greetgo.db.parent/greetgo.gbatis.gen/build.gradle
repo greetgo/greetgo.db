@@ -1,18 +1,5 @@
-def nowDate = new Date()
-def nowFormattedDate = nowDate.format("yyyy-MM-dd/HH:mm:ss")
-
-eclipse {
-  jdt {
-    //
-    // if you want to alter the java versions (by default they are configured with
-    // gradle java plugin settings):
-    //
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
-  }
-}
-
-configurations { repoUpload }
+//noinspection UnnecessaryQualifiedReference
+apply plugin: kz.greetgo.gradle.plugins.GgRepoUploadPlugin
 
 dependencies {
   compile project(':greetgo.gbatis')
@@ -22,29 +9,4 @@ dependencies {
   compile "kz.greetgo.java_compiler:greetgo.java_compiler:${greetgoJavaCompilerVersion}"
 
   testCompile 'com.h2database:h2:1.4.191'
-}
-
-test { useTestNG() }
-
-task sourcesJar(type: Jar) {
-  from sourceSets.main.allSource
-  classifier = 'sources'
-}
-
-artifacts {
-  archives sourcesJar
-}
-
-uploadArchives {
-  repositories.mavenDeployer {
-    configuration = configurations.archives
-    repository(
-      url: System.getenv('GG_REPO')
-    )
-
-    pom.project {
-      name project.name
-      packaging 'jar'
-    }
-  }
 }

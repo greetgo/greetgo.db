@@ -1,4 +1,5 @@
-configurations { repoUpload }
+//noinspection UnnecessaryQualifiedReference
+apply plugin: kz.greetgo.gradle.plugins.GgRepoUploadPlugin
 
 dependencies {
   compile project(':greetgo.nf36')
