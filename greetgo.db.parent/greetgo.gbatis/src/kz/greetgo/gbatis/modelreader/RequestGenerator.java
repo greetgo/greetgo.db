@@ -62,7 +62,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * Генератор класса {@link Request}
  * 
  * <p>
- * Предназначет для реализации метода <nobr>{@link #methodToRequest(Method, Stru, Conf)}</nobr>
+ * Предназначет для реализации метода {@link #methodToRequest(Method, Stru, Conf)}
  * </p>
  * 
  * <p>

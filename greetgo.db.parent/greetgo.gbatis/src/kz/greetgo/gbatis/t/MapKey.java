@@ -20,8 +20,8 @@ import kz.greetgo.gbatis.model.ResultType;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MapKey {
   /**
-   * Определяет местоположение xml-а. Если пустой, то используеться имя = <nobr>
-   * &lt;имя класса&gt;.xml</nobr>
+   * Определяет местоположение xml-а. Если пустой, то используеться имя =
+   * &lt;имя класса&gt;.xml
    * 
    * @return меcтоположение xml-а
    */

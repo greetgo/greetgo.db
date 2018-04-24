@@ -1,33 +1,23 @@
 package kz.greetgo.gbatis.t;
 
-import static java.lang.annotation.ElementType.METHOD;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.METHOD;
+
 /**
- * @see T1
- * 
  * @author pompei
+ * @see T1
  */
 @Documented
-@Target({ METHOD })
+@Target({METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface T6 {
-  /**
-   * @see T1#value()
-   */
   String value();
-  
-  /**
-   * @see T1#fields()
-   */
+
   String[] fields() default {};
-  
-  /**
-   * @see T1#name()
-   */
+
   String name() default "";
 }

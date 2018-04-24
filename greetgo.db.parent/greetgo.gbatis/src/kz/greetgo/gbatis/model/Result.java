@@ -17,7 +17,7 @@ public class Result {
   /**
    * Имя поля для использования ключа мапы.
    * <p>
-   * Используется если <nobr><code>{@link #type} == MAP</code></nobr>
+   * Используется если <code>{@link #type} == MAP</code>
    * </p>
    */
   public String mapKeyField;
@@ -25,7 +25,7 @@ public class Result {
   /**
    * Класс ключа мапы
    * <p>
-   * Используется если <nobr><code>{@link #type} == MAP</code></nobr>
+   * Используется если <code>{@link #type} == MAP</code>
    * </p>
    */
   public Class<?> mapKeyClass;

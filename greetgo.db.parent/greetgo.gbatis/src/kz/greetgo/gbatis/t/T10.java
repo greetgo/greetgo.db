@@ -9,25 +9,16 @@ import java.lang.annotation.Target;
 
 /**
  * @see T1
- * 
+ *
  * @author pompei
  */
 @Documented
 @Target({ METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface T10 {
-  /**
-   * @see T1#value()
-   */
   String value();
   
-  /**
-   * @see T1#fields()
-   */
   String[] fields() default {};
   
-  /**
-   * @see T1#name()
-   */
   String name() default "";
 }

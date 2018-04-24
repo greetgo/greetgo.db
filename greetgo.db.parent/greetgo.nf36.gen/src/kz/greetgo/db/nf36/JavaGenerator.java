@@ -4,7 +4,6 @@ import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
 import kz.greetgo.db.nf36.model.Nf3Field;
 import kz.greetgo.db.nf36.model.Nf3Table;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
 import java.util.Comparator;
@@ -342,7 +341,7 @@ public class JavaGenerator {
 
   private void printCreateUpserterMethod(JavaFilePrinter p) {
     String upserterClassName = p.i(Nf36Upserter.class.getName());
-    String notImplError = p.i(NotImplementedException.class.getName());
+    String notImplError = p.i(RuntimeException.class.getName());
 
     p.ofs(1).prn("protected " + (mainNf36ClassAbstract ? "abstract " : "")
       + upserterClassName + " " + upserterCreateMethod + "()"
@@ -351,7 +350,7 @@ public class JavaGenerator {
 
     if (mainNf36ClassAbstract) return;
 
-    p.ofs(2).prn("throw new " + notImplError + "();");
+    p.ofs(2).prn("throw new " + notImplError + "(\"Not implemented\");");
     p.ofs(1).prn("}").prn();
   }
 

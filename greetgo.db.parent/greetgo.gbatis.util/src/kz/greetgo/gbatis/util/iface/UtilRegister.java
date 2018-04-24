@@ -79,6 +79,7 @@ public interface UtilRegister {
    * @param tableName имя таблицы
    * @param insert    признак вставки
    * @param object    объект сохранения
+   * @param <T>       возвращаемый тип
    * @return объект сохранения
    */
   <T> T save(String tableName, boolean insert, T object);

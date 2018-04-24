@@ -1,6 +1,11 @@
 package kz.greetgo.sqlmanager.gen;
 
-import kz.greetgo.sqlmanager.model.*;
+import kz.greetgo.sqlmanager.model.EnumType;
+import kz.greetgo.sqlmanager.model.Field;
+import kz.greetgo.sqlmanager.model.FieldDb;
+import kz.greetgo.sqlmanager.model.SimpleType;
+import kz.greetgo.sqlmanager.model.Table;
+import kz.greetgo.sqlmanager.model.Type;
 import kz.greetgo.sqlmanager.model.command.Command;
 import kz.greetgo.sqlmanager.model.command.SelectAll;
 import kz.greetgo.sqlmanager.model.command.ToDictionary;
@@ -8,16 +13,23 @@ import kz.greetgo.sqlmanager.parser.StruParseException;
 import kz.greetgo.sqlmanager.parser.StruShaper;
 
 import java.io.PrintStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static kz.greetgo.util.ServerUtil.firstUpper;
 
 /**
+ * <p>
  * Содержит основную логику генерации
- * <p/>
+ * </p>
  * <p>
  * Класс абстрактный, потому что для различных БД генерируемый код может отличатся. Но пока основной
- * генерируемый код расположен здесь</i>
+ * генерируемый код расположен здесь
  * </p>
  *
  * @author pompei
@@ -26,8 +38,9 @@ import static kz.greetgo.util.ServerUtil.firstUpper;
 public abstract class Nf6Generator {
 
   /**
+   * <p>
    * Тип внешней библиотеки
-   * <p/>
+   * </p>
    * <p>
    * Инициируется значением LibType.MYBATIS для обратной совместимости. <i>Для того, чтобы
    * старый код, которые был написан для MyBatis, ещё до введения типа {@link LibType}, работал бы
@@ -112,7 +125,8 @@ public abstract class Nf6Generator {
   /**
    * Распечатка SQL-ей, для копирования данных из исторических таблиц в оперативные
    *
-   * @param out место вывода SQL-ей
+   * @param out       место вывода SQL-ей
+   * @param separator разделитель SQL-ей
    */
   public void printHistToOperSqls(PrintStream out, String separator) {
     if (separator == null) separator = conf.separator;
@@ -180,7 +194,7 @@ public abstract class Nf6Generator {
     if (modi != null) out.print(", " + ts + " as " + modi);
     out.println(',');
     out.println("    row_number() over (partition by " + keys + " order by " + ts
-        + " desc) as modi_nom");
+      + " desc) as modi_nom");
     out.println("  from " + mName);
     out.println(") x2");
     if (ins != null) {
@@ -189,7 +203,7 @@ public abstract class Nf6Generator {
 
       out.println("  select " + keys + ", " + ts + " as " + ins + ',');
       out.println("    row_number() over (partition by " + keys + " order by " + ts
-          + " asc) as ins_nom");
+        + " asc) as ins_nom");
       out.println("  from " + mName);
       out.println(") x3");
     }
@@ -253,12 +267,12 @@ public abstract class Nf6Generator {
 
           if (conf.useNf6) {
             out.println("alter table " + conf.mPrefix + tName + "_" + field.name + " add "
-                + formForeignKey(fieldNames, (Table) field.type) + conf.separator);
+              + formForeignKey(fieldNames, (Table) field.type) + conf.separator);
           }
 
           if (conf.genOperTables) {
             out.println("alter table " + conf.oPrefix + tName + "_" + field.name + " add "
-                + formForeignKey(fieldNames, (Table) field.type) + conf.separator);
+              + formForeignKey(fieldNames, (Table) field.type) + conf.separator);
           }
         }
       }
@@ -336,7 +350,7 @@ public abstract class Nf6Generator {
 
     if (conf.createdAt != null) {
       out.println("  " + conf.createdAt + ' ' + dialect().timestamp() + " default "
-          + dialect().current_timestamp() + " not null,");
+        + dialect().current_timestamp() + " not null,");
     }
     if (conf.userIdFieldType != null && conf.createdBy != null) {
       String type = dialect().userIdFieldType(conf.userIdFieldType, conf.userIdLength);
@@ -365,11 +379,11 @@ public abstract class Nf6Generator {
 
     if (conf.insertedAt != null) {
       out.println("  " + conf.insertedAt + ' ' + dialect().timestamp() + " default "
-          + dialect().current_timestamp() + " not null,");
+        + dialect().current_timestamp() + " not null,");
     }
     if (conf.lastModifiedAt != null) {
       out.println("  " + conf.lastModifiedAt + ' ' + dialect().timestamp() + " default "
-          + dialect().current_timestamp() + " not null,");
+        + dialect().current_timestamp() + " not null,");
     }
     if (conf.userIdFieldType != null && conf.insertedBy != null) {
       String type = dialect().userIdFieldType(conf.userIdFieldType, conf.userIdLength);
@@ -434,7 +448,7 @@ public abstract class Nf6Generator {
     printKeyFields(field, out, keyFields);
 
     out.println("  " + conf.ts + " " + dialect().timestamp() + " default "
-        + dialect().current_timestamp() + " not null,");
+      + dialect().current_timestamp() + " not null,");
 
     if (conf.userIdFieldType != null && conf.modi != null) {
       String type = dialect().userIdFieldType(conf.userIdFieldType, conf.userIdLength);
@@ -463,7 +477,7 @@ public abstract class Nf6Generator {
     field.type.assignSimpleTypes(types);
 
     if (types.size() == 0) throw new StruParseException("No simple type for field "
-        + field.table.name + "." + field.name);
+      + field.table.name + "." + field.name);
 
     if (types.size() == 1) {
       String sqlType = dialect().sqlType(types.get(0));
@@ -521,13 +535,13 @@ public abstract class Nf6Generator {
   private void printFieldViewToOper(PrintStream out, Field field) {
     out.println("create     view " + conf.vPrefix + field.table.name + "_" + field.name + " as");
     out.println("  select * from " + conf.oPrefix + field.table.name + "_" + field.name
-        + conf.separator);
+      + conf.separator);
   }
 
   private void printFieldView(PrintStream out, Field field) {
     StringBuilder sb = new StringBuilder();
     sb.append("create view ").append(conf.vPrefix).append(field.table.name)
-        .append("_").append(field.name).append(" as\n");
+      .append("_").append(field.name).append(" as\n");
     viewFormer.formFieldSelect(sb, field, null, 2, 0);
     out.println(sb + conf.separator);
   }
@@ -550,8 +564,9 @@ public abstract class Nf6Generator {
   }
 
   /**
+   * <p>
    * Генерация хранимой логики для таблицы
-   * <p/>
+   * </p>
    * <p>
    * у каждой БД, синтаксис хранимых процедур/функций сильно различен, поэтому эта генерация
    * вынесена в дочерние классы
@@ -563,8 +578,9 @@ public abstract class Nf6Generator {
   protected abstract void printTableInsertFunction(PrintStream out, Table table);
 
   /**
+   * <p>
    * Генерация хранимой логики для поля
-   * <p/>
+   * </p>
    * <p>
    * у каждой БД, синтаксис хранимых процедур/функций сильно различен, поэтому эта генерация
    * вынесена в дочерние классы
@@ -705,7 +721,7 @@ public abstract class Nf6Generator {
 
     ou.println();
     ou.println("    private final " + ou.i(List.class.getName()) + "<Object>"
-        + " __list__ = new " + ou.i(ArrayList.class.getName()) + "<>();");
+      + " __list__ = new " + ou.i(ArrayList.class.getName()) + "<>();");
 
     for (Field field : table.fields) {
       ou.println();
@@ -783,7 +799,7 @@ public abstract class Nf6Generator {
 
     if (conf.modelStruExtends != null && conf.modelStruImplements != null) {
       throw new IllegalArgumentException("I do not know what to do: implements "
-          + conf.modelStruImplements + " or extends " + conf.modelStruExtends);
+        + conf.modelStruImplements + " or extends " + conf.modelStruExtends);
     }
 
     String _parent_ = "";
@@ -831,14 +847,14 @@ public abstract class Nf6Generator {
 
   private ClassOuter generateChangeClass(Field field, ClassOuter parent) {
     ClassOuter java = new ClassOuter(conf.changeModelPackage + field.table.subpackage(),
-        "Change", field.javaTableFieldName());
+      "Change", field.javaTableFieldName());
 
     field.changeClassName = java.name();
 
     java.println();
     if (conf.changeModelTableNameAnnotation != null) {
       java.println("@" + java.i(conf.changeModelTableNameAnnotation) + "(\""
-          + conf.oPrefix + field.table.name + "_" + field.name + "\")");
+        + conf.oPrefix + field.table.name + "_" + field.name + "\")");
     }
     java.println("public class " + java.className + " extends " + java.i(parent.name()) + " {");
 
@@ -1143,29 +1159,29 @@ public abstract class Nf6Generator {
   private DaoClasses generateDao(Table table, ClassOuter java, ClassOuter fieldsClass) {
 
     ClassOuter comm = new ClassOuter(conf.daoPackage + table.subpackage(), "", table.name
-        + conf.daoSuffix);
+      + conf.daoSuffix);
 
     ClassOuter postgres = null;
     if (generateJavaCodeForPostgres) postgres = new ClassOuter(conf.daoPackage + ".postgres" + table.subpackage(), "",
-        table.name + "Postgres" + conf.daoSuffix);
+      table.name + "Postgres" + conf.daoSuffix);
 
     ClassOuter oracle = null;
 
     if (generateJavaCodeForOracle) oracle = new ClassOuter(conf.daoPackage + ".oracle" + table.subpackage(), "",
-        table.name + "Oracle" + conf.daoSuffix);
+      table.name + "Oracle" + conf.daoSuffix);
 
     comm.println("public interface " + comm.className + " {");
 
     if (postgres != null) {
       if (libType == LibType.GBATIS) postgres.println("@" + postgres.i(GBATIS_AUTOIMPL));
       postgres.println("public interface " + postgres.className //
-          + " extends " + postgres.i(comm.name()) + "{");
+        + " extends " + postgres.i(comm.name()) + "{");
     }
 
     if (oracle != null) {
       if (libType == LibType.GBATIS) oracle.println("@" + oracle.i(GBATIS_AUTOIMPL));
       oracle.println("public interface " + oracle.className //
-          + " extends " + oracle.i(comm.name()) + "{");
+        + " extends " + oracle.i(comm.name()) + "{");
     }
 
     if (table.hasSequence()) {
@@ -1280,7 +1296,7 @@ public abstract class Nf6Generator {
     {
       if (libType == LibType.MYBATIS) {
         comm.println("  @" + comm.i(MYBATIS_OPTIONS) + "(statementType = "
-            + comm.i(MYBATIS_StatementType) + ".CALLABLE)");
+          + comm.i(MYBATIS_StatementType) + ".CALLABLE)");
       }
 
       comm.print("  @" + annCall(comm) + "(\"{call " + conf._p_ + table.name);
@@ -1301,7 +1317,7 @@ public abstract class Nf6Generator {
     {
       if (libType == LibType.MYBATIS) {
         comm.println("  @" + comm.i(MYBATIS_OPTIONS) + "(statementType = "
-            + comm.i(MYBATIS_StatementType) + ".CALLABLE)");
+          + comm.i(MYBATIS_StatementType) + ".CALLABLE)");
       }
       comm.print("  @" + annCall(comm) + "(\"{call " + conf._p_ + table.name);
       comm.print(" (");
@@ -1356,7 +1372,7 @@ public abstract class Nf6Generator {
 
     if (libType == LibType.MYBATIS) {
       comm.println("  @" + comm.i(MYBATIS_OPTIONS) + "(statementType = "
-          + comm.i(MYBATIS_StatementType) + ".CALLABLE)");
+        + comm.i(MYBATIS_StatementType) + ".CALLABLE)");
     }
 
     comm.print("  @" + annCall(comm) + "(\"{call " + conf._p_ + field.table.name + "_" + field.name);
@@ -1379,7 +1395,7 @@ public abstract class Nf6Generator {
         comm.print(first ? "" : ", ");
         first = false;
         comm.print("@" + annPrm(comm) + "(\"" + fi.name + "\")" + comm.i(fi.javaType.javaType())
-            + " " + fi.name);
+          + " " + fi.name);
       }
     }
     comm.println(");");
@@ -1390,7 +1406,7 @@ public abstract class Nf6Generator {
 
     if (libType == LibType.MYBATIS) {
       comm.println("  @" + comm.i(MYBATIS_OPTIONS) + "(statementType = "
-          + comm.i(MYBATIS_StatementType) + ".CALLABLE)");
+        + comm.i(MYBATIS_StatementType) + ".CALLABLE)");
     }
 
     comm.print("  @" + annCall(comm) + "(\"{call " + conf._p_ + field.table.name + "_" + field.name);
@@ -1407,7 +1423,7 @@ public abstract class Nf6Generator {
         comm.print(first ? "" : ", ");
         first = false;
         comm.print("@" + annPrm(comm) + "(\"" + fi.name + "\")" + comm.i(fi.javaType.javaType())
-            + " " + fi.name);
+          + " " + fi.name);
       }
     }
     {
@@ -1416,7 +1432,7 @@ public abstract class Nf6Generator {
           comm.print(", @" + annPrm(comm) + "(\"" + fi.name + "Int\") int " + fi.name + "Int");
         } else {
           comm.print(", @" + annPrm(comm) + "(\"" + fi.name + "\")"
-              + comm.i(fi.javaType.objectType()) + " " + fi.name);
+            + comm.i(fi.javaType.objectType()) + " " + fi.name);
         }
       }
     }
@@ -1442,7 +1458,7 @@ public abstract class Nf6Generator {
 
     if (libType == LibType.MYBATIS) {
       comm.println("  @" + comm.i(MYBATIS_OPTIONS) + "(statementType = "
-          + comm.i(MYBATIS_StatementType) + ".CALLABLE)");
+        + comm.i(MYBATIS_StatementType) + ".CALLABLE)");
     }
 
     comm.print("  @" + annCall(comm) + "(\"{call " + conf._p_ + field.table.name + "_" + field.name);
@@ -1458,13 +1474,13 @@ public abstract class Nf6Generator {
     }
     comm.println("moment())}\")");
     comm.println("  void ins" + firstUpper(field.name) + "WithNow(" + comm.i(java.name()) + " "
-        + field.table.name + ");");
+      + field.table.name + ");");
   }
 
   private void insField(ClassOuter comm, Field field, ClassOuter java, List<FieldDb> all) {
     if (libType == LibType.MYBATIS) {
       comm.println("  @" + comm.i(MYBATIS_OPTIONS) + "(statementType = "
-          + comm.i(MYBATIS_StatementType) + ".CALLABLE)");
+        + comm.i(MYBATIS_StatementType) + ".CALLABLE)");
     }
 
     comm.print("  @" + annCall(comm) + "(\"{call " + conf._p_ + field.table.name + "_" + field.name);
@@ -1473,7 +1489,7 @@ public abstract class Nf6Generator {
     printFieldsWithGbatisParameters(comm, all);
     comm.println(")}\")");
     comm.println("  void ins" + firstUpper(field.name) + "(" + comm.i(java.name()) + " "
-        + field.table.name + ");");
+      + field.table.name + ");");
   }
 
   @SuppressWarnings("UnusedParameters")
@@ -1485,7 +1501,7 @@ public abstract class Nf6Generator {
     List<FieldDb> keyInfo = table.dbKeys();
     {
       comm.print("  @" + annSele(comm) + "(\"with tts as (select #{ts} ts from dual), xx as (" + sb
-          + ") select * from xx");
+        + ") select * from xx");
       {
         boolean first = true;
         for (FieldDb fi : keyInfo) {
@@ -1497,7 +1513,7 @@ public abstract class Nf6Generator {
       comm.println("\")");
 
       comm.print("  " + comm.i(java.name()) + " loadAt(@" + annPrm(comm) + "(\"" + conf.ts + "\")"
-          + comm.i(DATE) + " " + conf.ts);
+        + comm.i(DATE) + " " + conf.ts);
       for (FieldDb fi : keyInfo) {
         comm.print(", @" + annPrm(comm) + "(\"" + fi.name + "\")");
         comm.print(comm.i(fi.javaType.javaType()) + " " + fi.name);
@@ -1514,7 +1530,7 @@ public abstract class Nf6Generator {
       }
 
       comm.print("  @" + annSele(comm) + "(\"with tts as (select #{ts} ts from dual), xx as (" + sb
-          + ") select * from xx");
+        + ") select * from xx");
       {
         boolean first = true;
         for (FieldDb fi : keyInfo) {
@@ -1526,7 +1542,7 @@ public abstract class Nf6Generator {
       comm.println("\")");
 
       comm.print("  " + comm.i(LIST) + "<" + comm.i(java.name()) + "> loadListAt(@" + annPrm(comm)
-          + "(\"" + conf.ts + "\")" + comm.i(DATE) + " " + conf.ts);
+        + "(\"" + conf.ts + "\")" + comm.i(DATE) + " " + conf.ts);
       for (FieldDb fi : keyInfo) {
         comm.print(", @" + annPrm(comm) + "(\"" + fi.name + "\")");
         comm.print(comm.i(fi.javaType.javaType()) + " " + fi.name);
@@ -1560,10 +1576,10 @@ public abstract class Nf6Generator {
       for (Field field : sortFieldsByName(table.fields)) {
 
         t.println("  String " + table.name + "_" + field.name + " = \"" + prefix
-            + table.name + "_" + field.name + "\";");
+          + table.name + "_" + field.name + "\";");
 
         if (v != null) v.println("  String " + table.name + "_" + field.name + " = \"" + conf.vPrefix + table.name
-            + "_" + field.name + "\";");
+          + "_" + field.name + "\";");
 
       }
       t.println();
@@ -1639,7 +1655,7 @@ public abstract class Nf6Generator {
     String selectAnn = annSele(comm);
 
     comm.println("@" + selectAnn + "(\"select * from " + conf.vPrefix + table.name + " "
-        + command.orderBy() + "\")");
+      + command.orderBy() + "\")");
     comm.println(comm.i(LIST) + "<" + java.className + "> " + command.methodName + "();");
   }
 
@@ -1690,10 +1706,10 @@ public abstract class Nf6Generator {
     }
     for (FieldDb fi : table.dbKeys()) {
       out.println("comment on column " + tableName + '.' + fi.name
-          + " is 'Ключевое поле материнской таблицы'" + conf.separator);
+        + " is 'Ключевое поле материнской таблицы'" + conf.separator);
     }
     out.println("comment on column " + tableName + '.' + conf.createdAt + " is 'Момент создания записи'"
-        + conf.separator);
+      + conf.separator);
   }
 
   private void printFieldComments(PrintStream out, Table table) {
@@ -1704,21 +1720,21 @@ public abstract class Nf6Generator {
         String comment = sg.stru.fieldComment.get(table.name + '.' + field.name);
         if (def(comment)) {
           out.println("COMMENT ON TABLE " + fieldTableName + " IS '" + comment + "'"
-              + conf.separator);
+            + conf.separator);
         }
       }
       for (FieldDb fi : table.dbKeys()) {
         out.println("comment on column " + fieldTableName + '.' + fi.name
-            + " is 'Ссылка на ключевое поле материнской таблицы'" + conf.separator);
+          + " is 'Ссылка на ключевое поле материнской таблицы'" + conf.separator);
       }
 
       for (FieldDb fi : field.dbFields()) {
         out.println("comment on column " + fieldTableName + '.' + fi.name + " is 'Значение поля'"
-            + conf.separator);
+          + conf.separator);
       }
 
       out.println("comment on column " + fieldTableName + '.' + conf.ts
-          + " is 'Момент последнего изменения значения'" + conf.separator);
+        + " is 'Момент последнего изменения значения'" + conf.separator);
     }
   }
 
