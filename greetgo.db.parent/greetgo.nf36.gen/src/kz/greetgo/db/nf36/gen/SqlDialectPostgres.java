@@ -1,7 +1,7 @@
 package kz.greetgo.db.nf36.gen;
 
 import kz.greetgo.db.nf36.core.Nf3DefaultNow;
-import kz.greetgo.db.nf36.core.Nf3DefaultStrValue;
+import kz.greetgo.db.nf36.core.Nf3DefaultValue;
 import kz.greetgo.db.nf36.errors.ConflictError;
 import kz.greetgo.db.nf36.model.DbType;
 import kz.greetgo.db.nf36.model.SqlType;
@@ -11,9 +11,9 @@ import java.lang.reflect.Field;
 public class SqlDialectPostgres implements SqlDialect {
   @Override
   public String createFieldDefinition(DbType dbType, String name, Field field, Object definer) throws Exception {
-    String type = extractType(dbType.sqlType(), dbType.len());
+    String type = extractType(dbType);
 
-    Nf3DefaultStrValue aDefStrValue = field.getAnnotation(Nf3DefaultStrValue.class);
+    Nf3DefaultValue aDefStrValue = field.getAnnotation(Nf3DefaultValue.class);
     Nf3DefaultNow aDefNow = field.getAnnotation(Nf3DefaultNow.class);
 
     if (aDefNow != null && aDefStrValue != null) {
@@ -26,7 +26,7 @@ public class SqlDialectPostgres implements SqlDialect {
     }
 
     if (field.getType() == boolean.class) {
-      if (aDefStrValue != null) throw new RuntimeException("@" + Nf3DefaultStrValue.class.getSimpleName()
+      if (aDefStrValue != null) throw new RuntimeException("@" + Nf3DefaultValue.class.getSimpleName()
         + " is incompatible with boolean");
       if (aDefNow != null) throw new RuntimeException("@" + Nf3DefaultNow.class.getSimpleName()
         + " is incompatible with boolean");
@@ -48,22 +48,24 @@ public class SqlDialectPostgres implements SqlDialect {
   @Override
   public void checkObjectName(String objectName, ObjectNameType objectNameType) {}
 
-  private String extractType(SqlType sqlType, int len) {
-    switch (sqlType) {
+  private String extractType(DbType t) {
+    switch (t.sqlType()) {
       case TIMESTAMP:
         return "TIMESTAMP";
       case VARCHAR:
-        return "VARCHAR(" + len + ")";
+        return "VARCHAR(" + t.len() + ")";
       case INT:
-        return "INT" + len;
+        return "INT" + t.len();
       case BOOL:
         return "SMALLINT";
       case BIGINT:
         return "BIGINT";
       case CLOB:
         return "TEXT";
+      case DECIMAL:
+        return "DECIMAL(" + t.len() + ", " + t.scale() + ")";
       default:
-        throw new IllegalArgumentException("Cannot create type for " + sqlType);
+        throw new IllegalArgumentException("Cannot create type for " + t.sqlType());
     }
   }
 

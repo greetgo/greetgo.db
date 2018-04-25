@@ -1,9 +1,11 @@
 package kz.greetgo.db.nf36.gen.example.structure;
 
-import kz.greetgo.db.nf36.core.Nf3DefaultStrValue;
+import kz.greetgo.db.nf36.core.Nf3DefaultValue;
 import kz.greetgo.db.nf36.core.Nf3Description;
 import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3Length;
+
+import java.math.BigDecimal;
 
 @Nf3Description("person")
 @SuppressWarnings("unused")
@@ -15,9 +17,12 @@ public class Person {
 
   @Nf3Length(119)
   @Nf3Description("fio")
-  @Nf3DefaultStrValue("Вселенское ' значение")
+  @Nf3DefaultValue("Вселенское ' значение")
   public String fio;
 
   @Nf3Description("blocked")
   public boolean blocked = true;
+
+  @Nf3Description("amount")
+  public BigDecimal amount;
 }

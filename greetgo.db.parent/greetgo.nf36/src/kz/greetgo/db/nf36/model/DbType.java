@@ -5,5 +5,7 @@ public interface DbType {
 
   int len();
 
+  int scale();
+
   boolean nullable();
 }

@@ -5,6 +5,7 @@ import kz.greetgo.db.nf36.core.Nf3Length;
 import kz.greetgo.db.nf36.core.Nf3Long;
 import kz.greetgo.db.nf36.core.Nf3NotNull;
 import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
+import kz.greetgo.db.nf36.core.Nf3Scale;
 import kz.greetgo.db.nf36.core.Nf3Short;
 import kz.greetgo.db.nf36.core.Nf3Text;
 import kz.greetgo.db.nf36.errors.ConflictError;
@@ -12,6 +13,7 @@ import kz.greetgo.db.nf36.model.DbType;
 import kz.greetgo.db.nf36.model.SqlType;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class SqlTypeUtil {
@@ -20,6 +22,7 @@ public class SqlTypeUtil {
     private SqlType sqlType;
     private int len;
     private boolean nullable;
+    public int scale;
 
     public DbTypeImpl(SqlType sqlType, int len, boolean nullable) {
       this.sqlType = sqlType;
@@ -38,10 +41,14 @@ public class SqlTypeUtil {
     }
 
     @Override
+    public int scale() {
+      return scale;
+    }
+
+    @Override
     public boolean nullable() {
       return nullable;
     }
-
   }
 
   public static DbType extractDbType(Field field, int enumLength) {
@@ -102,9 +109,36 @@ public class SqlTypeUtil {
     }
 
     if (Enum.class.isAssignableFrom(field.getType())) {
-      if (enumLength < 10) throw new RuntimeException("enumLength must be >= 10");
+      int len = 0;
+      Nf3Length aLength = field.getAnnotation(Nf3Length.class);
+      if (aLength != null) {
+        len = aLength.value();
+      }
+      if (len == 0) {
+        if (enumLength < 10) throw new RuntimeException("enumLength must be >= 10");
+        len = enumLength;
+      }
       boolean nullable = field.getAnnotation(Nf3NotNull.class) == null;
-      return new DbTypeImpl(SqlType.VARCHAR, enumLength, nullable);
+      return new DbTypeImpl(SqlType.VARCHAR, len, nullable);
+    }
+
+    if (BigDecimal.class.equals(field.getType())) {
+      int len = 19;
+      Nf3Length aLength = field.getAnnotation(Nf3Length.class);
+      if (aLength != null) {
+        len = aLength.value();
+      }
+      int scale = 4;
+      Nf3Scale aScale = field.getAnnotation(Nf3Scale.class);
+      if (aLength != null) {
+        scale = aScale.value();
+      }
+
+      boolean nullable = field.getAnnotation(Nf3NotNull.class) == null;
+
+      DbTypeImpl ret = new DbTypeImpl(SqlType.DECIMAL, len, nullable);
+      ret.scale = scale;
+      return ret;
     }
 
     throw new RuntimeException("Cannot extract DbType from " + field);
