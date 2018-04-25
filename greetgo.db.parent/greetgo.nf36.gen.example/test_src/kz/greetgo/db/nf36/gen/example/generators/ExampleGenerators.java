@@ -5,6 +5,7 @@ import kz.greetgo.db.nf36.gen.JavaGenerator;
 import kz.greetgo.db.nf36.gen.ModelCollector;
 import kz.greetgo.db.nf36.gen.SqlDialectPostgres;
 import kz.greetgo.db.nf36.gen.example.structure.Client;
+import kz.greetgo.db.nf36.gen.example.structure.Person;
 import kz.greetgo.db.nf36.gen.example.structure.Street;
 import kz.greetgo.db.nf36.gen.example.structure.inner.Chair;
 import kz.greetgo.db.nf36.gen.example.structure.inner.Charm;
@@ -32,6 +33,7 @@ public class ExampleGenerators {
       .register(new Street())
       .register(new Chair())
       .register(new Wow())
+      .register(new Person())
       .register(new Charm());
 
     javaGenerator = JavaGenerator.newGenerator(collector)

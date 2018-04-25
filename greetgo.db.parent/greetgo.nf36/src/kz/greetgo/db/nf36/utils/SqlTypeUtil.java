@@ -2,6 +2,7 @@ package kz.greetgo.db.nf36.utils;
 
 import kz.greetgo.db.nf36.core.Nf3DefaultNow;
 import kz.greetgo.db.nf36.core.Nf3ID;
+import kz.greetgo.db.nf36.core.Nf3Length;
 import kz.greetgo.db.nf36.core.Nf3Long;
 import kz.greetgo.db.nf36.core.Nf3NotNull;
 import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
@@ -51,21 +52,55 @@ public class SqlTypeUtil {
 
   public static DbType extractDbType(Field field, int enumLength) {
     if (String.class.equals(field.getType())) {
-      boolean nullable = field.getAnnotation(Nf3NotNull.class) == null;
-      if (field.getAnnotation(Nf3Text.class) != null) {
-        return new DbTypeImpl(SqlType.CLOB, 0, nullable);
-      }
-      if (field.getAnnotation(Nf3Short.class) != null) {
-        return new DbTypeImpl(SqlType.VARCHAR, 50, nullable);
-      }
-      if (field.getAnnotation(Nf3Long.class) != null) {
-        return new DbTypeImpl(SqlType.VARCHAR, 2000, nullable);
-      }
+      boolean hasNotNull = field.getAnnotation(Nf3NotNull.class) == null;
+
 
       boolean idOrReference = field.getAnnotation(Nf3ID.class) != null
         || field.getAnnotation(Nf3ReferenceTo.class) != null;
 
-      return new DbTypeImpl(SqlType.VARCHAR, idOrReference ? 30 : 300, !idOrReference && nullable);
+      boolean nullable = !idOrReference && hasNotNull;
+
+      int len = idOrReference ? 30 : 300;
+
+      Nf3Short aShort = field.getAnnotation(Nf3Short.class);
+      if (aShort != null) {
+        len = 50;
+      }
+      Nf3Long aLong = field.getAnnotation(Nf3Long.class);
+      if (aLong != null) {
+        len = 2000;
+      }
+
+      if (aShort != null && aLong != null) {
+        throw new RuntimeException("@" + aShort.getClass().getSimpleName() + " and @" + aShort.getClass().getSimpleName()
+          + " are in conflict with each other");
+      }
+
+      Object prev = aShort != null ? aShort : aLong;
+
+      Nf3Length aLength = field.getAnnotation(Nf3Length.class);
+      if (aLength != null) {
+        len = aLength.value();
+      }
+
+      if (prev != null && aLength != null) {
+        throw new RuntimeException("@" + prev.getClass().getSimpleName() + " and @" + aLength.getClass().getSimpleName()
+          + " are in conflict with each other");
+      }
+
+      prev = prev != null ? prev : aLength;
+
+      Nf3Text aText = field.getAnnotation(Nf3Text.class);
+      if (prev != null && aText != null) {
+        throw new RuntimeException("@" + prev.getClass().getSimpleName() + " and @" + aText.getClass().getSimpleName()
+          + " are in conflict with each other");
+      }
+
+      if (aText != null) {
+        return new DbTypeImpl(SqlType.CLOB, 0, nullable);
+      }
+
+      return new DbTypeImpl(SqlType.VARCHAR, len, nullable);
     }
 
     if (Integer.class.equals(field.getType())) return new DbTypeImpl(SqlType.INT, intLen(field), true);
