@@ -187,9 +187,19 @@ public class DdlGenerator {
   }
 
   private void printCreateField(Nf3Field field, PrintStream out) {
-    sqlDialect.checkObjectName(field.dbName(), ObjectNameType.TABLE_FIELD_NAME);
-    String fieldDefinition = sqlDialect.createFieldDefinition(field.dbType(), field.dbName());
-    out.println("  " + fieldDefinition + ",");
+    try {
+
+      sqlDialect.checkObjectName(field.dbName(), ObjectNameType.TABLE_FIELD_NAME);
+
+      String fieldDefinition = sqlDialect.createFieldDefinition(
+        field.dbType(), field.dbName(), field.source(), field.definer());
+
+      out.println("  " + fieldDefinition + ",");
+
+    } catch (Exception e) {
+      if (e instanceof RuntimeException) throw (RuntimeException) e;
+      throw new RuntimeException(e);
+    }
   }
 
   private void generateNf3ReferencesTo(PrintStream out) {

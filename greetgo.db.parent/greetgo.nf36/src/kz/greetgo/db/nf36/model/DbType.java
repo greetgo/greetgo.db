@@ -6,6 +6,4 @@ public interface DbType {
   int len();
 
   boolean nullable();
-
-  boolean defaultNow();
 }

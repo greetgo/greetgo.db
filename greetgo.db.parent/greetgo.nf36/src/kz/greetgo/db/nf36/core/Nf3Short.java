@@ -9,6 +9,6 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.TYPE;
 
 @Documented
-@Target({FIELD, TYPE})
+@Target(FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Nf3Short {}

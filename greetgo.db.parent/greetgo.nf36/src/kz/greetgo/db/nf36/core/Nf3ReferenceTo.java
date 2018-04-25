@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.FIELD;
 
 @Documented
-@Target({FIELD})
+@Target(FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Nf3ReferenceTo {
   Class<?> value();

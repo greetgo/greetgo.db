@@ -1,6 +1,5 @@
 package kz.greetgo.db.nf36.utils;
 
-import kz.greetgo.db.nf36.core.Nf3DefaultNow;
 import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3Length;
 import kz.greetgo.db.nf36.core.Nf3Long;
@@ -8,6 +7,7 @@ import kz.greetgo.db.nf36.core.Nf3NotNull;
 import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
 import kz.greetgo.db.nf36.core.Nf3Short;
 import kz.greetgo.db.nf36.core.Nf3Text;
+import kz.greetgo.db.nf36.errors.ConflictError;
 import kz.greetgo.db.nf36.model.DbType;
 import kz.greetgo.db.nf36.model.SqlType;
 
@@ -42,12 +42,6 @@ public class SqlTypeUtil {
       return nullable;
     }
 
-    public boolean defaultNow = false;
-
-    @Override
-    public boolean defaultNow() {
-      return defaultNow;
-    }
   }
 
   public static DbType extractDbType(Field field, int enumLength) {
@@ -71,10 +65,7 @@ public class SqlTypeUtil {
         len = 2000;
       }
 
-      if (aShort != null && aLong != null) {
-        throw new RuntimeException("@" + aShort.getClass().getSimpleName() + " and @" + aShort.getClass().getSimpleName()
-          + " are in conflict with each other");
-      }
+      if (aShort != null && aLong != null) throw new ConflictError(aShort, aLong);
 
       Object prev = aShort != null ? aShort : aLong;
 
@@ -83,18 +74,13 @@ public class SqlTypeUtil {
         len = aLength.value();
       }
 
-      if (prev != null && aLength != null) {
-        throw new RuntimeException("@" + prev.getClass().getSimpleName() + " and @" + aLength.getClass().getSimpleName()
-          + " are in conflict with each other");
-      }
+      if (prev != null && aLength != null) throw new ConflictError(prev, aLength);
+
 
       prev = prev != null ? prev : aLength;
 
       Nf3Text aText = field.getAnnotation(Nf3Text.class);
-      if (prev != null && aText != null) {
-        throw new RuntimeException("@" + prev.getClass().getSimpleName() + " and @" + aText.getClass().getSimpleName()
-          + " are in conflict with each other");
-      }
+      if (prev != null && aText != null) throw new ConflictError(prev, aText);
 
       if (aText != null) {
         return new DbTypeImpl(SqlType.CLOB, 0, nullable);
@@ -112,9 +98,7 @@ public class SqlTypeUtil {
 
     if (Date.class.equals(field.getType())) {
       boolean nullable = field.getAnnotation(Nf3NotNull.class) == null;
-      DbTypeImpl ret = new DbTypeImpl(SqlType.TIMESTAMP, 0, nullable);
-      ret.defaultNow = field.getAnnotation(Nf3DefaultNow.class) != null;
-      return ret;
+      return new DbTypeImpl(SqlType.TIMESTAMP, 0, nullable);
     }
 
     if (Enum.class.isAssignableFrom(field.getType())) {

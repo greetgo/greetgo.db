@@ -25,6 +25,16 @@ class Nf3FieldImpl implements Nf3Field {
   }
 
   @Override
+  public Object definer() {
+    return definer;
+  }
+
+  @Override
+  public Field source() {
+    return source;
+  }
+
+  @Override
   public boolean isId() {
     return nf3ID != null;
   }
