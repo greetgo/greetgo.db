@@ -6,7 +6,6 @@ import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
 import kz.greetgo.db.nf36.model.DbType;
 import kz.greetgo.db.nf36.model.Nf3Field;
 import kz.greetgo.db.nf36.model.Nf3Table;
-import kz.greetgo.db.nf36.utils.SqlTypeUtil;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -15,13 +14,13 @@ class Nf3FieldImpl implements Nf3Field {
   private final Object definer;
   private final Field source;
   private final Nf3ID nf3ID;
-  private final int enumLength;
+  private final ModelCollector collector;
 
-  public Nf3FieldImpl(Object definer, Field source, int enumLength) {
+  public Nf3FieldImpl(Object definer, Field source, ModelCollector collector) {
     this.definer = definer;
     this.source = source;
     nf3ID = source.getAnnotation(Nf3ID.class);
-    this.enumLength = enumLength;
+    this.collector = collector;
   }
 
   @Override
@@ -61,7 +60,7 @@ class Nf3FieldImpl implements Nf3Field {
 
   @Override
   public DbType dbType() {
-    return SqlTypeUtil.extractDbType(source, enumLength);
+    return SqlTypeUtil.extractDbType(source, collector);
   }
 
   @Override

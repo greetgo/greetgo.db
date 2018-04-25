@@ -1,4 +1,4 @@
-package kz.greetgo.db.nf36.utils;
+package kz.greetgo.db.nf36.gen;
 
 import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3Length;
@@ -51,7 +51,7 @@ public class SqlTypeUtil {
     }
   }
 
-  public static DbType extractDbType(Field field, int enumLength) {
+  public static DbType extractDbType(Field field, ModelCollector collector) {
     if (String.class.equals(field.getType())) {
       boolean hasNotNull = field.getAnnotation(Nf3NotNull.class) == null;
 
@@ -61,15 +61,15 @@ public class SqlTypeUtil {
 
       boolean nullable = !idOrReference && hasNotNull;
 
-      int len = idOrReference ? 30 : 300;
+      int len = idOrReference ? collector.idLength : collector.defaultLength;
 
       Nf3Short aShort = field.getAnnotation(Nf3Short.class);
       if (aShort != null) {
-        len = 50;
+        len = collector.shortLength;
       }
       Nf3Long aLong = field.getAnnotation(Nf3Long.class);
       if (aLong != null) {
-        len = 2000;
+        len = collector.longLength;
       }
 
       if (aShort != null && aLong != null) throw new ConflictError(aShort, aLong);
@@ -115,8 +115,8 @@ public class SqlTypeUtil {
         len = aLength.value();
       }
       if (len == 0) {
-        if (enumLength < 10) throw new RuntimeException("enumLength must be >= 10");
-        len = enumLength;
+        if (collector.enumLength < 10) throw new RuntimeException("enumLength must be >= 10");
+        len = collector.enumLength;
       }
       boolean nullable = field.getAnnotation(Nf3NotNull.class) == null;
       return new DbTypeImpl(SqlType.VARCHAR, len, nullable);

@@ -1,4 +1,4 @@
-package kz.greetgo.db.nf36.utils;
+package kz.greetgo.db.nf36.gen;
 
 import kz.greetgo.db.nf36.core.Nf3DefaultNow;
 import kz.greetgo.db.nf36.core.Nf3ID;
@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import static kz.greetgo.db.nf36.gen.ModelCollector.newCollector;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 public class SqlTypeUtilTest {
@@ -55,7 +56,8 @@ public class SqlTypeUtilTest {
   @Test(dataProvider = "convertType_DP")
   public void convertType(Field field, SqlType expectedType,
                           int expectedLen, boolean expectedNullable) throws Exception {
-    DbType dbType = SqlTypeUtil.extractDbType(field, ENUM_LENGTH);
+
+    DbType dbType = SqlTypeUtil.extractDbType(field, newCollector().setEnumLength(ENUM_LENGTH));
     assertThat(dbType).isNotNull();
     assertThat(dbType.sqlType()).isEqualTo(expectedType);
     assertThat(dbType.len()).isEqualTo(expectedLen);
@@ -163,13 +165,15 @@ public class SqlTypeUtilTest {
 
   @Test
   public void convertType_Date_field2() throws Exception {
-    DbType dbType = SqlTypeUtil.extractDbType(FieldDateSource.class.getField("field2"), ENUM_LENGTH);
+    DbType dbType = SqlTypeUtil.extractDbType(
+      FieldDateSource.class.getField("field2"), newCollector().setEnumLength(ENUM_LENGTH));
     assertThat(dbType).isNotNull();
   }
 
   @Test
   public void convertType_Date_field3() throws Exception {
-    DbType dbType = SqlTypeUtil.extractDbType(FieldDateSource.class.getField("field3"), ENUM_LENGTH);
+    DbType dbType = SqlTypeUtil.extractDbType(
+      FieldDateSource.class.getField("field3"), newCollector().setEnumLength(ENUM_LENGTH));
     assertThat(dbType).isNotNull();
   }
 
@@ -189,6 +193,6 @@ public class SqlTypeUtilTest {
 
   @Test(expectedExceptions = RuntimeException.class)
   public void convertType_EnumLengthIdZero() throws Exception {
-    SqlTypeUtil.extractDbType(FieldEnumSource.class.getField("field1"), 0);
+    SqlTypeUtil.extractDbType(FieldEnumSource.class.getField("field1"), newCollector());
   }
 }

@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 public class ModelCollector {
 
+  int idLength;
   String nf3prefix;
   String nf6prefix;
   int enumLength = 0;
@@ -22,6 +23,10 @@ public class ModelCollector {
   String nf6timeField = "ts";
   String nf3CreatedAtField = null;
   String nf3ModifiedAtField = null;
+  int defaultLength;
+  int shortLength;
+  int longLength;
+
 
   private ModelCollector() {}
 
@@ -72,6 +77,7 @@ public class ModelCollector {
 
   final List<Object> registeredObjects = new ArrayList<>();
 
+
   public ModelCollector register(Object object) {
     registeredObjects.add(object);
     return this;
@@ -80,6 +86,7 @@ public class ModelCollector {
   private List<Nf3TableImpl> collectedList = null;
 
   private Map<Class<?>, Nf3TableImpl> collectedMap = null;
+
 
   public List<Nf3Table> collect() {
     if (collectedList != null) return Collections.unmodifiableList(collectedList);
@@ -161,5 +168,25 @@ public class ModelCollector {
         ((Nf3FieldImpl) referenceField).rootField = rootField;
       }
     }
+  }
+
+  public ModelCollector setIdLength(int idLength) {
+    this.idLength = idLength;
+    return this;
+  }
+
+  public ModelCollector setDefaultLength(int defaultLength) {
+    this.defaultLength = defaultLength;
+    return this;
+  }
+
+  public ModelCollector setShortLength(int shortLength) {
+    this.shortLength = shortLength;
+    return this;
+  }
+
+  public ModelCollector setLongLength(int longLength) {
+    this.longLength = longLength;
+    return this;
   }
 }
