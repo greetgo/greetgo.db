@@ -20,11 +20,18 @@ public class ModelCollector {
   int enumLength = 0;
   private String nf6TableSeparator = "_";
   String nf6timeField = "ts";
+  String nf3CreatedAtField = null;
+  String nf3ModifiedAtField = null;
 
   private ModelCollector() {}
 
   public static ModelCollector newCollector() {
     return new ModelCollector();
+  }
+
+  public ModelCollector setNf3CreatedAtField(String nf3CreatedAtField) {
+    this.nf3CreatedAtField = nf3CreatedAtField;
+    return this;
   }
 
   @SuppressWarnings("unused")
@@ -35,6 +42,11 @@ public class ModelCollector {
 
   public ModelCollector setEnumLength(int enumLength) {
     this.enumLength = enumLength;
+    return this;
+  }
+
+  public ModelCollector setNf3ModifiedAtField(String nf3ModifiedAtField) {
+    this.nf3ModifiedAtField = nf3ModifiedAtField;
     return this;
   }
 
@@ -66,6 +78,7 @@ public class ModelCollector {
   }
 
   private List<Nf3TableImpl> collectedList = null;
+
   private Map<Class<?>, Nf3TableImpl> collectedMap = null;
 
   public List<Nf3Table> collect() {
@@ -149,5 +162,4 @@ public class ModelCollector {
       }
     }
   }
-
 }

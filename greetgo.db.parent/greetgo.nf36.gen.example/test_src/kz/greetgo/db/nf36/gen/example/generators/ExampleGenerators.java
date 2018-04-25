@@ -28,6 +28,8 @@ public class ExampleGenerators {
       .setNf3Prefix(/*empty*/"")
       .setNf6Prefix("m_")
       .setEnumLength(50)
+      .setNf3CreatedAtField("created_at")
+      .setNf3ModifiedAtField("mod_at")
       .register(new Client())
       .register(new ClientAddress())
       .register(new Street())

@@ -9,5 +9,7 @@ public interface Nf36Upserter {
 
   void putField(String nf6TableName, String fieldName, Object fieldValue);
 
+  void putUpdateToNow(String fieldName);
+
   void commit();
 }

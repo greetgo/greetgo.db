@@ -29,6 +29,7 @@ public class ChairUpsertImpl implements ChairUpsert {
 
   @Override
   public void commit() {
+    upserter.putUpdateToNow("mod_at");
     upserter.commit();
   }
 }

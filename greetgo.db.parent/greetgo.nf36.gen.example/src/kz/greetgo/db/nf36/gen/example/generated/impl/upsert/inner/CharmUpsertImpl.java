@@ -22,6 +22,7 @@ public class CharmUpsertImpl implements CharmUpsert {
 
   @Override
   public void commit() {
+    upserter.putUpdateToNow("mod_at");
     upserter.commit();
   }
 }

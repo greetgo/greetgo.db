@@ -165,14 +165,12 @@ public class SqlTypeUtilTest {
   public void convertType_Date_field2() throws Exception {
     DbType dbType = SqlTypeUtil.extractDbType(FieldDateSource.class.getField("field2"), ENUM_LENGTH);
     assertThat(dbType).isNotNull();
-    assertThat(dbType.defaultNow()).isFalse();
   }
 
   @Test
   public void convertType_Date_field3() throws Exception {
     DbType dbType = SqlTypeUtil.extractDbType(FieldDateSource.class.getField("field3"), ENUM_LENGTH);
     assertThat(dbType).isNotNull();
-    assertThat(dbType.defaultNow()).isTrue();
   }
 
   public enum Wow {}

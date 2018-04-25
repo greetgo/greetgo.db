@@ -36,6 +36,7 @@ public class StreetUpsertImpl implements StreetUpsert {
 
   @Override
   public void commit() {
+    upserter.putUpdateToNow("mod_at");
     upserter.commit();
   }
 }

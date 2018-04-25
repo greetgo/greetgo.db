@@ -52,6 +52,7 @@ public class ClientAddressUpsertImpl implements ClientAddressUpsert {
 
   @Override
   public void commit() {
+    upserter.putUpdateToNow("mod_at");
     upserter.commit();
   }
 }

@@ -84,6 +84,7 @@ public class ClientUpsertImpl implements ClientUpsert {
 
   @Override
   public void commit() {
+    upserter.putUpdateToNow("mod_at");
     upserter.commit();
   }
 }

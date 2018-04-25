@@ -23,6 +23,7 @@ public class WowUpsertImpl implements WowUpsert {
 
   @Override
   public void commit() {
+    upserter.putUpdateToNow("mod_at");
     upserter.commit();
   }
 }

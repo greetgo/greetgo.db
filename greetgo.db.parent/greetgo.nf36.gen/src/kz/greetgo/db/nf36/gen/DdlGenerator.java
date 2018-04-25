@@ -124,6 +124,13 @@ public class DdlGenerator {
       printCreateField(field, out);
     }
 
+    if (collector.nf3CreatedAtField != null) {
+      out.println("" + sqlDialect.fieldTimestampWithDefaultNow(collector.nf3CreatedAtField) + ",");
+    }
+    if (collector.nf3ModifiedAtField != null) {
+      out.println("" + sqlDialect.fieldTimestampWithDefaultNow(collector.nf3ModifiedAtField) + ",");
+    }
+
     checkIdOrdering(nf3Table.source(), nf3Table.fields().stream()
       .filter(Nf3Field::isId)
       .mapToInt(Nf3Field::idOrder)

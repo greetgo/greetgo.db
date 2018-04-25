@@ -48,6 +48,12 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
   private final Map<String, Object> idValueMap = new HashMap<>();
   private final Map<String, Object> fieldValueMap = new HashMap<>();
   private final Map<String, Object> nf6ValueMap = new HashMap<>();
+  private final List<String> toNowFieldList = new ArrayList<>();
+
+  @Override
+  public void putUpdateToNow(String fieldName) {
+    toNowFieldList.add(fieldName);
+  }
 
   @Override
   public void putId(String idName, Object idValue) {
@@ -113,7 +119,12 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
       + idValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))
       + ") do update set "
       + fieldValueMap.keySet().stream().sorted().map(k -> k + " = ?").collect(Collectors.joining(", "))
-      + "";
+      + (
+      toNowFieldList.isEmpty()
+        ? ""
+        : ", " + toNowFieldList.stream().map(n -> n + " = clock_timestamp()").collect(Collectors.joining(", "))
+    );
+
 
     List<Object> params = Stream.concat(
       idValueMap.entrySet().stream().sorted(comparing(Map.Entry::getKey)).map(Map.Entry::getValue),

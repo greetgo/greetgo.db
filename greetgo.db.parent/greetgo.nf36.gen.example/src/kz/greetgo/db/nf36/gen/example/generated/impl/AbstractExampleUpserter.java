@@ -1,14 +1,18 @@
 package kz.greetgo.db.nf36.gen.example.generated.impl;
 
+import java.lang.RuntimeException;
+import java.lang.String;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.gen.example.generated.faces.ExampleUpserter;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.ClientUpsert;
+import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.PersonUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.StreetUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.ChairUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.CharmUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.ClientAddressUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.inner.WowUpsert;
 import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.ClientUpsertImpl;
+import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.PersonUpsertImpl;
 import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.StreetUpsertImpl;
 import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.inner.ChairUpsertImpl;
 import kz.greetgo.db.nf36.gen.example.generated.impl.upsert.inner.CharmUpsertImpl;
@@ -36,6 +40,11 @@ public abstract class AbstractExampleUpserter implements ExampleUpserter {
   @Override
   public ClientAddressUpsert clientAddress(long clientId) {
     return new ClientAddressUpsertImpl(createUpserter(), clientId);
+  }
+
+  @Override
+  public PersonUpsert person(String id) {
+    return new PersonUpsertImpl(createUpserter(), id);
   }
 
   @Override

@@ -246,6 +246,9 @@ public class JavaGenerator {
   private void printCommitMethodImpl(JavaFilePrinter p) {
     p.ofs(1).prn("@Override");
     p.ofs(1).prn("public void " + commitMethod + "() {");
+    if (collector.nf3ModifiedAtField != null) {
+      p.ofs(2).prn(upserterField + ".putUpdateToNow(\"" + collector.nf3ModifiedAtField + "\");");
+    }
     p.ofs(2).prn(upserterField + ".commit();");
     p.ofs(1).prn("}");
   }
