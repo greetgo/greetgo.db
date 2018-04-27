@@ -21,6 +21,7 @@ class Nf3TableImpl implements Nf3Table {
 
     fields = Arrays.stream(definer.getClass().getFields())
       .map(f -> new Nf3FieldImpl(definer, f, owner))
+      .filter(Nf3FieldImpl::notIgnoring)
       .collect(Collectors.toList());
   }
 

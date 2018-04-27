@@ -2,6 +2,7 @@ package kz.greetgo.db.nf36.gen;
 
 import kz.greetgo.db.nf36.core.Nf3Description;
 import kz.greetgo.db.nf36.core.Nf3ID;
+import kz.greetgo.db.nf36.core.Nf3Ignore;
 import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
 import kz.greetgo.db.nf36.model.DbType;
 import kz.greetgo.db.nf36.model.Nf3Field;
@@ -21,6 +22,10 @@ class Nf3FieldImpl implements Nf3Field {
     this.source = source;
     nf3ID = source.getAnnotation(Nf3ID.class);
     this.collector = collector;
+  }
+
+  public boolean notIgnoring() {
+    return source.getAnnotation(Nf3Ignore.class) == null;
   }
 
   @Override

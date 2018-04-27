@@ -2,6 +2,7 @@ package kz.greetgo.db.nf36.gen.example.structure;
 
 import kz.greetgo.db.nf36.core.Nf3Description;
 import kz.greetgo.db.nf36.core.Nf3ID;
+import kz.greetgo.db.nf36.core.Nf3Ignore;
 import kz.greetgo.db.nf36.core.Nf3NotNull;
 
 @Nf3Description("Справочник улиц")
@@ -19,4 +20,7 @@ public class Street {
   @Nf3Description("Имя")
   @Nf3NotNull
   public String name;
+
+  @Nf3Ignore
+  public String createdBy;
 }
