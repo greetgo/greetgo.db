@@ -131,6 +131,13 @@ public class DdlGenerator {
       out.println("" + sqlDialect.fieldTimestampWithDefaultNow(collector.nf3ModifiedAtField) + ",");
     }
 
+    if (collector.nf3CreatedBy != null) {
+      printAuthorField(collector.nf3CreatedBy, out);
+    }
+    if (collector.nf3ModifiedBy != null) {
+      printAuthorField(collector.nf3ModifiedBy, out);
+    }
+
     checkIdOrdering(nf3Table.source(), nf3Table.fields().stream()
       .filter(Nf3Field::isId)
       .mapToInt(Nf3Field::idOrder)
@@ -181,6 +188,10 @@ public class DdlGenerator {
       printCreateField(field, out);
     }
 
+    if (collector.nf6InsertedBy != null) {
+      printAuthorField(collector.nf6InsertedBy, out);
+    }
+
     out.println("  primary key(" + nf3Table.commaSeparatedIdDbNames() + ", " + collector.nf6timeField + ")");
 
     out.println(")" + commandSeparator);
@@ -191,6 +202,14 @@ public class DdlGenerator {
     for (int i = 1; i <= idArray.length; i++) {
       if (i != idArray[i - 1]) throw new RuntimeException("Incorrect id ordering in " + source);
     }
+  }
+
+  private void printAuthorField(AuthorField authorField, PrintStream out) {
+    sqlDialect.checkObjectName(authorField.name, ObjectNameType.TABLE_FIELD_NAME);
+
+    String fieldDefinition = sqlDialect.createAuthorFieldDefinition(authorField);
+
+    out.println("  " + fieldDefinition + ",");
   }
 
   private void printCreateField(Nf3Field field, PrintStream out) {

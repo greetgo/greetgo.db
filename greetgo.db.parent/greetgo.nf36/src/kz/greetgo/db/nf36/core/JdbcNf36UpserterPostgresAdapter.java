@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
+import static java.util.stream.Stream.concat;
 
 public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, ConnectionCallback<Void> {
 
@@ -28,11 +29,23 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
   private final SqlLogAcceptor logAcceptor;
   private String nf3TableName;
   private String timeFieldName;
+  private String nf3CreatedBy = null;
+  private String nf3ModifiedBy = null;
+  private String nf6InsertedBy = null;
+
+  public Object author = null;
 
   public JdbcNf36UpserterPostgresAdapter(Jdbc jdbc, SqlLogAcceptor logAcceptor) {
     if (jdbc == null) throw new IllegalArgumentException("jdbc cannot be null");
     this.jdbc = jdbc;
     this.logAcceptor = logAcceptor;
+  }
+
+  @Override
+  public void setAuthorFieldNames(String nf3CreatedBy, String nf3ModifiedBy, String nf6InsertedBy) {
+    this.nf3CreatedBy = nf3CreatedBy;
+    this.nf3ModifiedBy = nf3ModifiedBy;
+    this.nf6InsertedBy = nf6InsertedBy;
   }
 
   @Override
@@ -107,14 +120,30 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
 
 
   private void upsert(Connection con) throws Exception {
+    String insertNames = "";
+    String insertQ = "";
+    String updateNamesQ = "";
+    Stream<Object> insertStream = null;
+    Stream<Object> updateStream = null;
+
+    if (nf3CreatedBy != null) {
+      insertNames = ", " + nf3CreatedBy + ", " + nf3ModifiedBy;
+      insertQ = ", ?, ?";
+      insertStream = Stream.of(author, author);
+      updateNamesQ = ", " + nf3ModifiedBy + " = ?";
+      updateStream = Stream.of(author);
+    }
+
     String sql = "insert into " + nf3TableName + " ("
       + idValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))
       + ", "
       + fieldValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))
+      + insertNames
       + ") values ("
       + idValueMap.keySet().stream().map(k -> "?").collect(Collectors.joining(", "))
       + ", "
       + fieldValueMap.keySet().stream().map(k -> "?").collect(Collectors.joining(", "))
+      + insertQ
       + ") on conflict ("
       + idValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))
       + ") do update set "
@@ -123,18 +152,16 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
       toNowFieldList.isEmpty()
         ? ""
         : ", " + toNowFieldList.stream().map(n -> n + " = clock_timestamp()").collect(Collectors.joining(", "))
+        + updateNamesQ
     );
 
+    Stream<Object> s = idValueMap.entrySet().stream().sorted(comparing(Map.Entry::getKey)).map(Map.Entry::getValue);
+    s = concat(s, fieldValueMap.entrySet().stream().sorted(comparing(Map.Entry::getKey)).map(Map.Entry::getValue));
+    if (insertStream != null) s = concat(s, insertStream);
+    s = concat(s, fieldValueMap.entrySet().stream().sorted(comparing(Map.Entry::getKey)).map(Map.Entry::getValue));
+    if (updateStream != null) s = concat(s, updateStream);
 
-    List<Object> params = Stream.concat(
-      idValueMap.entrySet().stream().sorted(comparing(Map.Entry::getKey)).map(Map.Entry::getValue),
-      Stream.concat(
-        fieldValueMap.entrySet().stream().sorted(comparing(Map.Entry::getKey)).map(Map.Entry::getValue),
-        fieldValueMap.entrySet().stream().sorted(comparing(Map.Entry::getKey)).map(Map.Entry::getValue)
-      )
-    ).collect(Collectors.toList());
-
-    executeUpdate(con, sql, params);
+    executeUpdate(con, sql, s.collect(Collectors.toList()));
   }
 
   private void executeUpdate(Connection con, String sql, List<Object> params) throws Exception {
@@ -240,8 +267,15 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
   private void insertNf6(String nf6TableName, List<String> fieldNames, List<Object> fieldValues,
                          Connection con) throws Exception {
 
-    System.out.println("INSERTING " + nf6TableName + ", fieldNames " + fieldNames
-      + ", fieldValues = " + fieldValues + ", idValueMap = " + idValueMap);
+    String insName = "";
+    String insQ = "";
+    Stream<Object> insStream = null;
+
+    if (nf6InsertedBy != null) {
+      insName = ", " + nf6InsertedBy;
+      insQ = ", ?";
+      insStream = Stream.of(author);
+    }
 
     String sql = "insert into " + nf6TableName + " (" + (
 
@@ -251,7 +285,7 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
 
       fieldNames.stream().collect(Collectors.joining(", "))
 
-    ) + ") values (" + (
+    ) + insName + ") values (" + (
 
       idValueMap.keySet().stream().map(n -> "?").collect(Collectors.joining(", "))
 
@@ -259,13 +293,15 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
 
       fieldNames.stream().map(n -> "?").collect(Collectors.joining(", "))
 
-    ) + ")";
+    ) + insQ + ")";
 
-    List<Object> params = Stream.concat(
-      idValueMap.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(Map.Entry::getValue),
-      fieldValues.stream()).collect(Collectors.toList()
-    );
+    Stream<Object> s = idValueMap.entrySet().stream()
+      .sorted(Comparator.comparing(Map.Entry::getKey))
+      .map(Map.Entry::getValue);
 
-    executeUpdate(con, sql, params);
+    s = concat(s, fieldValues.stream());
+    if (insStream != null) s = concat(s, insStream);
+
+    executeUpdate(con, sql, s.collect(Collectors.toList()));
   }
 }

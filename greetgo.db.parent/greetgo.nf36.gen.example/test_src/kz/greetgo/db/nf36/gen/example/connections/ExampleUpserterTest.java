@@ -2,6 +2,7 @@ package kz.greetgo.db.nf36.gen.example.connections;
 
 import kz.greetgo.db.Jdbc;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
+import kz.greetgo.db.nf36.gen.example.beans.AuthorGetterImpl;
 import kz.greetgo.db.nf36.gen.example.beans.BeanConfigAll;
 import kz.greetgo.db.nf36.gen.example.generated.faces.ExampleUpserter;
 import kz.greetgo.db.nf36.gen.example.jdbc.ByOne;
@@ -24,8 +25,12 @@ public class ExampleUpserterTest extends AbstractDepinjectTestNg {
 
   public BeanGetter<Jdbc> jdbc;
 
+  public BeanGetter<AuthorGetterImpl> authorGetterImpl;
+
   @Test
   public void upsertClient() throws Exception {
+
+    authorGetterImpl.get().author = "Сталина на вас нет!";
 
     long id = RND.plusLong(1_000_000_000_000L);
     String expectedName1 = "name1 " + RND.str(10);

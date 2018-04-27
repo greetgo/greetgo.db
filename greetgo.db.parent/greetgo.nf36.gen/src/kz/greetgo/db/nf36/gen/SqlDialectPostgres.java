@@ -46,6 +46,27 @@ public class SqlDialectPostgres implements SqlDialect {
   }
 
   @Override
+  public String createAuthorFieldDefinition(AuthorField authorField) {
+    return authorField.name + " " + extractAuthorType(authorField.authorType, authorField.typeLength);
+  }
+
+  private String extractAuthorType(AuthorType authorType, int typeLength) {
+
+    switch (authorType) {
+
+      case STR:
+        return "VARCHAR(" + typeLength + ")";
+
+      case INT:
+        return "INT" + typeLength;
+
+      default:
+        throw new IllegalArgumentException("Unknown authorType = " + authorType);
+    }
+
+  }
+
+  @Override
   public void checkObjectName(String objectName, ObjectNameType objectNameType) {}
 
   private String extractType(DbType t) {

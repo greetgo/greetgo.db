@@ -11,6 +11,8 @@ public class ChairUpsertImpl implements ChairUpsert {
     this.upserter = upserter;
     upserter.setNf3TableName("chair");
     upserter.setTimeFieldName("ts");
+    upserter.setAuthorFieldNames("created_by", "modified_by", "inserted_by");
+    upserter.setTimeFieldName("ts");
     upserter.putId("id1", id1);
     upserter.putId("id2", id2);
   }

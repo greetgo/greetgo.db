@@ -11,6 +11,8 @@ public class CharmUpsertImpl implements CharmUpsert {
     this.upserter = upserter;
     upserter.setNf3TableName("charm");
     upserter.setTimeFieldName("ts");
+    upserter.setAuthorFieldNames("created_by", "modified_by", "inserted_by");
+    upserter.setTimeFieldName("ts");
     upserter.putId("id", id);
   }
 

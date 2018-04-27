@@ -5,7 +5,8 @@ import kz.greetgo.db.nf36.core.JdbcNf36UpserterPostgresAdapter;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.core.SqlLogAcceptor;
 import kz.greetgo.db.nf36.gen.example.generated.impl.AbstractExampleUpserter;
-import kz.greetgo.db.nf36.model.SqlLog;
+import kz.greetgo.db.nf36.gen.example.util.AuthorGetter;
+import kz.greetgo.db.nf36.gen.example.util.MySqlLogAcceptor;
 import kz.greetgo.depinject.core.Bean;
 import kz.greetgo.depinject.core.BeanGetter;
 
@@ -14,23 +15,15 @@ public class ExampleNf3DoorConnector extends AbstractExampleUpserter {
 
   public BeanGetter<Jdbc> jdbc;
 
+  private final SqlLogAcceptor logAcceptor = new MySqlLogAcceptor();
+
+  public BeanGetter<AuthorGetter> authorGetter;
+
   @Override
   protected Nf36Upserter createUpserter() {
-    return new JdbcNf36UpserterPostgresAdapter(jdbc.get(), new SqlLogAcceptor() {
-      @Override
-      public boolean isTraceEnabled() {
-        return true;
-      }
-
-      @Override
-      public boolean isErrorEnabled() {
-        return true;
-      }
-
-      @Override
-      public void accept(SqlLog sqlLog) {
-        System.out.println(sqlLog.toStr(true, true, true));
-      }
-    });
+    JdbcNf36UpserterPostgresAdapter ret = new JdbcNf36UpserterPostgresAdapter(jdbc.get(), logAcceptor);
+    ret.author = authorGetter.get().getAuthor();
+    return ret;
   }
+
 }

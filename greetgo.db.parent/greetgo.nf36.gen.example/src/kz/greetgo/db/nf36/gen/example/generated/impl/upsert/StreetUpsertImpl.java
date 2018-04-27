@@ -13,6 +13,8 @@ public class StreetUpsertImpl implements StreetUpsert {
     this.upserter = upserter;
     upserter.setNf3TableName("street");
     upserter.setTimeFieldName("ts");
+    upserter.setAuthorFieldNames("created_by", "modified_by", "inserted_by");
+    upserter.setTimeFieldName("ts");
     upserter.putId("id", id);
   }
 

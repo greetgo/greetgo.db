@@ -189,4 +189,30 @@ public class ModelCollector {
     this.longLength = longLength;
     return this;
   }
+
+  AuthorField nf3CreatedBy = null;
+  AuthorField nf3ModifiedBy = null;
+  AuthorField nf6InsertedBy = null;
+
+  public ModelCollector setAuthorFields(String nf3CreatedBy, String nf3ModifiedBy, String nf6InsertedBy,
+                                        AuthorType authorType, int typeLength) {
+
+    if (nf3CreatedBy == null && nf3ModifiedBy == null && nf6InsertedBy == null) {
+      this.nf3CreatedBy = null;
+      this.nf3ModifiedBy = null;
+      this.nf6InsertedBy = null;
+      return this;
+    }
+
+    if (nf3CreatedBy == null || nf3ModifiedBy == null || nf6InsertedBy == null) {
+      throw new IllegalArgumentException("nf3CreatedBy, nf3ModifiedBy, nf6InsertedBy:" +
+        " must be all is null, or all is not null");
+    }
+
+    this.nf3CreatedBy = new AuthorField(nf3CreatedBy, authorType, typeLength);
+    this.nf3ModifiedBy = new AuthorField(nf3ModifiedBy, authorType, typeLength);
+    this.nf6InsertedBy = new AuthorField(nf6InsertedBy, authorType, typeLength);
+    return this;
+  }
+
 }

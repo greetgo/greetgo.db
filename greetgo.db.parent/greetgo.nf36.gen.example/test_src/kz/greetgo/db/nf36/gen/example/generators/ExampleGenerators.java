@@ -1,5 +1,6 @@
 package kz.greetgo.db.nf36.gen.example.generators;
 
+import kz.greetgo.db.nf36.gen.AuthorType;
 import kz.greetgo.db.nf36.gen.DdlGenerator;
 import kz.greetgo.db.nf36.gen.JavaGenerator;
 import kz.greetgo.db.nf36.gen.ModelCollector;
@@ -30,6 +31,7 @@ public class ExampleGenerators {
       .setEnumLength(51)
       .setNf3CreatedAtField("created_at")
       .setNf3ModifiedAtField("mod_at")
+      .setAuthorFields("created_by", "modified_by", "inserted_by", AuthorType.STR, 37)
       .setIdLength(31)
       .setDefaultLength(301)
       .setShortLength(51)

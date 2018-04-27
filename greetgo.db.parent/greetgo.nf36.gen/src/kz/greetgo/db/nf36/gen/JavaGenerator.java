@@ -284,6 +284,17 @@ public class JavaGenerator {
     p.ofs(2).prn("this." + upserterField + " = " + upserterField + ";");
     p.ofs(2).prn(upserterField + ".setNf3TableName(\"" + nf3Table.nf3TableName() + "\");");
     p.ofs(2).prn(upserterField + ".setTimeFieldName(\"" + collector.nf6timeField + "\");");
+
+    if (collector.nf3CreatedBy != null) {
+      p.ofs(2).prn(upserterField + ".setAuthorFieldNames("
+        + "\"" + collector.nf3CreatedBy.name + "\""
+        + ", \"" + collector.nf3ModifiedBy.name + "\""
+        + ", \"" + collector.nf6InsertedBy.name + "\""
+        + ");");
+    }
+
+    p.ofs(2).prn(upserterField + ".setTimeFieldName(\"" + collector.nf6timeField + "\");");
+
     for (Nf3Field f : idFields) {
       p.ofs(2).prn(upserterField + ".putId(\"" + f.dbName() + "\", " + f.javaName() + ");");
     }

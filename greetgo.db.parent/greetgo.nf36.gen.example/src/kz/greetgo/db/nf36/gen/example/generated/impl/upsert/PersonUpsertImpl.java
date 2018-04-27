@@ -12,6 +12,8 @@ public class PersonUpsertImpl implements PersonUpsert {
     this.upserter = upserter;
     upserter.setNf3TableName("person");
     upserter.setTimeFieldName("ts");
+    upserter.setAuthorFieldNames("created_by", "modified_by", "inserted_by");
+    upserter.setTimeFieldName("ts");
     upserter.putId("id", id);
   }
 

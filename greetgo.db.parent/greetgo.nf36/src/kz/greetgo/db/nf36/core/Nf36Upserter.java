@@ -3,6 +3,8 @@ package kz.greetgo.db.nf36.core;
 public interface Nf36Upserter {
   void setNf3TableName(String tableName);
 
+  void setAuthorFieldNames(String nf3CreatedBy, String nf3ModifiedBy, String nf6InsertedBy);
+
   void setTimeFieldName(String timeFieldName);
 
   void putId(String idName, Object idValue);

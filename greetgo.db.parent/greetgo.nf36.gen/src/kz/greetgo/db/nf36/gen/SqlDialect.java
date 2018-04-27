@@ -10,4 +10,6 @@ public interface SqlDialect {
   void checkObjectName(String objectName, ObjectNameType objectNameType);
 
   String fieldTimestampWithDefaultNow(String fieldName);
+
+  String createAuthorFieldDefinition(AuthorField authorField);
 }

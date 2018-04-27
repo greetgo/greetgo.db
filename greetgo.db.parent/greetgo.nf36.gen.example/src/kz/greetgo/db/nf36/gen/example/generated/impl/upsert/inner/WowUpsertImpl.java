@@ -11,6 +11,8 @@ public class WowUpsertImpl implements WowUpsert {
     this.upserter = upserter;
     upserter.setNf3TableName("wow");
     upserter.setTimeFieldName("ts");
+    upserter.setAuthorFieldNames("created_by", "modified_by", "inserted_by");
+    upserter.setTimeFieldName("ts");
     upserter.putId("wow_id", wowId);
     upserter.putId("wow_id2", wowId2);
   }

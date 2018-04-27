@@ -13,6 +13,8 @@ public class ClientUpsertImpl implements ClientUpsert {
     this.upserter = upserter;
     upserter.setNf3TableName("client");
     upserter.setTimeFieldName("ts");
+    upserter.setAuthorFieldNames("created_by", "modified_by", "inserted_by");
+    upserter.setTimeFieldName("ts");
     upserter.putId("id", id);
   }
 
