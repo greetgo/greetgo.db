@@ -1,5 +1,7 @@
 package kz.greetgo.db.nf36.gen.example.generated.impl.upsert;
 
+import java.lang.Long;
+import java.lang.String;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.ClientUpsert;

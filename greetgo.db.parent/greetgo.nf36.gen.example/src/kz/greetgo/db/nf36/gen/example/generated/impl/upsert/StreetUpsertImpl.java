@@ -19,7 +19,7 @@ public class StreetUpsertImpl implements StreetUpsert {
   }
 
   public StreetUpsert more(long id) {
-    return null;
+    return new StreetUpsertImpl(this.upserter.more(), id);
   }
 
   @Override
@@ -42,7 +42,7 @@ public class StreetUpsertImpl implements StreetUpsert {
 
   @Override
   public void commit() {
-    upserter.putUpdateToNow("mod_at");
+    upserter.putUpdateToNowWithParent("mod_at");
     upserter.commit();
   }
 }

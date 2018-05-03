@@ -18,7 +18,7 @@ public class PersonUpsertImpl implements PersonUpsert {
   }
 
   public PersonUpsert more(String id) {
-    return null;
+    return new PersonUpsertImpl(this.upserter.more(), id);
   }
 
   @Override
@@ -41,7 +41,7 @@ public class PersonUpsertImpl implements PersonUpsert {
 
   @Override
   public void commit() {
-    upserter.putUpdateToNow("mod_at");
+    upserter.putUpdateToNowWithParent("mod_at");
     upserter.commit();
   }
 }

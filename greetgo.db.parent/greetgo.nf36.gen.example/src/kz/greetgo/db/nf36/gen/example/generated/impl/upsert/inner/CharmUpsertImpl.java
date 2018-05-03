@@ -17,7 +17,7 @@ public class CharmUpsertImpl implements CharmUpsert {
   }
 
   public CharmUpsert more(String id) {
-    return null;
+    return new CharmUpsertImpl(this.upserter.more(), id);
   }
 
   @Override
@@ -28,7 +28,7 @@ public class CharmUpsertImpl implements CharmUpsert {
 
   @Override
   public void commit() {
-    upserter.putUpdateToNow("mod_at");
+    upserter.putUpdateToNowWithParent("mod_at");
     upserter.commit();
   }
 }

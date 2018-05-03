@@ -20,7 +20,7 @@ public class ClientAddressUpsertImpl implements ClientAddressUpsert {
   }
 
   public ClientAddressUpsert more(long clientId) {
-    return null;
+    return new ClientAddressUpsertImpl(this.upserter.more(), clientId);
   }
 
   @Override
@@ -58,7 +58,7 @@ public class ClientAddressUpsertImpl implements ClientAddressUpsert {
 
   @Override
   public void commit() {
-    upserter.putUpdateToNow("mod_at");
+    upserter.putUpdateToNowWithParent("mod_at");
     upserter.commit();
   }
 }

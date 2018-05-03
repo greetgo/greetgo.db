@@ -18,7 +18,7 @@ public class ChairUpsertImpl implements ChairUpsert {
   }
 
   public ChairUpsert more(long id1, String id2) {
-    return null;
+    return new ChairUpsertImpl(this.upserter.more(), id1, id2);
   }
 
   @Override
@@ -35,7 +35,7 @@ public class ChairUpsertImpl implements ChairUpsert {
 
   @Override
   public void commit() {
-    upserter.putUpdateToNow("mod_at");
+    upserter.putUpdateToNowWithParent("mod_at");
     upserter.commit();
   }
 }

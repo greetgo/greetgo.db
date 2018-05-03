@@ -18,7 +18,7 @@ public class WowUpsertImpl implements WowUpsert {
   }
 
   public WowUpsert more(String wowId, String wowId2) {
-    return null;
+    return new WowUpsertImpl(this.upserter.more(), wowId, wowId2);
   }
 
   @Override
@@ -29,7 +29,7 @@ public class WowUpsertImpl implements WowUpsert {
 
   @Override
   public void commit() {
-    upserter.putUpdateToNow("mod_at");
+    upserter.putUpdateToNowWithParent("mod_at");
     upserter.commit();
   }
 }
