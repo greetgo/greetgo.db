@@ -345,7 +345,7 @@ public class JavaGenerator {
 
     ) + ") {");
 
-    p.ofs(2).prn("return " + upsertInfo.implClassName() + "(this." + upserterField + ".more(), " + (
+    p.ofs(2).prn("return new " + upsertInfo.implClassName() + "(this." + upserterField + ".more(), " + (
 
       nf3Table.fields().stream()
         .filter(Nf3Field::isId)
