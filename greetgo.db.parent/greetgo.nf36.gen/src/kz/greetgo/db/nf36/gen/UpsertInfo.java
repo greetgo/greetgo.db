@@ -20,4 +20,8 @@ interface UpsertInfo {
   String interfaceFullName();
 
   String implFullName();
+
+  String moreMethodName();
+
+  String commitMethodName();
 }

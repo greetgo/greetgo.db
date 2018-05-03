@@ -1,6 +1,8 @@
 package kz.greetgo.db.nf36.gen;
 
 import kz.greetgo.db.nf36.core.Nf36Upserter;
+import kz.greetgo.db.nf36.core.Nf3CommitMethodName;
+import kz.greetgo.db.nf36.core.Nf3MoreMethodName;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
 import kz.greetgo.db.nf36.model.Nf3Field;
 import kz.greetgo.db.nf36.model.Nf3Table;
@@ -131,6 +133,14 @@ public class JavaGenerator {
 
     String implFullName = UtilsNf36.resolveFullName(implPackageName, implClassName);
 
+    Nf3MoreMethodName nf3MoreMethodName = nf3Table.source().getAnnotation(Nf3MoreMethodName.class);
+
+    String moreMethodName = nf3MoreMethodName == null ? collector.moreMethodName() : nf3MoreMethodName.value();
+
+    Nf3CommitMethodName nf3CommitMethodName = nf3Table.source().getAnnotation(Nf3CommitMethodName.class);
+
+    String commitMethodName = nf3CommitMethodName == null ? collector.commitMethodName() : nf3CommitMethodName.value();
+
     return new UpsertInfo() {
       @Override
       public File interfaceJavaFile() {
@@ -176,13 +186,23 @@ public class JavaGenerator {
       public String implFullName() {
         return implFullName;
       }
+
+      @Override
+      public String commitMethodName() {
+        return commitMethodName;
+      }
+
+      @Override
+      public String moreMethodName() {
+        return moreMethodName;
+      }
     };
   }
 
-  private void generateUpsertInterface(UpsertInfo info, Nf3Table nf3Table) {
+  private void generateUpsertInterface(UpsertInfo upsertInfo, Nf3Table nf3Table) {
     JavaFilePrinter p = new JavaFilePrinter();
-    p.packageName = info.interfacePackageName();
-    p.classHeader = "public interface " + info.interfaceClassName();
+    p.packageName = upsertInfo.interfacePackageName();
+    p.classHeader = "public interface " + upsertInfo.interfaceClassName();
 
     List<Nf3Field> fields = nf3Table.fields().stream()
       .filter(f -> !f.isId())
@@ -191,29 +211,32 @@ public class JavaGenerator {
     for (Nf3Field f : fields) {
       String fieldType = p.i(f.javaType().getName());
       String fieldName = f.javaName();
-      p.ofs(1).prn(info.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ");").prn();
+      p.ofs(1).prn(upsertInfo.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ");").prn();
     }
 
-    p.ofs(1).prn("void " + commitMethod + "();");
+    p.ofs(1).pr(p.i(upsertInfo.interfaceFullName()))
+      .pr(" ").pr(upsertInfo.moreMethodName()).prn("(" + (
 
-    p.printToFile(info.interfaceJavaFile());
+      nf3Table.fields().stream()
+        .filter(Nf3Field::isId)
+        .sorted(Comparator.comparing(Nf3Field::idOrder))
+        .map(f -> p.i(f.javaType().getName()) + " " + f.javaName())
+        .collect(Collectors.joining(", "))
+
+    ) + ");").prn();
+
+    p.ofs(1).prn("void " + upsertInfo.commitMethodName() + "();");
+
+    p.printToFile(upsertInfo.interfaceJavaFile());
   }
 
-  String commitMethod = "commit";
-
-  @SuppressWarnings("unused")
-  public JavaGenerator setCommitMethod(String commitMethod) {
-    this.commitMethod = commitMethod;
-    return this;
-  }
-
-  private void generateUpsertImpl(UpsertInfo info, Nf3Table nf3Table) {
+  private void generateUpsertImpl(UpsertInfo upsertInfo, Nf3Table nf3Table) {
     JavaFilePrinter p = new JavaFilePrinter();
-    p.packageName = info.implPackageName();
-    p.classHeader = "public class " + info.implClassName() + " implements "
-      + p.i(UtilsNf36.resolveFullName(info.interfacePackageName(), info.interfaceClassName()));
+    p.packageName = upsertInfo.implPackageName();
+    p.classHeader = "public class " + upsertInfo.implClassName() + " implements "
+      + p.i(UtilsNf36.resolveFullName(upsertInfo.interfacePackageName(), upsertInfo.interfaceClassName()));
 
-    printUpsertImplConstructor(p, info, nf3Table);
+    printUpsertImplConstructor(p, upsertInfo, nf3Table);
 
     List<Nf3Field> fields = nf3Table.fields().stream()
       .filter(f -> !f.isId())
@@ -223,7 +246,7 @@ public class JavaGenerator {
       String fieldType = p.i(f.javaType().getName());
       String fieldName = f.javaName();
       p.ofs(1).prn("@Override");
-      p.ofs(1).prn("public " + info.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ") {");
+      p.ofs(1).prn("public " + upsertInfo.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ") {");
 
       if (f.notNullAndNotPrimitive()) {
         p.ofs(2).prn("if (" + fieldName + " == null) {");
@@ -238,14 +261,14 @@ public class JavaGenerator {
       p.ofs(1).prn("}").prn();
     }
 
-    printCommitMethodImpl(p);
+    printCommitMethodImpl(p, upsertInfo);
 
-    p.printToFile(info.implJavaFile());
+    p.printToFile(upsertInfo.implJavaFile());
   }
 
-  private void printCommitMethodImpl(JavaFilePrinter p) {
+  private void printCommitMethodImpl(JavaFilePrinter p, UpsertInfo upsertInfo) {
     p.ofs(1).prn("@Override");
-    p.ofs(1).prn("public void " + commitMethod + "() {");
+    p.ofs(1).prn("public void " + upsertInfo.commitMethodName() + "() {");
     if (collector.nf3ModifiedAtField != null) {
       p.ofs(2).prn(upserterField + ".putUpdateToNow(\"" + collector.nf3ModifiedAtField + "\");");
     }

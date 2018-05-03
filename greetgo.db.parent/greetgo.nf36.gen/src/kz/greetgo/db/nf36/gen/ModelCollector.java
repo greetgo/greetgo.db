@@ -26,7 +26,27 @@ public class ModelCollector {
   int defaultLength;
   int shortLength;
   int longLength;
+  private String moreMethodName = null;
+  private String commitMethodName = null;
 
+  public String commitMethodName() {
+    if (commitMethodName == null) throw new NullPointerException("commitMethodName == null");
+    return commitMethodName;
+  }
+
+  public void setCommitMethodName(String commitMethodName) {
+    this.commitMethodName = commitMethodName;
+  }
+
+  public String moreMethodName() {
+    if (moreMethodName == null) throw new NullPointerException("moreMethodName == null");
+    return moreMethodName;
+  }
+
+  public ModelCollector setMoreMethodName(String moreMethodName) {
+    this.moreMethodName = moreMethodName;
+    return this;
+  }
 
   private ModelCollector() {}
 
