@@ -1,7 +1,9 @@
 package kz.greetgo.db.nf36.gen.example.structure;
 
+import kz.greetgo.db.nf36.core.Nf3CommitMethodName;
 import kz.greetgo.db.nf36.core.Nf3Description;
 import kz.greetgo.db.nf36.core.Nf3ID;
+import kz.greetgo.db.nf36.core.Nf3MoreMethodName;
 import kz.greetgo.db.nf36.core.Nf3NotNull;
 import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
 import kz.greetgo.db.nf36.core.Nf3Text;
@@ -9,6 +11,8 @@ import kz.greetgo.db.nf36.gen.example.structure.inner.Chair;
 import kz.greetgo.db.nf36.gen.example.structure.inner.Charm;
 
 @Nf3Description("Это клиент")
+@Nf3CommitMethodName("commitMe")
+@Nf3MoreMethodName("another")
 @SuppressWarnings("unused")
 public class Client {
   @Nf3Description("Идентификатор клиента")
