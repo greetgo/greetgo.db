@@ -36,6 +36,8 @@ public class ExampleGenerators {
       .setDefaultLength(301)
       .setShortLength(51)
       .setLongLength(2001)
+      .setCommitMethodName("commit")
+      .setMoreMethodName("more")
       .register(new Client())
       .register(new ClientAddress())
       .register(new Street())

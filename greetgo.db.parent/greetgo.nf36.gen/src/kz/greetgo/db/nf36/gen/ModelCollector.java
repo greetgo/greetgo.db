@@ -34,8 +34,9 @@ public class ModelCollector {
     return commitMethodName;
   }
 
-  public void setCommitMethodName(String commitMethodName) {
+  public ModelCollector setCommitMethodName(String commitMethodName) {
     this.commitMethodName = commitMethodName;
+    return this;
   }
 
   public String moreMethodName() {
