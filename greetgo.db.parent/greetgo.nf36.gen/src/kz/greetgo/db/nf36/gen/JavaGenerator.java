@@ -237,6 +237,7 @@ public class JavaGenerator {
       + p.i(UtilsNf36.resolveFullName(upsertInfo.interfacePackageName(), upsertInfo.interfaceClassName()));
 
     printUpsertImplConstructor(p, upsertInfo, nf3Table);
+    printMoreMethodImpl(p, upsertInfo, nf3Table);
 
     List<Nf3Field> fields = nf3Table.fields().stream()
       .filter(f -> !f.isId())
@@ -262,6 +263,7 @@ public class JavaGenerator {
     }
 
     printCommitMethodImpl(p, upsertInfo);
+
 
     p.printToFile(upsertInfo.implJavaFile());
   }
@@ -321,6 +323,20 @@ public class JavaGenerator {
     for (Nf3Field f : idFields) {
       p.ofs(2).prn(upserterField + ".putId(\"" + f.dbName() + "\", " + f.javaName() + ");");
     }
+    p.ofs(1).prn("}").prn();
+  }
+
+  private void printMoreMethodImpl(JavaFilePrinter p, UpsertInfo upsertInfo, Nf3Table nf3Table) {
+    p.ofs(1).prn("public " + upsertInfo.moreMethodName() + "(" + (
+
+      nf3Table.fields().stream()
+        .filter(Nf3Field::isId)
+        .sorted(Comparator.comparing(Nf3Field::idOrder))
+        .map(f -> p.i(f.javaType().getName()) + " " + f.javaName())
+        .collect(Collectors.joining(", "))
+
+    ) + ") {");
+    p.ofs(2).prn("return null;").prn();
     p.ofs(1).prn("}").prn();
   }
 
