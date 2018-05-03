@@ -24,8 +24,8 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Stream.concat;
 
 public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, ConnectionCallback<Void> {
-
   private final Jdbc jdbc;
+
   private final SqlLogAcceptor logAcceptor;
   private String nf3TableName;
   private String timeFieldName;
@@ -33,12 +33,37 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
   private String nf3ModifiedBy = null;
   private String nf6InsertedBy = null;
 
-  public Object author = null;
+  private Object author = null;
+
+  private final Map<String, Object> idValueMap = new HashMap<>();
+  private final Map<String, Object> fieldValueMap = new HashMap<>();
+  private final Map<String, Object> nf6ValueMap = new HashMap<>();
+  private final List<String> toNowFieldList = new ArrayList<>();
+
+  JdbcNf36UpserterPostgresAdapter parent = null;
+
+  @Override
+  public Nf36Upserter more() {
+    JdbcNf36UpserterPostgresAdapter ret = new JdbcNf36UpserterPostgresAdapter(jdbc, logAcceptor);
+    ret.nf3TableName = nf3TableName;
+    ret.timeFieldName = timeFieldName;
+    ret.nf3CreatedBy = nf3CreatedBy;
+    ret.nf3ModifiedBy = nf3ModifiedBy;
+    ret.nf6InsertedBy = nf6InsertedBy;
+    ret.author = author;
+    ret.parent = this;
+    return ret;
+  }
 
   public JdbcNf36UpserterPostgresAdapter(Jdbc jdbc, SqlLogAcceptor logAcceptor) {
     if (jdbc == null) throw new IllegalArgumentException("jdbc cannot be null");
     this.jdbc = jdbc;
     this.logAcceptor = logAcceptor;
+  }
+
+  public JdbcNf36UpserterPostgresAdapter setAuthor(String author) {
+    this.author = author;
+    return this;
   }
 
   @Override
@@ -58,13 +83,14 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
     this.nf3TableName = nf3TableName;
   }
 
-  private final Map<String, Object> idValueMap = new HashMap<>();
-  private final Map<String, Object> fieldValueMap = new HashMap<>();
-  private final Map<String, Object> nf6ValueMap = new HashMap<>();
-  private final List<String> toNowFieldList = new ArrayList<>();
-
   @Override
   public void putUpdateToNow(String fieldName) {
+    toNowFieldList.add(fieldName);
+  }
+
+  @Override
+  public void putUpdateToNowWithParent(String fieldName) {
+    if (parent != null) parent.putUpdateToNowWithParent(fieldName);
     toNowFieldList.add(fieldName);
   }
 
@@ -92,8 +118,7 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
     if (autoCommit) con.setAutoCommit(false);
 
     try {
-      upsert(con);
-      insertHistory(con);
+      execute(con);
       if (autoCommit) con.commit();
     } catch (Exception e) {
       if (autoCommit) con.rollback();
@@ -103,6 +128,12 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
     }
 
     return null;
+  }
+
+  private void execute(Connection con) throws Exception {
+    if (parent != null) parent.execute(con);
+    upsert(con);
+    insertHistory(con);
   }
 
   private void insertHistory(Connection con) throws Exception {

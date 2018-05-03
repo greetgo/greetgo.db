@@ -17,6 +17,10 @@ public class ChairUpsertImpl implements ChairUpsert {
     upserter.putId("id2", id2);
   }
 
+  public ChairUpsert more(long id1, String id2) {
+    return null;
+  }
+
   @Override
   public ChairUpsert name(String name) {
     upserter.putField("m_chair_name", "name", name);

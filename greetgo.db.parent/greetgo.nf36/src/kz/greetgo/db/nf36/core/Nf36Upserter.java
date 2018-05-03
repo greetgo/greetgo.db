@@ -13,5 +13,9 @@ public interface Nf36Upserter {
 
   void putUpdateToNow(String fieldName);
 
+  void putUpdateToNowWithParent(String fieldName);
+
+  Nf36Upserter more();
+
   void commit();
 }

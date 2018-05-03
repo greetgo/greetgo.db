@@ -10,9 +10,11 @@ import kz.greetgo.db.nf36.model.Nf3Table;
 import java.io.File;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static kz.greetgo.db.nf36.gen.UtilsNf36.resolveFullName;
+import static kz.greetgo.db.nf36.gen.UtilsNf36.resolveJavaFile;
 
 public class JavaGenerator {
   String interfaceOutDir;
@@ -123,11 +125,11 @@ public class JavaGenerator {
 
     String interfaceClassName = nf3Table.source().getSimpleName() + "Upsert";
     String interfacePackageName = UtilsNf36.resolvePackage(interfaceBasePackage, subPackage);
-    File interfaceJavaFile = UtilsNf36.resolveJavaFile(interfaceOutDir, interfacePackageName, interfaceClassName);
+    File interfaceJavaFile = resolveJavaFile(interfaceOutDir, interfacePackageName, interfaceClassName);
 
     String implClassName = interfaceClassName + "Impl";
     String implPackageName = UtilsNf36.resolvePackage(implBasePackage, subPackage);
-    File implJavaFile = UtilsNf36.resolveJavaFile(implOutDir, implPackageName, implClassName);
+    File implJavaFile = resolveJavaFile(implOutDir, implPackageName, implClassName);
 
     String upsertMethodName = UtilsNf36.firstToLow(nf3Table.source().getSimpleName());
 
@@ -274,7 +276,7 @@ public class JavaGenerator {
     p.ofs(1).prn("@Override");
     p.ofs(1).prn("public void " + upsertInfo.commitMethodName() + "() {");
     if (collector.nf3ModifiedAtField != null) {
-      p.ofs(2).prn(upserterField + ".putUpdateToNow(\"" + collector.nf3ModifiedAtField + "\");");
+      p.ofs(2).prn(upserterField + ".putUpdateToNowWithParent(\"" + collector.nf3ModifiedAtField + "\");");
     }
     p.ofs(2).prn(upserterField + ".commit();");
     p.ofs(1).prn("}");
@@ -299,7 +301,11 @@ public class JavaGenerator {
       .sorted(Comparator.comparing(Nf3Field::idOrder))
       .collect(Collectors.toList());
 
-    p.ofs(1).prn("public " + info.implClassName() + "(" + upserterClassName + " " + upserterField + ", " + (
+    Set<String> anotherNames = idFields.stream().map(Nf3Field::javaName).collect(Collectors.toSet());
+
+    String upserterVar = UtilsNf36.selectName(upserterField, anotherNames);
+
+    p.ofs(1).prn("public " + info.implClassName() + "(" + upserterClassName + " " + upserterVar + ", " + (
 
       nf3Table.fields().stream()
         .filter(Nf3Field::isId)
@@ -308,22 +314,22 @@ public class JavaGenerator {
         .collect(Collectors.joining(", "))
 
     ) + ") {");
-    p.ofs(2).prn("this." + upserterField + " = " + upserterField + ";");
-    p.ofs(2).prn(upserterField + ".setNf3TableName(\"" + nf3Table.nf3TableName() + "\");");
-    p.ofs(2).prn(upserterField + ".setTimeFieldName(\"" + collector.nf6timeField + "\");");
+    p.ofs(2).prn("this." + upserterField + " = " + upserterVar + ";");
+    p.ofs(2).prn(upserterVar + ".setNf3TableName(\"" + nf3Table.nf3TableName() + "\");");
+    p.ofs(2).prn(upserterVar + ".setTimeFieldName(\"" + collector.nf6timeField + "\");");
 
     if (collector.nf3CreatedBy != null) {
-      p.ofs(2).prn(upserterField + ".setAuthorFieldNames("
+      p.ofs(2).prn(upserterVar + ".setAuthorFieldNames("
         + "\"" + collector.nf3CreatedBy.name + "\""
         + ", \"" + collector.nf3ModifiedBy.name + "\""
         + ", \"" + collector.nf6InsertedBy.name + "\""
         + ");");
     }
 
-    p.ofs(2).prn(upserterField + ".setTimeFieldName(\"" + collector.nf6timeField + "\");");
+    p.ofs(2).prn(upserterVar + ".setTimeFieldName(\"" + collector.nf6timeField + "\");");
 
     for (Nf3Field f : idFields) {
-      p.ofs(2).prn(upserterField + ".putId(\"" + f.dbName() + "\", " + f.javaName() + ");");
+      p.ofs(2).prn(upserterVar + ".putId(\"" + f.dbName() + "\", " + f.javaName() + ");");
     }
     p.ofs(1).prn("}").prn();
   }
@@ -338,7 +344,17 @@ public class JavaGenerator {
         .collect(Collectors.joining(", "))
 
     ) + ") {");
-    p.ofs(2).prn("return null;").prn();
+
+    p.ofs(2).prn("return " + upsertInfo.implClassName() + "(this." + upserterField + ".more(), " + (
+
+      nf3Table.fields().stream()
+        .filter(Nf3Field::isId)
+        .sorted(Comparator.comparing(Nf3Field::idOrder))
+        .map(Nf3Field::javaName)
+        .collect(Collectors.joining(", "))
+
+    ) + ");");
+
     p.ofs(1).prn("}").prn();
   }
 
@@ -357,7 +373,7 @@ public class JavaGenerator {
       printUpsertInterfaceMethod(p, nf3Table);
     }
 
-    p.printToFile(UtilsNf36.resolveJavaFile(interfaceOutDir, interfaceBasePackage, mainNf36ClassName));
+    p.printToFile(resolveJavaFile(interfaceOutDir, interfaceBasePackage, mainNf36ClassName));
 
     return resolveFullName(interfaceBasePackage, mainNf36ClassName);
   }
@@ -376,7 +392,7 @@ public class JavaGenerator {
       printUpsertImplMethod(p, nf3Table);
     }
 
-    p.printToFile(UtilsNf36.resolveJavaFile(implOutDir, implBasePackage, mainNf36ImplClassName()));
+    p.printToFile(resolveJavaFile(implOutDir, implBasePackage, mainNf36ImplClassName()));
   }
 
   String upserterCreateMethod = "createUpserter";

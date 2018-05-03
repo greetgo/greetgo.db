@@ -11,8 +11,8 @@ import kz.greetgo.db.nf36.gen.example.structure.inner.Chair;
 import kz.greetgo.db.nf36.gen.example.structure.inner.Charm;
 
 @Nf3Description("Это клиент")
-@Nf3CommitMethodName("commitMe")
-@Nf3MoreMethodName("another")
+@Nf3CommitMethodName("commitAll")
+@Nf3MoreMethodName("moreAnother")
 @SuppressWarnings("unused")
 public class Client {
   @Nf3Description("Идентификатор клиента")

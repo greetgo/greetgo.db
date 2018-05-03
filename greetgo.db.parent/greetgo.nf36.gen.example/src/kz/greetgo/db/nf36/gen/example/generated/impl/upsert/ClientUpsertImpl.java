@@ -1,7 +1,5 @@
 package kz.greetgo.db.nf36.gen.example.generated.impl.upsert;
 
-import java.lang.Long;
-import java.lang.String;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
 import kz.greetgo.db.nf36.gen.example.generated.faces.upsert.ClientUpsert;
@@ -16,6 +14,10 @@ public class ClientUpsertImpl implements ClientUpsert {
     upserter.setAuthorFieldNames("created_by", "modified_by", "inserted_by");
     upserter.setTimeFieldName("ts");
     upserter.putId("id", id);
+  }
+
+  public ClientUpsert moreAnother(long id) {
+    return new ClientUpsertImpl(this.upserter.more(), id);
   }
 
   @Override
@@ -85,8 +87,8 @@ public class ClientUpsertImpl implements ClientUpsert {
   }
 
   @Override
-  public void commit() {
-    upserter.putUpdateToNow("mod_at");
+  public void commitAll() {
+    upserter.putUpdateToNowWithParent("mod_at");
     upserter.commit();
   }
 }

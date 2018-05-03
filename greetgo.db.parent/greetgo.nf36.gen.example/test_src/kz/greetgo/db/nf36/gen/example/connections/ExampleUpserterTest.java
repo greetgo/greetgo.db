@@ -37,7 +37,7 @@ public class ExampleUpserterTest extends AbstractDepinjectTestNg {
 
     exampleUpserter.get().client(id)
       .name(expectedName1)
-      .commit();
+      .commitAll();
 
     {
       String actualName = jdbc.get().execute(new ByOne<String>("id", id, "client", "name"));
@@ -52,7 +52,7 @@ public class ExampleUpserterTest extends AbstractDepinjectTestNg {
 
     exampleUpserter.get().client(id)
       .name(expectedName2)
-      .commit();
+      .commitAll();
 
     {
       String actualName = jdbc.get().execute(new ByOne<String>("id", id, "client", "name"));
@@ -69,7 +69,7 @@ public class ExampleUpserterTest extends AbstractDepinjectTestNg {
     exampleUpserter.get().client(id)
       .name(expectedName3)
       .surname(expectedSurname)
-      .commit();
+      .commitAll();
 
     {
       String actualName = jdbc.get().execute(new ByOne<String>("id", id, "client", "name"));
@@ -87,7 +87,7 @@ public class ExampleUpserterTest extends AbstractDepinjectTestNg {
     exampleUpserter.get().client(RND.plusLong(1_000_000_000L))
       .name("asd")
       .surname(null)
-      .commit();
+      .commitAll();
 
   }
 
@@ -118,7 +118,7 @@ public class ExampleUpserterTest extends AbstractDepinjectTestNg {
       .myChairId2(chairId2_1)
       .hisChairLongId(chairId1_2)
       .hisChairStrId(chairId2_2)
-      .commit()
+      .commitAll()
     ;
   }
 
@@ -129,11 +129,11 @@ public class ExampleUpserterTest extends AbstractDepinjectTestNg {
 
     exampleUpserter.get().client(id)
       .name(expectedName1)
-      .commit();
+      .commitAll();
 
     exampleUpserter.get().client(id)
       .name(expectedName1)
-      .commit();
+      .commitAll();
 
     {
       String actualName = jdbc.get().execute(new ByOneLast<>("id", id, "m_client_name", "name"));
@@ -146,11 +146,11 @@ public class ExampleUpserterTest extends AbstractDepinjectTestNg {
 
     exampleUpserter.get().client(id)
       .name(expectedName2)
-      .commit();
+      .commitAll();
 
     exampleUpserter.get().client(id)
       .name(expectedName2)
-      .commit();
+      .commitAll();
 
     {
       String actualName = jdbc.get().execute(new ByOneLast<>("id", id, "m_client_name", "name"));
@@ -161,11 +161,11 @@ public class ExampleUpserterTest extends AbstractDepinjectTestNg {
 
     exampleUpserter.get().client(id)
       .name(expectedName1)
-      .commit();
+      .commitAll();
 
     exampleUpserter.get().client(id)
       .name(expectedName1)
-      .commit();
+      .commitAll();
 
     {
       String actualName = jdbc.get().execute(new ByOneLast<>("id", id, "m_client_name", "name"));
@@ -263,7 +263,7 @@ public class ExampleUpserterTest extends AbstractDepinjectTestNg {
     exampleUpserter.get().client(clientId)
       .myChairId1(chairId1)
       .myChairId2(chairId2)
-      .commit()
+      .commitAll()
     ;
 
     {
@@ -273,6 +273,30 @@ public class ExampleUpserterTest extends AbstractDepinjectTestNg {
     {
       String actual = jdbc.get().execute(new ByOneLast<>("id", clientId, "m_client_my_chair_id1", "my_chair_id2"));
       assertThat(actual).isEqualTo(chairId2);
+    }
+  }
+
+  @Test
+  public void upsertMore() throws Exception {
+    long clientId1 = RND.plusLong(1_000_000_000_000L);
+    long clientId2 = RND.plusLong(1_000_000_000_000L);
+
+    String surname1 = RND.str(10);
+    String surname2 = RND.str(10);
+
+    exampleUpserter.get().client(clientId1)
+      .surname(surname1)
+      .moreAnother(clientId2)
+      .surname(surname2)
+      .commitAll();
+
+    {
+      String actualSurname = jdbc.get().execute(new ByOne<String>("id", clientId1, "client", "surname"));
+      assertThat(actualSurname).isEqualTo(surname1);
+    }
+    {
+      String actualSurname = jdbc.get().execute(new ByOne<String>("id", clientId2, "client", "surname"));
+      assertThat(actualSurname).isEqualTo(surname2);
     }
   }
 }

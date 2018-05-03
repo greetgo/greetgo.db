@@ -21,9 +21,9 @@ public class ExampleNf3DoorConnector extends AbstractExampleUpserter {
 
   @Override
   protected Nf36Upserter createUpserter() {
-    JdbcNf36UpserterPostgresAdapter ret = new JdbcNf36UpserterPostgresAdapter(jdbc.get(), logAcceptor);
-    ret.author = authorGetter.get().getAuthor();
-    return ret;
+    return new JdbcNf36UpserterPostgresAdapter(jdbc.get(), logAcceptor)
+      .setAuthor(authorGetter.get().getAuthor())
+      ;
   }
 
 }

@@ -17,6 +17,10 @@ public class PersonUpsertImpl implements PersonUpsert {
     upserter.putId("id", id);
   }
 
+  public PersonUpsert more(String id) {
+    return null;
+  }
+
   @Override
   public PersonUpsert fio(String fio) {
     upserter.putField("m_person_fio", "fio", fio);

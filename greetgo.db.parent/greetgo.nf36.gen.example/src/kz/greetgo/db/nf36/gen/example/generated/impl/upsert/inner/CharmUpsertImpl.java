@@ -16,6 +16,10 @@ public class CharmUpsertImpl implements CharmUpsert {
     upserter.putId("id", id);
   }
 
+  public CharmUpsert more(String id) {
+    return null;
+  }
+
   @Override
   public CharmUpsert name(String name) {
     upserter.putField("m_charm_name", "name", name);

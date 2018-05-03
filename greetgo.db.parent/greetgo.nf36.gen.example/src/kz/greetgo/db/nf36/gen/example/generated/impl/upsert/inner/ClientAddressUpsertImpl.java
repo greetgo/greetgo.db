@@ -19,6 +19,10 @@ public class ClientAddressUpsertImpl implements ClientAddressUpsert {
     upserter.putId("client_id", clientId);
   }
 
+  public ClientAddressUpsert more(long clientId) {
+    return null;
+  }
+
   @Override
   public ClientAddressUpsert type(AddressType type) {
     upserter.putField("m_client_address_type", "type", type);

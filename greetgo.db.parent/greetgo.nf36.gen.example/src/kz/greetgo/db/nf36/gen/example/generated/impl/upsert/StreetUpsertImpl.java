@@ -18,6 +18,10 @@ public class StreetUpsertImpl implements StreetUpsert {
     upserter.putId("id", id);
   }
 
+  public StreetUpsert more(long id) {
+    return null;
+  }
+
   @Override
   public StreetUpsert type(StreetType type) {
     if (type == null) {

@@ -17,6 +17,10 @@ public class WowUpsertImpl implements WowUpsert {
     upserter.putId("wow_id2", wowId2);
   }
 
+  public WowUpsert more(String wowId, String wowId2) {
+    return null;
+  }
+
   @Override
   public WowUpsert hello(String hello) {
     upserter.putField("m_wow_hello", "hello", hello);

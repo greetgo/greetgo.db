@@ -5,6 +5,7 @@ import kz.greetgo.db.nf36.gen.errors.IllegalPackage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class UtilsNf36 {
   public static String calcSubPackage(String basePackageName, String packageName) {
@@ -93,5 +94,15 @@ public class UtilsNf36 {
 
   public static String quoteForSql(String comment) {
     return comment.replaceAll("'", "''");
+  }
+
+  public static String selectName(String wantName, Set<String> anotherNames) {
+    if (wantName == null) wantName = "a";
+    if (!anotherNames.contains(wantName)) return wantName;
+    int i = 1;
+    while (true) {
+      String ret = wantName + i++;
+      if (!anotherNames.contains(ret)) return ret;
+    }
   }
 }
