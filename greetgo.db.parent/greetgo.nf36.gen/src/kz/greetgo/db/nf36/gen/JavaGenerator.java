@@ -326,8 +326,6 @@ public class JavaGenerator {
         + ");");
     }
 
-    p.ofs(2).prn(upserterVar + ".setTimeFieldName(\"" + collector.nf6timeField + "\");");
-
     for (Nf3Field f : idFields) {
       p.ofs(2).prn(upserterVar + ".putId(\"" + f.dbName() + "\", " + f.javaName() + ");");
     }
