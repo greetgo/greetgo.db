@@ -12,6 +12,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static kz.greetgo.db.nf36.gen.UtilsNf36.resolveFullName;
+
 public class JavaGenerator {
   String interfaceOutDir;
   String interfaceBasePackage;
@@ -129,9 +131,9 @@ public class JavaGenerator {
 
     String upsertMethodName = UtilsNf36.firstToLow(nf3Table.source().getSimpleName());
 
-    String interfaceFullName = UtilsNf36.resolveFullName(interfacePackageName, interfaceClassName);
+    String interfaceFullName = resolveFullName(interfacePackageName, interfaceClassName);
 
-    String implFullName = UtilsNf36.resolveFullName(implPackageName, implClassName);
+    String implFullName = resolveFullName(implPackageName, implClassName);
 
     Nf3MoreMethodName nf3MoreMethodName = nf3Table.source().getAnnotation(Nf3MoreMethodName.class);
 
@@ -233,11 +235,11 @@ public class JavaGenerator {
   private void generateUpsertImpl(UpsertInfo upsertInfo, Nf3Table nf3Table) {
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = upsertInfo.implPackageName();
-    p.classHeader = "public class " + upsertInfo.implClassName() + " implements "
-      + p.i(UtilsNf36.resolveFullName(upsertInfo.interfacePackageName(), upsertInfo.interfaceClassName()));
+    String implInterfaceName = p.i(resolveFullName(upsertInfo.interfacePackageName(), upsertInfo.interfaceClassName()));
+    p.classHeader = "public class " + upsertInfo.implClassName() + " implements " + implInterfaceName;
 
     printUpsertImplConstructor(p, upsertInfo, nf3Table);
-    printMoreMethodImpl(p, upsertInfo, nf3Table);
+    printMoreMethodImpl(p, upsertInfo, nf3Table, implInterfaceName);
 
     List<Nf3Field> fields = nf3Table.fields().stream()
       .filter(f -> !f.isId())
@@ -326,8 +328,8 @@ public class JavaGenerator {
     p.ofs(1).prn("}").prn();
   }
 
-  private void printMoreMethodImpl(JavaFilePrinter p, UpsertInfo upsertInfo, Nf3Table nf3Table) {
-    p.ofs(1).prn("public " + upsertInfo.moreMethodName() + "(" + (
+  private void printMoreMethodImpl(JavaFilePrinter p, UpsertInfo upsertInfo, Nf3Table nf3Table, String implInterfaceName) {
+    p.ofs(1).prn("public " + implInterfaceName + " " + upsertInfo.moreMethodName() + "(" + (
 
       nf3Table.fields().stream()
         .filter(Nf3Field::isId)
@@ -357,7 +359,7 @@ public class JavaGenerator {
 
     p.printToFile(UtilsNf36.resolveJavaFile(interfaceOutDir, interfaceBasePackage, mainNf36ClassName));
 
-    return UtilsNf36.resolveFullName(interfaceBasePackage, mainNf36ClassName);
+    return resolveFullName(interfaceBasePackage, mainNf36ClassName);
   }
 
   private void generateMainImpl(String mainInterfaceClassName) {
