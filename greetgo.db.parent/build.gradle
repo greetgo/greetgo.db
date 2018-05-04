@@ -9,8 +9,6 @@ buildscript {
   }
 }
 
-import kz.greetgo.gradle.plugins.ShortJavaPathPlugin
-
 def nowDate = new Date()
 def nowFormattedDate = nowDate.format("yyyy-MM-dd/HH:mm:ss")
 def vendorName = "greetgo!"
@@ -21,7 +19,8 @@ allprojects {
   apply plugin: 'eclipse'
   apply plugin: 'maven'
   apply plugin: 'signing'
-  apply plugin: ShortJavaPathPlugin
+  //noinspection UnnecessaryQualifiedReference
+  apply plugin: kz.greetgo.gradle.plugins.ShortJavaPathPlugin
 
   version = '2.1.9'
 
