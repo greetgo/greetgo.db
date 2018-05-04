@@ -5,4 +5,6 @@ dependencies {
   compile "kz.greetgo.depinject:greetgo.depinject.testng:$depinjectVersion"
   compile "kz.greetgo.conf:greetgo.sys_params:$configVersion"
   compile "org.postgresql:postgresql:$pgDriverVersion"
+
+  testCompile project(':greetgo.db.worker')
 }

@@ -1,6 +1,6 @@
-package kz.greetgo.db.example._develop_;
+package kz.greetgo.db.nf36.gen.example.util;
 
-import kz.greetgo.db.example.configs.PostgresConfig;
+import kz.greetgo.db.nf36.gen.example.env.DbParams;
 import kz.greetgo.db.worker.DbConfig;
 
 public class PostgresDbConfig implements DbConfig {
@@ -9,27 +9,27 @@ public class PostgresDbConfig implements DbConfig {
 
   private static final PostgresDbConfig instance = new PostgresDbConfig();
 
-  public static DbConfig instance() {
+  public static PostgresDbConfig instance() {
     return instance;
   }
 
   @Override
   public String url() {
-    return PostgresConfig.url();
+    return DbParams.url;
   }
 
   @Override
   public String username() {
-    return PostgresConfig.username();
+    return DbParams.username;
   }
 
   @Override
   public String password() {
-    return PostgresConfig.password();
+    return DbParams.password;
   }
 
   @Override
   public String dbName() {
-    return PostgresConfig.dbName();
+    return DbParams.dbName;
   }
 }

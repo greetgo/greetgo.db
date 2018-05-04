@@ -19,7 +19,6 @@ public class TransactionInvoker {
     classCallMeta = createCallMetaOn(null, wrappingObject.getClass().getAnnotations());
   }
 
-
   private static CallMeta createCallMetaOn(CallMeta parent, Annotation[] annotations) {
     IsolationLevel isolationLevel = null;
     Class<? extends Throwable>[] commitExceptions = null;
@@ -33,7 +32,6 @@ public class TransactionInvoker {
       if (annotation instanceof CommitOn) {
         CommitOn commitOn = (CommitOn) annotation;
         commitExceptions = commitOn.value();
-        //noinspection UnnecessaryContinue
         continue;
       }
     }

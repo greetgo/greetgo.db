@@ -17,7 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kz.greetgo.db.nf36.gen.example.util.Places.exampleDir;
+import static kz.greetgo.db.worker.Places.nf36ExampleDir;
 
 public class ExampleGenerators {
 
@@ -49,7 +49,7 @@ public class ExampleGenerators {
     javaGenerator = JavaGenerator.newGenerator(collector)
       .setInterfaceOutDir("left 1")
       .setImplOutDir("left 2")
-      .setOutDir(exampleDir() + "/src")
+      .setOutDir(nf36ExampleDir() + "/src")
       .setCleanOutDirsBeforeGeneration(true)
       .setInterfaceBasePackage("kz.greetgo.db.nf36.gen.example.generated.faces")
       .setImplBasePackage("kz.greetgo.db.nf36.gen.example.generated.impl")
@@ -80,31 +80,31 @@ public class ExampleGenerators {
   public List<File> generateSqlFiles() {
     List<File> sqlFileList = new ArrayList<>();
     {
-      File outFile = new File(exampleDir() + "/build/gen_sql/001_nf3_tables.sql");
+      File outFile = new File(nf36ExampleDir() + "/build/gen_sql/001_nf3_tables.sql");
       ddlGenerator.generateNf3Tables(outFile);
       sqlFileList.add(outFile);
     }
 
     {
-      File outFile = new File(exampleDir() + "/build/gen_sql/002_nf6_tables.sql");
+      File outFile = new File(nf36ExampleDir() + "/build/gen_sql/002_nf6_tables.sql");
       ddlGenerator.generateNf6Tables(outFile);
       sqlFileList.add(outFile);
     }
 
     {
-      File outFile = new File(exampleDir() + "/build/gen_sql/003_nf3_references.sql");
+      File outFile = new File(nf36ExampleDir() + "/build/gen_sql/003_nf3_references.sql");
       ddlGenerator.generateNf3References(outFile);
       sqlFileList.add(outFile);
     }
 
     {
-      File outFile = new File(exampleDir() + "/build/gen_sql/004_nf6_id_references.sql");
+      File outFile = new File(nf36ExampleDir() + "/build/gen_sql/004_nf6_id_references.sql");
       ddlGenerator.generateNf6IdReferences(outFile);
       sqlFileList.add(outFile);
     }
 
     {
-      File outFile = new File(exampleDir() + "/build/gen_sql/005_comments.sql");
+      File outFile = new File(nf36ExampleDir() + "/build/gen_sql/005_comments.sql");
       ddlGenerator.generateComments(outFile);
       sqlFileList.add(outFile);
     }

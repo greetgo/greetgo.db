@@ -65,8 +65,12 @@ public class DbProxyFactory {
   public final Object createProxyFor(Object wrappingObject, Class<?>... interfaces) {
     if (interfaces.length == 0) throw new IllegalArgumentException("No interfaces");
     final TransactionInvoker transactionInvoker = new TransactionInvoker(transactionManager, wrappingObject);
+
     //noinspection unchecked
-    return Proxy.newProxyInstance(getClass().getClassLoader(), interfaces,
-      (proxy, method, args) -> transactionInvoker.invoke(method, args));
+    return Proxy.newProxyInstance(
+      getClass().getClassLoader(),
+      interfaces,
+      (proxy, method, args) -> transactionInvoker.invoke(method, args)
+    );
   }
 }
