@@ -1,0 +1,13 @@
+dependencies {
+  ext.depinjectVersion = "2.0.1"
+  ext.configVersion = "1.0.2"
+
+  compile project(':greetgo.db')
+
+  compile "kz.greetgo.depinject:greetgo.depinject:$depinjectVersion"
+  compile "kz.greetgo.conf:greetgo.sys_params:$configVersion"
+
+  testCompile project(':greetgo.db.worker')
+  testCompile "kz.greetgo.depinject:greetgo.depinject.testng:$depinjectVersion"
+}
+

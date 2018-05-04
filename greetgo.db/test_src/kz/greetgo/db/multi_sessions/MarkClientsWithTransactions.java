@@ -6,17 +6,12 @@ import java.util.Date;
 import java.util.List;
 
 public class MarkClientsWithTransactions extends DataSourcePreparation {
-
-  public MarkClientsWithTransactions() throws Exception {
-  }
+  public MarkClientsWithTransactions() throws Exception {}
 
   public static void main(String[] args) throws Exception {
-
     new MarkClientsWithTransactions().execute();
-
     System.out.println("Complete");
   }
-
 
   private class MarkingThread extends Thread {
     public MarkingThread(String name) {

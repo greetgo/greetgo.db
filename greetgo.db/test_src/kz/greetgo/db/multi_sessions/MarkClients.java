@@ -6,14 +6,10 @@ import java.util.Date;
 import java.util.List;
 
 public class MarkClients extends DataSourcePreparation {
-
-  public MarkClients() throws Exception {
-  }
+  public MarkClients() throws Exception {}
 
   public static void main(String[] args) throws Exception {
-
     new MarkClients().execute();
-
     System.out.println("Complete");
   }
 

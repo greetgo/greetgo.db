@@ -7,21 +7,15 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 public class PrepareData extends DataSourcePreparation {
-
-  public PrepareData() throws Exception {
-  }
+  public PrepareData() throws Exception {}
 
   public static void main(String[] args) throws Exception {
-
     new PrepareData().execute();
-
     System.out.println("Complete");
   }
 
   private void execute() throws SQLException {
-
     try (final Connection connection = ds.getConnection()) {
-
       try (final PreparedStatement ps = connection.prepareStatement("INSERT INTO client " +
         "(id, surname, name, birth_date) VALUES (nextval('s_client'), ?, ?, ?)")) {
 
@@ -33,11 +27,7 @@ public class PrepareData extends DataSourcePreparation {
         }
 
         ps.executeBatch();
-
       }
-
     }
   }
-
-
 }

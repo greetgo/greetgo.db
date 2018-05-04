@@ -57,7 +57,12 @@ public class SqlTypeUtilTest {
   public void convertType(Field field, SqlType expectedType,
                           int expectedLen, boolean expectedNullable) throws Exception {
 
-    DbType dbType = SqlTypeUtil.extractDbType(field, newCollector().setEnumLength(ENUM_LENGTH));
+    DbType dbType = SqlTypeUtil.extractDbType(field, newCollector()
+      .setDefaultLength(300)
+      .setShortLength(50)
+      .setLongLength(2000)
+      .setIdLength(30)
+      .setEnumLength(ENUM_LENGTH));
     assertThat(dbType).isNotNull();
     assertThat(dbType.sqlType()).isEqualTo(expectedType);
     assertThat(dbType.len()).isEqualTo(expectedLen);
