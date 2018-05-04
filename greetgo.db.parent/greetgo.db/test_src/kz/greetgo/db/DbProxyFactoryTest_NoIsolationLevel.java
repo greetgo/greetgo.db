@@ -10,11 +10,11 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 public class DbProxyFactoryTest_NoIsolationLevel {
 
-  interface Iface {
+  interface SomeInterface {
     void method() throws SQLException;
   }
 
-  class Impl implements Iface {
+  class Impl implements SomeInterface {
     private final TestDataSource dataSource;
     private final GreetgoTransactionManager transactionManager;
 
@@ -57,7 +57,7 @@ public class DbProxyFactoryTest_NoIsolationLevel {
     DbProxyFactory dbProxyFactory = new DbProxyFactory(transactionManager);
 
     Impl original = new Impl(dataSource, transactionManager);
-    Iface proxy = (Iface) dbProxyFactory.createProxyFor(original, Iface.class);
+    SomeInterface proxy = (SomeInterface) dbProxyFactory.createProxyFor(original, SomeInterface.class);
 
     proxy.method();
 

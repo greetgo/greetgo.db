@@ -6,33 +6,18 @@ import java.sql.SQLException;
 
 public class GreetgoTransactionManager implements TransactionManager {
 
-  private static final ExceptionCatcher DEFAULT_EXCEPTION_CATCHER = new ExceptionCatcher() {
-    @Override
-    public void catchException(Throwable e) {
-      e.printStackTrace();
-    }
-  };
+  private static final ExceptionCatcher DEFAULT_EXCEPTION_CATCHER = Throwable::printStackTrace;
 
   private ExceptionCatcher exceptionCatcher = DEFAULT_EXCEPTION_CATCHER;
 
-  private final ExceptionCatcherGetter exceptionCatcherGetter = new ExceptionCatcherGetter() {
-    @Override
-    public ExceptionCatcher get() {
-      return exceptionCatcher;
-    }
-  };
+  private final ExceptionCatcherGetter exceptionCatcherGetter = () -> exceptionCatcher;
 
   public void setExceptionCatcher(ExceptionCatcher exceptionCatcher) {
     this.exceptionCatcher = exceptionCatcher == null ? DEFAULT_EXCEPTION_CATCHER : exceptionCatcher;
   }
 
   private final ThreadLocal<ThreadLocalTransactionManager> threadLocalTM
-    = new ThreadLocal<ThreadLocalTransactionManager>() {
-    @Override
-    protected ThreadLocalTransactionManager initialValue() {
-      return new ThreadLocalTransactionManager(exceptionCatcherGetter);
-    }
-  };
+    = ThreadLocal.withInitial(() -> new ThreadLocalTransactionManager(exceptionCatcherGetter));
 
   @Override
   public Connection getConnection(DataSource dataSource) {

@@ -2,5 +2,5 @@
 apply plugin: kz.greetgo.gradle.plugins.GgRepoUploadPlugin
 
 dependencies {
-  compile "kz.greetgo:greetgo.util:${greetgoUtilVersion}"
+  compile "kz.greetgo:greetgo.util:$greetgoUtilVersion"
 }
