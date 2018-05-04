@@ -1,0 +1,11 @@
+rootProject.name = "greetgo.db.root"
+
+include 'greetgo.db'
+include 'greetgo.sqlmanager'
+include 'greetgo.gbatis'
+include 'greetgo.gbatis.spring'
+include 'greetgo.gbatis.util'
+include 'greetgo.gbatis.gen'
+include 'greetgo.nf36'
+include 'greetgo.nf36.gen'
+include 'greetgo.nf36.gen.example'

@@ -1,0 +1,45 @@
+
+subpackage account
+
+account long
+  name line
+  guid word
+  displayName line
+  overdueType OverdueType
+  tabnum line
+  mail line
+  removed int
+  groupId accountGroup
+  ptpGroup
+
+right line
+  name line
+  isMode int
+
+rightAccount
+ *right
+ *account
+  removed int
+  
+groupType
+ *name GroupTypeS
+  owner account
+  removed int
+
+accountGroup long
+  name line
+  head account
+  removed int
+
+accountDistr long
+  account
+  distrTime time
+
+ptpGroup long
+  name line
+  ord int
+  owner long
+  head  account
+  removed int
+  groupType groupType
+  prefix word

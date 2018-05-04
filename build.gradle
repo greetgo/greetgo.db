@@ -1,0 +1,84 @@
+buildscript {
+  repositories {
+    mavenLocal()
+    if (System.getenv('GG_REPO')?.trim()) maven { url System.getenv('GG_REPO') }
+    mavenCentral()
+  }
+  dependencies {
+    classpath "kz.greetgo.plugins:greetgo.gradle.plugins:0.0.2"
+  }
+}
+
+def nowDate = new Date()
+def nowFormattedDate = nowDate.format("yyyy-MM-dd/HH:mm:ss")
+def vendorName = "greetgo!"
+
+allprojects {
+  apply plugin: 'java'
+  apply plugin: 'idea'
+  apply plugin: 'eclipse'
+  apply plugin: 'maven'
+  apply plugin: 'signing'
+  //noinspection UnnecessaryQualifiedReference
+  apply plugin: kz.greetgo.gradle.plugins.ShortJavaPathPlugin
+
+  version = '2.1.9'
+
+  sourceCompatibility = 1.8
+
+  group = "kz.greetgo.db"
+
+  eclipse.project.natures 'org.springsource.ide.eclipse.gradle.core.nature'
+  compileJava.options.debugOptions.debugLevel = "source,lines,vars"
+  compileTestJava.options.debugOptions.debugLevel = "source,lines,vars"
+
+
+//  tasks.withType(Javadoc) {
+//    options.addStringOption('Xdoclint:none', '-quiet')
+//    options.addStringOption('encoding', 'UTF-8')
+//    options.addStringOption('charSet', 'UTF-8')
+//  }
+
+}
+
+subprojects {
+  repositories {
+    mavenLocal()
+    maven { url System.getenv('GG_REPO') }
+    mavenCentral()
+  }
+
+  dependencies {
+    ext.greetgoUtilVersion = "0.0.25"
+    ext.depinjectVersion = "2.0.1"
+    ext.classScannerVersion = "0.0.1"
+    ext.greetgoJavaCompilerVersion = "0.0.1"
+
+    compile 'com.google.code.findbugs:annotations:2.0.1'
+
+    testCompile 'org.testng:testng:6.5.1'
+    testCompile 'org.easytesting:fest-assert-core:2.0M10'
+  }
+
+  project.eclipse.classpath.file.whenMerged { cp ->
+    if (project.hasProperty("sourceCompatibility")) {
+      cp.entries.findAll { it.path.contains('JRE_CONTAINER') }.each {
+
+        it.path += "/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/" +
+          "JavaSE-$project.sourceCompatibility"
+      }
+    }
+  }
+
+  jar {
+    manifest {
+      attributes 'Implementation-Title': project.name
+      attributes 'Implementation-Version': version
+      attributes 'Implementation-Vendor': vendorName
+      attributes 'Created-By': System.getProperty("user.name")
+      attributes 'Created-At': nowFormattedDate
+    }
+  }
+
+  test { useTestNG() }
+}

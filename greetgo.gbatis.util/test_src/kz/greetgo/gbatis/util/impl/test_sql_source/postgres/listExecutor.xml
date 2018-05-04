@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sql-set>
+
+  <sql id="dropTempStorage" type="Sele"><![CDATA[
+    drop table temp_storage
+  ]]></sql>
+
+  <sql id="createTempStorage" type="Sele"><![CDATA[
+    CREATE TABLE temp_storage (
+      txt TEXT,
+      ts  TIMESTAMP without time zone NOT NULL DEFAULT current_timestamp
+    )
+  ]]></sql>
+
+  <sql id="readTempStorage" type="Sele"><![CDATA[
+    SELECT txt FROM temp_storage ORDER BY ts
+  ]]></sql>
+
+  <sql id="procedure_sayHelloWorld" type="Sele"><![CDATA[
+    create or replace function sayHelloWorld() 
+    returns void
+    language 'plpgsql' as $quote$
+    
+    begin
+      insert into temp_storage (txt) values ('I am saying: "Hello world, 你好世界"');
+    end
+    
+    $quote$
+  ]]></sql>
+
+  <sql id="procedure_sayQuWithStrStr" type="Sele"><![CDATA[
+    create or replace function say_qu_with_str_str(s1 text, s2 text) 
+    returns void
+    language 'plpgsql' as $quote$
+    
+    begin
+      insert into temp_storage (txt) values ('I am saying qu with str str: s1 = '
+        ||COALESCE(s1,'<NULL>')||', s2 = '||COALESCE(s2,'<NULL>'));
+    end
+    
+    $quote$
+  ]]></sql>
+
+  <sql id="procedure_sayQuWithIntStr" type="Sele"><![CDATA[
+    create or replace function say_qu_with_int_str(i1 int, s2 text) 
+    returns void
+    language 'plpgsql' as $quote$
+    
+    begin
+      insert into temp_storage (txt) values ('I am saying qu with int str: i1 = '||i1||', s2 = '||s2);
+    end
+    
+    $quote$
+  ]]></sql>
+
+
+  <sql id="procedure_sayQuWithLongLong" type="Sele"><![CDATA[
+    create or replace function say_qu_with_long_long(long1 bigint, long2 bigint) 
+    returns void
+    language 'plpgsql' as $quote$
+    
+    begin
+      insert into temp_storage (txt) values ('I am saying qu with long long: long1 = '||long1||', long2 = '||long2);
+    end
+    
+    $quote$
+  ]]></sql>
+
+  <sql id="procedure_sayQuWithTimeTime" type="Sele"><![CDATA[
+    create or replace function say_qu_with_time_time(time1 timestamp without time zone, time2 timestamp without time zone) 
+    returns void
+    language 'plpgsql' as $quote$
+    
+    begin
+      insert into temp_storage (txt) values ('I am saying qu with time time: time1 = '
+        ||COALESCE(''||time1,'<NULL>')||', time2 = '||COALESCE(''||time2,'<NULL>'));
+    end
+    
+    $quote$
+  ]]></sql>
+
+</sql-set>

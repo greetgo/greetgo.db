@@ -1,0 +1,24 @@
+//noinspection UnnecessaryQualifiedReference
+apply plugin: kz.greetgo.gradle.plugins.MavenUploadPlugin
+//noinspection UnnecessaryQualifiedReference
+apply plugin: kz.greetgo.gradle.plugins.GgRepoUploadPlugin
+
+dependencies {
+
+  testCompile 'cglib:cglib:3.2.0'
+  testCompile 'com.mchange:c3p0:0.9.5.2'
+  testCompile 'postgresql:postgresql:9.1-901-1.jdbc4'
+  testCompile "kz.greetgo:greetgo.util:${greetgoUtilVersion}"
+
+}
+
+uploadToMavenCentral {
+  description = "DB utils using in greetgo!"
+  url = 'https://github.com/greetgo/greetgo.db'
+  scm.url = 'https://github.com/greetgo/greetgo.db.git'
+  developer {
+    id = 'pompei'
+    name = 'Evgeniy Kolpakov'
+    email = 'ekolpakov@greet-go.com'
+  }
+}

@@ -1,0 +1,14 @@
+
+
+client long
+  surname line
+  name line
+  patronymic line
+	age int
+
+phone
+  *client
+   type word
+  *value line
+   actual bool
+
