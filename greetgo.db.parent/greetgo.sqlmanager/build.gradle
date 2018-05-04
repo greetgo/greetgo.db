@@ -1,6 +1,0 @@
-//noinspection UnnecessaryQualifiedReference
-apply plugin: kz.greetgo.gradle.plugins.GgRepoUploadPlugin
-
-dependencies {
-  compile "kz.greetgo:greetgo.util:$greetgoUtilVersion"
-}

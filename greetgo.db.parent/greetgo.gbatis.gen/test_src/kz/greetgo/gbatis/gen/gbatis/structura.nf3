@@ -1,9 +1,0 @@
-
-subpackage account
-
-account long
-  name line
-  guid word
-  displayName line
-  mail line
-  removed int
