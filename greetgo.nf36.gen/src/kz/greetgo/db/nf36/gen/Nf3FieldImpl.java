@@ -7,6 +7,7 @@ import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
 import kz.greetgo.db.nf36.model.DbType;
 import kz.greetgo.db.nf36.model.Nf3Field;
 import kz.greetgo.db.nf36.model.Nf3Table;
+import kz.greetgo.db.nf36.utils.UtilsNf36;
 
 import java.lang.reflect.Field;
 import java.util.List;

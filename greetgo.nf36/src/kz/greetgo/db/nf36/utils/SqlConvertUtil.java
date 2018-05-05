@@ -56,6 +56,29 @@ public class SqlConvertUtil {
 
     if (toType != null) return (T) sqlValueConvertTo(value, toType);
 
+    {
+      Class<?> valueClass = value.getClass();
+      if ("oracle.sql.TIMESTAMP".equals(valueClass.getName())) {
+        try {
+          Timestamp ts = (Timestamp) value.getClass().getMethod("timestampValue").invoke(value);
+          return (T) new Date(ts.getTime());
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+    }
+
+    if ("oracle.sql.CLOB".equals(value.getClass().getName())
+      || "oracle.sql.NCLOB".equals(value.getClass().getName())) {
+
+      try {
+        return (T) value.getClass().getMethod("stringValue").invoke(value);
+      } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+        throw new RuntimeException(e);
+      }
+
+    }
+
     return (T) value;
   }
 
@@ -146,10 +169,9 @@ public class SqlConvertUtil {
 
     if (String.class.equals(toType)) {
       if (value instanceof String) return value;
-      if ("oracle.sql.CLOB".equals(value.getClass().getName())) {
+      if ("oracle.sql.CLOB".equals(value.getClass().getName()) || "oracle.sql.NCLOB".equals(value.getClass().getName())) {
         try {
-          Method m = value.getClass().getMethod("stringValue");
-          return m.invoke(value);
+          return value.getClass().getMethod("stringValue").invoke(value);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
           throw new RuntimeException(e);
         }
@@ -193,23 +215,14 @@ public class SqlConvertUtil {
     // BEGIN oracle.sql.TIMESTAMP
     //
     {
-      Class<?> classs = null;
-      try {
-        classs = Class.forName("oracle.sql.TIMESTAMP");
-      } catch (ClassNotFoundException ignore) {}
-
-      if (classs != null && classs.equals(value.getClass())) {
-
-        if (Date.class == toType) {
-          try {
-            Timestamp ts = (Timestamp) classs.getMethod("timestampValue").invoke(value);
-            return new Date(ts.getTime());
-          } catch (Exception e) {
-            throw new RuntimeException(e);
-          }
+      Class<?> valueClass = value.getClass();
+      if ("oracle.sql.TIMESTAMP".equals(valueClass.getName())) {
+        try {
+          Timestamp ts = (Timestamp) value.getClass().getMethod("timestampValue").invoke(value);
+          return new Date(ts.getTime());
+        } catch (Exception e) {
+          throw new RuntimeException(e);
         }
-
-        throw new CannotConvertFromSql(value, toType);
       }
     }
     //

@@ -187,7 +187,7 @@ abstract class JdbcNf36UpserterAbstractAdapter implements Nf36Upserter, Connecti
 
     Optional<List<Object>> current = selectCurrent(nf6TableName, fieldNames, con);
 
-    if (current.isPresent() && eq(current.get(), fieldValues)) return;
+    if (current.isPresent() && arrayEquals(current.get(), fieldValues)) return;
 
     insertNf6(nf6TableName, fieldNames, fieldValues, con);
   }
@@ -211,7 +211,7 @@ abstract class JdbcNf36UpserterAbstractAdapter implements Nf36Upserter, Connecti
     String sql = "select " + fieldNames.stream().collect(Collectors.joining(", "))
       + " from " + nf6TableName
       + " where " + keyEquals
-      + " order by " + timeFieldName + " desc limit 1";
+      + " order by " + timeFieldName + " desc";
 
     try (PreparedStatement ps = con.prepareStatement(sql)) {
       int index = 1;
@@ -245,7 +245,7 @@ abstract class JdbcNf36UpserterAbstractAdapter implements Nf36Upserter, Connecti
     }
   }
 
-  protected boolean eq(List<Object> list1, List<Object> list2) {
+  protected boolean arrayEquals(List<Object> list1, List<Object> list2) {
     return Objects.equals(list1, list2);
   }
 

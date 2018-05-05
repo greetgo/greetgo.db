@@ -1,5 +1,7 @@
 package kz.greetgo.db.nf36.gen;
 
+import kz.greetgo.db.nf36.utils.UtilsNf36;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;

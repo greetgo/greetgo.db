@@ -5,6 +5,7 @@ import kz.greetgo.db.nf36.core.Nf3DefaultValue;
 import kz.greetgo.db.nf36.errors.ConflictError;
 import kz.greetgo.db.nf36.model.DbType;
 import kz.greetgo.db.nf36.model.SqlType;
+import kz.greetgo.db.nf36.utils.UtilsNf36;
 
 import java.lang.reflect.Field;
 

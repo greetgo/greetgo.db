@@ -1,4 +1,4 @@
-package kz.greetgo.db.nf36.gen.errors;
+package kz.greetgo.db.nf36.errors;
 
 public class IllegalPackage extends RuntimeException {
   public IllegalPackage(String basePackageName, String packageName) {

@@ -16,6 +16,8 @@ import kz.greetgo.depinject.testng.ContainerConfig;
 import kz.greetgo.util.RND;
 import org.testng.annotations.Test;
 
+import java.io.Reader;
+
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @ContainerConfig(BeanConfigPostgres.class)

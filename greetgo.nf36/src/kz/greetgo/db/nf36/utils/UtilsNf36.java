@@ -1,11 +1,15 @@
-package kz.greetgo.db.nf36.gen;
+package kz.greetgo.db.nf36.utils;
 
-import kz.greetgo.db.nf36.gen.errors.IllegalPackage;
+import kz.greetgo.db.nf36.errors.IllegalPackage;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class UtilsNf36 {
   public static String calcSubPackage(String basePackageName, String packageName) {
@@ -104,5 +108,36 @@ public class UtilsNf36 {
       String ret = wantName + i++;
       if (!anotherNames.contains(ret)) return ret;
     }
+  }
+
+  public static String readAll(Reader characterStream) {
+
+    try {
+
+      while (true) {
+        StringBuilder sb = new StringBuilder();
+        char buffer[] = new char[1024 * 4];
+        int count = characterStream.read(buffer);
+        if (count < 0) return sb.toString();
+        sb.append(buffer, 0, count);
+      }
+
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @SafeVarargs
+  public static <T> Stream<T> cat(Collection<T>... collections) {
+
+    Stream<T> s = null;
+
+    for (Collection<T> col : collections) {
+      if (s == null) s = col.stream();
+      else s = Stream.concat(s, col.stream());
+    }
+
+    return s == null ? Stream.empty() : s;
+
   }
 }

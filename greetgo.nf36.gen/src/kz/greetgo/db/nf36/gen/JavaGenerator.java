@@ -6,6 +6,7 @@ import kz.greetgo.db.nf36.core.Nf3MoreMethodName;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
 import kz.greetgo.db.nf36.model.Nf3Field;
 import kz.greetgo.db.nf36.model.Nf3Table;
+import kz.greetgo.db.nf36.utils.UtilsNf36;
 
 import java.io.File;
 import java.util.Comparator;
@@ -13,8 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static kz.greetgo.db.nf36.gen.UtilsNf36.resolveFullName;
-import static kz.greetgo.db.nf36.gen.UtilsNf36.resolveJavaFile;
+import static kz.greetgo.db.nf36.utils.UtilsNf36.resolveFullName;
+import static kz.greetgo.db.nf36.utils.UtilsNf36.resolveJavaFile;
 
 public class JavaGenerator {
   String interfaceOutDir;

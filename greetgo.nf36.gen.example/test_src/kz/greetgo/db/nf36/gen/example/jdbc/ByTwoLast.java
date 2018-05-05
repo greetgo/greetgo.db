@@ -1,6 +1,7 @@
 package kz.greetgo.db.nf36.gen.example.jdbc;
 
 import kz.greetgo.db.ConnectionCallback;
+import kz.greetgo.db.nf36.utils.SqlConvertUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -41,7 +42,7 @@ public class ByTwoLast<T> implements ConnectionCallback<T> {
         }
 
         //noinspection unchecked
-        return (T) rs.getObject(1);
+        return (T) SqlConvertUtil.fromSql(rs.getObject(1));
 
       }
     }
