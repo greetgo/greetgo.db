@@ -2,8 +2,8 @@ package kz.greetgo.db.nf36.gen.example.connections;
 
 import kz.greetgo.db.Jdbc;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
-import kz.greetgo.db.nf36.gen.example.beans.AuthorGetterImpl;
-import kz.greetgo.db.nf36.gen.example.beans.BeanConfigAll;
+import kz.greetgo.db.nf36.gen.example.beans.all.AuthorGetterImpl;
+import kz.greetgo.db.nf36.gen.example.beans.postgres.BeanConfigPostgres;
 import kz.greetgo.db.nf36.gen.example.generated.faces.ExampleUpserter;
 import kz.greetgo.db.nf36.gen.example.jdbc.ByOne;
 import kz.greetgo.db.nf36.gen.example.jdbc.ByOneCount;
@@ -18,8 +18,8 @@ import org.testng.annotations.Test;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@ContainerConfig(BeanConfigAll.class)
-public class ExampleUpserterTest extends AbstractDepinjectTestNg {
+@ContainerConfig(BeanConfigPostgres.class)
+public class ExampleUpserterPostgresTest extends AbstractDepinjectTestNg {
 
   public BeanGetter<ExampleUpserter> exampleUpserter;
 

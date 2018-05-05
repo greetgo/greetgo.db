@@ -1,7 +1,9 @@
-package kz.greetgo.db.nf36.core;
+package kz.greetgo.db.nf36.adapters;
 
 import kz.greetgo.db.ConnectionCallback;
 import kz.greetgo.db.Jdbc;
+import kz.greetgo.db.nf36.core.Nf36Upserter;
+import kz.greetgo.db.nf36.core.SqlLogAcceptor;
 import kz.greetgo.db.nf36.model.SqlLog;
 import kz.greetgo.db.nf36.utils.SqlConvertUtil;
 
@@ -23,28 +25,28 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Stream.concat;
 
-public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, ConnectionCallback<Void> {
-  private final Jdbc jdbc;
+abstract class JdbcNf36UpserterAbstractAdapter implements Nf36Upserter, ConnectionCallback<Void> {
+  Jdbc jdbc;
+  SqlLogAcceptor logAcceptor = null;
+  protected String nf3TableName;
+  protected String timeFieldName;
+  protected String nf3CreatedBy = null;
+  protected String nf3ModifiedBy = null;
+  protected String nf6InsertedBy = null;
+  protected Object author = null;
+  protected final Map<String, Object> idValueMap = new HashMap<>();
+  protected final Map<String, Object> fieldValueMap = new HashMap<>();
+  protected final Map<String, Object> nf6ValueMap = new HashMap<>();
+  protected final List<String> toNowFieldList = new ArrayList<>();
+  protected JdbcNf36UpserterAbstractAdapter parent = null;
 
-  private final SqlLogAcceptor logAcceptor;
-  private String nf3TableName;
-  private String timeFieldName;
-  private String nf3CreatedBy = null;
-  private String nf3ModifiedBy = null;
-  private String nf6InsertedBy = null;
-
-  private Object author = null;
-
-  private final Map<String, Object> idValueMap = new HashMap<>();
-  private final Map<String, Object> fieldValueMap = new HashMap<>();
-  private final Map<String, Object> nf6ValueMap = new HashMap<>();
-  private final List<String> toNowFieldList = new ArrayList<>();
-
-  JdbcNf36UpserterPostgresAdapter parent = null;
+  protected abstract JdbcNf36UpserterAbstractAdapter copyInstance();
 
   @Override
   public Nf36Upserter more() {
-    JdbcNf36UpserterPostgresAdapter ret = new JdbcNf36UpserterPostgresAdapter(jdbc, logAcceptor);
+    JdbcNf36UpserterAbstractAdapter ret = copyInstance();
+    ret.jdbc = jdbc;
+    ret.logAcceptor = logAcceptor;
     ret.nf3TableName = nf3TableName;
     ret.timeFieldName = timeFieldName;
     ret.nf3CreatedBy = nf3CreatedBy;
@@ -55,13 +57,8 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
     return ret;
   }
 
-  public JdbcNf36UpserterPostgresAdapter(Jdbc jdbc, SqlLogAcceptor logAcceptor) {
-    if (jdbc == null) throw new IllegalArgumentException("jdbc cannot be null");
-    this.jdbc = jdbc;
-    this.logAcceptor = logAcceptor;
-  }
-
-  public JdbcNf36UpserterPostgresAdapter setAuthor(String author) {
+  @Override
+  public JdbcNf36UpserterAbstractAdapter setAuthor(Object author) {
     this.author = author;
     return this;
   }
@@ -149,53 +146,9 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
     }
   }
 
+  protected abstract void upsert(Connection con) throws Exception;
 
-  private void upsert(Connection con) throws Exception {
-    String insertNames = "";
-    String insertQ = "";
-    String updateNamesQ = "";
-    Stream<Object> insertStream = null;
-    Stream<Object> updateStream = null;
-
-    if (nf3CreatedBy != null) {
-      insertNames = ", " + nf3CreatedBy + ", " + nf3ModifiedBy;
-      insertQ = ", ?, ?";
-      insertStream = Stream.of(author, author);
-      updateNamesQ = ", " + nf3ModifiedBy + " = ?";
-      updateStream = Stream.of(author);
-    }
-
-    String sql = "insert into " + nf3TableName + " ("
-      + idValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))
-      + ", "
-      + fieldValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))
-      + insertNames
-      + ") values ("
-      + idValueMap.keySet().stream().map(k -> "?").collect(Collectors.joining(", "))
-      + ", "
-      + fieldValueMap.keySet().stream().map(k -> "?").collect(Collectors.joining(", "))
-      + insertQ
-      + ") on conflict ("
-      + idValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))
-      + ") do update set "
-      + fieldValueMap.keySet().stream().sorted().map(k -> k + " = ?").collect(Collectors.joining(", "))
-      + (
-      toNowFieldList.isEmpty()
-        ? ""
-        : ", " + toNowFieldList.stream().map(n -> n + " = clock_timestamp()").collect(Collectors.joining(", "))
-        + updateNamesQ
-    );
-
-    Stream<Object> s = idValueMap.entrySet().stream().sorted(comparing(Map.Entry::getKey)).map(Map.Entry::getValue);
-    s = concat(s, fieldValueMap.entrySet().stream().sorted(comparing(Map.Entry::getKey)).map(Map.Entry::getValue));
-    if (insertStream != null) s = concat(s, insertStream);
-    s = concat(s, fieldValueMap.entrySet().stream().sorted(comparing(Map.Entry::getKey)).map(Map.Entry::getValue));
-    if (updateStream != null) s = concat(s, updateStream);
-
-    executeUpdate(con, sql, s.collect(Collectors.toList()));
-  }
-
-  private void executeUpdate(Connection con, String sql, List<Object> params) throws Exception {
+  protected void executeUpdate(Connection con, String sql, List<Object> params) throws Exception {
     long startedAt = System.nanoTime();
 
     try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -254,6 +207,7 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
 
     long startedAt = System.nanoTime();
 
+    //noinspection SqlNoDataSourceInspection
     String sql = "select " + fieldNames.stream().collect(Collectors.joining(", "))
       + " from " + nf6TableName
       + " where " + keyEquals
@@ -291,12 +245,12 @@ public class JdbcNf36UpserterPostgresAdapter implements Nf36Upserter, Connection
     }
   }
 
-  private static boolean eq(List<Object> list1, List<Object> list2) {
+  protected boolean eq(List<Object> list1, List<Object> list2) {
     return Objects.equals(list1, list2);
   }
 
-  private void insertNf6(String nf6TableName, List<String> fieldNames, List<Object> fieldValues,
-                         Connection con) throws Exception {
+  protected void insertNf6(String nf6TableName, List<String> fieldNames, List<Object> fieldValues,
+                           Connection con) throws Exception {
 
     String insName = "";
     String insQ = "";

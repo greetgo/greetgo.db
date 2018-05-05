@@ -1,4 +1,4 @@
-package kz.greetgo.db.nf36.gen.example.beans;
+package kz.greetgo.db.nf36.gen.example.beans.all;
 
 import kz.greetgo.db.nf36.gen.example.util.AuthorGetter;
 import kz.greetgo.depinject.core.Bean;
