@@ -44,8 +44,9 @@ allprojects {
 subprojects {
   repositories {
     mavenLocal()
-    maven { url System.getenv('GG_REPO') }
+    if (System.getenv('GG_REPO')?.trim()) maven { url System.getenv('GG_REPO') }
     mavenCentral()
+    maven { url 'https://maven.oracle.com' }
   }
 
   dependencies {

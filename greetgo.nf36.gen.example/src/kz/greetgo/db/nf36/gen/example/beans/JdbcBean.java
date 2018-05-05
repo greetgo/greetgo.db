@@ -2,7 +2,7 @@ package kz.greetgo.db.nf36.gen.example.beans;
 
 import kz.greetgo.db.ConnectionCallback;
 import kz.greetgo.db.Jdbc;
-import kz.greetgo.db.nf36.gen.example.env.DbParams;
+import kz.greetgo.db.nf36.gen.example.env.DbParamsPostgres;
 import kz.greetgo.depinject.core.Bean;
 
 import java.sql.Connection;
@@ -17,7 +17,7 @@ public class JdbcBean implements Jdbc {
       Class.forName("org.postgresql.Driver");
 
       try (Connection connection = DriverManager.getConnection(
-        DbParams.url, DbParams.username, DbParams.password
+        DbParamsPostgres.url, DbParamsPostgres.username, DbParamsPostgres.password
       )) {
         return connectionCallback.doInConnection(connection);
       }
