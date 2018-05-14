@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import static kz.greetgo.db.nf36.gen.example.util.CorrectionUtil.correctType;
+
+@SuppressWarnings("SqlResolve")
 public class ByOneLast<T> implements ConnectionCallback<T> {
 
   private final String idName;
@@ -34,10 +37,9 @@ public class ByOneLast<T> implements ConnectionCallback<T> {
           throw new RuntimeException("No record with " + idName + " = " + idValue + " in table " + tableName);
         }
 
-        //noinspection unchecked
-        return (T) rs.getObject(1);
-
+        return correctType(rs.getObject(1));
       }
     }
   }
+
 }

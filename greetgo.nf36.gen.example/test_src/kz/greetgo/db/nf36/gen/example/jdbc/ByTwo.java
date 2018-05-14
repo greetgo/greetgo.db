@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import static kz.greetgo.db.nf36.gen.example.util.CorrectionUtil.correctType;
+
+@SuppressWarnings("unused")
 public class ByTwo<T> implements ConnectionCallback<T> {
 
   private final String idName1;
@@ -40,8 +43,7 @@ public class ByTwo<T> implements ConnectionCallback<T> {
             + idName2 + " = " + idValue2 + " in table " + tableName);
         }
 
-        //noinspection unchecked
-        return (T) rs.getObject(1);
+        return correctType(rs.getObject(1));
 
       }
     }

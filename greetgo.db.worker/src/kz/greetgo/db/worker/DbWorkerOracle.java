@@ -32,6 +32,15 @@ public class DbWorkerOracle {
     try (Connection con = getOracleAdminConnection()) {
 
       try {
+        exec(con, "alter session set \"_ORACLE_SCRIPT\"=true");
+      } catch (SQLException e) {
+        //noinspection StatementWithEmptyBody
+        if (e.getMessage().startsWith("ORA-02248:")) {
+          //ignore
+        } else throw e;
+      }
+
+      try {
         exec(con, "drop user " + dbConfig.username() + " cascade");
       } catch (SQLException e) {
         //noinspection StatementWithEmptyBody
@@ -42,6 +51,7 @@ public class DbWorkerOracle {
 
       exec(con, "create user " + dbConfig.username() + " identified by " + dbConfig.password());
       exec(con, "grant all privileges to " + dbConfig.username());
+
     } catch (SQLException e) {
       throw new RuntimeException("SQL State = " + e.getSQLState() + " ---> " + e.getMessage(), e);
     }
