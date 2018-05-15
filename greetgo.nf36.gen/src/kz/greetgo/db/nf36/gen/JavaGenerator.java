@@ -100,8 +100,8 @@ public class JavaGenerator {
     generateMainUpserterImpl(upserterInterfaceClassName);
 
     if (updaterClassName != null) {
-      String updaterInterfaceClassName = generateMainUpdaterInterface();
-      generateMainUpdaterImpl(updaterInterfaceClassName);
+      String updaterInterfaceClassName = generateMainWhereUpdaterInterface();
+      generateMainWhereUpdaterImpl(updaterInterfaceClassName);
     }
 
     for (Nf3Table nf3Table : collector.collect()) {
@@ -114,8 +114,8 @@ public class JavaGenerator {
 
       if (updaterClassName != null) {
         UpdateWhereInfo info = getUpdateWhereInfo(nf3Table);
-        String baseInterfaceFullName = generateThingUpdateInterface(info);
-        generateThingUpdateImpl(info, baseInterfaceFullName);
+        String baseInterfaceFullName = generateThingUpdateWhereInterface(info);
+        generateThingUpdateWhereImpl(info, baseInterfaceFullName);
       }
 
     }
@@ -262,6 +262,8 @@ public class JavaGenerator {
 
     String updateMethodName = UtilsNf36.firstToLow(nf3Table.source().getSimpleName());
 
+    String implFullName = resolveFullName(implPackageName, implClassName);
+
     return new UpdateWhereInfo() {
       @Override
       public String interfaceClassName() {
@@ -317,6 +319,11 @@ public class JavaGenerator {
       public String setMethodName(Nf3Field f) {
         return "set" + firstToUp(f.javaName());
       }
+
+      @Override
+      public String implFullName() {
+        return implFullName;
+      }
     };
   }
 
@@ -353,7 +360,7 @@ public class JavaGenerator {
     return resolveFullName(info.interfacePackageName(), info.interfaceClassName());
   }
 
-  private String generateThingUpdateInterface(UpdateWhereInfo info) {
+  private String generateThingUpdateWhereInterface(UpdateWhereInfo info) {
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = info.interfacePackageName();
     p.classHeader = "public interface " + info.interfaceClassName();
@@ -371,7 +378,7 @@ public class JavaGenerator {
       }
     }
 
-    p.prn().prn();
+    p.prn();
 
     {
       List<Nf3Field> fields = info.fields().stream()
@@ -427,7 +434,7 @@ public class JavaGenerator {
     p.printToFile(info.implJavaFile());
   }
 
-  private void generateThingUpdateImpl(UpdateWhereInfo info, String baseInterfaceFullName) {
+  private void generateThingUpdateWhereImpl(UpdateWhereInfo info, String baseInterfaceFullName) {
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = info.implPackageName();
     String implInterfaceName = p.i(baseInterfaceFullName);
@@ -572,7 +579,7 @@ public class JavaGenerator {
     return resolveFullName(interfaceBasePackage, upserterClassName);
   }
 
-  private String generateMainUpdaterInterface() {
+  private String generateMainWhereUpdaterInterface() {
 
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = interfaceBasePackage;
@@ -604,7 +611,7 @@ public class JavaGenerator {
     p.printToFile(resolveJavaFile(implOutDir, implBasePackage, upserterImplClassName()));
   }
 
-  private void generateMainUpdaterImpl(String updaterInterfaceClassName) {
+  private void generateMainWhereUpdaterImpl(String updaterInterfaceClassName) {
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = implBasePackage;
     p.classHeader = "public" + (abstracting ? " abstract" : "")
@@ -703,7 +710,7 @@ public class JavaGenerator {
 
     p.ofs(1).prn("@Override");
     p.ofs(1).pr("public ").pr(p.i(info.interfaceFullName())).pr(" ").pr(info.updateMethodName()).prn("() {");
-    p.ofs(2).prn("return null;");
+    p.ofs(2).prn("return new " + p.i(info.implFullName()) + "();");
     p.ofs(1).prn("}").prn();
   }
 
