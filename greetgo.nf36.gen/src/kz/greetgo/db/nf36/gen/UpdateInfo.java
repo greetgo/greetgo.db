@@ -8,4 +8,10 @@ public interface UpdateInfo {
   String interfaceClassName();
 
   File interfaceJavaFile();
+
+  String implClassName();
+
+  String implPackageName();
+
+  File implJavaFile();
 }
