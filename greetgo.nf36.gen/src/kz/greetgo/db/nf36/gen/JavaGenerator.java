@@ -699,12 +699,10 @@ public class JavaGenerator {
   }
 
   private void printUpdateImplMethod(JavaFilePrinter p, Nf3Table nf3Table) {
-    UpsertInfo ui = getUpsertInfo(nf3Table);
+    UpdateInfo info = getUpdateInfo(nf3Table);
 
     p.ofs(1).prn("@Override");
-    p.ofs(1).pr("public ").pr(p.i(ui.interfaceFullName()))
-      .pr(" ").pr(ui.upsertMethodName()).prn("() {");
-
+    p.ofs(1).pr("public ").pr(p.i(info.interfaceFullName())).pr(" ").pr(info.updateMethodName()).prn("() {");
     p.ofs(2).prn("return null;").prn();
     p.ofs(1).prn("}").prn();
   }
