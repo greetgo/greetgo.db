@@ -18,7 +18,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kz.greetgo.db.worker.Places.nf36ExampleWithDepinjectDir;
+import static kz.greetgo.db.worker.Places.withDepinjectDir;
 
 public class ExampleGenerators {
 
@@ -50,13 +50,14 @@ public class ExampleGenerators {
     javaGenerator = JavaGenerator.newGenerator(collector)
       .setInterfaceOutDir("left 1")
       .setImplOutDir("left 2")
-      .setOutDir(nf36ExampleWithDepinjectDir() + "/src")
+      .setOutDir(withDepinjectDir() + "/src")
       .setCleanOutDirsBeforeGeneration(true)
       .setInterfaceBasePackage("nf36_example_with_depinject.generated.faces")
       .setImplBasePackage("nf36_example_with_depinject.generated.impl")
       .setSourceBasePackage(Client.class.getPackage().getName())
-      .setMainNf36ClassName("ExampleUpserter")
-      .setMainNf36ClassAbstract(true)
+      .setUpserterClassName("ExampleUpserter")
+      .setUpdaterClassName("ExampleUpdater")
+      .setAbstracting(true)
     ;
 
     ddlGenerator = DdlGenerator.newGenerator(collector)
@@ -80,7 +81,7 @@ public class ExampleGenerators {
 
   public List<File> generateSqlFiles(SqlDialect sqlDialect) {
     ddlGenerator.setSqlDialect(sqlDialect);
-    String dir = nf36ExampleWithDepinjectDir() + "/build/gen_sql/" + sqlDialect.getClass().getSimpleName() + "/";
+    String dir = withDepinjectDir() + "/build/gen_sql/" + sqlDialect.getClass().getSimpleName() + "/";
     List<File> sqlFileList = new ArrayList<>();
     {
       File outFile = new File(dir + "001_nf3_tables.sql");

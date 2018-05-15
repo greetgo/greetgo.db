@@ -3,7 +3,7 @@ package kz.greetgo.db.worker;
 import java.io.File;
 
 public class Places {
-  public static String nf36ExampleWithDepinjectDir() {
+  public static String withDepinjectDir() {
     if (new File("greetgo.nf36.gen.examples/with_depinject").isDirectory())
       return "greetgo.nf36.gen.examples/with_depinject";
 

@@ -26,20 +26,25 @@ public class JavaGenerator {
 
   String sourceBasePackage;
 
-  String mainNf36ClassName;
+  String upserterClassName;
 
-  String mainNf36ImplClassName = null;
+  String upserterImplClassName = null;
+
+  String updaterClassName = null;
+
+  String updaterImplClassName = null;
 
   private final ModelCollector collector;
 
-  private String mainNf36ImplClassName() {
-    if (mainNf36ClassName == null) {
-      throw new RuntimeException("Не определён mainNf36ClassName:" +
-        " Вызовете метод JavaGenerator.setMainNf36ClassName(...)");
-    }
-    if (mainNf36ImplClassName != null) return mainNf36ImplClassName;
 
-    return mainNf36ClassAbstract ? "Abstract" + mainNf36ClassName : mainNf36ClassName + "Impl";
+  private String upserterImplClassName() {
+    if (upserterClassName == null) {
+      throw new RuntimeException("Не определён upserterClassName:" +
+        " Вызовете метод JavaGenerator.setUpserterClassName(...)");
+    }
+    if (upserterImplClassName != null) return upserterImplClassName;
+
+    return abstracting ? "Abstract" + upserterClassName : upserterClassName + "Impl";
   }
 
   private JavaGenerator(ModelCollector collector) {this.collector = collector;}
@@ -54,14 +59,14 @@ public class JavaGenerator {
     return this;
   }
 
-  public JavaGenerator setMainNf36ClassName(String mainNf36ClassName) {
-    this.mainNf36ClassName = mainNf36ClassName;
+  public JavaGenerator setUpserterClassName(String upserterClassName) {
+    this.upserterClassName = upserterClassName;
     return this;
   }
 
   @SuppressWarnings("unused")
-  public JavaGenerator setMainNf36ImplClassName(String mainNf36ImplClassName) {
-    this.mainNf36ImplClassName = mainNf36ImplClassName;
+  public JavaGenerator setUpserterImplClassName(String upserterImplClassName) {
+    this.upserterImplClassName = upserterImplClassName;
     return this;
   }
 
@@ -90,8 +95,13 @@ public class JavaGenerator {
 
     if (cleanOutDirsBeforeGeneration) cleanOutDirs();
 
-    String mainInterfaceClassName = generateMainInterface();
-    generateMainImpl(mainInterfaceClassName);
+    String upserterInterfaceClassName = generateUpserterInterface();
+    generateUpserterImpl(upserterInterfaceClassName);
+
+    if (updaterClassName != null) {
+      String updaterInterfaceClassName = generateUpdaterInterface();
+      generateUpdaterImpl(updaterInterfaceClassName);
+    }
 
     for (Nf3Table nf3Table : collector.collect()) {
       UpsertInfo info = getUpsertInfo(nf3Table);
@@ -100,6 +110,11 @@ public class JavaGenerator {
       generateUpsertImpl(info, nf3Table);
     }
   }
+
+  private void generateUpdaterImpl(String updaterInterfaceClassName) {
+
+  }
+
 
   private void cleanOutDirs() {
     UtilsNf36.cleanDir(UtilsNf36.packageDir(implOutDir, implBasePackage));
@@ -269,7 +284,6 @@ public class JavaGenerator {
 
     printCommitMethodImpl(p, upsertInfo);
 
-
     p.printToFile(upsertInfo.implJavaFile());
   }
 
@@ -357,32 +371,41 @@ public class JavaGenerator {
     p.ofs(1).prn("}").prn();
   }
 
-  private String generateMainInterface() {
+  private String generateUpserterInterface() {
 
-    if (mainNf36ClassName == null) {
-      throw new RuntimeException("Не определён mainNf36ClassName:" +
-        " Вызовете метод JavaGenerator.setMainNf36ClassName(...)");
+    if (upserterClassName == null) {
+      throw new RuntimeException("Не определён upserterClassName:" +
+        " Вызовете метод JavaGenerator.setUpserterClassName(...)");
     }
 
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = interfaceBasePackage;
-    p.classHeader = "public interface " + mainNf36ClassName;
+    p.classHeader = "public interface " + upserterClassName;
 
     for (Nf3Table nf3Table : collector.collect()) {
       printUpsertInterfaceMethod(p, nf3Table);
     }
 
-    p.printToFile(resolveJavaFile(interfaceOutDir, interfaceBasePackage, mainNf36ClassName));
+    p.printToFile(resolveJavaFile(interfaceOutDir, interfaceBasePackage, upserterClassName));
 
-    return resolveFullName(interfaceBasePackage, mainNf36ClassName);
+    return resolveFullName(interfaceBasePackage, upserterClassName);
   }
 
-  private void generateMainImpl(String mainInterfaceClassName) {
+  private String generateUpdaterInterface() {
+
+    JavaFilePrinter p = new JavaFilePrinter();
+    p.packageName = interfaceBasePackage;
+    p.classHeader = "public interface " + upserterClassName;
+
+    return null;
+  }
+
+  private void generateUpserterImpl(String mainInterfaceClassName) {
 
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = implBasePackage;
-    p.classHeader = "public" + (mainNf36ClassAbstract ? " abstract" : "")
-      + " class " + mainNf36ImplClassName()
+    p.classHeader = "public" + (abstracting ? " abstract" : "")
+      + " class " + upserterImplClassName()
       + " implements " + p.i(mainInterfaceClassName);
 
     printCreateUpserterMethod(p);
@@ -391,7 +414,7 @@ public class JavaGenerator {
       printUpsertImplMethod(p, nf3Table);
     }
 
-    p.printToFile(resolveJavaFile(implOutDir, implBasePackage, mainNf36ImplClassName()));
+    p.printToFile(resolveJavaFile(implOutDir, implBasePackage, upserterImplClassName()));
   }
 
   String upserterCreateMethod = "createUpserter";
@@ -402,23 +425,24 @@ public class JavaGenerator {
     return this;
   }
 
-  boolean mainNf36ClassAbstract = false;
+  boolean abstracting = false;
 
-  public JavaGenerator setMainNf36ClassAbstract(boolean mainNf36ClassAbstract) {
-    this.mainNf36ClassAbstract = mainNf36ClassAbstract;
+  public JavaGenerator setAbstracting(boolean abstracting) {
+    this.abstracting = abstracting;
     return this;
   }
 
   private void printCreateUpserterMethod(JavaFilePrinter p) {
     String upserterClassName = p.i(Nf36Upserter.class.getName());
-    String notImplError = p.i(RuntimeException.class.getName());
 
-    p.ofs(1).prn("protected " + (mainNf36ClassAbstract ? "abstract " : "")
+    p.ofs(1).prn("protected " + (abstracting ? "abstract " : "")
       + upserterClassName + " " + upserterCreateMethod + "()"
-      + (mainNf36ClassAbstract ? ";\n" : " {")
+      + (abstracting ? ";\n" : " {")
     );
 
-    if (mainNf36ClassAbstract) return;
+    if (abstracting) return;
+
+    String notImplError = p.i(RuntimeException.class.getName());
 
     p.ofs(2).prn("throw new " + notImplError + "(\"Not implemented\");");
     p.ofs(1).prn("}").prn();
@@ -465,5 +489,23 @@ public class JavaGenerator {
     ) + ");");
 
     p.ofs(1).prn("}").prn();
+  }
+
+  public JavaGenerator setUpdaterClassName(String updaterClassName) {
+    this.updaterClassName = updaterClassName;
+    return this;
+  }
+
+  public JavaGenerator setUpdaterImplClassName(String updaterImplClassName) {
+    this.updaterImplClassName = updaterImplClassName;
+    return this;
+  }
+
+  private String updaterImplClassName() {
+    if (updaterClassName == null) {
+      throw new RuntimeException("Если updaterClassName == null, то updateWhere генерироваться не должен");
+    }
+    if (updaterImplClassName != null) return updaterImplClassName;
+    return abstracting ? "Abstract" + updaterClassName : updaterClassName + "Impl";
   }
 }
