@@ -313,6 +313,11 @@ public class JavaGenerator {
       public String whereMethodName(Nf3Field f) {
         return "where" + firstToUp(f.javaName()) + "EqualsTo";
       }
+
+      @Override
+      public String setMethodName(Nf3Field f) {
+        return "set" + firstToUp(f.javaName());
+      }
     };
   }
 

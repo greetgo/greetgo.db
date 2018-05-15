@@ -25,4 +25,6 @@ public interface UpdateInfo {
   String updateMethodName();
 
   String whereMethodName(Nf3Field f);
+
+  String setMethodName(Nf3Field f);
 }
