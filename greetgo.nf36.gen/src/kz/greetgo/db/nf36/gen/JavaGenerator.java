@@ -241,6 +241,10 @@ public class JavaGenerator {
     String implPackageName = UtilsNf36.resolvePackage(implBasePackage, subPackage);
     File implJavaFile = resolveJavaFile(implOutDir, implPackageName, implClassName);
 
+    String interfaceFullName = resolveFullName(interfacePackageName, interfaceClassName);
+
+    String updateMethodName = UtilsNf36.firstToLow(nf3Table.source().getSimpleName());
+
     return new UpdateInfo() {
       @Override
       public String interfaceClassName() {
@@ -275,6 +279,16 @@ public class JavaGenerator {
       @Override
       public List<Nf3Field> fields() {
         return nf3Table.fields();
+      }
+
+      @Override
+      public String interfaceFullName() {
+        return interfaceFullName;
+      }
+
+      @Override
+      public String updateMethodName() {
+        return updateMethodName;
       }
     };
   }
@@ -561,9 +575,9 @@ public class JavaGenerator {
   }
 
   private void printUpdateInterfaceMethod(JavaFilePrinter p, Nf3Table nf3Table) {
-    UpsertInfo info = getUpsertInfo(nf3Table);
+    UpdateInfo info = getUpdateInfo(nf3Table);
 
-    p.ofs(1).pr(p.i(info.interfaceFullName())).pr(" ").pr(info.upsertMethodName()).prn("();").prn();
+    p.ofs(1).pr(p.i(info.interfaceFullName())).pr(" ").pr(info.updateMethodName()).prn("();").prn();
   }
 
   private void printUpsertImplMethod(JavaFilePrinter p, Nf3Table nf3Table) {

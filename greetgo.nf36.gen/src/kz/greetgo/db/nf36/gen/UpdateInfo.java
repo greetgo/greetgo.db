@@ -19,4 +19,8 @@ public interface UpdateInfo {
   File implJavaFile();
 
   List<Nf3Field> fields();
+
+  String interfaceFullName();
+
+  String updateMethodName();
 }
