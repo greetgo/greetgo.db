@@ -310,7 +310,7 @@ public class JavaGenerator {
 
       @Override
       public String whereMethodName(Nf3Field f) {
-        return "where" + firstToUp(f.javaName()) + "EqualsTo";
+        return "where" + firstToUp(f.javaName()) + "IsEqualTo";
       }
 
       @Override

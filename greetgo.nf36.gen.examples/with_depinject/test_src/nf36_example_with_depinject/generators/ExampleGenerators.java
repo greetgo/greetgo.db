@@ -56,7 +56,7 @@ public class ExampleGenerators {
       .setImplBasePackage("nf36_example_with_depinject.generated.impl")
       .setSourceBasePackage(Client.class.getPackage().getName())
       .setUpserterClassName("ExampleUpserter")
-      .setUpdaterClassName("ExampleUpdater")
+      .setUpdaterClassName("ExampleWhereUpdater")
       .setAbstracting(true)
     ;
 
