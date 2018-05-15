@@ -111,11 +111,6 @@ public class JavaGenerator {
     }
   }
 
-  private void generateUpdaterImpl(String updaterInterfaceClassName) {
-
-  }
-
-
   private void cleanOutDirs() {
     UtilsNf36.cleanDir(UtilsNf36.packageDir(implOutDir, implBasePackage));
     UtilsNf36.cleanDir(UtilsNf36.packageDir(interfaceOutDir, interfaceBasePackage));
@@ -395,18 +390,20 @@ public class JavaGenerator {
 
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = interfaceBasePackage;
-    p.classHeader = "public interface " + upserterClassName;
+    p.classHeader = "public interface " + updaterClassName;
 
-    return null;
+    p.printToFile(resolveJavaFile(interfaceOutDir, interfaceBasePackage, updaterClassName));
+
+    return resolveFullName(interfaceBasePackage, updaterClassName);
   }
 
-  private void generateUpserterImpl(String mainInterfaceClassName) {
+  private void generateUpserterImpl(String upserterInterfaceClassName) {
 
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = implBasePackage;
     p.classHeader = "public" + (abstracting ? " abstract" : "")
       + " class " + upserterImplClassName()
-      + " implements " + p.i(mainInterfaceClassName);
+      + " implements " + p.i(upserterInterfaceClassName);
 
     printCreateUpserterMethod(p);
 
@@ -415,6 +412,16 @@ public class JavaGenerator {
     }
 
     p.printToFile(resolveJavaFile(implOutDir, implBasePackage, upserterImplClassName()));
+  }
+
+  private void generateUpdaterImpl(String updaterInterfaceClassName) {
+    JavaFilePrinter p = new JavaFilePrinter();
+    p.packageName = implBasePackage;
+    p.classHeader = "public" + (abstracting ? " abstract" : "")
+      + " class " + updaterImplClassName()
+      + " implements " + p.i(updaterInterfaceClassName);
+
+    p.printToFile(resolveJavaFile(implOutDir, implBasePackage, updaterImplClassName()));
   }
 
   String upserterCreateMethod = "createUpserter";
