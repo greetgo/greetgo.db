@@ -1,4 +1,4 @@
-package nf36_example_with_depinject.connections;
+package nf36_example_with_depinject.tests;
 
 import kz.greetgo.depinject.testng.ContainerConfig;
 import nf36_example_with_depinject.beans.oracle.BeanConfigOracle;

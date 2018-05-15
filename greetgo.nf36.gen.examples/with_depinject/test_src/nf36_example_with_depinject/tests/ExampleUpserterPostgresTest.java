@@ -1,4 +1,4 @@
-package nf36_example_with_depinject.connections;
+package nf36_example_with_depinject.tests;
 
 import kz.greetgo.db.Jdbc;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
@@ -9,7 +9,11 @@ import kz.greetgo.util.RND;
 import nf36_example_with_depinject.beans.all.AuthorGetterImpl;
 import nf36_example_with_depinject.beans.postgres.BeanConfigPostgres;
 import nf36_example_with_depinject.generated.faces.ExampleUpserter;
-import nf36_example_with_depinject.jdbc.*;
+import nf36_example_with_depinject.jdbc.ByOne;
+import nf36_example_with_depinject.jdbc.ByOneCount;
+import nf36_example_with_depinject.jdbc.ByOneLast;
+import nf36_example_with_depinject.jdbc.ByTwoCount;
+import nf36_example_with_depinject.jdbc.ByTwoLast;
 import org.testng.annotations.Test;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -36,11 +40,11 @@ public class ExampleUpserterPostgresTest extends AbstractDepinjectTestNg {
       .commitAll();
 
     {
-      String actualName = jdbc.get().execute(new ByOne<String>("id", id, "client", "name"));
+      String actualName = jdbc.get().execute(new ByOne<>("id", id, "client", "name"));
       assertThat(actualName).isEqualTo(expectedName1);
     }
     {
-      String actualSurname = jdbc.get().execute(new ByOne<String>("id", id, "client", "surname"));
+      String actualSurname = jdbc.get().execute(new ByOne<>("id", id, "client", "surname"));
       assertThat(actualSurname).isNull();
     }
 
@@ -51,11 +55,11 @@ public class ExampleUpserterPostgresTest extends AbstractDepinjectTestNg {
       .commitAll();
 
     {
-      String actualName = jdbc.get().execute(new ByOne<String>("id", id, "client", "name"));
+      String actualName = jdbc.get().execute(new ByOne<>("id", id, "client", "name"));
       assertThat(actualName).isEqualTo(expectedName2);
     }
     {
-      String actualSurname = jdbc.get().execute(new ByOne<String>("id", id, "client", "surname"));
+      String actualSurname = jdbc.get().execute(new ByOne<>("id", id, "client", "surname"));
       assertThat(actualSurname).isNull();
     }
 
@@ -68,11 +72,11 @@ public class ExampleUpserterPostgresTest extends AbstractDepinjectTestNg {
       .commitAll();
 
     {
-      String actualName = jdbc.get().execute(new ByOne<String>("id", id, "client", "name"));
+      String actualName = jdbc.get().execute(new ByOne<>("id", id, "client", "name"));
       assertThat(actualName).isEqualTo(expectedName3);
     }
     {
-      String actualSurname = jdbc.get().execute(new ByOne<String>("id", id, "client", "surname"));
+      String actualSurname = jdbc.get().execute(new ByOne<>("id", id, "client", "surname"));
       assertThat(actualSurname).isEqualTo(expectedSurname);
     }
   }
@@ -287,11 +291,11 @@ public class ExampleUpserterPostgresTest extends AbstractDepinjectTestNg {
       .commitAll();
 
     {
-      String actualSurname = jdbc.get().execute(new ByOne<String>("id", clientId1, "client", "surname"));
+      String actualSurname = jdbc.get().execute(new ByOne<>("id", clientId1, "client", "surname"));
       assertThat(actualSurname).isEqualTo(surname1);
     }
     {
-      String actualSurname = jdbc.get().execute(new ByOne<String>("id", clientId2, "client", "surname"));
+      String actualSurname = jdbc.get().execute(new ByOne<>("id", clientId2, "client", "surname"));
       assertThat(actualSurname).isEqualTo(surname2);
     }
   }
