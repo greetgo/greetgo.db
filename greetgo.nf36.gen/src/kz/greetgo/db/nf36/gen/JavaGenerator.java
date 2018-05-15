@@ -367,14 +367,15 @@ public class JavaGenerator {
 
       for (Nf3Field f : fields) {
         String fieldType = p.i(f.javaType().getName());
-        String fieldName = f.javaName();
-        p.ofs(1).prn(info.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ");");
+        p.ofs(1).prn(info.interfaceClassName() + " " + info.setMethodName(f) + "(" + fieldType + " " + f.javaName() + ");");
       }
     }
 
+    p.prn().prn();
+
     {
       List<Nf3Field> fields = info.fields().stream()
-        .filter(f -> !f.isId())
+//        .filter(f -> !f.isId())
         .sorted(Comparator.comparing(Nf3Field::javaName))
         .collect(Collectors.toList());
 
@@ -439,17 +440,18 @@ public class JavaGenerator {
 
       for (Nf3Field f : fields) {
         String fieldType = p.i(f.javaType().getName());
-        String fieldName = f.javaName();
         p.ofs(1).prn("@Override");
-        p.ofs(1).prn("public " + info.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ") {");
+        p.ofs(1).prn("public " + info.interfaceClassName() + " " + info.setMethodName(f) + "(" + fieldType + " " + f.javaName() + ") {");
         p.ofs(2).prn("return this;");
         p.ofs(1).prn("}").prn();
       }
     }
 
+    p.prn().prn();
+
     {
       List<Nf3Field> fields = info.fields().stream()
-        .filter(f -> !f.isId())
+//        .filter(f -> !f.isId())
         .sorted(Comparator.comparing(Nf3Field::javaName))
         .collect(Collectors.toList());
 
