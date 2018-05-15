@@ -113,7 +113,7 @@ public class JavaGenerator {
       }
 
       if (updaterClassName != null) {
-        UpdateInfo info = getUpdateInfo(nf3Table);
+        UpdateWhereInfo info = getUpdateWhereInfo(nf3Table);
         String baseInterfaceFullName = generateThingUpdateInterface(info);
         generateThingUpdateImpl(info, baseInterfaceFullName);
       }
@@ -244,13 +244,13 @@ public class JavaGenerator {
     };
   }
 
-  UpdateInfo getUpdateInfo(Nf3Table nf3Table) {
+  UpdateWhereInfo getUpdateWhereInfo(Nf3Table nf3Table) {
 
     String subPackage = UtilsNf36.calcSubPackage(sourceBasePackage, nf3Table.source().getPackage().getName());
 
-    subPackage = UtilsNf36.resolvePackage("update", subPackage);
+    subPackage = UtilsNf36.resolvePackage("update_where", subPackage);
 
-    String interfaceClassName = nf3Table.source().getSimpleName() + "Update";
+    String interfaceClassName = nf3Table.source().getSimpleName() + "UpdateWhere";
     String interfacePackageName = UtilsNf36.resolvePackage(interfaceBasePackage, subPackage);
     File interfaceJavaFile = resolveJavaFile(interfaceOutDir, interfacePackageName, interfaceClassName);
 
@@ -262,7 +262,7 @@ public class JavaGenerator {
 
     String updateMethodName = UtilsNf36.firstToLow(nf3Table.source().getSimpleName());
 
-    return new UpdateInfo() {
+    return new UpdateWhereInfo() {
       @Override
       public String interfaceClassName() {
         return interfaceClassName;
@@ -353,7 +353,7 @@ public class JavaGenerator {
     return resolveFullName(info.interfacePackageName(), info.interfaceClassName());
   }
 
-  private String generateThingUpdateInterface(UpdateInfo info) {
+  private String generateThingUpdateInterface(UpdateWhereInfo info) {
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = info.interfacePackageName();
     p.classHeader = "public interface " + info.interfaceClassName();
@@ -427,7 +427,7 @@ public class JavaGenerator {
     p.printToFile(info.implJavaFile());
   }
 
-  private void generateThingUpdateImpl(UpdateInfo info, String baseInterfaceFullName) {
+  private void generateThingUpdateImpl(UpdateWhereInfo info, String baseInterfaceFullName) {
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = info.implPackageName();
     String implInterfaceName = p.i(baseInterfaceFullName);
@@ -665,7 +665,7 @@ public class JavaGenerator {
   }
 
   private void printUpdateInterfaceMethod(JavaFilePrinter p, Nf3Table nf3Table) {
-    UpdateInfo info = getUpdateInfo(nf3Table);
+    UpdateWhereInfo info = getUpdateWhereInfo(nf3Table);
 
     p.ofs(1).pr(p.i(info.interfaceFullName())).pr(" ").pr(info.updateMethodName()).prn("();").prn();
   }
@@ -699,7 +699,7 @@ public class JavaGenerator {
   }
 
   private void printUpdateImplMethod(JavaFilePrinter p, Nf3Table nf3Table) {
-    UpdateInfo info = getUpdateInfo(nf3Table);
+    UpdateWhereInfo info = getUpdateWhereInfo(nf3Table);
 
     p.ofs(1).prn("@Override");
     p.ofs(1).pr("public ").pr(p.i(info.interfaceFullName())).pr(" ").pr(info.updateMethodName()).prn("() {");

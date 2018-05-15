@@ -5,7 +5,7 @@ import kz.greetgo.db.nf36.model.Nf3Field;
 import java.io.File;
 import java.util.List;
 
-public interface UpdateInfo {
+public interface UpdateWhereInfo {
   String interfacePackageName();
 
   String interfaceClassName();
