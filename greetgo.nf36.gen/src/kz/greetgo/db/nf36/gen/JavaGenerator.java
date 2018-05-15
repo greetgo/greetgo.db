@@ -240,12 +240,12 @@ public class JavaGenerator {
 
     return new UpdateInfo() {
       @Override
-      public String interfacePackageName() {
+      public String interfaceClassName() {
         return interfaceClassName;
       }
 
       @Override
-      public String interfaceClassName() {
+      public String interfacePackageName() {
         return interfacePackageName;
       }
 
