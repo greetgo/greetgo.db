@@ -83,6 +83,7 @@ public class ExampleGenerators {
     ddlGenerator.setSqlDialect(sqlDialect);
     String dir = withDepinjectDir() + "/build/gen_sql/" + sqlDialect.getClass().getSimpleName() + "/";
     List<File> sqlFileList = new ArrayList<>();
+
     {
       File outFile = new File(dir + "001_nf3_tables.sql");
       ddlGenerator.generateNf3Tables(outFile);

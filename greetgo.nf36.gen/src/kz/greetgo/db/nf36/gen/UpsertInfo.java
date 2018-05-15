@@ -1,6 +1,9 @@
 package kz.greetgo.db.nf36.gen;
 
+import kz.greetgo.db.nf36.model.Nf3Field;
+
 import java.io.File;
+import java.util.List;
 
 interface UpsertInfo {
   File interfaceJavaFile();
@@ -24,4 +27,6 @@ interface UpsertInfo {
   String moreMethodName();
 
   String commitMethodName();
+
+  List<Nf3Field> fields();
 }

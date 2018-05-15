@@ -104,10 +104,19 @@ public class JavaGenerator {
     }
 
     for (Nf3Table nf3Table : collector.collect()) {
-      UpsertInfo info = getUpsertInfo(nf3Table);
 
-      generateUpsertInterface(info, nf3Table);
-      generateUpsertImpl(info, nf3Table);
+
+      {
+        UpsertInfo info = getUpsertInfo(nf3Table);
+        String baseInterfaceFullName = generateUpsertInterface(info);
+        generateUpsertImpl(info, nf3Table, baseInterfaceFullName);
+      }
+
+      if (updaterClassName != null) {
+        UpdateInfo info = getUpdateInfo(nf3Table);
+        String baseInterfaceFullName = generateUpdateInterface(info);
+        generateUpdateImpl(info, baseInterfaceFullName);
+      }
     }
   }
 
@@ -211,28 +220,61 @@ public class JavaGenerator {
       public String moreMethodName() {
         return moreMethodName;
       }
+
+      @Override
+      public List<Nf3Field> fields() {
+        return nf3Table.fields();
+      }
     };
   }
 
-  private void generateUpsertInterface(UpsertInfo upsertInfo, Nf3Table nf3Table) {
-    JavaFilePrinter p = new JavaFilePrinter();
-    p.packageName = upsertInfo.interfacePackageName();
-    p.classHeader = "public interface " + upsertInfo.interfaceClassName();
+  UpdateInfo getUpdateInfo(Nf3Table nf3Table) {
 
-    List<Nf3Field> fields = nf3Table.fields().stream()
+    String subPackage = UtilsNf36.calcSubPackage(sourceBasePackage, nf3Table.source().getPackage().getName());
+
+    subPackage = UtilsNf36.resolvePackage("update", subPackage);
+
+    String interfaceClassName = nf3Table.source().getSimpleName() + "Update";
+    String interfacePackageName = UtilsNf36.resolvePackage(interfaceBasePackage, subPackage);
+    File interfaceJavaFile = resolveJavaFile(interfaceOutDir, interfacePackageName, interfaceClassName);
+
+    return new UpdateInfo() {
+      @Override
+      public String interfacePackageName() {
+        return interfaceClassName;
+      }
+
+      @Override
+      public String interfaceClassName() {
+        return interfacePackageName;
+      }
+
+      @Override
+      public File interfaceJavaFile() {
+        return interfaceJavaFile;
+      }
+    };
+  }
+
+  private String generateUpsertInterface(UpsertInfo info) {
+    JavaFilePrinter p = new JavaFilePrinter();
+    p.packageName = info.interfacePackageName();
+    p.classHeader = "public interface " + info.interfaceClassName();
+
+    List<Nf3Field> fields = info.fields().stream()
       .filter(f -> !f.isId())
       .collect(Collectors.toList());
 
     for (Nf3Field f : fields) {
       String fieldType = p.i(f.javaType().getName());
       String fieldName = f.javaName();
-      p.ofs(1).prn(upsertInfo.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ");").prn();
+      p.ofs(1).prn(info.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ");").prn();
     }
 
-    p.ofs(1).pr(p.i(upsertInfo.interfaceFullName()))
-      .pr(" ").pr(upsertInfo.moreMethodName()).prn("(" + (
+    p.ofs(1).pr(p.i(info.interfaceFullName()))
+      .pr(" ").pr(info.moreMethodName()).prn("(" + (
 
-      nf3Table.fields().stream()
+      info.fields().stream()
         .filter(Nf3Field::isId)
         .sorted(Comparator.comparing(Nf3Field::idOrder))
         .map(f -> p.i(f.javaType().getName()) + " " + f.javaName())
@@ -240,15 +282,27 @@ public class JavaGenerator {
 
     ) + ");").prn();
 
-    p.ofs(1).prn("void " + upsertInfo.commitMethodName() + "();");
+    p.ofs(1).prn("void " + info.commitMethodName() + "();");
 
-    p.printToFile(upsertInfo.interfaceJavaFile());
+    p.printToFile(info.interfaceJavaFile());
+
+    return resolveFullName(info.interfacePackageName(), info.interfaceClassName());
   }
 
-  private void generateUpsertImpl(UpsertInfo upsertInfo, Nf3Table nf3Table) {
+  private String generateUpdateInterface(UpdateInfo info) {
+    JavaFilePrinter p = new JavaFilePrinter();
+    p.packageName = info.interfacePackageName();
+    p.classHeader = "public interface " + info.interfaceClassName();
+
+    p.printToFile(info.interfaceJavaFile());
+
+    return resolveFullName(info.interfacePackageName(), info.interfaceClassName());
+  }
+
+  private void generateUpsertImpl(UpsertInfo upsertInfo, Nf3Table nf3Table, String baseInterfaceFullName) {
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = upsertInfo.implPackageName();
-    String implInterfaceName = p.i(resolveFullName(upsertInfo.interfacePackageName(), upsertInfo.interfaceClassName()));
+    String implInterfaceName = p.i(baseInterfaceFullName);
     p.classHeader = "public class " + upsertInfo.implClassName() + " implements " + implInterfaceName;
 
     printUpsertImplConstructor(p, upsertInfo, nf3Table);
@@ -280,6 +334,10 @@ public class JavaGenerator {
     printCommitMethodImpl(p, upsertInfo);
 
     p.printToFile(upsertInfo.implJavaFile());
+  }
+
+  private void generateUpdateImpl(UpdateInfo info, String baseInterfaceFullName) {
+
   }
 
   private void printCommitMethodImpl(JavaFilePrinter p, UpsertInfo upsertInfo) {
