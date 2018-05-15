@@ -703,7 +703,7 @@ public class JavaGenerator {
 
     p.ofs(1).prn("@Override");
     p.ofs(1).pr("public ").pr(p.i(info.interfaceFullName())).pr(" ").pr(info.updateMethodName()).prn("() {");
-    p.ofs(2).prn("return null;").prn();
+    p.ofs(2).prn("return null;");
     p.ofs(1).prn("}").prn();
   }
 
