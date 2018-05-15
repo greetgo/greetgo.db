@@ -29,4 +29,10 @@ interface UpsertInfo {
   String commitMethodName();
 
   List<Nf3Field> fields();
+
+  String nf3TableName();
+
+  Class<?> source();
+
+  String nf6TableName(Nf3Field f);
 }

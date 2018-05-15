@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static kz.greetgo.db.nf36.utils.UtilsNf36.firstToUp;
 import static kz.greetgo.db.nf36.utils.UtilsNf36.resolveFullName;
 import static kz.greetgo.db.nf36.utils.UtilsNf36.resolveJavaFile;
 
@@ -90,6 +91,7 @@ public class JavaGenerator {
     return this;
   }
 
+  //TODO public void generate()
   public void generate() {
     collector.collect();
 
@@ -108,7 +110,7 @@ public class JavaGenerator {
       {
         UpsertInfo info = getUpsertInfo(nf3Table);
         String baseInterfaceFullName = generateUpsertInterface(info);
-        generateUpsertImpl(info, nf3Table, baseInterfaceFullName);
+        generateUpsertImpl(info, baseInterfaceFullName);
       }
 
       if (updaterClassName != null) {
@@ -116,6 +118,7 @@ public class JavaGenerator {
         String baseInterfaceFullName = generateUpdateInterface(info);
         generateUpdateImpl(info, baseInterfaceFullName);
       }
+
     }
   }
 
@@ -224,6 +227,21 @@ public class JavaGenerator {
       public List<Nf3Field> fields() {
         return nf3Table.fields();
       }
+
+      @Override
+      public String nf3TableName() {
+        return nf3Table.nf3TableName();
+      }
+
+      @Override
+      public Class<?> source() {
+        return nf3Table.source();
+      }
+
+      @Override
+      public String nf6TableName(Nf3Field f) {
+        return nf3Table.nf6prefix() + nf3Table.tableName() + collector.nf6TableSeparator + f.rootField().dbName();
+      }
     };
   }
 
@@ -290,6 +308,11 @@ public class JavaGenerator {
       public String updateMethodName() {
         return updateMethodName;
       }
+
+      @Override
+      public String whereMethodName(Nf3Field f) {
+        return "where" + firstToUp(f.javaName()) + "EqualTo";
+      }
     };
   }
 
@@ -331,21 +354,46 @@ public class JavaGenerator {
     p.packageName = info.interfacePackageName();
     p.classHeader = "public interface " + info.interfaceClassName();
 
+    {
+      List<Nf3Field> fields = info.fields().stream()
+        .filter(f -> !f.isId())
+        .sorted(Comparator.comparing(Nf3Field::javaName))
+        .collect(Collectors.toList());
+
+      for (Nf3Field f : fields) {
+        String fieldType = p.i(f.javaType().getName());
+        String fieldName = f.javaName();
+        p.ofs(1).prn(info.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ");");
+      }
+    }
+
+    {
+      List<Nf3Field> fields = info.fields().stream()
+        .filter(f -> !f.isId())
+        .sorted(Comparator.comparing(Nf3Field::javaName))
+        .collect(Collectors.toList());
+
+      for (Nf3Field f : fields) {
+        String fieldType = p.i(f.javaType().getName());
+        p.ofs(1).prn(info.interfaceClassName() + " " + info.whereMethodName(f) + "(" + fieldType + " " + f.javaName() + ");");
+      }
+    }
+
     p.printToFile(info.interfaceJavaFile());
 
     return resolveFullName(info.interfacePackageName(), info.interfaceClassName());
   }
 
-  private void generateUpsertImpl(UpsertInfo info, Nf3Table nf3Table, String baseInterfaceFullName) {
+  private void generateUpsertImpl(UpsertInfo info, String baseInterfaceFullName) {
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = info.implPackageName();
     String implInterfaceName = p.i(baseInterfaceFullName);
     p.classHeader = "public class " + info.implClassName() + " implements " + implInterfaceName;
 
-    printUpsertImplConstructor(p, info, nf3Table);
-    printMoreMethodImpl(p, info, nf3Table, implInterfaceName);
+    printUpsertImplConstructor(p, info);
+    printMoreMethodImpl(p, info, implInterfaceName);
 
-    List<Nf3Field> fields = nf3Table.fields().stream()
+    List<Nf3Field> fields = info.fields().stream()
       .filter(f -> !f.isId())
       .collect(Collectors.toList());
 
@@ -358,12 +406,12 @@ public class JavaGenerator {
       if (f.notNullAndNotPrimitive()) {
         p.ofs(2).prn("if (" + fieldName + " == null) {");
         p.ofs(3).prn("throw new " + p.i(CannotBeNull.class.getName())
-          + "(\"Field " + nf3Table.source().getSimpleName() + "." + f.javaName() + " cannot be null\");");
+          + "(\"Field " + info.source().getSimpleName() + "." + f.javaName() + " cannot be null\");");
         p.ofs(2).prn("}");
       }
 
-      p.ofs(2).prn(upserterField + ".putField(\"" + collector.getNf6TableName(nf3Table, f)
-        + "\", \"" + f.dbName() + "\", " + fieldName + ");");
+      p.ofs(2).prn(upserterField + ".putField(\"" + info.nf6TableName(f) + "\", \""
+        + f.dbName() + "\", " + fieldName + ");");
       p.ofs(2).prn("return this;");
       p.ofs(1).prn("}").prn();
     }
@@ -378,6 +426,37 @@ public class JavaGenerator {
     p.packageName = info.implPackageName();
     String implInterfaceName = p.i(baseInterfaceFullName);
     p.classHeader = "public class " + info.implClassName() + " implements " + implInterfaceName;
+
+    {
+      List<Nf3Field> fields = info.fields().stream()
+        .filter(f -> !f.isId())
+        .collect(Collectors.toList());
+
+      for (Nf3Field f : fields) {
+        String fieldType = p.i(f.javaType().getName());
+        String fieldName = f.javaName();
+        p.ofs(1).prn("@Override");
+        p.ofs(1).prn("public " + info.interfaceClassName() + " " + fieldName + "(" + fieldType + " " + fieldName + ") {");
+        p.ofs(2).prn("return this;");
+        p.ofs(1).prn("}").prn();
+      }
+    }
+
+    {
+      List<Nf3Field> fields = info.fields().stream()
+        .filter(f -> !f.isId())
+        .sorted(Comparator.comparing(Nf3Field::javaName))
+        .collect(Collectors.toList());
+
+      for (Nf3Field f : fields) {
+        String fieldType = p.i(f.javaType().getName());
+        String fieldName = f.javaName();
+        p.ofs(1).prn("@Override");
+        p.ofs(1).prn("public " + info.interfaceClassName() + " " + info.whereMethodName(f) + "(" + fieldType + " " + fieldName + ") {");
+        p.ofs(2).prn("return this;");
+        p.ofs(1).prn("}").prn();
+      }
+    }
 
     p.printToFile(info.implJavaFile());
   }
@@ -400,13 +479,13 @@ public class JavaGenerator {
     return this;
   }
 
-  private void printUpsertImplConstructor(JavaFilePrinter p, UpsertInfo info, Nf3Table nf3Table) {
+  private void printUpsertImplConstructor(JavaFilePrinter p, UpsertInfo info) {
     String upserterClassName = p.i(Nf36Upserter.class.getName());
 
     p.ofs(1).prn("private final " + upserterClassName + " " + upserterField + ";");
     p.prn();
 
-    List<Nf3Field> idFields = nf3Table.fields().stream()
+    List<Nf3Field> idFields = info.fields().stream()
       .filter(Nf3Field::isId)
       .sorted(Comparator.comparing(Nf3Field::idOrder))
       .collect(Collectors.toList());
@@ -417,7 +496,7 @@ public class JavaGenerator {
 
     p.ofs(1).prn("public " + info.implClassName() + "(" + upserterClassName + " " + upserterVar + ", " + (
 
-      nf3Table.fields().stream()
+      info.fields().stream()
         .filter(Nf3Field::isId)
         .sorted(Comparator.comparing(Nf3Field::idOrder))
         .map(f -> p.i(f.javaType().getName()) + " " + f.javaName())
@@ -425,7 +504,7 @@ public class JavaGenerator {
 
     ) + ") {");
     p.ofs(2).prn("this." + upserterField + " = " + upserterVar + ";");
-    p.ofs(2).prn(upserterVar + ".setNf3TableName(\"" + nf3Table.nf3TableName() + "\");");
+    p.ofs(2).prn(upserterVar + ".setNf3TableName(\"" + info.nf3TableName() + "\");");
     p.ofs(2).prn(upserterVar + ".setTimeFieldName(\"" + collector.nf6timeField + "\");");
 
     if (collector.nf3CreatedBy != null) {
@@ -442,10 +521,10 @@ public class JavaGenerator {
     p.ofs(1).prn("}").prn();
   }
 
-  private void printMoreMethodImpl(JavaFilePrinter p, UpsertInfo upsertInfo, Nf3Table nf3Table, String implInterfaceName) {
-    p.ofs(1).prn("public " + implInterfaceName + " " + upsertInfo.moreMethodName() + "(" + (
+  private void printMoreMethodImpl(JavaFilePrinter p, UpsertInfo info, String implInterfaceName) {
+    p.ofs(1).prn("public " + implInterfaceName + " " + info.moreMethodName() + "(" + (
 
-      nf3Table.fields().stream()
+      info.fields().stream()
         .filter(Nf3Field::isId)
         .sorted(Comparator.comparing(Nf3Field::idOrder))
         .map(f -> p.i(f.javaType().getName()) + " " + f.javaName())
@@ -453,9 +532,9 @@ public class JavaGenerator {
 
     ) + ") {");
 
-    p.ofs(2).prn("return new " + upsertInfo.implClassName() + "(this." + upserterField + ".more(), " + (
+    p.ofs(2).prn("return new " + info.implClassName() + "(this." + upserterField + ".more(), " + (
 
-      nf3Table.fields().stream()
+      info.fields().stream()
         .filter(Nf3Field::isId)
         .sorted(Comparator.comparing(Nf3Field::idOrder))
         .map(Nf3Field::javaName)
@@ -613,6 +692,7 @@ public class JavaGenerator {
     return this;
   }
 
+  @SuppressWarnings("unused")
   public JavaGenerator setUpdaterImplClassName(String updaterImplClassName) {
     this.updaterImplClassName = updaterImplClassName;
     return this;
