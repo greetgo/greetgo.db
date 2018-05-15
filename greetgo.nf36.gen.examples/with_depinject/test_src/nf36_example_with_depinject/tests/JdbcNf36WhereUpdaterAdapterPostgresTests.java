@@ -2,6 +2,7 @@ package nf36_example_with_depinject.tests;
 
 import kz.greetgo.db.Jdbc;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
+import kz.greetgo.db.nf36.core.Nf36WhereUpdater;
 import kz.greetgo.db.nf36.core.SqlLogAcceptor;
 import kz.greetgo.depinject.core.BeanGetter;
 import kz.greetgo.depinject.testng.AbstractDepinjectTestNg;
@@ -23,14 +24,14 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
   public void testName() {
     System.out.println(jdbc.get());
 
-    Nf36Upserter upserter = newNf36Builder()
-      .upserter()
+    Nf36WhereUpdater whereUpdater = newNf36Builder()
+      .whereUpdater()
       .database(dbTypeSource.get().currentDbType())
       .setJdbc(jdbc.get())
       .setLogAcceptor(logAcceptor.get())
       .build()
       .setAuthor("Сталина на вас нет");
 
-    System.out.println(upserter);
+    System.out.println(whereUpdater);
   }
 }

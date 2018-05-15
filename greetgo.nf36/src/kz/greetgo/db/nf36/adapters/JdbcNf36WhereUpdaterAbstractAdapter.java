@@ -20,7 +20,7 @@ public abstract class JdbcNf36WhereUpdaterAbstractAdapter implements Nf36WhereUp
 
   @Override
   public Nf36WhereUpdater setAuthor(Object author) {
-    return null;
+    return this;
   }
 
   @Override
