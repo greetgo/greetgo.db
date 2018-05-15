@@ -1,5 +1,6 @@
 package nf36_example_with_depinject.generated.impl.upsert;
 
+import java.lang.String;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
 import nf36_example_with_depinject.generated.faces.upsert.StreetUpsert;
@@ -13,7 +14,6 @@ public class StreetUpsertImpl implements StreetUpsert {
     upserter.setNf3TableName("street");
     upserter.setTimeFieldName("ts");
     upserter.setAuthorFieldNames("created_by", "modified_by", "inserted_by");
-    upserter.setTimeFieldName("ts");
     upserter.putId("id", id);
   }
 

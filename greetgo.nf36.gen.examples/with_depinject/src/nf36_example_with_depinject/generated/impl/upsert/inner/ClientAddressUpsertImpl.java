@@ -1,11 +1,11 @@
 package nf36_example_with_depinject.generated.impl.upsert.inner;
 
+import java.lang.String;
+import java.util.Date;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
 import nf36_example_with_depinject.generated.faces.upsert.inner.ClientAddressUpsert;
 import nf36_example_with_depinject.structure.AddressType;
-
-import java.util.Date;
 
 public class ClientAddressUpsertImpl implements ClientAddressUpsert {
   private final Nf36Upserter upserter;
@@ -15,7 +15,6 @@ public class ClientAddressUpsertImpl implements ClientAddressUpsert {
     upserter.setNf3TableName("client_address");
     upserter.setTimeFieldName("ts");
     upserter.setAuthorFieldNames("created_by", "modified_by", "inserted_by");
-    upserter.setTimeFieldName("ts");
     upserter.putId("client_id", clientId);
   }
 

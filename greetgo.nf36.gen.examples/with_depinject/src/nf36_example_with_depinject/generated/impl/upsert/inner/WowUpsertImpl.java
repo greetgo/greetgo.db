@@ -1,5 +1,6 @@
 package nf36_example_with_depinject.generated.impl.upsert.inner;
 
+import java.lang.String;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import nf36_example_with_depinject.generated.faces.upsert.inner.WowUpsert;
 
@@ -11,7 +12,6 @@ public class WowUpsertImpl implements WowUpsert {
     upserter.setNf3TableName("wow");
     upserter.setTimeFieldName("ts");
     upserter.setAuthorFieldNames("created_by", "modified_by", "inserted_by");
-    upserter.setTimeFieldName("ts");
     upserter.putId("wow_id", wowId);
     upserter.putId("wow_id2", wowId2);
   }

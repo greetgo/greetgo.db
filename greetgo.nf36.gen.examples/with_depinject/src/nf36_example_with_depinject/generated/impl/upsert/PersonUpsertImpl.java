@@ -1,9 +1,9 @@
 package nf36_example_with_depinject.generated.impl.upsert;
 
+import java.lang.String;
+import java.math.BigDecimal;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import nf36_example_with_depinject.generated.faces.upsert.PersonUpsert;
-
-import java.math.BigDecimal;
 
 public class PersonUpsertImpl implements PersonUpsert {
   private final Nf36Upserter upserter;
@@ -13,7 +13,6 @@ public class PersonUpsertImpl implements PersonUpsert {
     upserter.setNf3TableName("person");
     upserter.setTimeFieldName("ts");
     upserter.setAuthorFieldNames("created_by", "modified_by", "inserted_by");
-    upserter.setTimeFieldName("ts");
     upserter.putId("id", id);
   }
 

@@ -1,5 +1,6 @@
 package nf36_example_with_depinject.generated.faces;
 
+import java.lang.String;
 import nf36_example_with_depinject.generated.faces.upsert.ClientUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.PersonUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.StreetUpsert;
