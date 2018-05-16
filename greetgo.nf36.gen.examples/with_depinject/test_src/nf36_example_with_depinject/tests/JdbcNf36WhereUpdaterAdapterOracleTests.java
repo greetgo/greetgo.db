@@ -87,4 +87,42 @@ public class JdbcNf36WhereUpdaterAdapterOracleTests extends JdbcNf36WhereUpdater
       ")");
   }
 
+  protected void createTableTmp2() {
+    exec("create table tmp2 (" +
+      "  id1   varchar2(32)," +
+      "  id2   varchar2(32)," +
+      "  name1 varchar2(100)," +
+      "  name2 varchar2(100)," +
+      "  f1    varchar2(100)," +
+      "  f2    varchar2(100)," +
+      "  last_modified_by varchar2(100) default 'no soul'," +
+      "  last_modified_at timestamp default current_timestamp not null," +
+      "  mod_at timestamp," +
+      "  primary key(id1, id2)" +
+      ")");
+  }
+
+  protected void createTableTmp2_f1() {
+    exec("create table tmp2_f1 (" +
+      "  id1   varchar2(32)," +
+      "  id2   varchar2(32)," +
+      "  ts    timestamp default current_timestamp not null," +
+      "  f1    varchar2(100)," +
+      "  inserted_by varchar2(100) default 'no soul'," +
+      "  primary key(id1, id2, ts)" +
+      ")");
+  }
+
+  protected void createTableTmp2_f2() {
+    exec("create table tmp2_f2 (" +
+      "  id1   varchar2(32)," +
+      "  id2   varchar2(32)," +
+      "  ts    timestamp default current_timestamp not null," +
+      "  f2    varchar2(100)," +
+      "  inserted_by varchar2(100)," +
+      "  primary key(id1, id2, ts)" +
+      ")");
+  }
+
+
 }

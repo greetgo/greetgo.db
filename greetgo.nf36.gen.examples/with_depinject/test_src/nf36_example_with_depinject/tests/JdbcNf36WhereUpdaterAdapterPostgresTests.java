@@ -17,6 +17,7 @@ import nf36_example_with_depinject.jdbc.CountWhere;
 import nf36_example_with_depinject.util.DbTypeSource;
 import org.testng.annotations.Test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.util.Date;
 
@@ -321,9 +322,22 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
       ")");
   }
 
-  private static long gotMillis(Date d) {
+  private static long gotMillis(Object d) {
     if (d == null) return 0;
-    return d.getTime();
+
+    if (d.getClass().getName().equals("oracle.sql.TIMESTAMP")) {
+      try {
+        d = d.getClass().getMethod("timestampValue").invoke(d);
+      } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    if (d instanceof Date) {
+      return ((Date) d).getTime();
+    }
+
+    throw new IllegalArgumentException("Cannot got millis from " + d.getClass() + " with value = " + d);
   }
 
   @Test
@@ -372,6 +386,15 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
     long lma2after = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "2", "id2", "22", "tmp2", "last_modified_at")));
     long lma3after = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "3", "id2", "33", "tmp2", "last_modified_at")));
     long lma4after = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "4", "id2", "44", "tmp2", "last_modified_at")));
+
+    System.out.println("lma1      " + lma1);
+    System.out.println("lma1after " + lma1after);
+    System.out.println("lma2      " + lma2);
+    System.out.println("lma2after " + lma2after);
+    System.out.println("lma3      " + lma3);
+    System.out.println("lma3after " + lma3after);
+    System.out.println("lma4      " + lma4);
+    System.out.println("lma4after " + lma4after);
 
     assertThat(lma1).isLessThan(lma1after);
     assertThat(lma2).isLessThan(lma2after);
