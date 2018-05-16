@@ -47,7 +47,7 @@ class JdbcNf36WhereUpdaterAdapterPostgres extends JdbcNf36WhereUpdaterAbstractAd
 
         while (rs.next()) {
 
-          ret.add(extractValues(rs));
+          ret.add(extractIdValues(rs));
 
         }
 
@@ -69,14 +69,4 @@ class JdbcNf36WhereUpdaterAdapterPostgres extends JdbcNf36WhereUpdaterAbstractAd
     }
   }
 
-  private IdValues extractValues(ResultSet rs) throws SQLException {
-    List<Object> ret = new ArrayList<>();
-
-    int index = 1;
-    for (String ignore : idFieldNames) {
-      ret.add(rs.getObject(index++));
-    }
-
-    return new IdValues(ret);
-  }
 }

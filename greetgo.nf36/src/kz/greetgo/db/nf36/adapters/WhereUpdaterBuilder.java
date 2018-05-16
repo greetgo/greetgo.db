@@ -27,6 +27,10 @@ public class WhereUpdaterBuilder {
         adapter = new JdbcNf36WhereUpdaterAdapterPostgres();
         return this;
 
+      case Oracle:
+        adapter = new JdbcNf36WhereUpdaterAdapterOracle();
+        return this;
+
       default:
         throw new IllegalArgumentException("Database " + dbType + " is not supported");
     }

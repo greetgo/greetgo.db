@@ -8,6 +8,8 @@ import kz.greetgo.db.nf36.model.SqlLog;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +50,17 @@ public abstract class JdbcNf36WhereUpdaterAbstractAdapter implements Nf36WhereUp
   @Override
   public void updateFieldToNow(String fieldName) {
 
+  }
+
+  protected IdValues extractIdValues(ResultSet rs) throws SQLException {
+    List<Object> ret = new ArrayList<>();
+
+    int index = 1;
+    for (String ignore : idFieldNames) {
+      ret.add(rs.getObject(index++));
+    }
+
+    return new IdValues(ret);
   }
 
   protected static class SetField {

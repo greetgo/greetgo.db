@@ -43,7 +43,7 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
       exec("drop table " + tableName);
     } catch (SqlError e) {
       //noinspection StatementWithEmptyBody
-      if (e.sqlState.equals("42P01")) {
+      if (e.type == SqlError.Type.DROP_TABLE) {
         //ignore
       } else throw e;
     }
@@ -61,7 +61,7 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
       ")");
   }
 
-  private void createTableTmp1f1() {
+  protected void createTableTmp1f1() {
     exec("create table tmp1_f1 (" +
       "  id1   varchar(32)," +
       "  id2   varchar(32)," +
@@ -72,7 +72,7 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
       ")");
   }
 
-  private void createTableTmp1f2() {
+  protected void createTableTmp1f2() {
     exec("create table tmp1_f2 (" +
       "  id1   varchar(32)," +
       "  id2   varchar(32)," +
@@ -180,7 +180,7 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
       ")");
   }
 
-  private void createTableAdamSurname() {
+  protected void createTableAdamSurname() {
     exec("create table adam_surname (" +
       "  id varchar(32)," +
       "  ts timestamp default clock_timestamp()," +
@@ -190,7 +190,7 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
       ")");
   }
 
-  private void createTableAdamName() {
+  protected void createTableAdamName() {
     exec("create table adam_name (" +
       "  id varchar(32)," +
       "  ts timestamp default clock_timestamp()," +
@@ -200,7 +200,7 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
       ")");
   }
 
-  private void createTableAdamPatronymic() {
+  protected void createTableAdamPatronymic() {
     exec("create table adam_Patronymic (" +
       "  id varchar(32)," +
       "  ts timestamp default clock_timestamp()," +
@@ -221,11 +221,11 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
     createTableAdamName();
     createTableAdamPatronymic();
 
-    exec("insert into adam (id,surname,name,patronymic)" +
-      "values('1','Иванов'  , 'Иван'      , 'Петрович' )" +
-      "     ,('2','Сидоров' , 'Сидор'     , 'Петрович' )" +
-      "     ,('3','Пушкин'  , 'Александр' , 'Сергеевич')" +
-      "     ,('4','Панфилов', 'Георгий'   , 'Петрович' )");
+    String ins = "insert into adam (id,surname,name,patronymic)values";
+    exec(ins + "('1','Иванов'  , 'Иван'      , 'Петрович' )");
+    exec(ins + "('2','Сидоров' , 'Сидор'     , 'Петрович' )");
+    exec(ins + "('3','Пушкин'  , 'Александр' , 'Сергеевич')");
+    exec(ins + "('4','Панфилов', 'Георгий'   , 'Петрович' )");
 
     Nf36WhereUpdater whereUpdater1 = createUpdater();
 
