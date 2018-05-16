@@ -9,6 +9,8 @@ import kz.greetgo.depinject.testng.AbstractDepinjectTestNg;
 import kz.greetgo.depinject.testng.ContainerConfig;
 import nf36_example_with_depinject.beans.postgres.BeanConfigPostgres;
 import nf36_example_with_depinject.errors.SqlError;
+import nf36_example_with_depinject.jdbc.ByOne;
+import nf36_example_with_depinject.jdbc.ByOneLast;
 import nf36_example_with_depinject.jdbc.ByTwo;
 import nf36_example_with_depinject.jdbc.CountWhere;
 import nf36_example_with_depinject.util.DbTypeSource;
@@ -47,15 +49,6 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
     }
   }
 
-  protected void prepareStructure() {
-    dropTable("tmp1_f1");
-    dropTable("tmp1_f2");
-    dropTable("tmp1");
-    createTableTmp1();
-    createTableTmp1f1();
-    createTableTmp1f2();
-  }
-
   protected void createTableTmp1() {
     exec("create table tmp1 (" +
       "  id1   varchar(32)," +
@@ -91,8 +84,13 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
   }
 
   @Test
-  public void simpleUpdateWhere() {
-    prepareStructure();
+  public void multipleIdUpdateWhere() {
+    dropTable("tmp1_f1");
+    dropTable("tmp1_f2");
+    dropTable("tmp1");
+    createTableTmp1();
+    createTableTmp1f1();
+    createTableTmp1f2();
 
     exec("insert into tmp1 (id1, id2, name1, name2) values ('1','1','ok1','ok2')");
     exec("insert into tmp1 (id1, id2, name1, name2) values ('1','2','ok1','ok2')");
@@ -103,13 +101,9 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
     exec("insert into tmp1 (id1, id2, name1, name2) values ('101','101','ok1','left')");
     exec("insert into tmp1 (id1, id2, name1, name2) values ('103','103','left','left')");
 
-    Nf36WhereUpdater whereUpdater = newNf36Builder()
-      .whereUpdater()
-      .database(dbTypeSource.get().currentDbType())
-      .setJdbc(jdbc.get())
-      .setLogAcceptor(logAcceptor.get())
-      .build()
-      .setAuthor("Сталина на вас нет");
+    Nf36WhereUpdater whereUpdater = createUpdater()
+      //.setAuthor("Сталина на вас нет")
+      ;
 
     whereUpdater.setNf3TableName("tmp1");
     whereUpdater.setIdFieldNames("id1", "id2");
@@ -138,6 +132,10 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
     assertThat(jdbc.get().execute(new CountWhere("tmp1_f2", null))).isEqualTo(4);
   }
 
+  private String readByOne(String idField, String idValue, String tableName, String fieldName) {
+    return jdbc.get().execute(new ByOne<>(idField, idValue, tableName, fieldName));
+  }
+
   private JdbcNf36WhereUpdaterAdapterPostgresTests assertTmp1(String id1, String id2, String field, String expectedValue) {
 
     {
@@ -157,5 +155,117 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
     }
 
     return this;
+  }
+
+  private String readLastByOne(String idName, String idValue, String tableName, String fieldName) {
+    return jdbc.get().execute(new ByOneLast<>(idName, idValue, tableName, fieldName));
+  }
+
+  private Nf36WhereUpdater createUpdater() {
+    return newNf36Builder()
+      .whereUpdater()
+      .database(dbTypeSource.get().currentDbType())
+      .setJdbc(jdbc.get())
+      .setLogAcceptor(logAcceptor.get())
+      .build();
+  }
+
+  protected void createTableAdam() {
+    exec("create table adam (" +
+      "  id varchar(32)," +
+      "  surname varchar(300)," +
+      "  name varchar(300)," +
+      "  patronymic varchar(300)," +
+      "  primary key(id)" +
+      ")");
+  }
+
+  private void createTableAdamSurname() {
+    exec("create table adam_surname (" +
+      "  id varchar(32)," +
+      "  ts timestamp default clock_timestamp()," +
+      "  surname varchar(300)," +
+      "  foreign key (id) references adam(id)," +
+      "  primary key(id, ts)" +
+      ")");
+  }
+
+  private void createTableAdamName() {
+    exec("create table adam_name (" +
+      "  id varchar(32)," +
+      "  ts timestamp default clock_timestamp()," +
+      "  name varchar(300)," +
+      "  foreign key (id) references adam(id)," +
+      "  primary key(id, ts)" +
+      ")");
+  }
+
+  private void createTableAdamPatronymic() {
+    exec("create table adam_Patronymic (" +
+      "  id varchar(32)," +
+      "  ts timestamp default clock_timestamp()," +
+      "  Patronymic varchar(300)," +
+      "  foreign key (id) references adam(id)," +
+      "  primary key(id, ts)" +
+      ")");
+  }
+
+  @Test
+  public void simpleUpdate() {
+    dropTable("adam_surname");
+    dropTable("adam_name");
+    dropTable("adam_patronymic");
+    dropTable("adam");
+    createTableAdam();
+    createTableAdamSurname();
+    createTableAdamName();
+    createTableAdamPatronymic();
+
+    exec("insert into adam (id,surname,name,patronymic)" +
+      "values('1','Иванов'  , 'Иван'      , 'Петрович' )" +
+      "     ,('2','Сидоров' , 'Сидор'     , 'Петрович' )" +
+      "     ,('3','Пушкин'  , 'Александр' , 'Сергеевич')" +
+      "     ,('4','Панфилов', 'Георгий'   , 'Петрович' )");
+
+    Nf36WhereUpdater whereUpdater1 = createUpdater();
+
+    whereUpdater1.setNf3TableName("adam");
+    whereUpdater1.setIdFieldNames("id");
+    whereUpdater1.setField("adam_name", "name", "Пётр");
+    whereUpdater1.where("patronymic", "Петрович");
+
+    assertThat(readByOne("id", "1", "adam", "name")).isEqualTo("Иван");
+    assertThat(readByOne("id", "2", "adam", "name")).isEqualTo("Сидор");
+    assertThat(readByOne("id", "3", "adam", "name")).isEqualTo("Александр");
+    assertThat(readByOne("id", "4", "adam", "name")).isEqualTo("Георгий");
+
+    whereUpdater1.commit();
+
+    assertThat(readByOne("id", "1", "adam", "name")).isEqualTo("Пётр");
+    assertThat(readByOne("id", "2", "adam", "name")).isEqualTo("Пётр");
+    assertThat(readByOne("id", "3", "adam", "name")).isEqualTo("Александр");
+    assertThat(readByOne("id", "4", "adam", "name")).isEqualTo("Пётр");
+
+    assertThat(readLastByOne("id", "1", "adam_name", "name")).isEqualTo("Пётр");
+    assertThat(readLastByOne("id", "2", "adam_name", "name")).isEqualTo("Пётр");
+    assertThat(readLastByOne("id", "3", "adam_name", "name")).isEqualTo("Александр");
+    assertThat(readLastByOne("id", "4", "adam_name", "name")).isEqualTo("Пётр");
+
+    Nf36WhereUpdater whereUpdater2 = createUpdater();
+
+    whereUpdater2.setNf3TableName("adam");
+    whereUpdater2.setIdFieldNames("id");
+    whereUpdater2.setField("adam_name", "name", "Егор");
+    whereUpdater2.where("patronymic", "Петрович");
+
+    assertThat(readByOne("id", "1", "adam", "name")).isEqualTo("Егор");
+    assertThat(readByOne("id", "2", "adam", "name")).isEqualTo("Егор");
+    assertThat(readByOne("id", "3", "adam", "name")).isEqualTo("Александр");
+    assertThat(readByOne("id", "4", "adam", "name")).isEqualTo("Егор");
+
+    assertThat(readLastByOne("id", "1", "adam_name", "name")).isEqualTo("Егор");
+    assertThat(readLastByOne("id", "2", "adam_name", "name")).isEqualTo("Егор");
+    assertThat(readLastByOne("id", "3", "adam_name", "name")).isEqualTo("Александр");
+    assertThat(readLastByOne("id", "4", "adam_name", "name")).isEqualTo("Егор");
   }
 }
