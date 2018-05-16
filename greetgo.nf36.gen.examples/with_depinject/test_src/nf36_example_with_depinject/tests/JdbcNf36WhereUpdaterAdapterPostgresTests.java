@@ -99,7 +99,7 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
 
     exec("insert into tmp1 (id1, id2, name1, name2) values ('100','100','left','ok2')");
     exec("insert into tmp1 (id1, id2, name1, name2) values ('101','101','ok1','left')");
-    exec("insert into tmp1 (id1, id2, name1, name2) values ('103','103','left','left')");
+    exec("insert into tmp1 (id1, id2, name1, name2) values ('102','102','left','left')");
 
     Nf36WhereUpdater whereUpdater = createUpdater()
       //.setAuthor("Сталина на вас нет")
@@ -108,7 +108,7 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
     whereUpdater.setNf3TableName("tmp1");
     whereUpdater.setIdFieldNames("id1", "id2");
     whereUpdater.setField("tmp1_f1", "f1", "value 1");
-    whereUpdater.setField("tmp2_f2", "f2", "value 2");
+    whereUpdater.setField("tmp1_f2", "f2", "value 2");
     whereUpdater.where("name1", "ok1");
     whereUpdater.where("name2", "ok2");
 
@@ -248,7 +248,6 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
 
     assertThat(readLastByOne("id", "1", "adam_name", "name")).isEqualTo("Пётр");
     assertThat(readLastByOne("id", "2", "adam_name", "name")).isEqualTo("Пётр");
-    assertThat(readLastByOne("id", "3", "adam_name", "name")).isEqualTo("Александр");
     assertThat(readLastByOne("id", "4", "adam_name", "name")).isEqualTo("Пётр");
 
     Nf36WhereUpdater whereUpdater2 = createUpdater();
@@ -258,6 +257,8 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
     whereUpdater2.setField("adam_name", "name", "Егор");
     whereUpdater2.where("patronymic", "Петрович");
 
+    whereUpdater2.commit();
+
     assertThat(readByOne("id", "1", "adam", "name")).isEqualTo("Егор");
     assertThat(readByOne("id", "2", "adam", "name")).isEqualTo("Егор");
     assertThat(readByOne("id", "3", "adam", "name")).isEqualTo("Александр");
@@ -265,7 +266,6 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
 
     assertThat(readLastByOne("id", "1", "adam_name", "name")).isEqualTo("Егор");
     assertThat(readLastByOne("id", "2", "adam_name", "name")).isEqualTo("Егор");
-    assertThat(readLastByOne("id", "3", "adam_name", "name")).isEqualTo("Александр");
     assertThat(readLastByOne("id", "4", "adam_name", "name")).isEqualTo("Егор");
   }
 }
