@@ -4,7 +4,7 @@ public interface Nf36WhereUpdater {
 
   void setNf3TableName(String tableName);
 
-  void setAuthorFieldNames(String nf3CreatedBy, String nf3ModifiedBy, String nf6InsertedBy);
+  void setAuthorFieldNames(String nf3ModifiedBy, String nf6InsertedBy);
 
   Nf36WhereUpdater setAuthor(Object author);
 

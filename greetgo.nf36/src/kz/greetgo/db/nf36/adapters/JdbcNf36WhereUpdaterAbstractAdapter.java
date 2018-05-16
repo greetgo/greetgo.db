@@ -28,7 +28,7 @@ public abstract class JdbcNf36WhereUpdaterAbstractAdapter implements Nf36WhereUp
   }
 
   @Override
-  public void setAuthorFieldNames(String nf3CreatedBy, String nf3ModifiedBy, String nf6InsertedBy) {
+  public void setAuthorFieldNames(String nf3ModifiedBy, String nf6InsertedBy) {
 
   }
 

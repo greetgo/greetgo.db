@@ -12,15 +12,18 @@ import nf36_example_with_depinject.errors.SqlError;
 import nf36_example_with_depinject.jdbc.ByOne;
 import nf36_example_with_depinject.jdbc.ByOneLast;
 import nf36_example_with_depinject.jdbc.ByTwo;
+import nf36_example_with_depinject.jdbc.ByTwoLast;
 import nf36_example_with_depinject.jdbc.CountWhere;
 import nf36_example_with_depinject.util.DbTypeSource;
 import org.testng.annotations.Test;
 
 import java.sql.PreparedStatement;
+import java.util.Date;
 
 import static kz.greetgo.db.nf36.Nf36Builder.newNf36Builder;
 import static org.fest.assertions.api.Assertions.assertThat;
 
+@SuppressWarnings("SameParameterValue")
 @ContainerConfig(BeanConfigPostgres.class)
 public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectTestNg {
 
@@ -84,7 +87,7 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
   }
 
   @Test
-  public void multipleIdUpdateWhere() {
+  public void test_multipleIdUpdateWhere() {
     dropTable("tmp1_f1");
     dropTable("tmp1_f2");
     dropTable("tmp1");
@@ -161,6 +164,18 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
     return jdbc.get().execute(new ByOneLast<>(idName, idValue, tableName, fieldName));
   }
 
+  private String readLastByTwo(String idName1, String idValue1,
+                               String idName2, String idValue2,
+                               String tableName, String fieldName) {
+    return jdbc.get().execute(new ByTwoLast<>(idName1, idValue1, idName2, idValue2, tableName, fieldName));
+  }
+
+  private String readByTwo(String idName1, String idValue1,
+                           String idName2, String idValue2,
+                           String tableName, String fieldName) {
+    return jdbc.get().execute(new ByTwo<>(idName1, idValue1, idName2, idValue2, tableName, fieldName));
+  }
+
   private Nf36WhereUpdater createUpdater() {
     return newNf36Builder()
       .whereUpdater()
@@ -211,7 +226,7 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
   }
 
   @Test
-  public void simpleUpdate() {
+  public void test_simpleUpdate() {
     dropTable("adam_surname");
     dropTable("adam_name");
     dropTable("adam_patronymic");
@@ -267,5 +282,125 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
     assertThat(readLastByOne("id", "1", "adam_name", "name")).isEqualTo("Егор");
     assertThat(readLastByOne("id", "2", "adam_name", "name")).isEqualTo("Егор");
     assertThat(readLastByOne("id", "4", "adam_name", "name")).isEqualTo("Егор");
+  }
+
+  protected void createTableTmp2() {
+    exec("create table tmp2 (" +
+      "  id1   varchar(32)," +
+      "  id2   varchar(32)," +
+      "  name1 varchar(100)," +
+      "  name2 varchar(100)," +
+      "  f1    varchar(100)," +
+      "  f2    varchar(100)," +
+      "  last_modified_by varchar(100) default 'no soul'," +
+      "  last_modified_at timestamp not null default clock_timestamp()," +
+      "  mod_at timestamp," +
+      "  primary key(id1, id2)" +
+      ")");
+  }
+
+  protected void createTableTmp2_f1() {
+    exec("create table tmp2_f1 (" +
+      "  id1   varchar(32)," +
+      "  id2   varchar(32)," +
+      "  ts    timestamp not null default clock_timestamp()," +
+      "  f1    varchar(100)," +
+      "  inserted_by varchar(100) default 'no soul'," +
+      "  primary key(id1, id2, ts)" +
+      ")");
+  }
+
+  protected void createTableTmp2_f2() {
+    exec("create table tmp2_f2 (" +
+      "  id1   varchar(32)," +
+      "  id2   varchar(32)," +
+      "  ts    timestamp not null default clock_timestamp()," +
+      "  f2    varchar(100)," +
+      "  inserted_by varchar(100)," +
+      "  primary key(id1, id2, ts)" +
+      ")");
+  }
+
+  private static long gotMillis(Date d) {
+    if (d == null) return 0;
+    return d.getTime();
+  }
+
+  @Test
+  public void test_timesModificationsAndAuthor() throws Exception {
+    dropTable("tmp2_f1");
+    dropTable("tmp2_f2");
+    dropTable("tmp2");
+    createTableTmp2();
+    createTableTmp2_f1();
+    createTableTmp2_f2();
+
+    String ins = "insert into tmp2 (id1, id2, name1, name2, f1, f2)values";
+    exec(ins + "('1',  '11',  'john1',  'john2',  'old val 11',  'old val 12')");
+    exec(ins + "('2',  '22',  'john1',  'john2',  'old val 21',  'old val 22')");
+    exec(ins + "('3',  '33',  'left ',  'left ',  'old val 31',  'old val 32')");
+    exec(ins + "('4',  '44',  'left ',  'left ',  'old val 41',  'old val 42')");
+
+    Thread.sleep(10);
+
+    long lma1 = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "1", "id2", "11", "tmp2", "last_modified_at")));
+    long lma2 = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "2", "id2", "22", "tmp2", "last_modified_at")));
+    long lma3 = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "3", "id2", "33", "tmp2", "last_modified_at")));
+    long lma4 = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "4", "id2", "44", "tmp2", "last_modified_at")));
+
+    long mod1 = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "1", "id2", "11", "tmp2", "mod_at")));
+    long mod2 = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "2", "id2", "22", "tmp2", "mod_at")));
+    long mod3 = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "3", "id2", "33", "tmp2", "mod_at")));
+    long mod4 = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "4", "id2", "44", "tmp2", "mod_at")));
+
+    Nf36WhereUpdater whereUpdater = createUpdater();
+
+    whereUpdater.setAuthor("Сталина на вас нет");
+    whereUpdater.setNf3TableName("tmp2");
+    whereUpdater.setIdFieldNames("id1", "id2");
+    whereUpdater.setAuthorFieldNames("modified_by", "inserted_by");
+    whereUpdater.setField("tmp2_f1", "f1", "new value 1");
+    whereUpdater.setField("tmp2_f2", "f2", "new value 2");
+    whereUpdater.where("name1", "john1");
+    whereUpdater.where("name2", "john2");
+    whereUpdater.updateFieldToNow("last_modified_at");
+    whereUpdater.updateFieldToNow("mod_at");
+
+    whereUpdater.commit();
+
+    long lma1after = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "1", "id2", "11", "tmp2", "last_modified_at")));
+    long lma2after = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "2", "id2", "22", "tmp2", "last_modified_at")));
+    long lma3after = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "3", "id2", "33", "tmp2", "last_modified_at")));
+    long lma4after = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "4", "id2", "44", "tmp2", "last_modified_at")));
+
+    assertThat(lma1).isLessThan(lma1after);
+    assertThat(lma2).isLessThan(lma2after);
+    assertThat(lma3).isEqualTo(lma3after);
+    assertThat(lma4).isEqualTo(lma4after);
+
+    long mod1after = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "1", "id2", "11", "tmp2", "mod_at")));
+    long mod2after = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "2", "id2", "22", "tmp2", "mod_at")));
+    long mod3after = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "3", "id2", "33", "tmp2", "mod_at")));
+    long mod4after = gotMillis(jdbc.get().execute(new ByTwo<>("id1", "4", "id2", "44", "tmp2", "mod_at")));
+
+    assertThat(mod1).isLessThan(mod1after);
+    assertThat(mod2).isLessThan(mod2after);
+    assertThat(mod3).isEqualTo(mod3after);
+    assertThat(mod4).isEqualTo(mod4after);
+
+    assertThat(readByTwo("id1", "1", "id2", "11", "tmp2", "last_modified_by")).isEqualTo("Сталина на вас нет");
+    assertThat(readByTwo("id1", "2", "id2", "22", "tmp2", "last_modified_by")).isEqualTo("Сталина на вас нет");
+    assertThat(readByTwo("id1", "3", "id2", "33", "tmp2", "last_modified_by")).isEqualTo("no soul");
+    assertThat(readByTwo("id1", "4", "id2", "44", "tmp2", "last_modified_by")).isEqualTo("no soul");
+
+    assertThat(readLastByTwo("id1", "1", "id2", "11", "tmp2_f1", "inserted_by")).isEqualTo("Сталина на вас нет");
+    assertThat(readLastByTwo("id1", "2", "id2", "22", "tmp2_f1", "inserted_by")).isEqualTo("Сталина на вас нет");
+    assertThat(readLastByTwo("id1", "3", "id2", "33", "tmp2_f1", "inserted_by")).isEqualTo("no soul");
+    assertThat(readLastByTwo("id1", "4", "id2", "44", "tmp2_f1", "inserted_by")).isEqualTo("no soul");
+
+    assertThat(readLastByTwo("id1", "1", "id2", "11", "tmp2_f2", "inserted_by")).isEqualTo("Сталина на вас нет");
+    assertThat(readLastByTwo("id1", "2", "id2", "22", "tmp2_f2", "inserted_by")).isEqualTo("Сталина на вас нет");
+    assertThat(readLastByTwo("id1", "3", "id2", "33", "tmp2_f2", "inserted_by")).isEqualTo("no soul");
+    assertThat(readLastByTwo("id1", "4", "id2", "44", "tmp2_f2", "inserted_by")).isEqualTo("no soul");
   }
 }
