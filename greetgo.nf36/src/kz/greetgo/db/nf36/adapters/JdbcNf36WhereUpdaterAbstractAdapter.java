@@ -21,6 +21,9 @@ public abstract class JdbcNf36WhereUpdaterAbstractAdapter implements Nf36WhereUp
   SqlLogAcceptor logAcceptor = null;
   protected String nf3TableName;
   protected List<String> idFieldNames;
+  protected String nf3ModifiedBy;
+  protected String nf6InsertedBy;
+  protected Object author;
 
   @Override
   public void setNf3TableName(String tableName) {
@@ -29,11 +32,13 @@ public abstract class JdbcNf36WhereUpdaterAbstractAdapter implements Nf36WhereUp
 
   @Override
   public void setAuthorFieldNames(String nf3ModifiedBy, String nf6InsertedBy) {
-
+    this.nf3ModifiedBy = nf3ModifiedBy;
+    this.nf6InsertedBy = nf6InsertedBy;
   }
 
   @Override
   public Nf36WhereUpdater setAuthor(Object author) {
+    this.author = author;
     return this;
   }
 
@@ -47,9 +52,11 @@ public abstract class JdbcNf36WhereUpdaterAbstractAdapter implements Nf36WhereUp
     this.idFieldNames = Arrays.asList(idFieldNames);
   }
 
+  protected final List<String> updateToNowFieldList = new ArrayList<>();
+
   @Override
   public void updateFieldToNow(String fieldName) {
-
+    updateToNowFieldList.add(fieldName);
   }
 
   protected IdValues extractIdValues(ResultSet rs) throws SQLException {
@@ -155,18 +162,26 @@ public abstract class JdbcNf36WhereUpdaterAbstractAdapter implements Nf36WhereUp
   }
 
   protected void insertIntoNf6Table(SetField setField, IdValues idValues, Connection con) throws Exception {
+    List<Object> params = new ArrayList<>(idValues.values);
+
+    String insByF = "", insByV = "";
+    if (nf6InsertedBy != null) {
+      insByF = ", " + nf6InsertedBy;
+      insByV = ", ?";
+      params.add(author);
+    }
+
+    params.add(setField.fieldValue);
+
     String sql = "insert into " + setField.nf6TableName + " (" + (
 
       idFieldNames.stream().collect(joining(", "))
 
-    ) + ", " + setField.fieldName + ") values (" + (
+    ) + insByF + ", " + setField.fieldName + ") values (" + (
 
       idFieldNames.stream().map(fn -> "?").collect(joining(", "))
 
-    ) + ", ?)";
-
-    List<Object> params = new ArrayList<>(idValues.values);
-    params.add(setField.fieldValue);
+    ) + insByV + ", ?)";
 
     long startedAt = System.nanoTime();
 

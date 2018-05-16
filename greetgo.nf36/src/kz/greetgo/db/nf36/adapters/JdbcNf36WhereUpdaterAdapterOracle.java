@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 class JdbcNf36WhereUpdaterAdapterOracle extends JdbcNf36WhereUpdaterAbstractAdapter {
@@ -70,18 +71,31 @@ class JdbcNf36WhereUpdaterAdapterOracle extends JdbcNf36WhereUpdaterAbstractAdap
   }
 
   private List<IdValues> directUpdate(Connection con, List<IdValues> idValues) throws SQLException {
+
+    String toNow = "";
+    if (updateToNowFieldList.size() > 0) {
+      toNow = ", " + updateToNowFieldList.stream().map(f -> f + " = current_timestamp").collect(joining(", "));
+    }
+
+    List<Object> params = setFieldList.stream().map(sf -> sf.fieldValue).collect(toList());
+
+    String auth = "";
+    if (nf3ModifiedBy != null) {
+      auth = ", " + nf3ModifiedBy + " = ?";
+      params.add(author);
+    }
+
+    params.addAll(whereList.stream().map(w -> w.fieldValue).collect(toList()));
+
     String sql = "update " + nf3TableName + " set " + (
 
       setFieldList.stream().map(sf -> sf.fieldName + " = ?").collect(Collectors.joining(", "))
 
-    ) + " where " + (
+    ) + toNow + auth + " where " + (
 
       whereList.stream().map(w -> w.fieldName + " = ?").collect(Collectors.joining(" and "))
 
     );
-
-    List<Object> params = setFieldList.stream().map(sf -> sf.fieldValue).collect(toList());
-    params.addAll(whereList.stream().map(w -> w.fieldValue).collect(toList()));
 
     long startedAt = System.nanoTime();
 

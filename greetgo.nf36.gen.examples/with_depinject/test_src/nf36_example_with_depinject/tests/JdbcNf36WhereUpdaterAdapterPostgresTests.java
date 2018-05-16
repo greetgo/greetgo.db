@@ -372,7 +372,7 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
     whereUpdater.setAuthor("Сталина на вас нет");
     whereUpdater.setNf3TableName("tmp2");
     whereUpdater.setIdFieldNames("id1", "id2");
-    whereUpdater.setAuthorFieldNames("modified_by", "inserted_by");
+    whereUpdater.setAuthorFieldNames("last_modified_by", "inserted_by");
     whereUpdater.setField("tmp2_f1", "f1", "new value 1");
     whereUpdater.setField("tmp2_f2", "f2", "new value 2");
     whereUpdater.where("name1", "john1");
@@ -418,12 +418,8 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
 
     assertThat(readLastByTwo("id1", "1", "id2", "11", "tmp2_f1", "inserted_by")).isEqualTo("Сталина на вас нет");
     assertThat(readLastByTwo("id1", "2", "id2", "22", "tmp2_f1", "inserted_by")).isEqualTo("Сталина на вас нет");
-    assertThat(readLastByTwo("id1", "3", "id2", "33", "tmp2_f1", "inserted_by")).isEqualTo("no soul");
-    assertThat(readLastByTwo("id1", "4", "id2", "44", "tmp2_f1", "inserted_by")).isEqualTo("no soul");
 
     assertThat(readLastByTwo("id1", "1", "id2", "11", "tmp2_f2", "inserted_by")).isEqualTo("Сталина на вас нет");
     assertThat(readLastByTwo("id1", "2", "id2", "22", "tmp2_f2", "inserted_by")).isEqualTo("Сталина на вас нет");
-    assertThat(readLastByTwo("id1", "3", "id2", "33", "tmp2_f2", "inserted_by")).isEqualTo("no soul");
-    assertThat(readLastByTwo("id1", "4", "id2", "44", "tmp2_f2", "inserted_by")).isEqualTo("no soul");
   }
 }
