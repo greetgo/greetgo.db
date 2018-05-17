@@ -325,6 +325,11 @@ public class JavaGenerator {
       public String implFullName() {
         return implFullName;
       }
+
+      @Override
+      public String nf3TableName() {
+        return nf3Table.nf3TableName();
+      }
     };
   }
 
@@ -441,6 +446,8 @@ public class JavaGenerator {
     String implInterfaceName = p.i(baseInterfaceFullName);
     p.classHeader = "public class " + info.implClassName() + " implements " + implInterfaceName;
 
+    printUpdaterWhereImplConstructor(info, p);
+
     {
       List<Nf3Field> fields = info.fields().stream()
         .filter(f -> !f.isId())
@@ -533,6 +540,37 @@ public class JavaGenerator {
     for (Nf3Field f : idFields) {
       p.ofs(2).prn(upserterVar + ".putId(\"" + f.dbName() + "\", " + f.javaName() + ");");
     }
+    p.ofs(1).prn("}").prn();
+  }
+
+  private void printUpdaterWhereImplConstructor(UpdateWhereInfo info, JavaFilePrinter p) {
+    String nameNf36WhereUpdater = p.i(Nf36WhereUpdater.class.getName());
+
+    p.ofs(1).prn("private final " + nameNf36WhereUpdater + " whereUpdater;").prn();
+    p.ofs(1).prn("public " + info.implClassName() + "(" + nameNf36WhereUpdater + " whereUpdater) {");
+    p.ofs(2).prn("this.whereUpdater = whereUpdater;");
+
+    p.ofs(2).prn("whereUpdater.setNf3TableName(\"" + info.nf3TableName() + "\");");
+
+    if (collector.nf3ModifiedBy != null) {
+      p.ofs(2).prn("whereUpdater.setAuthorFieldNames("
+        + "\"" + collector.nf3ModifiedBy.name + "\""
+        + ", \"" + collector.nf6InsertedBy.name + "\""
+        + ");");
+    }
+
+    if (collector.nf3ModifiedAtField != null) {
+      p.ofs(2).prn("whereUpdater.updateFieldToNow(\"" + collector.nf3ModifiedAtField + "\");");
+    }
+
+    p.ofs(2).prn("whereUpdater.setIdFieldNames(" + (
+      info.fields().stream()
+        .filter(Nf3Field::isId)
+        .sorted(Comparator.comparing(Nf3Field::idOrder))
+        .map(f -> "\"" + f.dbName() + "\"")
+        .collect(Collectors.joining(", "))
+    ) + ");");
+
     p.ofs(1).prn("}").prn();
   }
 

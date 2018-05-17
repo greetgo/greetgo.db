@@ -29,4 +29,6 @@ public interface UpdateWhereInfo {
   String setMethodName(Nf3Field f);
 
   String implFullName();
+
+  String nf3TableName();
 }
