@@ -265,6 +265,10 @@ public class JavaGenerator {
 
     String implFullName = resolveFullName(implPackageName, implClassName);
 
+    Nf3CommitMethodName nf3CommitMethodName = nf3Table.source().getAnnotation(Nf3CommitMethodName.class);
+
+    String commitMethodName = nf3CommitMethodName == null ? collector.commitMethodName() : nf3CommitMethodName.value();
+
     return new UpdateWhereInfo() {
       @Override
       public String interfaceClassName() {
@@ -340,6 +344,11 @@ public class JavaGenerator {
       public String nf6TableName(Nf3Field f) {
         return nf3Table.nf6prefix() + nf3Table.tableName() + collector.nf6TableSeparator + f.rootField().dbName();
       }
+
+      @Override
+      public String commitMethodName() {
+        return commitMethodName;
+      }
     };
   }
 
@@ -407,6 +416,8 @@ public class JavaGenerator {
           + "(" + fieldType + " " + f.javaName() + ");").prn();
       }
     }
+
+    p.ofs(1).prn("void " + info.commitMethodName() + "();");
 
     p.printToFile(info.interfaceJavaFile());
 
@@ -498,6 +509,13 @@ public class JavaGenerator {
         p.ofs(2).prn("return this;");
         p.ofs(1).prn("}").prn();
       }
+    }
+
+    {
+      p.ofs(1).prn("@Override");
+      p.ofs(1).prn("public void " + info.commitMethodName() + "() {");
+      p.ofs(2).prn("this.whereUpdater.commit();");
+      p.ofs(1).prn("}");
     }
 
     p.printToFile(info.implJavaFile());

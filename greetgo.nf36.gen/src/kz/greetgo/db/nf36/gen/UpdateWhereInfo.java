@@ -35,4 +35,6 @@ public interface UpdateWhereInfo {
   Class<?> source();
 
   String nf6TableName(Nf3Field f);
+
+  String commitMethodName();
 }
