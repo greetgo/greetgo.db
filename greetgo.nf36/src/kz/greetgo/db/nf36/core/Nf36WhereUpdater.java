@@ -8,8 +8,6 @@ public interface Nf36WhereUpdater {
 
   Nf36WhereUpdater setAuthor(Object author);
 
-  void setTimeFieldName(String timeFieldName);
-
   void setIdFieldNames(String... idFieldNames);
 
   void updateFieldToNow(String fieldName);

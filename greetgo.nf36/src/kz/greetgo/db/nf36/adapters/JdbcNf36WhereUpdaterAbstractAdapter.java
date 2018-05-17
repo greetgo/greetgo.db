@@ -5,6 +5,7 @@ import kz.greetgo.db.Jdbc;
 import kz.greetgo.db.nf36.core.Nf36WhereUpdater;
 import kz.greetgo.db.nf36.core.SqlLogAcceptor;
 import kz.greetgo.db.nf36.model.SqlLog;
+import kz.greetgo.db.nf36.utils.SqlConvertUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,11 +41,6 @@ public abstract class JdbcNf36WhereUpdaterAbstractAdapter implements Nf36WhereUp
   public Nf36WhereUpdater setAuthor(Object author) {
     this.author = author;
     return this;
-  }
-
-  @Override
-  public void setTimeFieldName(String timeFieldName) {
-
   }
 
   @Override
@@ -86,7 +82,7 @@ public abstract class JdbcNf36WhereUpdaterAbstractAdapter implements Nf36WhereUp
 
   @Override
   public void setField(String nf6TableName, String fieldName, Object fieldValue) {
-    setFieldList.add(new SetField(nf6TableName, fieldName, fieldValue));
+    setFieldList.add(new SetField(nf6TableName, fieldName, SqlConvertUtil.forSql(fieldValue)));
   }
 
   protected static class Where {
@@ -103,7 +99,7 @@ public abstract class JdbcNf36WhereUpdaterAbstractAdapter implements Nf36WhereUp
 
   @Override
   public void where(String fieldName, Object fieldValue) {
-    whereList.add(new Where(fieldName, fieldValue));
+    whereList.add(new Where(fieldName, SqlConvertUtil.forSql(fieldValue)));
   }
 
   protected static class IdValues {

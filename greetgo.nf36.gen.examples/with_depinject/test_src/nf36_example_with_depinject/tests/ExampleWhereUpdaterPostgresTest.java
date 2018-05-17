@@ -11,7 +11,10 @@ import nf36_example_with_depinject.generated.faces.ExampleUpserter;
 import nf36_example_with_depinject.generated.faces.ExampleWhereUpdater;
 import nf36_example_with_depinject.jdbc.ByOne;
 import nf36_example_with_depinject.jdbc.ByOneLast;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import java.sql.Connection;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -94,5 +97,20 @@ public class ExampleWhereUpdaterPostgresTest extends AbstractDepinjectTestNg {
       String author = jdbc.get().execute(new ByOneLast<>("id", id3, "m_client_name", "inserted_by"));
       assertThat(author).isEqualTo("Создатель");
     }
+  }
+
+
+  @Test
+  public void test_booleanSet() {
+
+    String id = RND.str(10);
+
+    exampleUpserter.get().stone(id)
+      .name(RND.str(10))
+      .actual(true)
+      .commit();
+
+    exampleWhereUpdater.get().stone().whereIdIsEqualTo(id).setActual(false).commit();
+
   }
 }

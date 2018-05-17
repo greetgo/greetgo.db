@@ -21,6 +21,9 @@ public class SqlConvertUtil {
         throw new RuntimeException(e);
       }
     }
+    if (value instanceof java.sql.Date) return value;
+    if (value instanceof java.sql.Time) return value;
+    if (value instanceof java.sql.Timestamp) return value;
     if (value instanceof java.util.Date) {
       java.util.Date date = (java.util.Date) value;
       return new java.sql.Timestamp(date.getTime());
