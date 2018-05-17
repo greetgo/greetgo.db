@@ -330,6 +330,16 @@ public class JavaGenerator {
       public String nf3TableName() {
         return nf3Table.nf3TableName();
       }
+
+      @Override
+      public Class<?> source() {
+        return nf3Table.source();
+      }
+
+      @Override
+      public String nf6TableName(Nf3Field f) {
+        return nf3Table.nf6prefix() + nf3Table.tableName() + collector.nf6TableSeparator + f.rootField().dbName();
+      }
     };
   }
 
@@ -458,6 +468,7 @@ public class JavaGenerator {
         p.ofs(1).prn("@Override");
         p.ofs(1).prn("public " + info.interfaceClassName() + " " + info.setMethodName(f)
           + "(" + fieldType + " " + f.javaName() + ") {");
+        p.ofs(2).prn("this.whereUpdater.setField(\"" + info.nf6TableName(f) + "\", \"" + f.dbName() + "\", " + f.javaName() + ");");
         p.ofs(2).prn("return this;");
         p.ofs(1).prn("}").prn();
       }
@@ -475,6 +486,15 @@ public class JavaGenerator {
         p.ofs(1).prn("@Override");
         p.ofs(1).prn("public " + info.interfaceClassName() + " " + info.whereMethodName(f)
           + "(" + fieldType + " " + f.javaName() + ") {");
+
+        if (f.notNullAndNotPrimitive()) {
+          p.ofs(2).prn("if (" + f.javaName() + " == null) {");
+          p.ofs(3).prn("throw new " + p.i(CannotBeNull.class.getName())
+            + "(\"Field " + info.source().getSimpleName() + "." + f.javaName() + " cannot be null\");");
+          p.ofs(2).prn("}");
+        }
+
+        p.ofs(2).prn("this.whereUpdater.where(\"" + f.dbName() + "\", " + f.javaName() + ");");
         p.ofs(2).prn("return this;");
         p.ofs(1).prn("}").prn();
       }
