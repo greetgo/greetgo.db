@@ -2,6 +2,7 @@ package nf36_example_with_depinject.generated.faces;
 
 import nf36_example_with_depinject.generated.faces.update_where.ClientUpdateWhere;
 import nf36_example_with_depinject.generated.faces.update_where.PersonUpdateWhere;
+import nf36_example_with_depinject.generated.faces.update_where.StoneUpdateWhere;
 import nf36_example_with_depinject.generated.faces.update_where.StreetUpdateWhere;
 import nf36_example_with_depinject.generated.faces.update_where.inner.ChairUpdateWhere;
 import nf36_example_with_depinject.generated.faces.update_where.inner.CharmUpdateWhere;
@@ -18,6 +19,8 @@ public interface ExampleWhereUpdater {
   ClientAddressUpdateWhere clientAddress();
 
   PersonUpdateWhere person();
+
+  StoneUpdateWhere stone();
 
   StreetUpdateWhere street();
 

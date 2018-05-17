@@ -3,6 +3,7 @@ package nf36_example_with_depinject.generated.faces;
 import java.lang.String;
 import nf36_example_with_depinject.generated.faces.upsert.ClientUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.PersonUpsert;
+import nf36_example_with_depinject.generated.faces.upsert.StoneUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.StreetUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.inner.ChairUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.inner.CharmUpsert;
@@ -19,6 +20,8 @@ public interface ExampleUpserter {
   ClientAddressUpsert clientAddress(long clientId);
 
   PersonUpsert person(String id);
+
+  StoneUpsert stone(String id);
 
   StreetUpsert street(long id);
 

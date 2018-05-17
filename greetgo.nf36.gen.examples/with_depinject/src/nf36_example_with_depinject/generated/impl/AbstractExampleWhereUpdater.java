@@ -4,6 +4,7 @@ import kz.greetgo.db.nf36.core.Nf36WhereUpdater;
 import nf36_example_with_depinject.generated.faces.ExampleWhereUpdater;
 import nf36_example_with_depinject.generated.faces.update_where.ClientUpdateWhere;
 import nf36_example_with_depinject.generated.faces.update_where.PersonUpdateWhere;
+import nf36_example_with_depinject.generated.faces.update_where.StoneUpdateWhere;
 import nf36_example_with_depinject.generated.faces.update_where.StreetUpdateWhere;
 import nf36_example_with_depinject.generated.faces.update_where.inner.ChairUpdateWhere;
 import nf36_example_with_depinject.generated.faces.update_where.inner.CharmUpdateWhere;
@@ -11,6 +12,7 @@ import nf36_example_with_depinject.generated.faces.update_where.inner.ClientAddr
 import nf36_example_with_depinject.generated.faces.update_where.inner.WowUpdateWhere;
 import nf36_example_with_depinject.generated.impl.update_where.ClientUpdateWhereImpl;
 import nf36_example_with_depinject.generated.impl.update_where.PersonUpdateWhereImpl;
+import nf36_example_with_depinject.generated.impl.update_where.StoneUpdateWhereImpl;
 import nf36_example_with_depinject.generated.impl.update_where.StreetUpdateWhereImpl;
 import nf36_example_with_depinject.generated.impl.update_where.inner.ChairUpdateWhereImpl;
 import nf36_example_with_depinject.generated.impl.update_where.inner.CharmUpdateWhereImpl;
@@ -43,6 +45,11 @@ public abstract class AbstractExampleWhereUpdater implements ExampleWhereUpdater
   @Override
   public PersonUpdateWhere person() {
     return new PersonUpdateWhereImpl(createWhereUpdater());
+  }
+
+  @Override
+  public StoneUpdateWhere stone() {
+    return new StoneUpdateWhereImpl(createWhereUpdater());
   }
 
   @Override
