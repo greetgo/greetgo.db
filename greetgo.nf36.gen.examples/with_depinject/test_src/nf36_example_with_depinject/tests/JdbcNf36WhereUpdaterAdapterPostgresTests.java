@@ -325,16 +325,16 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
   private static long gotMillis(Object d) {
     if (d == null) return 0;
 
+    if (d instanceof Date) {
+      return ((Date) d).getTime();
+    }
+
     if (d.getClass().getName().equals("oracle.sql.TIMESTAMP")) {
       try {
-        d = d.getClass().getMethod("timestampValue").invoke(d);
+        return ((Date) d.getClass().getMethod("timestampValue").invoke(d)).getTime();
       } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
         throw new RuntimeException(e);
       }
-    }
-
-    if (d instanceof Date) {
-      return ((Date) d).getTime();
     }
 
     throw new IllegalArgumentException("Cannot got millis from " + d.getClass() + " with value = " + d);
@@ -349,7 +349,7 @@ public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectT
     createTableTmp2_f1();
     createTableTmp2_f2();
 
-    String ins = "insert into tmp2 (id1, id2, name1, name2, f1, f2)values";
+    String ins = "insert into tmp2 (id1, id2, name1, name2, f1, f2) values";
     exec(ins + "('1',  '11',  'john1',  'john2',  'old val 11',  'old val 12')");
     exec(ins + "('2',  '22',  'john1',  'john2',  'old val 21',  'old val 22')");
     exec(ins + "('3',  '33',  'left ',  'left ',  'old val 31',  'old val 32')");

@@ -1,6 +1,7 @@
 package kz.greetgo.db.nf36.gen;
 
 import kz.greetgo.db.nf36.core.Nf36Upserter;
+import kz.greetgo.db.nf36.core.Nf36WhereUpdater;
 import kz.greetgo.db.nf36.core.Nf3CommitMethodName;
 import kz.greetgo.db.nf36.core.Nf3MoreMethodName;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
@@ -618,6 +619,8 @@ public class JavaGenerator {
       + " class " + updaterImplClassName()
       + " implements " + p.i(updaterInterfaceClassName);
 
+    printCreateWhereUpdaterMethod(p);
+
     for (Nf3Table nf3Table : collector.collect()) {
       printUpdateImplMethod(p, nf3Table);
     }
@@ -627,9 +630,18 @@ public class JavaGenerator {
 
   String upserterCreateMethod = "createUpserter";
 
+
   @SuppressWarnings("unused")
   public JavaGenerator setUpserterCreateMethod(String upserterCreateMethod) {
     this.upserterCreateMethod = upserterCreateMethod;
+    return this;
+  }
+
+  String whereUpdaterCreateMethod = "createWhereUpdater";
+
+  @SuppressWarnings("unused")
+  public JavaGenerator setWhereUpdaterCreateMethod(String whereUpdaterCreateMethod) {
+    this.whereUpdaterCreateMethod = whereUpdaterCreateMethod;
     return this;
   }
 
@@ -645,6 +657,22 @@ public class JavaGenerator {
 
     p.ofs(1).prn("protected " + (abstracting ? "abstract " : "")
       + upserterClassName + " " + upserterCreateMethod + "()"
+      + (abstracting ? ";\n" : " {")
+    );
+
+    if (abstracting) return;
+
+    String notImplError = p.i(RuntimeException.class.getName());
+
+    p.ofs(2).prn("throw new " + notImplError + "(\"Not implemented\");");
+    p.ofs(1).prn("}").prn();
+  }
+
+  private void printCreateWhereUpdaterMethod(JavaFilePrinter p) {
+    String whereUpdaterClassName = p.i(Nf36WhereUpdater.class.getName());
+
+    p.ofs(1).prn("protected " + (abstracting ? "abstract " : "")
+      + whereUpdaterClassName + " " + whereUpdaterCreateMethod + "()"
       + (abstracting ? ";\n" : " {")
     );
 
