@@ -1,8 +1,10 @@
-package nf36_example_with_depinject.util;
+package nf36_example_with_depinject.beans.all;
 
 import kz.greetgo.db.nf36.core.SqlLogAcceptor;
 import kz.greetgo.db.nf36.model.SqlLog;
+import kz.greetgo.depinject.core.Bean;
 
+@Bean
 public class MySqlLogAcceptor implements SqlLogAcceptor {
   @Override
   public boolean isTraceEnabled() {

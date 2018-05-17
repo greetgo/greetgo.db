@@ -1,6 +1,5 @@
 package nf36_example_with_depinject.generated.impl;
 
-import java.lang.RuntimeException;
 import java.lang.String;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import nf36_example_with_depinject.generated.faces.ExampleUpserter;

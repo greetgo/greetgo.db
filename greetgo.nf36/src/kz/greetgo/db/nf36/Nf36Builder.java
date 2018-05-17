@@ -1,6 +1,7 @@
 package kz.greetgo.db.nf36;
 
 import kz.greetgo.db.nf36.adapters.UpserterAdapterBuilder;
+import kz.greetgo.db.nf36.adapters.WhereUpdaterBuilder;
 
 public class Nf36Builder {
 
@@ -12,5 +13,9 @@ public class Nf36Builder {
 
   public UpserterAdapterBuilder upserter() {
     return new UpserterAdapterBuilder();
+  }
+
+  public WhereUpdaterBuilder whereUpdater() {
+    return new WhereUpdaterBuilder();
   }
 }

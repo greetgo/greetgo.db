@@ -19,7 +19,7 @@ public class ModelCollector {
   String nf3prefix;
   String nf6prefix;
   int enumLength = 0;
-  private String nf6TableSeparator = "_";
+  String nf6TableSeparator = "_";
   String nf6timeField = "ts";
   String nf3CreatedAtField = null;
   String nf3ModifiedAtField = null;

@@ -4,9 +4,11 @@ import kz.greetgo.db.ConnectionCallback;
 import kz.greetgo.db.Jdbc;
 import kz.greetgo.depinject.core.Bean;
 import nf36_example_with_depinject.env.DbParamsOracle;
+import nf36_example_with_depinject.errors.SqlError;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 @Bean
 public class JdbcOracle implements Jdbc {
@@ -23,6 +25,7 @@ public class JdbcOracle implements Jdbc {
       }
 
     } catch (Exception e) {
+      if (e instanceof SQLException) throw new SqlError((SQLException) e);
       throw new RuntimeException(e);
     }
 
