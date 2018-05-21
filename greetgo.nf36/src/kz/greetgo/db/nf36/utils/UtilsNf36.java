@@ -66,14 +66,17 @@ public class UtilsNf36 {
     javaName.getChars(0, sourceLen, source, 0);
     char dest[] = new char[source.length * 2];
     int j = 0;
+    boolean wasLow = false;
     for (int i = 0; i < sourceLen; i++) {
       char c = source[i];
       char lowC = Character.toLowerCase(c);
       if (lowC == c) {
         dest[j++] = lowC;
+        wasLow = true;
       } else {
-        dest[j++] = '_';
+        if (wasLow) dest[j++] = '_';
         dest[j++] = lowC;
+        wasLow = false;
       }
     }
     return new String(dest, 0, j);
@@ -84,6 +87,7 @@ public class UtilsNf36 {
     return srcDir + "/" + packageName.replace('.', '/');
   }
 
+  @SuppressWarnings("unused")
   public static <E> List<E> mutableList(E element) {
     List<E> ret = new ArrayList<>();
     ret.add(element);
@@ -116,6 +120,7 @@ public class UtilsNf36 {
     }
   }
 
+  @SuppressWarnings("unused")
   public static String readAll(Reader characterStream) {
 
     try {

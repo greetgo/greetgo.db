@@ -25,4 +25,7 @@ public class Person {
 
   @Nf3Description("amount")
   public BigDecimal amount;
+
+  @Nf3Description("amountRU")
+  public BigDecimal amountRU;
 }

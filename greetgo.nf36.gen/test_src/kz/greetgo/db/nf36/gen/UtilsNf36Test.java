@@ -84,13 +84,13 @@ public class UtilsNf36Test {
   @Test
   public void javaNameToDbName_3() throws Exception {
     String dbName = UtilsNf36.javaNameToDbName("helloDTO");
-    assertThat(dbName).isEqualTo("hello_d_t_o");
+    assertThat(dbName).isEqualTo("hello_dto");
   }
 
   @Test
   public void javaNameToDbName_4() throws Exception {
     String dbName = UtilsNf36.javaNameToDbName("HelloWorld");
-    assertThat(dbName).isEqualTo("_hello_world");
+    assertThat(dbName).isEqualTo("hello_world");
   }
 
   @Test
@@ -98,6 +98,7 @@ public class UtilsNf36Test {
     String dbName = UtilsNf36.javaNameToDbName("первоеИмя");
     assertThat(dbName).isEqualTo("первое_имя");
   }
+
 
   @Test
   public void javaNameToDbName_6() throws Exception {
@@ -108,13 +109,25 @@ public class UtilsNf36Test {
   @Test
   public void javaNameToDbName_7() throws Exception {
     String dbName = UtilsNf36.javaNameToDbName("приветСМИ");
-    assertThat(dbName).isEqualTo("привет_с_м_и");
+    assertThat(dbName).isEqualTo("привет_сми");
   }
 
   @Test
   public void javaNameToDbName_8() throws Exception {
     String dbName = UtilsNf36.javaNameToDbName("ПриветМир");
-    assertThat(dbName).isEqualTo("_привет_мир");
+    assertThat(dbName).isEqualTo("привет_мир");
+  }
+
+  @Test
+  public void javaNameToDbName_9() throws Exception {
+    String dbName = UtilsNf36.javaNameToDbName("helloWORLD");
+    assertThat(dbName).isEqualTo("hello_world");
+  }
+
+  @Test
+  public void javaNameToDbName_10() throws Exception {
+    String dbName = UtilsNf36.javaNameToDbName("helloWORLdMan");
+    assertThat(dbName).isEqualTo("hello_world_man");
   }
 
   @Test
