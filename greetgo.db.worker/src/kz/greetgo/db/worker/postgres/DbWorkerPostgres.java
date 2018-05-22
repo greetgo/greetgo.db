@@ -16,6 +16,7 @@ import java.sql.Statement;
 public class DbWorkerPostgres {
 
   public BeanGetter<DbConfig> dbConfig;
+  public BeanGetter<DbParametersPostgres> dbParameters;
 
   private void exec(Connection con, String sql) throws Exception {
     sql = sql.replace('\n', ' ').trim();
@@ -36,7 +37,7 @@ public class DbWorkerPostgres {
     }
 
     try (Connection con = getConnection()) {
-      exec(con, "create schema memory_never_be_superfluous");
+      exec(con, "create schema " + dbParameters.get().schema());
     }
   }
 

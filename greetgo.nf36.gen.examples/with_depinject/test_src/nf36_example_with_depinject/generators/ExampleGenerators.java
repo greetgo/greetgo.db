@@ -8,7 +8,7 @@ import kz.greetgo.db.nf36.gen.SqlDialect;
 import kz.greetgo.depinject.core.Bean;
 import kz.greetgo.depinject.core.BeanGetter;
 import kz.greetgo.depinject.core.HasAfterInject;
-import nf36_example_with_depinject.conf.DbParameters;
+import kz.greetgo.db.worker.DbParameters;
 import nf36_example_with_depinject.structure.Client;
 import nf36_example_with_depinject.structure.Person;
 import nf36_example_with_depinject.structure.Stone;
@@ -64,12 +64,12 @@ public class ExampleGenerators implements HasAfterInject {
       .setOutDir(withDepinjectDir() + "/src")
       .setCleanOutDirsBeforeGeneration(true)
       .setInterfaceBasePackage("nf36_example_with_depinject.generated.faces")
-      .setImplBasePackage("nf36_example_with_depinject.generated." + dbParameters.get().baseSubPackage() + ".impl")
+      .setImplBasePackage("nf36_example_with_depinject.generated.impl." + dbParameters.get().baseSubPackage())
       .setSourceBasePackage(Client.class.getPackage().getName())
       .setUpserterClassName("ExampleUpserter")
       .setUpdaterClassName("ExampleWhereUpdater")
-      .setUpdaterImplClassName("ExampleUpserter" + dbParameters.get().mainClassesSuffix() + "Impl")
-      .setUpdaterImplClassName("ExampleWhereUpdater" + dbParameters.get().mainClassesSuffix() + "Impl")
+      .setUpserterImplClassName("AbstractExampleUpserter" + dbParameters.get().mainClassesSuffix())
+      .setUpdaterImplClassName("AbstractExampleWhereUpdater" + dbParameters.get().mainClassesSuffix())
       .setAbstracting(true)
     ;
 
