@@ -26,19 +26,19 @@ public class ClientUpsertImpl implements ClientUpsert {
     if (surname == null) {
       throw new CannotBeNull("Field Client.surname cannot be null");
     }
-    upserter.putField("m_client_surname", "surname", surname);
+    upserter.putField("memory_never_be_superfluous.client_surname", "surname", surname);
     return this;
   }
 
   @Override
   public ClientUpsert name(String name) {
-    upserter.putField("m_client_name", "name", name);
+    upserter.putField("memory_never_be_superfluous.client_name", "name", name);
     return this;
   }
 
   @Override
   public ClientUpsert patronymic(String patronymic) {
-    upserter.putField("m_client_patronymic", "patronymic", patronymic);
+    upserter.putField("memory_never_be_superfluous.client_patronymic", "patronymic", patronymic);
     return this;
   }
 
@@ -47,19 +47,19 @@ public class ClientUpsertImpl implements ClientUpsert {
     if (charmId == null) {
       throw new CannotBeNull("Field Client.charmId cannot be null");
     }
-    upserter.putField("m_client_charm_id", "charm_id", charmId);
+    upserter.putField("memory_never_be_superfluous.client_charm_id", "charm_id", charmId);
     return this;
   }
 
   @Override
   public ClientUpsert longDescription(String longDescription) {
-    upserter.putField("m_client_long_description", "long_description", longDescription);
+    upserter.putField("memory_never_be_superfluous.client_long_description", "long_description", longDescription);
     return this;
   }
 
   @Override
   public ClientUpsert myChairId1(Long myChairId1) {
-    upserter.putField("m_client_my_chair_id1", "my_chair_id1", myChairId1);
+    upserter.putField("memory_never_be_superfluous.client_my_chair_id1", "my_chair_id1", myChairId1);
     return this;
   }
 
@@ -68,13 +68,13 @@ public class ClientUpsertImpl implements ClientUpsert {
     if (myChairId2 == null) {
       throw new CannotBeNull("Field Client.myChairId2 cannot be null");
     }
-    upserter.putField("m_client_my_chair_id1", "my_chair_id2", myChairId2);
+    upserter.putField("memory_never_be_superfluous.client_my_chair_id1", "my_chair_id2", myChairId2);
     return this;
   }
 
   @Override
   public ClientUpsert hisChairLongId(Long hisChairLongId) {
-    upserter.putField("m_client_his_chair_long_id", "his_chair_long_id", hisChairLongId);
+    upserter.putField("memory_never_be_superfluous.client_his_chair_long_id", "his_chair_long_id", hisChairLongId);
     return this;
   }
 
@@ -83,7 +83,7 @@ public class ClientUpsertImpl implements ClientUpsert {
     if (hisChairStrId == null) {
       throw new CannotBeNull("Field Client.hisChairStrId cannot be null");
     }
-    upserter.putField("m_client_his_chair_long_id", "his_chair_str_id", hisChairStrId);
+    upserter.putField("memory_never_be_superfluous.client_his_chair_long_id", "his_chair_str_id", hisChairStrId);
     return this;
   }
 

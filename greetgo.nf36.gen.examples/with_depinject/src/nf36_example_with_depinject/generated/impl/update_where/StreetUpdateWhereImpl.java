@@ -19,13 +19,13 @@ public class StreetUpdateWhereImpl implements StreetUpdateWhere {
 
   @Override
   public StreetUpdateWhere setType(StreetType type) {
-    this.whereUpdater.setField("m_street_type", "type", type);
+    this.whereUpdater.setField("memory_never_be_superfluous.street_type", "type", type);
     return this;
   }
 
   @Override
   public StreetUpdateWhere setName(String name) {
-    this.whereUpdater.setField("m_street_name", "name", name);
+    this.whereUpdater.setField("memory_never_be_superfluous.street_name", "name", name);
     return this;
   }
 

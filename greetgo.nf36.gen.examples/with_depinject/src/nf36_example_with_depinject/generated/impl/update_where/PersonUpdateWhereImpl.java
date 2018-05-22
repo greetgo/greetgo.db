@@ -19,19 +19,25 @@ public class PersonUpdateWhereImpl implements PersonUpdateWhere {
 
   @Override
   public PersonUpdateWhere setFio(String fio) {
-    this.whereUpdater.setField("m_person_fio", "fio", fio);
+    this.whereUpdater.setField("memory_never_be_superfluous.person_fio", "fio", fio);
     return this;
   }
 
   @Override
   public PersonUpdateWhere setBlocked(boolean blocked) {
-    this.whereUpdater.setField("m_person_blocked", "blocked", blocked);
+    this.whereUpdater.setField("memory_never_be_superfluous.person_blocked", "blocked", blocked);
     return this;
   }
 
   @Override
   public PersonUpdateWhere setAmount(BigDecimal amount) {
-    this.whereUpdater.setField("m_person_amount", "amount", amount);
+    this.whereUpdater.setField("memory_never_be_superfluous.person_amount", "amount", amount);
+    return this;
+  }
+
+  @Override
+  public PersonUpdateWhere setAmountRU(BigDecimal amountRU) {
+    this.whereUpdater.setField("memory_never_be_superfluous.person_amount_ru", "amount_ru", amountRU);
     return this;
   }
 
@@ -40,6 +46,12 @@ public class PersonUpdateWhereImpl implements PersonUpdateWhere {
   @Override
   public PersonUpdateWhere whereAmountIsEqualTo(BigDecimal amount) {
     this.whereUpdater.where("amount", amount);
+    return this;
+  }
+
+  @Override
+  public PersonUpdateWhere whereAmountRUIsEqualTo(BigDecimal amountRU) {
+    this.whereUpdater.where("amount_ru", amountRU);
     return this;
   }
 

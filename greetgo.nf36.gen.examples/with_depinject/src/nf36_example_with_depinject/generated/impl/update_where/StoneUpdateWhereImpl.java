@@ -18,13 +18,13 @@ public class StoneUpdateWhereImpl implements StoneUpdateWhere {
 
   @Override
   public StoneUpdateWhere setName(String name) {
-    this.whereUpdater.setField("m_stone_name", "name", name);
+    this.whereUpdater.setField("memory_never_be_superfluous.stone_name", "name", name);
     return this;
   }
 
   @Override
   public StoneUpdateWhere setActual(boolean actual) {
-    this.whereUpdater.setField("m_stone_actual", "actual", actual);
+    this.whereUpdater.setField("memory_never_be_superfluous.stone_actual", "actual", actual);
     return this;
   }
 

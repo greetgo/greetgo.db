@@ -1,21 +1,21 @@
-package kz.greetgo.db.worker;
+package kz.greetgo.db.worker.postgres;
 
 
 import kz.greetgo.conf.sys_params.SysParams;
+import kz.greetgo.db.worker.DbConfig;
 import kz.greetgo.db.worker.utils.UtilsFiles;
+import kz.greetgo.depinject.core.Bean;
+import kz.greetgo.depinject.core.BeanGetter;
 
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
+@Bean
 public class DbWorkerPostgres {
 
-  private DbConfig dbConfig;
-
-  public DbWorkerPostgres(DbConfig dbConfig) {
-    this.dbConfig = dbConfig;
-  }
+  public BeanGetter<DbConfig> dbConfig;
 
   private void exec(Connection con, String sql) throws Exception {
     sql = sql.replace('\n', ' ').trim();
@@ -29,10 +29,14 @@ public class DbWorkerPostgres {
 
   public void recreateDb() throws Exception {
     try (Connection con = getPostgresAdminConnection()) {
-      exec(con, "drop database if exists " + dbConfig.dbName());
-      exec(con, "drop user if exists " + dbConfig.username());
-      exec(con, "create user " + dbConfig.username() + " encrypted password '" + dbConfig.password() + "'");
-      exec(con, "create database " + dbConfig.dbName() + " with owner = '" + dbConfig.username() + "'");
+      exec(con, "drop database if exists " + dbConfig.get().dbName());
+      exec(con, "drop user if exists " + dbConfig.get().username());
+      exec(con, "create user " + dbConfig.get().username() + " encrypted password '" + dbConfig.get().password() + "'");
+      exec(con, "create database " + dbConfig.get().dbName() + " with owner = '" + dbConfig.get().username() + "'");
+    }
+
+    try (Connection con = getConnection()) {
+      exec(con, "create schema memory_never_be_superfluous");
     }
   }
 
@@ -47,7 +51,7 @@ public class DbWorkerPostgres {
 
   public Connection getConnection() throws Exception {
     Class.forName("org.postgresql.Driver");
-    return DriverManager.getConnection(dbConfig.url(), dbConfig.username(), dbConfig.password());
+    return DriverManager.getConnection(dbConfig.get().url(), dbConfig.get().username(), dbConfig.get().password());
   }
 
   public void applySqlFile(File sqlFile) {

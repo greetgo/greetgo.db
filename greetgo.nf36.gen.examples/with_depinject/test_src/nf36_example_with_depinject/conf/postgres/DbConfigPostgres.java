@@ -1,17 +1,11 @@
-package nf36_example_with_depinject.util;
+package nf36_example_with_depinject.conf.postgres;
 
 import kz.greetgo.db.worker.DbConfig;
+import kz.greetgo.depinject.core.Bean;
 import nf36_example_with_depinject.env.DbParamsPostgres;
 
+@Bean
 public class DbConfigPostgres implements DbConfig {
-
-  private DbConfigPostgres() {}
-
-  private static final DbConfigPostgres instance = new DbConfigPostgres();
-
-  public static DbConfigPostgres instance() {
-    return instance;
-  }
 
   @Override
   public String url() {

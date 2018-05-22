@@ -5,7 +5,9 @@ import kz.greetgo.db.nf36.gen.DdlGenerator;
 import kz.greetgo.db.nf36.gen.JavaGenerator;
 import kz.greetgo.db.nf36.gen.ModelCollector;
 import kz.greetgo.db.nf36.gen.SqlDialect;
-import kz.greetgo.db.nf36.gen.SqlDialectPostgres;
+import kz.greetgo.depinject.core.Bean;
+import kz.greetgo.depinject.core.BeanGetter;
+import kz.greetgo.depinject.core.HasAfterInject;
 import nf36_example_with_depinject.structure.Client;
 import nf36_example_with_depinject.structure.Person;
 import nf36_example_with_depinject.structure.Stone;
@@ -21,15 +23,19 @@ import java.util.List;
 
 import static kz.greetgo.db.worker.Places.withDepinjectDir;
 
-public class ExampleGenerators {
+@Bean
+public class ExampleGenerators implements HasAfterInject {
+
+  public BeanGetter<SqlDialect> sqlDialect;
 
   private JavaGenerator javaGenerator;
 
-  public ExampleGenerators() {
+  @Override
+  public void afterInject() throws Exception {
     ModelCollector collector = ModelCollector
       .newCollector()
       .setNf3Prefix(/*empty*/"")
-      .setNf6Prefix("m_")
+      .setNf6Prefix("memory_never_be_superfluous.")
       .setEnumLength(51)
       .setNf3CreatedAtField("created_at")
       .setNf3ModifiedAtField("mod_at")
@@ -63,26 +69,18 @@ public class ExampleGenerators {
     ;
 
     ddlGenerator = DdlGenerator.newGenerator(collector)
-      .setSqlDialect(new SqlDialectPostgres())
+      .setSqlDialect(sqlDialect.get())
       .setCommandSeparator(";;")
     ;
   }
 
   private DdlGenerator ddlGenerator;
 
-  public static void main(String[] args) {
-    ExampleGenerators exampleGenerators = new ExampleGenerators();
-
-    exampleGenerators.generateJava();
-    exampleGenerators.generateSqlFiles(new SqlDialectPostgres());
-  }
-
   public void generateJava() {
     javaGenerator.generate();
   }
 
-  public List<File> generateSqlFiles(SqlDialect sqlDialect) {
-    ddlGenerator.setSqlDialect(sqlDialect);
+  public List<File> generateSqlFiles() {
     String dir = withDepinjectDir() + "/build/gen_sql/" + sqlDialect.getClass().getSimpleName() + "/";
     List<File> sqlFileList = new ArrayList<>();
 

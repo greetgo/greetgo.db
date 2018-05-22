@@ -21,7 +21,7 @@ public class CharmUpsertImpl implements CharmUpsert {
 
   @Override
   public CharmUpsert name(String name) {
-    upserter.putField("m_charm_name", "name", name);
+    upserter.putField("memory_never_be_superfluous.charm_name", "name", name);
     return this;
   }
 

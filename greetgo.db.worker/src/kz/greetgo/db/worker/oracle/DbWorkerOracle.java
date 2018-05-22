@@ -1,8 +1,11 @@
-package kz.greetgo.db.worker;
+package kz.greetgo.db.worker.oracle;
 
 
 import kz.greetgo.conf.sys_params.SysParams;
+import kz.greetgo.db.worker.DbConfig;
 import kz.greetgo.db.worker.utils.UtilsFiles;
+import kz.greetgo.depinject.core.Bean;
+import kz.greetgo.depinject.core.BeanGetter;
 
 import java.io.File;
 import java.sql.Connection;
@@ -10,13 +13,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+@Bean
 public class DbWorkerOracle {
 
-  private DbConfig dbConfig;
-
-  public DbWorkerOracle(DbConfig dbConfig) {
-    this.dbConfig = dbConfig;
-  }
+  public BeanGetter<DbConfig> dbConfig;
 
   private void exec(Connection con, String sql) throws Exception {
     sql = sql.replace('\n', ' ').trim();
@@ -41,7 +41,7 @@ public class DbWorkerOracle {
       }
 
       try {
-        exec(con, "drop user " + dbConfig.username() + " cascade");
+        exec(con, "drop user " + dbConfig.get().username() + " cascade");
       } catch (SQLException e) {
         //noinspection StatementWithEmptyBody
         if (e.getMessage().startsWith("ORA-01918:")) {
@@ -49,8 +49,8 @@ public class DbWorkerOracle {
         } else throw e;
       }
 
-      exec(con, "create user " + dbConfig.username() + " identified by " + dbConfig.password());
-      exec(con, "grant all privileges to " + dbConfig.username());
+      exec(con, "create user " + dbConfig.get().username() + " identified by " + dbConfig.get().password());
+      exec(con, "grant all privileges to " + dbConfig.get().username());
 
     } catch (SQLException e) {
       throw new RuntimeException("SQL State = " + e.getSQLState() + " ---> " + e.getMessage(), e);
@@ -68,7 +68,7 @@ public class DbWorkerOracle {
 
   public Connection getConnection() throws Exception {
     Class.forName("oracle.jdbc.driver.OracleDriver");
-    return DriverManager.getConnection(dbConfig.url(), dbConfig.username(), dbConfig.password());
+    return DriverManager.getConnection(dbConfig.get().url(), dbConfig.get().username(), dbConfig.get().password());
   }
 
   public void applySqlFile(File sqlFile) {

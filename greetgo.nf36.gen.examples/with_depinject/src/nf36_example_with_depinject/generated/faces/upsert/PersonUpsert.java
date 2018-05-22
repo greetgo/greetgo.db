@@ -11,6 +11,8 @@ public interface PersonUpsert {
 
   PersonUpsert amount(BigDecimal amount);
 
+  PersonUpsert amountRU(BigDecimal amountRU);
+
   PersonUpsert more(String id);
 
   void commit();

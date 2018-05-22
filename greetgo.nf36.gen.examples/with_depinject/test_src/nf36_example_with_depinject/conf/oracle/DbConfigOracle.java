@@ -1,17 +1,11 @@
-package nf36_example_with_depinject.util;
+package nf36_example_with_depinject.conf.oracle;
 
 import kz.greetgo.db.worker.DbConfig;
+import kz.greetgo.depinject.core.Bean;
 import nf36_example_with_depinject.env.DbParamsOracle;
 
+@Bean
 public class DbConfigOracle implements DbConfig {
-
-  private DbConfigOracle() {}
-
-  private static final DbConfigOracle instance = new DbConfigOracle();
-
-  public static DbConfigOracle instance() {
-    return instance;
-  }
 
   @Override
   public String url() {

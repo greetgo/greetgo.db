@@ -22,13 +22,13 @@ public class ChairUpsertImpl implements ChairUpsert {
 
   @Override
   public ChairUpsert name(String name) {
-    upserter.putField("m_chair_name", "name", name);
+    upserter.putField("memory_never_be_superfluous.chair_name", "name", name);
     return this;
   }
 
   @Override
   public ChairUpsert description(String description) {
-    upserter.putField("m_chair_description", "description", description);
+    upserter.putField("memory_never_be_superfluous.chair_description", "description", description);
     return this;
   }
 

@@ -6,12 +6,16 @@ import java.math.BigDecimal;
 public interface PersonUpdateWhere {
   PersonUpdateWhere setAmount(BigDecimal amount);
 
+  PersonUpdateWhere setAmountRU(BigDecimal amountRU);
+
   PersonUpdateWhere setBlocked(boolean blocked);
 
   PersonUpdateWhere setFio(String fio);
 
 
   PersonUpdateWhere whereAmountIsEqualTo(BigDecimal amount);
+
+  PersonUpdateWhere whereAmountRUIsEqualTo(BigDecimal amountRU);
 
   PersonUpdateWhere whereBlockedIsEqualTo(boolean blocked);
 

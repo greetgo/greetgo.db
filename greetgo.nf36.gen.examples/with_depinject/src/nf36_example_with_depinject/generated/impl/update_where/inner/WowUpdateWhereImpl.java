@@ -18,7 +18,7 @@ public class WowUpdateWhereImpl implements WowUpdateWhere {
 
   @Override
   public WowUpdateWhere setHello(String hello) {
-    this.whereUpdater.setField("m_wow_hello", "hello", hello);
+    this.whereUpdater.setField("memory_never_be_superfluous.wow_hello", "hello", hello);
     return this;
   }
 

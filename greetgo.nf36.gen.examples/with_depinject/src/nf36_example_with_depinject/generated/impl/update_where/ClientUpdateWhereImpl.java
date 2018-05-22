@@ -19,55 +19,55 @@ public class ClientUpdateWhereImpl implements ClientUpdateWhere {
 
   @Override
   public ClientUpdateWhere setSurname(String surname) {
-    this.whereUpdater.setField("m_client_surname", "surname", surname);
+    this.whereUpdater.setField("memory_never_be_superfluous.client_surname", "surname", surname);
     return this;
   }
 
   @Override
   public ClientUpdateWhere setName(String name) {
-    this.whereUpdater.setField("m_client_name", "name", name);
+    this.whereUpdater.setField("memory_never_be_superfluous.client_name", "name", name);
     return this;
   }
 
   @Override
   public ClientUpdateWhere setPatronymic(String patronymic) {
-    this.whereUpdater.setField("m_client_patronymic", "patronymic", patronymic);
+    this.whereUpdater.setField("memory_never_be_superfluous.client_patronymic", "patronymic", patronymic);
     return this;
   }
 
   @Override
   public ClientUpdateWhere setCharmId(String charmId) {
-    this.whereUpdater.setField("m_client_charm_id", "charm_id", charmId);
+    this.whereUpdater.setField("memory_never_be_superfluous.client_charm_id", "charm_id", charmId);
     return this;
   }
 
   @Override
   public ClientUpdateWhere setLongDescription(String longDescription) {
-    this.whereUpdater.setField("m_client_long_description", "long_description", longDescription);
+    this.whereUpdater.setField("memory_never_be_superfluous.client_long_description", "long_description", longDescription);
     return this;
   }
 
   @Override
   public ClientUpdateWhere setMyChairId1(Long myChairId1) {
-    this.whereUpdater.setField("m_client_my_chair_id1", "my_chair_id1", myChairId1);
+    this.whereUpdater.setField("memory_never_be_superfluous.client_my_chair_id1", "my_chair_id1", myChairId1);
     return this;
   }
 
   @Override
   public ClientUpdateWhere setMyChairId2(String myChairId2) {
-    this.whereUpdater.setField("m_client_my_chair_id1", "my_chair_id2", myChairId2);
+    this.whereUpdater.setField("memory_never_be_superfluous.client_my_chair_id1", "my_chair_id2", myChairId2);
     return this;
   }
 
   @Override
   public ClientUpdateWhere setHisChairLongId(Long hisChairLongId) {
-    this.whereUpdater.setField("m_client_his_chair_long_id", "his_chair_long_id", hisChairLongId);
+    this.whereUpdater.setField("memory_never_be_superfluous.client_his_chair_long_id", "his_chair_long_id", hisChairLongId);
     return this;
   }
 
   @Override
   public ClientUpdateWhere setHisChairStrId(String hisChairStrId) {
-    this.whereUpdater.setField("m_client_his_chair_long_id", "his_chair_str_id", hisChairStrId);
+    this.whereUpdater.setField("memory_never_be_superfluous.client_his_chair_long_id", "his_chair_str_id", hisChairStrId);
     return this;
   }
 

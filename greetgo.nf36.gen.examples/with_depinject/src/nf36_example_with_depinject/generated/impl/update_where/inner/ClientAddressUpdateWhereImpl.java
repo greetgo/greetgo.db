@@ -20,31 +20,31 @@ public class ClientAddressUpdateWhereImpl implements ClientAddressUpdateWhere {
 
   @Override
   public ClientAddressUpdateWhere setType(AddressType type) {
-    this.whereUpdater.setField("m_client_address_type", "type", type);
+    this.whereUpdater.setField("memory_never_be_superfluous.client_address_type", "type", type);
     return this;
   }
 
   @Override
   public ClientAddressUpdateWhere setStreetId(long streetId) {
-    this.whereUpdater.setField("m_client_address_street_id", "street_id", streetId);
+    this.whereUpdater.setField("memory_never_be_superfluous.client_address_street_id", "street_id", streetId);
     return this;
   }
 
   @Override
   public ClientAddressUpdateWhere setHouse(String house) {
-    this.whereUpdater.setField("m_client_address_house", "house", house);
+    this.whereUpdater.setField("memory_never_be_superfluous.client_address_house", "house", house);
     return this;
   }
 
   @Override
   public ClientAddressUpdateWhere setFlat(String flat) {
-    this.whereUpdater.setField("m_client_address_flat", "flat", flat);
+    this.whereUpdater.setField("memory_never_be_superfluous.client_address_flat", "flat", flat);
     return this;
   }
 
   @Override
   public ClientAddressUpdateWhere setBirthDate(Date birthDate) {
-    this.whereUpdater.setField("m_client_address_birth_date", "birth_date", birthDate);
+    this.whereUpdater.setField("memory_never_be_superfluous.client_address_birth_date", "birth_date", birthDate);
     return this;
   }
 

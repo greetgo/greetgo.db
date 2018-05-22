@@ -21,13 +21,13 @@ public class StoneUpsertImpl implements StoneUpsert {
 
   @Override
   public StoneUpsert name(String name) {
-    upserter.putField("m_stone_name", "name", name);
+    upserter.putField("memory_never_be_superfluous.stone_name", "name", name);
     return this;
   }
 
   @Override
   public StoneUpsert actual(boolean actual) {
-    upserter.putField("m_stone_actual", "actual", actual);
+    upserter.putField("memory_never_be_superfluous.stone_actual", "actual", actual);
     return this;
   }
 
