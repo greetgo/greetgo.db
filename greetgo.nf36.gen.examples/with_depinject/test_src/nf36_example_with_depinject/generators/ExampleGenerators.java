@@ -8,6 +8,7 @@ import kz.greetgo.db.nf36.gen.SqlDialect;
 import kz.greetgo.depinject.core.Bean;
 import kz.greetgo.depinject.core.BeanGetter;
 import kz.greetgo.depinject.core.HasAfterInject;
+import nf36_example_with_depinject.conf.DbParameters;
 import nf36_example_with_depinject.structure.Client;
 import nf36_example_with_depinject.structure.Person;
 import nf36_example_with_depinject.structure.Stone;
@@ -28,6 +29,8 @@ public class ExampleGenerators implements HasAfterInject {
 
   public BeanGetter<SqlDialect> sqlDialect;
 
+  public BeanGetter<DbParameters> dbParameters;
+
   private JavaGenerator javaGenerator;
 
   @Override
@@ -35,7 +38,7 @@ public class ExampleGenerators implements HasAfterInject {
     ModelCollector collector = ModelCollector
       .newCollector()
       .setNf3Prefix(/*empty*/"")
-      .setNf6Prefix("memory_never_be_superfluous.")
+      .setNf6Prefix(dbParameters.get().nf6prefix())
       .setEnumLength(51)
       .setNf3CreatedAtField("created_at")
       .setNf3ModifiedAtField("mod_at")
@@ -61,10 +64,12 @@ public class ExampleGenerators implements HasAfterInject {
       .setOutDir(withDepinjectDir() + "/src")
       .setCleanOutDirsBeforeGeneration(true)
       .setInterfaceBasePackage("nf36_example_with_depinject.generated.faces")
-      .setImplBasePackage("nf36_example_with_depinject.generated.impl")
+      .setImplBasePackage("nf36_example_with_depinject.generated." + dbParameters.get().baseSubPackage() + ".impl")
       .setSourceBasePackage(Client.class.getPackage().getName())
       .setUpserterClassName("ExampleUpserter")
       .setUpdaterClassName("ExampleWhereUpdater")
+      .setUpdaterImplClassName("ExampleUpserter" + dbParameters.get().mainClassesSuffix() + "Impl")
+      .setUpdaterImplClassName("ExampleWhereUpdater" + dbParameters.get().mainClassesSuffix() + "Impl")
       .setAbstracting(true)
     ;
 
@@ -116,5 +121,4 @@ public class ExampleGenerators implements HasAfterInject {
 
     return sqlFileList;
   }
-
 }
