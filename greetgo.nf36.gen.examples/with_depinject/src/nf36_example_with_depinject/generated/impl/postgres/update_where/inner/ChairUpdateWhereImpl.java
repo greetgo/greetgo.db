@@ -18,13 +18,13 @@ public class ChairUpdateWhereImpl implements ChairUpdateWhere {
 
   @Override
   public ChairUpdateWhere setName(String name) {
-    this.whereUpdater.setField("m_chair_name", "name", name);
+    this.whereUpdater.setField("memory_never_be_superfluous.chair_name", "name", name);
     return this;
   }
 
   @Override
   public ChairUpdateWhere setDescription(String description) {
-    this.whereUpdater.setField("m_chair_description", "description", description);
+    this.whereUpdater.setField("memory_never_be_superfluous.chair_description", "description", description);
     return this;
   }
 

@@ -26,7 +26,7 @@ public class StreetUpsertImpl implements StreetUpsert {
     if (type == null) {
       throw new CannotBeNull("Field Street.type cannot be null");
     }
-    upserter.putField("m_street_type", "type", type);
+    upserter.putField("memory_never_be_superfluous.street_type", "type", type);
     return this;
   }
 
@@ -35,7 +35,7 @@ public class StreetUpsertImpl implements StreetUpsert {
     if (name == null) {
       throw new CannotBeNull("Field Street.name cannot be null");
     }
-    upserter.putField("m_street_name", "name", name);
+    upserter.putField("memory_never_be_superfluous.street_name", "name", name);
     return this;
   }
 

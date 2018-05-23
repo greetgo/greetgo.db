@@ -18,7 +18,7 @@ public class CharmUpdateWhereImpl implements CharmUpdateWhere {
 
   @Override
   public CharmUpdateWhere setName(String name) {
-    this.whereUpdater.setField("m_charm_name", "name", name);
+    this.whereUpdater.setField("memory_never_be_superfluous.charm_name", "name", name);
     return this;
   }
 

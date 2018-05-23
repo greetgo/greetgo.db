@@ -1,9 +1,9 @@
 package nf36_example_with_depinject.tests;
 
 import kz.greetgo.depinject.testng.ContainerConfig;
-import nf36_example_with_depinject.beans.oracle.BeanConfigOracle;
+import nf36_example_with_depinject.bean_containers.for_tests.BeanConfigForOracleTests;
 
-@ContainerConfig(BeanConfigOracle.class)
+@ContainerConfig(BeanConfigForOracleTests.class)
 public class JdbcNf36WhereUpdaterAdapterOracleTests extends JdbcNf36WhereUpdaterAdapterPostgresTests {
 
   @Override

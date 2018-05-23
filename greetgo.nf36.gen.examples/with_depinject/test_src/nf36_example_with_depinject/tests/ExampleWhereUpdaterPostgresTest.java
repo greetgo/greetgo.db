@@ -2,24 +2,21 @@ package nf36_example_with_depinject.tests;
 
 import kz.greetgo.db.Jdbc;
 import kz.greetgo.depinject.core.BeanGetter;
-import kz.greetgo.depinject.testng.AbstractDepinjectTestNg;
 import kz.greetgo.depinject.testng.ContainerConfig;
 import kz.greetgo.util.RND;
+import nf36_example_with_depinject.bean_containers.for_tests.BeanConfigForPostgresTests;
 import nf36_example_with_depinject.beans.all.AuthorGetterImpl;
-import nf36_example_with_depinject.beans.postgres.BeanConfigPostgres;
 import nf36_example_with_depinject.generated.faces.ExampleUpserter;
 import nf36_example_with_depinject.generated.faces.ExampleWhereUpdater;
 import nf36_example_with_depinject.jdbc.ByOne;
 import nf36_example_with_depinject.jdbc.ByOneLast;
-import org.testng.annotations.BeforeTest;
+import nf36_example_with_depinject.util.ParentDbTests;
 import org.testng.annotations.Test;
-
-import java.sql.Connection;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@ContainerConfig(BeanConfigPostgres.class)
-public class ExampleWhereUpdaterPostgresTest extends AbstractDepinjectTestNg {
+@ContainerConfig(BeanConfigForPostgresTests.class)
+public class ExampleWhereUpdaterPostgresTest extends ParentDbTests {
 
   public BeanGetter<AuthorGetterImpl> authorGetterImpl;
 
@@ -86,19 +83,18 @@ public class ExampleWhereUpdaterPostgresTest extends AbstractDepinjectTestNg {
     }
 
     {
-      String author = jdbc.get().execute(new ByOneLast<>("id", id1, "m_client_name", "inserted_by"));
+      String author = jdbc.get().execute(new ByOneLast<>("id", id1, t("m_client_name"), "inserted_by"));
       assertThat(author).isEqualTo("Менятель");
     }
     {
-      String author = jdbc.get().execute(new ByOneLast<>("id", id2, "m_client_name", "inserted_by"));
+      String author = jdbc.get().execute(new ByOneLast<>("id", id2, t("m_client_name"), "inserted_by"));
       assertThat(author).isEqualTo("Менятель");
     }
     {
-      String author = jdbc.get().execute(new ByOneLast<>("id", id3, "m_client_name", "inserted_by"));
+      String author = jdbc.get().execute(new ByOneLast<>("id", id3, t("m_client_name"), "inserted_by"));
       assertThat(author).isEqualTo("Создатель");
     }
   }
-
 
   @Test
   public void test_booleanSet() {

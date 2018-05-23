@@ -2,24 +2,25 @@ package nf36_example_with_depinject.tests;
 
 import kz.greetgo.db.Jdbc;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
+import kz.greetgo.db.worker.DbParameters;
 import kz.greetgo.depinject.core.BeanGetter;
-import kz.greetgo.depinject.testng.AbstractDepinjectTestNg;
 import kz.greetgo.depinject.testng.ContainerConfig;
 import kz.greetgo.util.RND;
+import nf36_example_with_depinject.bean_containers.for_tests.BeanConfigForPostgresTests;
 import nf36_example_with_depinject.beans.all.AuthorGetterImpl;
-import nf36_example_with_depinject.beans.postgres.BeanConfigPostgres;
 import nf36_example_with_depinject.generated.faces.ExampleUpserter;
 import nf36_example_with_depinject.jdbc.ByOne;
 import nf36_example_with_depinject.jdbc.ByOneCount;
 import nf36_example_with_depinject.jdbc.ByOneLast;
 import nf36_example_with_depinject.jdbc.ByTwoCount;
 import nf36_example_with_depinject.jdbc.ByTwoLast;
+import nf36_example_with_depinject.util.ParentDbTests;
 import org.testng.annotations.Test;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@ContainerConfig(BeanConfigPostgres.class)
-public class ExampleUpserterPostgresTest extends AbstractDepinjectTestNg {
+@ContainerConfig(BeanConfigForPostgresTests.class)
+public class ExampleUpserterPostgresTest extends ParentDbTests {
 
   public BeanGetter<ExampleUpserter> exampleUpserter;
 
@@ -136,9 +137,9 @@ public class ExampleUpserterPostgresTest extends AbstractDepinjectTestNg {
       .commitAll();
 
     {
-      String actualName = jdbc.get().execute(new ByOneLast<>("id", id, "m_client_name", "name"));
+      String actualName = jdbc.get().execute(new ByOneLast<>("id", id, t("m_client_name"), "name"));
       assertThat(actualName).isEqualTo(expectedName1);
-      int count = jdbc.get().execute(new ByOneCount("id", id, "m_client_name"));
+      int count = jdbc.get().execute(new ByOneCount("id", id, t("m_client_name")));
       assertThat(count).isEqualTo(1);
     }
 
@@ -153,9 +154,9 @@ public class ExampleUpserterPostgresTest extends AbstractDepinjectTestNg {
       .commitAll();
 
     {
-      String actualName = jdbc.get().execute(new ByOneLast<>("id", id, "m_client_name", "name"));
+      String actualName = jdbc.get().execute(new ByOneLast<>("id", id, t("m_client_name"), "name"));
       assertThat(actualName).isEqualTo(expectedName2);
-      int count = jdbc.get().execute(new ByOneCount("id", id, "m_client_name"));
+      int count = jdbc.get().execute(new ByOneCount("id", id, t("m_client_name")));
       assertThat(count).isEqualTo(2);
     }
 
@@ -168,9 +169,9 @@ public class ExampleUpserterPostgresTest extends AbstractDepinjectTestNg {
       .commitAll();
 
     {
-      String actualName = jdbc.get().execute(new ByOneLast<>("id", id, "m_client_name", "name"));
+      String actualName = jdbc.get().execute(new ByOneLast<>("id", id, t("m_client_name"), "name"));
       assertThat(actualName).isEqualTo(expectedName1);
-      int count = jdbc.get().execute(new ByOneCount("id", id, "m_client_name"));
+      int count = jdbc.get().execute(new ByOneCount("id", id, t("m_client_name")));
       assertThat(count).isEqualTo(3);
     }
   }
@@ -189,9 +190,9 @@ public class ExampleUpserterPostgresTest extends AbstractDepinjectTestNg {
     ;
 
     {
-      int countName = jdbc.get().execute(new ByTwoCount("id1", id1, "id2", id2, "m_chair_name"));
+      int countName = jdbc.get().execute(new ByTwoCount("id1", id1, "id2", id2, t("m_chair_name")));
       assertThat(countName).isEqualTo(1);
-      int countDescription = jdbc.get().execute(new ByTwoCount("id1", id1, "id2", id2, "m_chair_description"));
+      int countDescription = jdbc.get().execute(new ByTwoCount("id1", id1, "id2", id2, t("m_chair_description")));
       assertThat(countDescription).isEqualTo(1);
     }
 
@@ -202,14 +203,14 @@ public class ExampleUpserterPostgresTest extends AbstractDepinjectTestNg {
     ;
 
     {
-      String actualName = jdbc.get().execute(new ByTwoLast<>("id1", id1, "id2", id2, "m_chair_name", "name"));
+      String actualName = jdbc.get().execute(new ByTwoLast<>("id1", id1, "id2", id2, t("m_chair_name"), "name"));
       assertThat(actualName).isEqualTo(expectedName1);
-      String actualDescription = jdbc.get().execute(new ByTwoLast<>("id1", id1, "id2", id2, "m_chair_description", "description"));
+      String actualDescription = jdbc.get().execute(new ByTwoLast<>("id1", id1, "id2", id2, t("m_chair_description"), "description"));
       assertThat(actualDescription).isEqualTo(expectedDescription1);
 
-      int countName = jdbc.get().execute(new ByTwoCount("id1", id1, "id2", id2, "m_chair_name"));
+      int countName = jdbc.get().execute(new ByTwoCount("id1", id1, "id2", id2, t("m_chair_name")));
       assertThat(countName).isEqualTo(1);
-      int countDescription = jdbc.get().execute(new ByTwoCount("id1", id1, "id2", id2, "m_chair_description"));
+      int countDescription = jdbc.get().execute(new ByTwoCount("id1", id1, "id2", id2, t("m_chair_description")));
       assertThat(countDescription).isEqualTo(2);
     }
 
@@ -223,9 +224,9 @@ public class ExampleUpserterPostgresTest extends AbstractDepinjectTestNg {
     ;
 
     {
-      int countName = jdbc.get().execute(new ByTwoCount("id1", id1, "id2", id2, "m_chair_name"));
+      int countName = jdbc.get().execute(new ByTwoCount("id1", id1, "id2", id2, t("m_chair_name")));
       assertThat(countName).isEqualTo(2);
-      int countDescription = jdbc.get().execute(new ByTwoCount("id1", id1, "id2", id2, "m_chair_description"));
+      int countDescription = jdbc.get().execute(new ByTwoCount("id1", id1, "id2", id2, t("m_chair_description")));
       assertThat(countDescription).isEqualTo(3);
     }
 
@@ -236,17 +237,18 @@ public class ExampleUpserterPostgresTest extends AbstractDepinjectTestNg {
     ;
 
     {
-      String actualName = jdbc.get().execute(new ByTwoLast<>("id1", id1, "id2", id2, "m_chair_name", "name"));
+      String actualName = jdbc.get().execute(new ByTwoLast<>("id1", id1, "id2", id2, t("m_chair_name"), "name"));
       assertThat(actualName).isEqualTo(expectedName2);
-      String actualDescription = jdbc.get().execute(new ByTwoLast<>("id1", id1, "id2", id2, "m_chair_description", "description"));
+      String actualDescription = jdbc.get().execute(new ByTwoLast<>("id1", id1, "id2", id2, t("m_chair_description"), "description"));
       assertThat(actualDescription).isEqualTo(expectedDescription2);
 
-      int countName = jdbc.get().execute(new ByTwoCount("id1", id1, "id2", id2, "m_chair_name"));
+      int countName = jdbc.get().execute(new ByTwoCount("id1", id1, "id2", id2, t("m_chair_name")));
       assertThat(countName).isEqualTo(3);
-      int countDescription = jdbc.get().execute(new ByTwoCount("id1", id1, "id2", id2, "m_chair_description"));
+      int countDescription = jdbc.get().execute(new ByTwoCount("id1", id1, "id2", id2, t("m_chair_description")));
       assertThat(countDescription).isEqualTo(3);
     }
   }
+
 
   @Test
   public void upsertClient_chair() throws Exception {
@@ -267,11 +269,11 @@ public class ExampleUpserterPostgresTest extends AbstractDepinjectTestNg {
     ;
 
     {
-      long actual = jdbc.get().execute(new ByOneLast<>("id", clientId, "m_client_my_chair_id1", "my_chair_id1"));
+      long actual = jdbc.get().execute(new ByOneLast<>("id", clientId, t("m_client_my_chair_id1"), "my_chair_id1"));
       assertThat(actual).isEqualTo(chairId1);
     }
     {
-      String actual = jdbc.get().execute(new ByOneLast<>("id", clientId, "m_client_my_chair_id1", "my_chair_id2"));
+      String actual = jdbc.get().execute(new ByOneLast<>("id", clientId, t("m_client_my_chair_id1"), "my_chair_id2"));
       assertThat(actual).isEqualTo(chairId2);
     }
   }

@@ -1,7 +1,7 @@
 package kz.greetgo.db.worker.postgres;
 
-import kz.greetgo.depinject.core.Bean;
 import kz.greetgo.db.worker.DbParameters;
+import kz.greetgo.depinject.core.Bean;
 
 @Bean
 public class DbParametersPostgres implements DbParameters {
@@ -12,7 +12,7 @@ public class DbParametersPostgres implements DbParameters {
 
   @Override
   public String nf6prefix() {
-    return "m_";
+    return schema() + ".";
   }
 
   @Override

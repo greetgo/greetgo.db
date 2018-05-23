@@ -5,9 +5,8 @@ import kz.greetgo.db.Jdbc;
 import kz.greetgo.db.nf36.core.Nf36WhereUpdater;
 import kz.greetgo.db.nf36.core.SqlLogAcceptor;
 import kz.greetgo.depinject.core.BeanGetter;
-import kz.greetgo.depinject.testng.AbstractDepinjectTestNg;
 import kz.greetgo.depinject.testng.ContainerConfig;
-import nf36_example_with_depinject.beans.postgres.BeanConfigPostgres;
+import nf36_example_with_depinject.bean_containers.for_tests.BeanConfigForPostgresTests;
 import nf36_example_with_depinject.errors.SqlError;
 import nf36_example_with_depinject.jdbc.ByOne;
 import nf36_example_with_depinject.jdbc.ByOneLast;
@@ -15,6 +14,7 @@ import nf36_example_with_depinject.jdbc.ByTwo;
 import nf36_example_with_depinject.jdbc.ByTwoLast;
 import nf36_example_with_depinject.jdbc.CountWhere;
 import nf36_example_with_depinject.util.DbTypeSource;
+import nf36_example_with_depinject.util.ParentDbTests;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.InvocationTargetException;
@@ -25,8 +25,8 @@ import static kz.greetgo.db.nf36.Nf36Builder.newNf36Builder;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @SuppressWarnings("SameParameterValue")
-@ContainerConfig(BeanConfigPostgres.class)
-public class JdbcNf36WhereUpdaterAdapterPostgresTests extends AbstractDepinjectTestNg {
+@ContainerConfig(BeanConfigForPostgresTests.class)
+public class JdbcNf36WhereUpdaterAdapterPostgresTests extends ParentDbTests {
 
   public BeanGetter<Jdbc> jdbc;
   public BeanGetter<DbTypeSource> dbTypeSource;

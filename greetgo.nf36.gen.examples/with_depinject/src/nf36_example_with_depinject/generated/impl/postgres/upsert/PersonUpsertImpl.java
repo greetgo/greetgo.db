@@ -22,25 +22,25 @@ public class PersonUpsertImpl implements PersonUpsert {
 
   @Override
   public PersonUpsert fio(String fio) {
-    upserter.putField("m_person_fio", "fio", fio);
+    upserter.putField("memory_never_be_superfluous.person_fio", "fio", fio);
     return this;
   }
 
   @Override
   public PersonUpsert blocked(boolean blocked) {
-    upserter.putField("m_person_blocked", "blocked", blocked);
+    upserter.putField("memory_never_be_superfluous.person_blocked", "blocked", blocked);
     return this;
   }
 
   @Override
   public PersonUpsert amount(BigDecimal amount) {
-    upserter.putField("m_person_amount", "amount", amount);
+    upserter.putField("memory_never_be_superfluous.person_amount", "amount", amount);
     return this;
   }
 
   @Override
   public PersonUpsert amountRU(BigDecimal amountRU) {
-    upserter.putField("m_person_amount_ru", "amount_ru", amountRU);
+    upserter.putField("memory_never_be_superfluous.person_amount_ru", "amount_ru", amountRU);
     return this;
   }
 
