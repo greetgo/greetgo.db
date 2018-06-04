@@ -31,4 +31,45 @@
 # Quick Start
 
 Привер использования можно посмотреть
-[здесь...](../greetgo.nf36.gen.examples/quick_start/src/nf36_postgres_quick_start/QuickStart__GreetgoDb.java)
+[здесь:(QuickStart__GreetgoDb.java)...](../greetgo.nf36.gen.examples/quick_start/src/nf36_postgres_quick_start/QuickStart__GreetgoDb.java)
+
+Там ключевым моментом являются следующие строки:
+
+```java
+public class QuickStart__GreetgoDb {
+  public static void main(String[] args) throws Exception {
+    //....
+    
+    TransactionManager transactionManager = new GreetgoTransactionManager();
+    
+    Jdbc jdbc = createJdbcFrom(pool, transactionManager);
+    
+    RegisterImpl wrappingRegister = new RegisterImpl(jdbc);
+    
+    DbProxyFactory dbProxyFactory = new DbProxyFactory(transactionManager);
+    
+    RegisterInterface proxy = dbProxyFactory.createProxyOn(RegisterInterface.class, wrappingRegister);
+    
+    //      at now you can use `proxy` with automatic transactions
+    
+    List<Thread> threadList = new ArrayList<>();
+    for (int i = 0; i < 10; i++) {
+      threadList.add(new Thread(() -> {
+        Random random = new Random();
+        for (int u = 0; u < 100; u++) {
+          int from = random.nextInt(10) + 1;
+          int to = random.nextInt(10) + 1;
+          int amount = random.nextInt(100) + 1;
+    
+          proxy.move(from, to, amount);
+        }
+      }));
+    }
+    
+    threadList.forEach(Thread::start);
+    
+    //....
+    
+  }
+}
+```
