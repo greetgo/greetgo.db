@@ -31,4 +31,4 @@
 #Quick Start
 
 Привер использования можно посмотреть
-[здесь...](../greetgo.nf36.gen.examples/quick_start/src/nf36_postgres_quick_start/GreetgoDbQuickStart.java)
+[здесь...](../greetgo.nf36.gen.examples/quick_start/src/nf36_postgres_quick_start/QuickStart__GreetgoDb.java)
