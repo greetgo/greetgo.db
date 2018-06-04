@@ -100,7 +100,7 @@ public class QuickStart__GreetgoDb {
     BasicDataSource pool = new BasicDataSource();
 
     pool.setDriverClassName("org.postgresql.Driver");
-    pool.setUrl(urlTo(db));
+    pool.setUrl(changeDb(adminUrl, db));
     pool.setUsername(username);
     pool.setPassword(password);
 
@@ -214,8 +214,7 @@ public class QuickStart__GreetgoDb {
     }
   }
 
-  private static String urlTo(String db) {
-    String adminUrl = System.getenv("PG_ADMIN_URL");
+  private static String changeDb(String adminUrl, String db) {
     int idx = adminUrl.lastIndexOf('/');
     if (idx < 0) throw new RuntimeException("Left admin url = " + adminUrl);
     return adminUrl.substring(0, idx + 1) + db;
