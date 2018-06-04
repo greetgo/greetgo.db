@@ -76,4 +76,9 @@ public class DbProxyFactory {
       (proxy, method, args) -> transactionInvoker.invoke(method, args)
     );
   }
+
+  public final <T> T createProxyOn(Class<T> anInterface, Object wrappingObject) {
+    //noinspection unchecked
+    return (T) createProxyFor(wrappingObject, anInterface);
+  }
 }
