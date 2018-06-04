@@ -75,9 +75,6 @@ public class ClientUpdateWhereImpl implements ClientUpdateWhere {
 
   @Override
   public ClientUpdateWhere whereCharmIdIsEqualTo(String charmId) {
-    if (charmId == null) {
-      throw new CannotBeNull("Field Client.charmId cannot be null");
-    }
     this.whereUpdater.where("charm_id", charmId);
     return this;
   }
@@ -90,9 +87,6 @@ public class ClientUpdateWhereImpl implements ClientUpdateWhere {
 
   @Override
   public ClientUpdateWhere whereHisChairStrIdIsEqualTo(String hisChairStrId) {
-    if (hisChairStrId == null) {
-      throw new CannotBeNull("Field Client.hisChairStrId cannot be null");
-    }
     this.whereUpdater.where("his_chair_str_id", hisChairStrId);
     return this;
   }
@@ -117,9 +111,6 @@ public class ClientUpdateWhereImpl implements ClientUpdateWhere {
 
   @Override
   public ClientUpdateWhere whereMyChairId2IsEqualTo(String myChairId2) {
-    if (myChairId2 == null) {
-      throw new CannotBeNull("Field Client.myChairId2 cannot be null");
-    }
     this.whereUpdater.where("my_chair_id2", myChairId2);
     return this;
   }

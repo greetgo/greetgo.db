@@ -53,13 +53,10 @@ public class SqlTypeUtil {
 
   public static DbType extractDbType(Field field, ModelCollector collector) {
     if (String.class.equals(field.getType())) {
-      boolean hasNotNull = field.getAnnotation(Nf3NotNull.class) == null;
-
-
       boolean idOrReference = field.getAnnotation(Nf3ID.class) != null
         || field.getAnnotation(Nf3ReferenceTo.class) != null;
 
-      boolean nullable = !idOrReference && hasNotNull;
+      boolean nullable = field.getAnnotation(Nf3ID.class) == null && field.getAnnotation(Nf3NotNull.class) == null;
 
       int len = idOrReference ? collector.idLength : collector.defaultLength;
 

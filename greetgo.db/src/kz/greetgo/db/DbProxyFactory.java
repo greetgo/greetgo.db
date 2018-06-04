@@ -4,6 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+/**
+ * Creates proxy for automatic open and commit transactions.
+ */
 public class DbProxyFactory {
 
   private final TransactionManager transactionManager;
