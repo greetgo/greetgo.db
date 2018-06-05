@@ -31,7 +31,7 @@
 # Quick Start
 
 Привер использования можно посмотреть
-[здесь:(QuickStart__GreetgoDb.java)...](../greetgo.nf36.gen.examples/quick_start/src/nf36_postgres_quick_start/QuickStart__GreetgoDb.java)
+[здесь: QuickStart.java](../greetgo.nf36.gen.examples/quick_start/src/nf36_postgres_quick_start/QuickStart.java)
 
 Там ключевым моментом являются следующие строки:
 

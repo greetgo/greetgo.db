@@ -22,7 +22,7 @@ import java.util.Random;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-public class QuickStart__GreetgoDb {
+public class QuickStart {
 
   public interface RegisterInterface {
     void move(int from, int to, int amount);
