@@ -1,7 +1,7 @@
 package kz.greetgo.db.nf36.gen;
 
 import kz.greetgo.db.nf36.core.Nf36Upserter;
-import kz.greetgo.db.nf36.core.Nf36WhereUpdater;
+import kz.greetgo.db.nf36.core.Nf36Updater;
 import kz.greetgo.db.nf36.core.Nf3CommitMethodName;
 import kz.greetgo.db.nf36.core.Nf3MoreMethodName;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
@@ -101,8 +101,8 @@ public class JavaGenerator {
     generateMainUpserterImpl(upserterInterfaceClassName);
 
     if (updaterClassName != null) {
-      String updaterInterfaceClassName = generateMainWhereUpdaterInterface();
-      generateMainWhereUpdaterImpl(updaterInterfaceClassName);
+      String updaterInterfaceClassName = generateMainUpdaterInterface();
+      generateMainUpdaterImpl(updaterInterfaceClassName);
     }
 
     for (Nf3Table nf3Table : collector.collect()) {
@@ -114,7 +114,7 @@ public class JavaGenerator {
       }
 
       if (updaterClassName != null) {
-        UpdateWhereInfo info = getUpdateWhereInfo(nf3Table);
+        UpdateInfo info = getUpdateInfo(nf3Table);
         String baseInterfaceFullName = generateThingUpdateWhereInterface(info);
         generateThingUpdateWhereImpl(info, baseInterfaceFullName);
       }
@@ -245,13 +245,13 @@ public class JavaGenerator {
     };
   }
 
-  UpdateWhereInfo getUpdateWhereInfo(Nf3Table nf3Table) {
+  UpdateInfo getUpdateInfo(Nf3Table nf3Table) {
 
     String subPackage = UtilsNf36.calcSubPackage(sourceBasePackage, nf3Table.source().getPackage().getName());
 
-    subPackage = UtilsNf36.resolvePackage("update_where", subPackage);
+    subPackage = UtilsNf36.resolvePackage("update", subPackage);
 
-    String interfaceClassName = nf3Table.source().getSimpleName() + "UpdateWhere";
+    String interfaceClassName = nf3Table.source().getSimpleName() + "Update";
     String interfacePackageName = UtilsNf36.resolvePackage(interfaceBasePackage, subPackage);
     File interfaceJavaFile = resolveJavaFile(interfaceOutDir, interfacePackageName, interfaceClassName);
 
@@ -269,7 +269,7 @@ public class JavaGenerator {
 
     String commitMethodName = nf3CommitMethodName == null ? collector.commitMethodName() : nf3CommitMethodName.value();
 
-    return new UpdateWhereInfo() {
+    return new UpdateInfo() {
       @Override
       public String interfaceClassName() {
         return interfaceClassName;
@@ -385,7 +385,7 @@ public class JavaGenerator {
     return resolveFullName(info.interfacePackageName(), info.interfaceClassName());
   }
 
-  private String generateThingUpdateWhereInterface(UpdateWhereInfo info) {
+  private String generateThingUpdateWhereInterface(UpdateInfo info) {
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = info.interfacePackageName();
     p.classHeader = "public interface " + info.interfaceClassName();
@@ -461,7 +461,7 @@ public class JavaGenerator {
     p.printToFile(info.implJavaFile());
   }
 
-  private void generateThingUpdateWhereImpl(UpdateWhereInfo info, String baseInterfaceFullName) {
+  private void generateThingUpdateWhereImpl(UpdateInfo info, String baseInterfaceFullName) {
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = info.implPackageName();
     String implInterfaceName = p.i(baseInterfaceFullName);
@@ -479,7 +479,7 @@ public class JavaGenerator {
         p.ofs(1).prn("@Override");
         p.ofs(1).prn("public " + info.interfaceClassName() + " " + info.setMethodName(f)
           + "(" + fieldType + " " + f.javaName() + ") {");
-        p.ofs(2).prn("this.whereUpdater.setField(\"" + info.nf6TableName(f) + "\", \"" + f.dbName() + "\", " + f.javaName() + ");");
+        p.ofs(2).prn("this.updater.setField(\"" + info.nf6TableName(f) + "\", \"" + f.dbName() + "\", " + f.javaName() + ");");
         p.ofs(2).prn("return this;");
         p.ofs(1).prn("}").prn();
       }
@@ -505,7 +505,7 @@ public class JavaGenerator {
           p.ofs(2).prn("}");
         }
 
-        p.ofs(2).prn("this.whereUpdater.where(\"" + f.dbName() + "\", " + f.javaName() + ");");
+        p.ofs(2).prn("this.updater.where(\"" + f.dbName() + "\", " + f.javaName() + ");");
         p.ofs(2).prn("return this;");
         p.ofs(1).prn("}").prn();
       }
@@ -514,7 +514,7 @@ public class JavaGenerator {
     {
       p.ofs(1).prn("@Override");
       p.ofs(1).prn("public void " + info.commitMethodName() + "() {");
-      p.ofs(2).prn("this.whereUpdater.commit();");
+      p.ofs(2).prn("this.updater.commit();");
       p.ofs(1).prn("}");
     }
 
@@ -581,27 +581,27 @@ public class JavaGenerator {
     p.ofs(1).prn("}").prn();
   }
 
-  private void printUpdaterWhereImplConstructor(UpdateWhereInfo info, JavaFilePrinter p) {
-    String nameNf36WhereUpdater = p.i(Nf36WhereUpdater.class.getName());
+  private void printUpdaterWhereImplConstructor(UpdateInfo info, JavaFilePrinter p) {
+    String nameNf36Updater = p.i(Nf36Updater.class.getName());
 
-    p.ofs(1).prn("private final " + nameNf36WhereUpdater + " whereUpdater;").prn();
-    p.ofs(1).prn("public " + info.implClassName() + "(" + nameNf36WhereUpdater + " whereUpdater) {");
-    p.ofs(2).prn("this.whereUpdater = whereUpdater;");
+    p.ofs(1).prn("private final " + nameNf36Updater + " updater;").prn();
+    p.ofs(1).prn("public " + info.implClassName() + "(" + nameNf36Updater + " updater) {");
+    p.ofs(2).prn("this.updater = updater;");
 
-    p.ofs(2).prn("whereUpdater.setNf3TableName(\"" + info.nf3TableName() + "\");");
+    p.ofs(2).prn("updater.setNf3TableName(\"" + info.nf3TableName() + "\");");
 
     if (collector.nf3ModifiedBy != null) {
-      p.ofs(2).prn("whereUpdater.setAuthorFieldNames("
+      p.ofs(2).prn("updater.setAuthorFieldNames("
         + "\"" + collector.nf3ModifiedBy.name + "\""
         + ", \"" + collector.nf6InsertedBy.name + "\""
         + ");");
     }
 
     if (collector.nf3ModifiedAtField != null) {
-      p.ofs(2).prn("whereUpdater.updateFieldToNow(\"" + collector.nf3ModifiedAtField + "\");");
+      p.ofs(2).prn("updater.updateFieldToNow(\"" + collector.nf3ModifiedAtField + "\");");
     }
 
-    p.ofs(2).prn("whereUpdater.setIdFieldNames(" + (
+    p.ofs(2).prn("updater.setIdFieldNames(" + (
       info.fields().stream()
         .filter(Nf3Field::isId)
         .sorted(Comparator.comparing(Nf3Field::idOrder))
@@ -656,7 +656,7 @@ public class JavaGenerator {
     return resolveFullName(interfaceBasePackage, upserterClassName);
   }
 
-  private String generateMainWhereUpdaterInterface() {
+  private String generateMainUpdaterInterface() {
 
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = interfaceBasePackage;
@@ -688,14 +688,14 @@ public class JavaGenerator {
     p.printToFile(resolveJavaFile(implOutDir, implBasePackage, upserterImplClassName()));
   }
 
-  private void generateMainWhereUpdaterImpl(String updaterInterfaceClassName) {
+  private void generateMainUpdaterImpl(String updaterInterfaceClassName) {
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = implBasePackage;
     p.classHeader = "public" + (abstracting ? " abstract" : "")
       + " class " + updaterImplClassName()
       + " implements " + p.i(updaterInterfaceClassName);
 
-    printCreateWhereUpdaterMethod(p);
+    printCreateUpdaterMethod(p);
 
     for (Nf3Table nf3Table : collector.collect()) {
       printUpdateImplMethod(p, nf3Table);
@@ -713,11 +713,11 @@ public class JavaGenerator {
     return this;
   }
 
-  String whereUpdaterCreateMethod = "createWhereUpdater";
+  String updaterCreateMethod = "createUpdater";
 
   @SuppressWarnings("unused")
-  public JavaGenerator setWhereUpdaterCreateMethod(String whereUpdaterCreateMethod) {
-    this.whereUpdaterCreateMethod = whereUpdaterCreateMethod;
+  public JavaGenerator setUpdaterCreateMethod(String updaterCreateMethod) {
+    this.updaterCreateMethod = updaterCreateMethod;
     return this;
   }
 
@@ -744,11 +744,11 @@ public class JavaGenerator {
     p.ofs(1).prn("}").prn();
   }
 
-  private void printCreateWhereUpdaterMethod(JavaFilePrinter p) {
-    String whereUpdaterClassName = p.i(Nf36WhereUpdater.class.getName());
+  private void printCreateUpdaterMethod(JavaFilePrinter p) {
+    String updaterClassName = p.i(Nf36Updater.class.getName());
 
     p.ofs(1).prn("protected " + (abstracting ? "abstract " : "")
-      + whereUpdaterClassName + " " + whereUpdaterCreateMethod + "()"
+      + updaterClassName + " " + updaterCreateMethod + "()"
       + (abstracting ? ";\n" : " {")
     );
 
@@ -776,7 +776,7 @@ public class JavaGenerator {
   }
 
   private void printUpdateInterfaceMethod(JavaFilePrinter p, Nf3Table nf3Table) {
-    UpdateWhereInfo info = getUpdateWhereInfo(nf3Table);
+    UpdateInfo info = getUpdateInfo(nf3Table);
 
     p.ofs(1).pr(p.i(info.interfaceFullName())).pr(" ").pr(info.updateMethodName()).prn("();").prn();
   }
@@ -810,11 +810,11 @@ public class JavaGenerator {
   }
 
   private void printUpdateImplMethod(JavaFilePrinter p, Nf3Table nf3Table) {
-    UpdateWhereInfo info = getUpdateWhereInfo(nf3Table);
+    UpdateInfo info = getUpdateInfo(nf3Table);
 
     p.ofs(1).prn("@Override");
     p.ofs(1).pr("public ").pr(p.i(info.interfaceFullName())).pr(" ").pr(info.updateMethodName()).prn("() {");
-    p.ofs(2).prn("return new " + p.i(info.implFullName()) + "(" + whereUpdaterCreateMethod + "());");
+    p.ofs(2).prn("return new " + p.i(info.implFullName()) + "(" + updaterCreateMethod + "());");
     p.ofs(1).prn("}").prn();
   }
 

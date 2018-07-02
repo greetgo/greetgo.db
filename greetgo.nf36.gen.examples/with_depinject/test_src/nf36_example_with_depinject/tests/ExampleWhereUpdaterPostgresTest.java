@@ -6,8 +6,8 @@ import kz.greetgo.depinject.testng.ContainerConfig;
 import kz.greetgo.util.RND;
 import nf36_example_with_depinject.bean_containers.for_tests.BeanConfigForPostgresTests;
 import nf36_example_with_depinject.beans.all.AuthorGetterImpl;
+import nf36_example_with_depinject.generated.faces.ExampleUpdater;
 import nf36_example_with_depinject.generated.faces.ExampleUpserter;
-import nf36_example_with_depinject.generated.faces.ExampleWhereUpdater;
 import nf36_example_with_depinject.jdbc.ByOne;
 import nf36_example_with_depinject.jdbc.ByOneLast;
 import nf36_example_with_depinject.util.ParentDbTests;
@@ -22,7 +22,7 @@ public class ExampleWhereUpdaterPostgresTest extends ParentDbTests {
 
   public BeanGetter<ExampleUpserter> exampleUpserter;
 
-  public BeanGetter<ExampleWhereUpdater> exampleWhereUpdater;
+  public BeanGetter<ExampleUpdater> exampleUpdater;
 
   public BeanGetter<Jdbc> jdbc;
 
@@ -64,7 +64,7 @@ public class ExampleWhereUpdaterPostgresTest extends ParentDbTests {
 
     authorGetterImpl.get().author = "Менятель";
 
-    exampleWhereUpdater.get().client()
+    exampleUpdater.get().client()
       .setName(newName)
       .wherePatronymicIsEqualTo(patronymic)
       .commitAll();
@@ -106,7 +106,7 @@ public class ExampleWhereUpdaterPostgresTest extends ParentDbTests {
       .actual(true)
       .commit();
 
-    exampleWhereUpdater.get().stone().whereIdIsEqualTo(id).setActual(false).commit();
+    exampleUpdater.get().stone().whereIdIsEqualTo(id).setActual(false).commit();
 
   }
 }

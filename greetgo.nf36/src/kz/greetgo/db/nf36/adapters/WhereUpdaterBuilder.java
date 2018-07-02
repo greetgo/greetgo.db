@@ -2,7 +2,7 @@ package kz.greetgo.db.nf36.adapters;
 
 import kz.greetgo.db.DbType;
 import kz.greetgo.db.Jdbc;
-import kz.greetgo.db.nf36.core.Nf36WhereUpdater;
+import kz.greetgo.db.nf36.core.Nf36Updater;
 import kz.greetgo.db.nf36.core.SqlLogAcceptor;
 
 public class WhereUpdaterBuilder {
@@ -19,16 +19,16 @@ public class WhereUpdaterBuilder {
     return this;
   }
 
-  private JdbcNf36WhereUpdaterAbstractAdapter adapter = null;
+  private JdbcNf36UpdaterAbstractAdapter adapter = null;
 
   public WhereUpdaterBuilder database(DbType dbType) {
     switch (dbType) {
       case Postgres:
-        adapter = new JdbcNf36WhereUpdaterAdapterPostgres();
+        adapter = new JdbcNf36UpdaterAdapterPostgres();
         return this;
 
       case Oracle:
-        adapter = new JdbcNf36WhereUpdaterAdapterOracle();
+        adapter = new JdbcNf36UpdaterAdapterOracle();
         return this;
 
       default:
@@ -36,7 +36,7 @@ public class WhereUpdaterBuilder {
     }
   }
 
-  public Nf36WhereUpdater build() {
+  public Nf36Updater build() {
     if (adapter == null) throw new RuntimeException("Please define database. Call method 'database'");
     if (jdbc == null) throw new RuntimeException("Please set jdbc");
     adapter.jdbc = jdbc;

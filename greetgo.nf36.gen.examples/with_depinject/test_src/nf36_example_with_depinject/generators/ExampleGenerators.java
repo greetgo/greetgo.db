@@ -67,9 +67,9 @@ public class ExampleGenerators implements HasAfterInject {
       .setImplBasePackage("nf36_example_with_depinject.generated.impl." + dbParameters.get().baseSubPackage())
       .setSourceBasePackage(Client.class.getPackage().getName())
       .setUpserterClassName("ExampleUpserter")
-      .setUpdaterClassName("ExampleWhereUpdater")
+      .setUpdaterClassName("ExampleUpdater")
       .setUpserterImplClassName("AbstractExampleUpserter" + dbParameters.get().mainClassesSuffix())
-      .setUpdaterImplClassName("AbstractExampleWhereUpdater" + dbParameters.get().mainClassesSuffix())
+      .setUpdaterImplClassName("AbstractExampleUpdater" + dbParameters.get().mainClassesSuffix())
       .setAbstracting(true)
     ;
 
