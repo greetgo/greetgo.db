@@ -15,6 +15,7 @@ public class StoneUpsertImpl implements StoneUpsert {
     upserter.putId("id", id);
   }
 
+  @Override
   public StoneUpsert more(String id) {
     return new StoneUpsertImpl(this.upserter.more(), id);
   }

@@ -16,6 +16,7 @@ public class ChairUpsertImpl implements ChairUpsert {
     upserter.putId("id2", id2);
   }
 
+  @Override
   public ChairUpsert more(long id1, String id2) {
     return new ChairUpsertImpl(this.upserter.more(), id1, id2);
   }

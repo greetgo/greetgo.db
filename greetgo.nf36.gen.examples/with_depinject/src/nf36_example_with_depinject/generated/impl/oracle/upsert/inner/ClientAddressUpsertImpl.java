@@ -18,6 +18,7 @@ public class ClientAddressUpsertImpl implements ClientAddressUpsert {
     upserter.putId("client_id", clientId);
   }
 
+  @Override
   public ClientAddressUpsert more(long clientId) {
     return new ClientAddressUpsertImpl(this.upserter.more(), clientId);
   }

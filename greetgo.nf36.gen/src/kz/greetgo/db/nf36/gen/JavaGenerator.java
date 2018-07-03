@@ -1,7 +1,7 @@
 package kz.greetgo.db.nf36.gen;
 
-import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.core.Nf36Updater;
+import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.core.Nf3CommitMethodName;
 import kz.greetgo.db.nf36.core.Nf3MoreMethodName;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
@@ -613,6 +613,7 @@ public class JavaGenerator {
   }
 
   private void printMoreMethodImpl(JavaFilePrinter p, UpsertInfo info, String implInterfaceName) {
+    p.ofs(1).prn("@Override");
     p.ofs(1).prn("public " + implInterfaceName + " " + info.moreMethodName() + "(" + (
 
       info.fields().stream()

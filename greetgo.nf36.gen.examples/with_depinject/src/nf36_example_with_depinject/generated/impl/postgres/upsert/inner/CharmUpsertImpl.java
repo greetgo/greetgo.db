@@ -15,6 +15,7 @@ public class CharmUpsertImpl implements CharmUpsert {
     upserter.putId("id", id);
   }
 
+  @Override
   public CharmUpsert more(String id) {
     return new CharmUpsertImpl(this.upserter.more(), id);
   }

@@ -17,6 +17,7 @@ public class ClientUpsertImpl implements ClientUpsert {
     upserter.putId("id", id);
   }
 
+  @Override
   public ClientUpsert moreAnother(long id) {
     return new ClientUpsertImpl(this.upserter.more(), id);
   }

@@ -16,6 +16,7 @@ public class WowUpsertImpl implements WowUpsert {
     upserter.putId("wow_id2", wowId2);
   }
 
+  @Override
   public WowUpsert more(String wowId, String wowId2) {
     return new WowUpsertImpl(this.upserter.more(), wowId, wowId2);
   }

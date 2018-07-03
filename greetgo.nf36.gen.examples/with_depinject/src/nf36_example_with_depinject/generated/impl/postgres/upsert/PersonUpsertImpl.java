@@ -16,6 +16,7 @@ public class PersonUpsertImpl implements PersonUpsert {
     upserter.putId("id", id);
   }
 
+  @Override
   public PersonUpsert more(String id) {
     return new PersonUpsertImpl(this.upserter.more(), id);
   }

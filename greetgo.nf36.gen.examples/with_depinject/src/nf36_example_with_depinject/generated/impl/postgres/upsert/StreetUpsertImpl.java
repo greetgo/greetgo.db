@@ -17,6 +17,7 @@ public class StreetUpsertImpl implements StreetUpsert {
     upserter.putId("id", id);
   }
 
+  @Override
   public StreetUpsert more(long id) {
     return new StreetUpsertImpl(this.upserter.more(), id);
   }
