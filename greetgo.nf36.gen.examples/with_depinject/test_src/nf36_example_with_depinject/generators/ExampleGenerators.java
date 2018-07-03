@@ -50,6 +50,7 @@ public class ExampleGenerators implements HasAfterInject {
       .setLongLength(2001)
       .setCommitMethodName("commit")
       .setMoreMethodName("more")
+      .setSequencePrefix("s_")
       .register(new Client())
       .register(new ClientAddress())
       .register(new Street())
