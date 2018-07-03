@@ -691,6 +691,11 @@ public class JavaGenerator {
 
     for (Nf3Table nf3Table : collector.collect()) {
       printUpsertImplMethod(p, nf3Table);
+      for (Nf3Field nf3Field : nf3Table.fields()) {
+        if (nf3Field.sequence() != null) {
+          printUpsertImplMethodSequence(p, nf3Field, nf3Table);
+        }
+      }
     }
 
     p.printToFile(resolveJavaFile(implOutDir, implBasePackage, upserterImplClassName()));
@@ -784,13 +789,19 @@ public class JavaGenerator {
   }
 
   private void printUpsertInterfaceMethodSequence(JavaFilePrinter p, Nf3Field nf3Field, Nf3Table nf3Table) {
-    //TODO pompei ....
     UpsertInfo info = getUpsertInfo(nf3Table);
 
     p.ofs(1).pr(p.i(nf3Field.javaType().getName()))
       .pr(" ").pr(info.upsertMethodName() + "Next" + firstToUp(nf3Field.javaName())).prn("();").prn();
   }
 
+  private void printUpsertImplMethodSequence(JavaFilePrinter p, Nf3Field nf3Field, Nf3Table nf3Table) {
+    UpsertInfo info = getUpsertInfo(nf3Table);
+
+    p.ofs(1).prn("@Override");
+    p.ofs(1).pr("public " + p.i(nf3Field.javaType().getName()))
+      .pr(" ").pr(info.upsertMethodName() + "Next" + firstToUp(nf3Field.javaName())).prn("() {return 0;}").prn();
+  }
 
   private void printUpdateInterfaceMethod(JavaFilePrinter p, Nf3Table nf3Table) {
     UpdateInfo info = getUpdateInfo(nf3Table);
