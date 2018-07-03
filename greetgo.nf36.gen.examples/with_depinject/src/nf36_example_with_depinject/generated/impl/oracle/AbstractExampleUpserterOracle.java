@@ -1,10 +1,13 @@
 package nf36_example_with_depinject.generated.impl.oracle;
 
+import java.lang.Integer;
+import java.lang.Long;
 import java.lang.String;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.core.SequenceNext;
 import nf36_example_with_depinject.generated.faces.ExampleUpserter;
 import nf36_example_with_depinject.generated.faces.upsert.ClientUpsert;
+import nf36_example_with_depinject.generated.faces.upsert.EntityWithManyIdsUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.PersonUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.StoneUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.StreetUpsert;
@@ -13,6 +16,7 @@ import nf36_example_with_depinject.generated.faces.upsert.inner.CharmUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.inner.ClientAddressUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.inner.WowUpsert;
 import nf36_example_with_depinject.generated.impl.oracle.upsert.ClientUpsertImpl;
+import nf36_example_with_depinject.generated.impl.oracle.upsert.EntityWithManyIdsUpsertImpl;
 import nf36_example_with_depinject.generated.impl.oracle.upsert.PersonUpsertImpl;
 import nf36_example_with_depinject.generated.impl.oracle.upsert.StoneUpsertImpl;
 import nf36_example_with_depinject.generated.impl.oracle.upsert.StreetUpsertImpl;
@@ -56,6 +60,27 @@ public abstract class AbstractExampleUpserterOracle implements ExampleUpserter {
 
   @Override
   public long clientAddressNextClientId() {
+    return getSequenceNext().nextLong("asd");
+  }
+  @Override
+  public EntityWithManyIdsUpsert entityWithManyIds(int intId, Integer boxedIntId, long longId, Long boxedLongId, String strId) {
+    return new EntityWithManyIdsUpsertImpl(createUpserter(), intId, boxedIntId, longId, boxedLongId, strId);
+  }
+
+  @Override
+  public int entityWithManyIdsNextIntId() {
+    return getSequenceNext().nextInt("asd");
+  }
+  @Override
+  public Integer entityWithManyIdsNextBoxedIntId() {
+    return getSequenceNext().nextInteger("asd");
+  }
+  @Override
+  public long entityWithManyIdsNextLongId() {
+    return getSequenceNext().nextLong("asd");
+  }
+  @Override
+  public Long entityWithManyIdsNextBoxedLongId() {
     return getSequenceNext().nextLong("asd");
   }
   @Override

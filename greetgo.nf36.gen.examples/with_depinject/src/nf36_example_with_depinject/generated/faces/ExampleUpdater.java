@@ -1,6 +1,7 @@
 package nf36_example_with_depinject.generated.faces;
 
 import nf36_example_with_depinject.generated.faces.update.ClientUpdate;
+import nf36_example_with_depinject.generated.faces.update.EntityWithManyIdsUpdate;
 import nf36_example_with_depinject.generated.faces.update.PersonUpdate;
 import nf36_example_with_depinject.generated.faces.update.StoneUpdate;
 import nf36_example_with_depinject.generated.faces.update.StreetUpdate;
@@ -17,6 +18,8 @@ public interface ExampleUpdater {
   ClientUpdate client();
 
   ClientAddressUpdate clientAddress();
+
+  EntityWithManyIdsUpdate entityWithManyIds();
 
   PersonUpdate person();
 
