@@ -35,7 +35,11 @@ public class ExampleUpserterOracleConnector extends AbstractExampleUpserterOracl
 
   @Override
   protected SequenceNext getSequenceNext() {
-    return null;
+    return newNf36Builder()
+      .sequenceNext()
+      .setLogAcceptor(logAcceptor.get())
+      .setJdbc(jdbc.get())
+      .database(dbTypeSource.get().currentDbType())
+      .build();
   }
-
 }

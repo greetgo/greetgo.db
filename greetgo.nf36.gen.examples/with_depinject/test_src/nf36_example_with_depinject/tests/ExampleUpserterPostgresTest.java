@@ -1,6 +1,5 @@
 package nf36_example_with_depinject.tests;
 
-import kz.greetgo.db.Jdbc;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
 import kz.greetgo.depinject.core.BeanGetter;
 import kz.greetgo.depinject.testng.ContainerConfig;
@@ -305,6 +304,16 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     long clientId = RND.plusLong(1_000_000_000_000L);
 
     exampleUpserter.get().client(clientId).charmId(null).commitAll();
+
+  }
+
+  @Test
+  public void sequence() {
+
+    long id1 = exampleUpserter.get().clientNextId();
+    long id2 = exampleUpserter.get().clientNextId();
+
+    assertThat(id1).isEqualTo(id2 - 1);
 
   }
 }
