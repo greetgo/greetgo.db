@@ -13,17 +13,25 @@ import nf36_example_with_depinject.generated.faces.upsert.inner.WowUpsert;
 public interface ExampleUpserter {
   ChairUpsert chair(long id1, String id2);
 
+  long chairNextId1();
+
   CharmUpsert charm(String id);
 
   ClientUpsert client(long id);
 
+  long clientNextId();
+
   ClientAddressUpsert clientAddress(long clientId);
+
+  long clientAddressNextClientId();
 
   PersonUpsert person(String id);
 
   StoneUpsert stone(String id);
 
   StreetUpsert street(long id);
+
+  long streetNextId();
 
   WowUpsert wow(String wowId, String wowId2);
 

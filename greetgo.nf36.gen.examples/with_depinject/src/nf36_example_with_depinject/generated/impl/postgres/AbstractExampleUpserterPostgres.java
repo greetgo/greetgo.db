@@ -1,7 +1,7 @@
 package nf36_example_with_depinject.generated.impl.postgres;
 
-import java.lang.String;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
+import kz.greetgo.db.nf36.core.SequenceNext;
 import nf36_example_with_depinject.generated.faces.ExampleUpserter;
 import nf36_example_with_depinject.generated.faces.upsert.ClientUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.PersonUpsert;
@@ -23,9 +23,16 @@ import nf36_example_with_depinject.generated.impl.postgres.upsert.inner.WowUpser
 public abstract class AbstractExampleUpserterPostgres implements ExampleUpserter {
   protected abstract Nf36Upserter createUpserter();
 
+  protected abstract SequenceNext getSequenceNext();
+
   @Override
   public ChairUpsert chair(long id1, String id2) {
     return new ChairUpsertImpl(createUpserter(), id1, id2);
+  }
+
+  @Override
+  public long chairNextId1() {
+    return getSequenceNext().nextLong("s_chair_id1");
   }
 
   @Override
@@ -39,9 +46,15 @@ public abstract class AbstractExampleUpserterPostgres implements ExampleUpserter
   }
 
   @Override
+  public long clientNextId() {return 0;}
+
+  @Override
   public ClientAddressUpsert clientAddress(long clientId) {
     return new ClientAddressUpsertImpl(createUpserter(), clientId);
   }
+
+  @Override
+  public long clientAddressNextClientId() {return 0;}
 
   @Override
   public PersonUpsert person(String id) {
@@ -57,6 +70,9 @@ public abstract class AbstractExampleUpserterPostgres implements ExampleUpserter
   public StreetUpsert street(long id) {
     return new StreetUpsertImpl(createUpserter(), id);
   }
+
+  @Override
+  public long streetNextId() {return 0;}
 
   @Override
   public WowUpsert wow(String wowId, String wowId2) {

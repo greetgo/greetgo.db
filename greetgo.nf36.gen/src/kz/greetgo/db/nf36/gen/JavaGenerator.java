@@ -4,6 +4,7 @@ import kz.greetgo.db.nf36.core.Nf36Updater;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.core.Nf3CommitMethodName;
 import kz.greetgo.db.nf36.core.Nf3MoreMethodName;
+import kz.greetgo.db.nf36.core.SequenceNext;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
 import kz.greetgo.db.nf36.model.Nf3Field;
 import kz.greetgo.db.nf36.model.Nf3Table;
@@ -688,6 +689,7 @@ public class JavaGenerator {
       + " implements " + p.i(upserterInterfaceClassName);
 
     printCreateUpserterMethod(p);
+    printGetSequenceNextMethod(p);
 
     for (Nf3Table nf3Table : collector.collect()) {
       printUpsertImplMethod(p, nf3Table);
@@ -700,6 +702,8 @@ public class JavaGenerator {
 
     p.printToFile(resolveJavaFile(implOutDir, implBasePackage, upserterImplClassName()));
   }
+
+
 
   private void generateMainUpdaterImpl(String updaterInterfaceClassName) {
     JavaFilePrinter p = new JavaFilePrinter();
@@ -719,10 +723,17 @@ public class JavaGenerator {
 
   String upserterCreateMethod = "createUpserter";
 
-
   @SuppressWarnings("unused")
   public JavaGenerator setUpserterCreateMethod(String upserterCreateMethod) {
     this.upserterCreateMethod = upserterCreateMethod;
+    return this;
+  }
+
+  String getSequenceNextMethod = "getSequenceNext";
+
+  @SuppressWarnings("unused")
+  public JavaGenerator setGetSequenceNextMethod(String getSequenceNextMethod) {
+    this.getSequenceNextMethod = getSequenceNextMethod;
     return this;
   }
 
@@ -746,6 +757,22 @@ public class JavaGenerator {
 
     p.ofs(1).prn("protected " + (abstracting ? "abstract " : "")
       + upserterClassName + " " + upserterCreateMethod + "()"
+      + (abstracting ? ";\n" : " {")
+    );
+
+    if (abstracting) return;
+
+    String notImplError = p.i(RuntimeException.class.getName());
+
+    p.ofs(2).prn("throw new " + notImplError + "(\"Not implemented\");");
+    p.ofs(1).prn("}").prn();
+  }
+
+  private void printGetSequenceNextMethod(JavaFilePrinter p) {
+    String sequenceNextClassName = p.i(SequenceNext.class.getName());
+
+    p.ofs(1).prn("protected " + (abstracting ? "abstract " : "")
+      + sequenceNextClassName + " " + getSequenceNextMethod + "()"
       + (abstracting ? ";\n" : " {")
     );
 
