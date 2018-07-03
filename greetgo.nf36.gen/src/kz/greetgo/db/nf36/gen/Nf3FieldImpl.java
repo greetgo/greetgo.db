@@ -158,9 +158,7 @@ class Nf3FieldImpl implements Nf3Field {
     if (nf3ID == null) return null;
     if (!dbType().sequential()) return null;
 
-    String sequenceName = collector.sequencePrefix()
-      + "_" + nf3Table.tableName()
-      + "_" + dbName();
+    String sequenceName = collector.sequencePrefix() + nf3Table.tableName() + "_" + dbName();
 
     return new Sequence(sequenceName, nf3ID.seqFrom());
   }

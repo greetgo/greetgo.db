@@ -5,5 +5,7 @@ public interface SequenceNext {
 
   int nextInt(String sequenceName);
 
-  int nextInteger(String sequenceName);
+  default int nextInteger(String sequenceName) {
+    return nextInt(sequenceName);
+  }
 }

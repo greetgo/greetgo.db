@@ -1,5 +1,8 @@
 package nf36_example_with_depinject.generated.impl.postgres;
 
+import java.lang.Integer;
+import java.lang.Long;
+import java.lang.String;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.core.SequenceNext;
 import nf36_example_with_depinject.generated.faces.ExampleUpserter;
@@ -34,7 +37,7 @@ public abstract class AbstractExampleUpserterPostgres implements ExampleUpserter
 
   @Override
   public long chairNextId1() {
-    return getSequenceNext().nextLong("asd");
+    return getSequenceNext().nextLong("s_chair_id1");
   }
 
   @Override
@@ -49,7 +52,7 @@ public abstract class AbstractExampleUpserterPostgres implements ExampleUpserter
 
   @Override
   public long clientNextId() {
-    return getSequenceNext().nextLong("asd");
+    return getSequenceNext().nextLong("s_client_id");
   }
 
   @Override
@@ -59,7 +62,7 @@ public abstract class AbstractExampleUpserterPostgres implements ExampleUpserter
 
   @Override
   public long clientAddressNextClientId() {
-    return getSequenceNext().nextLong("asd");
+    return getSequenceNext().nextLong("s_client_address_client_id");
   }
 
   @Override
@@ -69,22 +72,22 @@ public abstract class AbstractExampleUpserterPostgres implements ExampleUpserter
 
   @Override
   public int entityWithManyIdsNextIntId() {
-    return getSequenceNext().nextInt("asd");
+    return getSequenceNext().nextInt("s_entity_with_many_ids_int_id");
   }
 
   @Override
   public Integer entityWithManyIdsNextBoxedIntId() {
-    return getSequenceNext().nextInteger("asd");
+    return getSequenceNext().nextInteger("s_entity_with_many_ids_boxed_int_id");
   }
 
   @Override
   public long entityWithManyIdsNextLongId() {
-    return getSequenceNext().nextLong("asd");
+    return getSequenceNext().nextLong("s_entity_with_many_ids_long_id");
   }
 
   @Override
   public Long entityWithManyIdsNextBoxedLongId() {
-    return getSequenceNext().nextLong("asd");
+    return getSequenceNext().nextLong("s_entity_with_many_ids_boxed_long_id");
   }
 
   @Override
@@ -104,7 +107,7 @@ public abstract class AbstractExampleUpserterPostgres implements ExampleUpserter
 
   @Override
   public long streetNextId() {
-    return getSequenceNext().nextLong("asd");
+    return getSequenceNext().nextLong("s_street_id");
   }
 
   @Override

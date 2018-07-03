@@ -829,10 +829,9 @@ public class JavaGenerator {
     p.ofs(1).prn("@Override");
     p.ofs(1).pr("public " + p.i(nf3Field.javaType().getName()))
       .pr(" ").pr(info.upsertMethodName() + "Next" + firstToUp(nf3Field.javaName())).prn("() {");
-    //TODO pompei ...
     p.ofs(2).prn("return " + getSequenceNextMethod + "().next"
       + firstToUp(nf3Field.javaType().getSimpleName()) + "(\"" + sequence.name + "\");");
-    p.ofs(1).prn("}");
+    p.ofs(1).prn("}").prn();
   }
 
   private void printUpdateInterfaceMethod(JavaFilePrinter p, Nf3Table nf3Table) {
