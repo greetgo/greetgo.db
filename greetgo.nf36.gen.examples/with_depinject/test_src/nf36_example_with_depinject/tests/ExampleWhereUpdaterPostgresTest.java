@@ -1,6 +1,5 @@
 package nf36_example_with_depinject.tests;
 
-import kz.greetgo.db.Jdbc;
 import kz.greetgo.depinject.core.BeanGetter;
 import kz.greetgo.depinject.testng.ContainerConfig;
 import kz.greetgo.util.RND;
@@ -23,8 +22,6 @@ public class ExampleWhereUpdaterPostgresTest extends ParentDbTests {
   public BeanGetter<ExampleUpserter> exampleUpserter;
 
   public BeanGetter<ExampleUpdater> exampleUpdater;
-
-  public BeanGetter<Jdbc> jdbc;
 
   @Test
   public void test_exampleWhereUpdater_mainWork() {

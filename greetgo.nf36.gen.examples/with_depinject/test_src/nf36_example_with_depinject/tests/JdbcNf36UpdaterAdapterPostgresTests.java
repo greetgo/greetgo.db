@@ -28,19 +28,8 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @ContainerConfig(BeanConfigForPostgresTests.class)
 public class JdbcNf36UpdaterAdapterPostgresTests extends ParentDbTests {
 
-  public BeanGetter<Jdbc> jdbc;
   public BeanGetter<DbTypeSource> dbTypeSource;
   public BeanGetter<SqlLogAcceptor> logAcceptor;
-
-  protected void exec(String sql) {
-    jdbc.get().execute((ConnectionCallback<Void>) con -> {
-      try (PreparedStatement st = con.prepareStatement(sql)) {
-        System.out.println("EXEC SQL " + sql);
-        st.executeUpdate();
-      }
-      return null;
-    });
-  }
 
   protected void dropTable(String tableName) {
     try {

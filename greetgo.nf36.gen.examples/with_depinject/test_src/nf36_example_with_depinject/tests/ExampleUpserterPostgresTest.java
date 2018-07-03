@@ -23,8 +23,6 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
 
   public BeanGetter<ExampleUpserter> exampleUpserter;
 
-  public BeanGetter<Jdbc> jdbc;
-
   public BeanGetter<AuthorGetterImpl> authorGetterImpl;
 
   @Test
