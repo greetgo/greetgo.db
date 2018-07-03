@@ -1,7 +1,8 @@
 package kz.greetgo.db.nf36;
 
+import kz.greetgo.db.nf36.adapters.SequenceNextBuilder;
+import kz.greetgo.db.nf36.adapters.UpdaterBuilder;
 import kz.greetgo.db.nf36.adapters.UpserterAdapterBuilder;
-import kz.greetgo.db.nf36.adapters.WhereUpdaterBuilder;
 
 public class Nf36Builder {
 
@@ -15,7 +16,11 @@ public class Nf36Builder {
     return new UpserterAdapterBuilder();
   }
 
-  public WhereUpdaterBuilder whereUpdater() {
-    return new WhereUpdaterBuilder();
+  public UpdaterBuilder updater() {
+    return new UpdaterBuilder();
+  }
+
+  public SequenceNextBuilder sequenceNext() {
+    return new SequenceNextBuilder();
   }
 }

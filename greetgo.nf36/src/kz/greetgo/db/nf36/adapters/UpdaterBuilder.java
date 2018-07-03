@@ -5,23 +5,23 @@ import kz.greetgo.db.Jdbc;
 import kz.greetgo.db.nf36.core.Nf36Updater;
 import kz.greetgo.db.nf36.core.SqlLogAcceptor;
 
-public class WhereUpdaterBuilder {
+public class UpdaterBuilder {
   private SqlLogAcceptor logAcceptor = null;
   private Jdbc jdbc = null;
 
-  public WhereUpdaterBuilder setJdbc(Jdbc jdbc) {
+  public UpdaterBuilder setJdbc(Jdbc jdbc) {
     this.jdbc = jdbc;
     return this;
   }
 
-  public WhereUpdaterBuilder setLogAcceptor(SqlLogAcceptor logAcceptor) {
+  public UpdaterBuilder setLogAcceptor(SqlLogAcceptor logAcceptor) {
     this.logAcceptor = logAcceptor;
     return this;
   }
 
   private JdbcNf36UpdaterAbstractAdapter adapter = null;
 
-  public WhereUpdaterBuilder database(DbType dbType) {
+  public UpdaterBuilder database(DbType dbType) {
     switch (dbType) {
       case Postgres:
         adapter = new JdbcNf36UpdaterAdapterPostgres();

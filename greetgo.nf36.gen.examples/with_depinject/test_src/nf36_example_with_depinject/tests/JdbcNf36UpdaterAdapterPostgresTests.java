@@ -179,7 +179,7 @@ public class JdbcNf36UpdaterAdapterPostgresTests extends ParentDbTests {
 
   private Nf36Updater createUpdater() {
     return newNf36Builder()
-      .whereUpdater()
+      .updater()
       .database(dbTypeSource.get().currentDbType())
       .setJdbc(jdbc.get())
       .setLogAcceptor(logAcceptor.get())
