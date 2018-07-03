@@ -5,11 +5,12 @@ import kz.greetgo.db.nf36.gen.DdlGenerator;
 import kz.greetgo.db.nf36.gen.JavaGenerator;
 import kz.greetgo.db.nf36.gen.ModelCollector;
 import kz.greetgo.db.nf36.gen.SqlDialect;
+import kz.greetgo.db.worker.DbParameters;
 import kz.greetgo.depinject.core.Bean;
 import kz.greetgo.depinject.core.BeanGetter;
 import kz.greetgo.depinject.core.HasAfterInject;
-import kz.greetgo.db.worker.DbParameters;
 import nf36_example_with_depinject.structure.Client;
+import nf36_example_with_depinject.structure.EntityWithManyIds;
 import nf36_example_with_depinject.structure.Person;
 import nf36_example_with_depinject.structure.Stone;
 import nf36_example_with_depinject.structure.Street;
@@ -56,6 +57,7 @@ public class ExampleGenerators implements HasAfterInject {
       .register(new Wow())
       .register(new Person())
       .register(new Stone())
+      .register(new EntityWithManyIds())
       .register(new Charm());
 
     javaGenerator = JavaGenerator.newGenerator(collector)
