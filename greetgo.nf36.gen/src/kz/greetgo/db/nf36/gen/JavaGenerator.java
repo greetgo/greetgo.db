@@ -40,7 +40,6 @@ public class JavaGenerator {
 
   private final ModelCollector collector;
 
-
   private String upserterImplClassName() {
     if (upserterClassName == null) {
       throw new RuntimeException("Не определён upserterClassName:" +
@@ -704,7 +703,6 @@ public class JavaGenerator {
   }
 
 
-
   private void generateMainUpdaterImpl(String updaterInterfaceClassName) {
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = implBasePackage;
@@ -827,7 +825,11 @@ public class JavaGenerator {
 
     p.ofs(1).prn("@Override");
     p.ofs(1).pr("public " + p.i(nf3Field.javaType().getName()))
-      .pr(" ").pr(info.upsertMethodName() + "Next" + firstToUp(nf3Field.javaName())).prn("() {return 0;}").prn();
+      .pr(" ").pr(info.upsertMethodName() + "Next" + firstToUp(nf3Field.javaName())).prn("() {");
+    //TODO pompei ...
+    p.ofs(2).prn("return " + getSequenceNextMethod + "().next"
+      + firstToUp(nf3Field.javaType().getSimpleName()) + "(\"asd\");");
+    p.ofs(1).prn("}");
   }
 
   private void printUpdateInterfaceMethod(JavaFilePrinter p, Nf3Table nf3Table) {
