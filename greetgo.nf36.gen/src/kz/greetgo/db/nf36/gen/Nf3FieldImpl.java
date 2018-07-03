@@ -14,12 +14,14 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 class Nf3FieldImpl implements Nf3Field {
+  private final Nf3Table nf3Table;
   private final Object definer;
   private final Field source;
   private final Nf3ID nf3ID;
   private final ModelCollector collector;
 
-  public Nf3FieldImpl(Object definer, Field source, ModelCollector collector) {
+  public Nf3FieldImpl(Nf3Table nf3Table, Object definer, Field source, ModelCollector collector) {
+    this.nf3Table = nf3Table;
     this.definer = definer;
     this.source = source;
     nf3ID = source.getAnnotation(Nf3ID.class);
@@ -155,6 +157,11 @@ class Nf3FieldImpl implements Nf3Field {
   public Sequence sequence() {
     if (nf3ID == null) return null;
     if (!dbType().sequential()) return null;
-    return new Sequence(nf3ID.seqFrom());
+
+    String sequenceName = collector.sequencePrefix()
+      + "_" + nf3Table.tableName()
+      + "_" + dbName();
+
+    return new Sequence(sequenceName, nf3ID.seqFrom());
   }
 }

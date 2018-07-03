@@ -8,6 +8,7 @@ import kz.greetgo.db.nf36.core.SequenceNext;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
 import kz.greetgo.db.nf36.model.Nf3Field;
 import kz.greetgo.db.nf36.model.Nf3Table;
+import kz.greetgo.db.nf36.model.Sequence;
 import kz.greetgo.db.nf36.utils.UtilsNf36;
 
 import java.io.File;
@@ -823,12 +824,14 @@ public class JavaGenerator {
   private void printUpsertImplMethodSequence(JavaFilePrinter p, Nf3Field nf3Field, Nf3Table nf3Table) {
     UpsertInfo info = getUpsertInfo(nf3Table);
 
+    Sequence sequence = nf3Field.sequence();
+
     p.ofs(1).prn("@Override");
     p.ofs(1).pr("public " + p.i(nf3Field.javaType().getName()))
       .pr(" ").pr(info.upsertMethodName() + "Next" + firstToUp(nf3Field.javaName())).prn("() {");
     //TODO pompei ...
     p.ofs(2).prn("return " + getSequenceNextMethod + "().next"
-      + firstToUp(nf3Field.javaType().getSimpleName()) + "(\"asd\");");
+      + firstToUp(nf3Field.javaType().getSimpleName()) + "(\"" + sequence.name + "\");");
     p.ofs(1).prn("}");
   }
 

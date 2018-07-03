@@ -28,6 +28,18 @@ public class ModelCollector {
   int longLength;
   private String moreMethodName = null;
   private String commitMethodName = null;
+  private String sequencePrefix = null;
+
+  public String sequencePrefix() {
+    if (sequencePrefix == null) throw new RuntimeException("sequencePrefix is null, please call method" +
+      " setSequencePrefix of ModelCollector to define it");
+    return sequencePrefix;
+  }
+
+  public ModelCollector setSequencePrefix(String sequencePrefix) {
+    this.sequencePrefix = sequencePrefix;
+    return this;
+  }
 
   public String commitMethodName() {
     if (commitMethodName == null) throw new NullPointerException("commitMethodName == null");
