@@ -1,5 +1,6 @@
 package nf36_example_with_depinject.generated.impl.postgres;
 
+import java.lang.String;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.core.SequenceNext;
 import nf36_example_with_depinject.generated.faces.ExampleUpserter;
@@ -31,9 +32,7 @@ public abstract class AbstractExampleUpserterPostgres implements ExampleUpserter
   }
 
   @Override
-  public long chairNextId1() {
-    return getSequenceNext().nextLong("s_chair_id1");
-  }
+  public long chairNextId1() {return 0;}
 
   @Override
   public CharmUpsert charm(String id) {

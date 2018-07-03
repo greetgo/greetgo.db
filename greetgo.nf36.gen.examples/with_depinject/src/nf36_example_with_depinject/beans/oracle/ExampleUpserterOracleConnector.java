@@ -2,6 +2,7 @@ package nf36_example_with_depinject.beans.oracle;
 
 import kz.greetgo.db.Jdbc;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
+import kz.greetgo.db.nf36.core.SequenceNext;
 import kz.greetgo.db.nf36.core.SqlLogAcceptor;
 import kz.greetgo.depinject.core.Bean;
 import kz.greetgo.depinject.core.BeanGetter;
@@ -30,6 +31,11 @@ public class ExampleUpserterOracleConnector extends AbstractExampleUpserterOracl
       .build()
       .setAuthor(authorGetter.get().getAuthor())
       ;
+  }
+
+  @Override
+  protected SequenceNext getSequenceNext() {
+    return null;
   }
 
 }

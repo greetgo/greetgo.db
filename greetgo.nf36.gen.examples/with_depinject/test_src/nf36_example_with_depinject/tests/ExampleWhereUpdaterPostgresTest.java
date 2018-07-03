@@ -36,29 +36,32 @@ public class ExampleWhereUpdaterPostgresTest extends ParentDbTests {
     String name1 = "name1 " + RND.str(10);
     String surname1 = "sur1 " + RND.str(10);
 
-    exampleUpserter.get().client(id1)
-      .name(name1)
-      .surname(surname1)
-      .patronymic(patronymic)
-      .commitAll();
+    //TODO pompei uncomment it
+//    exampleUpserter.get().client(id1)
+//      .name(name1)
+//      .surname(surname1)
+//      .patronymic(patronymic)
+//      .commitAll();
 
     long id2 = RND.plusLong(1_000_000_000_000L);
     String name2 = "name2 " + RND.str(10);
     String surname2 = "sur2 " + RND.str(10);
 
-    exampleUpserter.get().client(id2)
-      .name(name2)
-      .surname(surname2)
-      .patronymic(patronymic)
-      .commitAll();
+    //TODO pompei uncomment it
+//    exampleUpserter.get().client(id2)
+//      .name(name2)
+//      .surname(surname2)
+//      .patronymic(patronymic)
+//      .commitAll();
 
     long id3 = RND.plusLong(1_000_000_000_000L);
 
-    exampleUpserter.get().client(id3)
-      .name("Александр")
-      .patronymic("Сергеевич")
-      .surname("Пушкин")
-      .commitAll();
+    //TODO pompei uncomment it
+//    exampleUpserter.get().client(id3)
+//      .name("Александр")
+//      .patronymic("Сергеевич")
+//      .surname("Пушкин")
+//      .commitAll();
 
     String newName = "newName " + RND.str(10);
 
@@ -101,10 +104,11 @@ public class ExampleWhereUpdaterPostgresTest extends ParentDbTests {
 
     String id = RND.str(10);
 
-    exampleUpserter.get().stone(id)
-      .name(RND.str(10))
-      .actual(true)
-      .commit();
+    //TODO pompei uncomment it
+//    exampleUpserter.get().stone(id)
+//      .name(RND.str(10))
+//      .actual(true)
+//      .commit();
 
     exampleUpdater.get().stone().whereIdIsEqualTo(id).setActual(false).commit();
 
