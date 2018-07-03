@@ -4,14 +4,14 @@ import java.lang.Integer;
 import java.lang.Long;
 import java.lang.String;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
-import nf36_example_with_depinject.generated.faces.upsert.EntityWithManyIdsUpsert;
+import nf36_example_with_depinject.generated.faces.upsert.ManyIdsUpsert;
 
-public class EntityWithManyIdsUpsertImpl implements EntityWithManyIdsUpsert {
+public class ManyIdsUpsertImpl implements ManyIdsUpsert {
   private final Nf36Upserter upserter;
 
-  public EntityWithManyIdsUpsertImpl(Nf36Upserter upserter, int intId, Integer boxedIntId, long longId, Long boxedLongId, String strId) {
+  public ManyIdsUpsertImpl(Nf36Upserter upserter, int intId, Integer boxedIntId, long longId, Long boxedLongId, String strId) {
     this.upserter = upserter;
-    upserter.setNf3TableName("entity_with_many_ids");
+    upserter.setNf3TableName("many_ids");
     upserter.setTimeFieldName("ts");
     upserter.setAuthorFieldNames("created_by", "modified_by", "inserted_by");
     upserter.putId("int_id", intId);
@@ -22,13 +22,13 @@ public class EntityWithManyIdsUpsertImpl implements EntityWithManyIdsUpsert {
   }
 
   @Override
-  public EntityWithManyIdsUpsert more(int intId, Integer boxedIntId, long longId, Long boxedLongId, String strId) {
-    return new EntityWithManyIdsUpsertImpl(this.upserter.more(), intId, boxedIntId, longId, boxedLongId, strId);
+  public ManyIdsUpsert more(int intId, Integer boxedIntId, long longId, Long boxedLongId, String strId) {
+    return new ManyIdsUpsertImpl(this.upserter.more(), intId, boxedIntId, longId, boxedLongId, strId);
   }
 
   @Override
-  public EntityWithManyIdsUpsert aField(int aField) {
-    upserter.putField("m_entity_with_many_ids_a_field", "a_field", aField);
+  public ManyIdsUpsert aField(int aField) {
+    upserter.putField("m_many_ids_a_field", "a_field", aField);
     return this;
   }
 

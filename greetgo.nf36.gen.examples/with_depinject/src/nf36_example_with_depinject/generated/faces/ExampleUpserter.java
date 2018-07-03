@@ -4,7 +4,7 @@ import java.lang.Integer;
 import java.lang.Long;
 import java.lang.String;
 import nf36_example_with_depinject.generated.faces.upsert.ClientUpsert;
-import nf36_example_with_depinject.generated.faces.upsert.EntityWithManyIdsUpsert;
+import nf36_example_with_depinject.generated.faces.upsert.ManyIdsUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.PersonUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.StoneUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.StreetUpsert;
@@ -28,15 +28,15 @@ public interface ExampleUpserter {
 
   long clientAddressNextClientId();
 
-  EntityWithManyIdsUpsert entityWithManyIds(int intId, Integer boxedIntId, long longId, Long boxedLongId, String strId);
+  ManyIdsUpsert manyIds(int intId, Integer boxedIntId, long longId, Long boxedLongId, String strId);
 
-  int entityWithManyIdsNextIntId();
+  int manyIdsNextIntId();
 
-  Integer entityWithManyIdsNextBoxedIntId();
+  Integer manyIdsNextBoxedIntId();
 
-  long entityWithManyIdsNextLongId();
+  long manyIdsNextLongId();
 
-  Long entityWithManyIdsNextBoxedLongId();
+  Long manyIdsNextBoxedLongId();
 
   PersonUpsert person(String id);
 

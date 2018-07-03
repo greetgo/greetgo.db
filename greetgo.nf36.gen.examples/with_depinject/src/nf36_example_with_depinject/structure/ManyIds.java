@@ -6,6 +6,7 @@ import kz.greetgo.db.nf36.core.Nf3ID;
 @SuppressWarnings("unused")
 @Nf3Description("Это энтити с большим количеством ИД-шников")
 public class ManyIds {
+  @SuppressWarnings("DefaultAnnotationParam")
   @Nf3Description("an id field")
   @Nf3ID(order = 1)
   public int intId;

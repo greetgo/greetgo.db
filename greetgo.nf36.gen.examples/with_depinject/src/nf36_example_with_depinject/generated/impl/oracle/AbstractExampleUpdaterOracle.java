@@ -3,7 +3,7 @@ package nf36_example_with_depinject.generated.impl.oracle;
 import kz.greetgo.db.nf36.core.Nf36Updater;
 import nf36_example_with_depinject.generated.faces.ExampleUpdater;
 import nf36_example_with_depinject.generated.faces.update.ClientUpdate;
-import nf36_example_with_depinject.generated.faces.update.EntityWithManyIdsUpdate;
+import nf36_example_with_depinject.generated.faces.update.ManyIdsUpdate;
 import nf36_example_with_depinject.generated.faces.update.PersonUpdate;
 import nf36_example_with_depinject.generated.faces.update.StoneUpdate;
 import nf36_example_with_depinject.generated.faces.update.StreetUpdate;
@@ -12,7 +12,7 @@ import nf36_example_with_depinject.generated.faces.update.inner.CharmUpdate;
 import nf36_example_with_depinject.generated.faces.update.inner.ClientAddressUpdate;
 import nf36_example_with_depinject.generated.faces.update.inner.WowUpdate;
 import nf36_example_with_depinject.generated.impl.oracle.update.ClientUpdateImpl;
-import nf36_example_with_depinject.generated.impl.oracle.update.EntityWithManyIdsUpdateImpl;
+import nf36_example_with_depinject.generated.impl.oracle.update.ManyIdsUpdateImpl;
 import nf36_example_with_depinject.generated.impl.oracle.update.PersonUpdateImpl;
 import nf36_example_with_depinject.generated.impl.oracle.update.StoneUpdateImpl;
 import nf36_example_with_depinject.generated.impl.oracle.update.StreetUpdateImpl;
@@ -45,8 +45,8 @@ public abstract class AbstractExampleUpdaterOracle implements ExampleUpdater {
   }
 
   @Override
-  public EntityWithManyIdsUpdate entityWithManyIds() {
-    return new EntityWithManyIdsUpdateImpl(createUpdater());
+  public ManyIdsUpdate manyIds() {
+    return new ManyIdsUpdateImpl(createUpdater());
   }
 
   @Override
