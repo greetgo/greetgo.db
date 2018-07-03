@@ -45,4 +45,6 @@ public interface Nf3Field {
   boolean notNullAndNotPrimitive();
 
   String commentQuotedForSql();
+
+  Sequence sequence();
 }

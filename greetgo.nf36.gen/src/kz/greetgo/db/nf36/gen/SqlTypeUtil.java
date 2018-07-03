@@ -19,15 +19,17 @@ import java.util.Date;
 public class SqlTypeUtil {
 
   private static class DbTypeImpl implements DbType {
-    private SqlType sqlType;
-    private int len;
-    private boolean nullable;
+    private final SqlType sqlType;
+    private final int len;
+    private final boolean nullable;
+    private final boolean sequential;
     public int scale;
 
-    public DbTypeImpl(SqlType sqlType, int len, boolean nullable) {
+    public DbTypeImpl(SqlType sqlType, int len, boolean nullable, boolean sequential) {
       this.sqlType = sqlType;
       this.len = len;
       this.nullable = nullable;
+      this.sequential = sequential;
     }
 
     @Override
@@ -48,6 +50,11 @@ public class SqlTypeUtil {
     @Override
     public boolean nullable() {
       return nullable;
+    }
+
+    @Override
+    public boolean sequential() {
+      return sequential;
     }
   }
 
@@ -87,22 +94,22 @@ public class SqlTypeUtil {
       if (prev != null && aText != null) throw new ConflictError(prev, aText);
 
       if (aText != null) {
-        return new DbTypeImpl(SqlType.CLOB, 0, nullable);
+        return new DbTypeImpl(SqlType.CLOB, 0, nullable, false);
       }
 
-      return new DbTypeImpl(SqlType.VARCHAR, len, nullable);
+      return new DbTypeImpl(SqlType.VARCHAR, len, nullable, false);
     }
 
-    if (Integer.class.equals(field.getType())) return new DbTypeImpl(SqlType.INT, intLen(field), true);
-    if (int.class.equals(field.getType())) return new DbTypeImpl(SqlType.INT, intLen(field), false);
-    if (Long.class.equals(field.getType())) return new DbTypeImpl(SqlType.BIGINT, 0, true);
-    if (long.class.equals(field.getType())) return new DbTypeImpl(SqlType.BIGINT, 0, false);
-    if (Boolean.class.equals(field.getType())) return new DbTypeImpl(SqlType.BOOL, 0, true);
-    if (boolean.class.equals(field.getType())) return new DbTypeImpl(SqlType.BOOL, 0, false);
+    if (Integer.class.equals(field.getType())) return new DbTypeImpl(SqlType.INT, intLen(field), true, true);
+    if (int.class.equals(field.getType())) return new DbTypeImpl(SqlType.INT, intLen(field), false, true);
+    if (Long.class.equals(field.getType())) return new DbTypeImpl(SqlType.BIGINT, 0, true, true);
+    if (long.class.equals(field.getType())) return new DbTypeImpl(SqlType.BIGINT, 0, false, true);
+    if (Boolean.class.equals(field.getType())) return new DbTypeImpl(SqlType.BOOL, 0, true, false);
+    if (boolean.class.equals(field.getType())) return new DbTypeImpl(SqlType.BOOL, 0, false, false);
 
     if (Date.class.equals(field.getType())) {
       boolean nullable = field.getAnnotation(Nf3NotNull.class) == null;
-      return new DbTypeImpl(SqlType.TIMESTAMP, 0, nullable);
+      return new DbTypeImpl(SqlType.TIMESTAMP, 0, nullable, false);
     }
 
     if (Enum.class.isAssignableFrom(field.getType())) {
@@ -116,7 +123,7 @@ public class SqlTypeUtil {
         len = collector.enumLength;
       }
       boolean nullable = field.getAnnotation(Nf3NotNull.class) == null;
-      return new DbTypeImpl(SqlType.VARCHAR, len, nullable);
+      return new DbTypeImpl(SqlType.VARCHAR, len, nullable, false);
     }
 
     if (BigDecimal.class.equals(field.getType())) {
@@ -133,7 +140,7 @@ public class SqlTypeUtil {
 
       boolean nullable = field.getAnnotation(Nf3NotNull.class) == null;
 
-      DbTypeImpl ret = new DbTypeImpl(SqlType.DECIMAL, len, nullable);
+      DbTypeImpl ret = new DbTypeImpl(SqlType.DECIMAL, len, nullable, false);
       ret.scale = scale;
       return ret;
     }

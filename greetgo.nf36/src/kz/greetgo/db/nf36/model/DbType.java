@@ -8,4 +8,6 @@ public interface DbType {
   int scale();
 
   boolean nullable();
+
+  boolean sequential();
 }

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static kz.greetgo.db.nf36.utils.UtilsNf36.firstToLow;
 import static kz.greetgo.db.nf36.utils.UtilsNf36.firstToUp;
 import static kz.greetgo.db.nf36.utils.UtilsNf36.resolveFullName;
 import static kz.greetgo.db.nf36.utils.UtilsNf36.resolveJavaFile;
@@ -153,7 +154,7 @@ public class JavaGenerator {
     String implPackageName = UtilsNf36.resolvePackage(implBasePackage, subPackage);
     File implJavaFile = resolveJavaFile(implOutDir, implPackageName, implClassName);
 
-    String upsertMethodName = UtilsNf36.firstToLow(nf3Table.source().getSimpleName());
+    String upsertMethodName = firstToLow(nf3Table.source().getSimpleName());
 
     String interfaceFullName = resolveFullName(interfacePackageName, interfaceClassName);
 
@@ -261,7 +262,7 @@ public class JavaGenerator {
 
     String interfaceFullName = resolveFullName(interfacePackageName, interfaceClassName);
 
-    String updateMethodName = UtilsNf36.firstToLow(nf3Table.source().getSimpleName());
+    String updateMethodName = firstToLow(nf3Table.source().getSimpleName());
 
     String implFullName = resolveFullName(implPackageName, implClassName);
 
@@ -650,12 +651,18 @@ public class JavaGenerator {
 
     for (Nf3Table nf3Table : collector.collect()) {
       printUpsertInterfaceMethod(p, nf3Table);
+      for (Nf3Field nf3Field : nf3Table.fields()) {
+        if (nf3Field.sequence() != null) {
+          printUpsertInterfaceMethodSequence(p, nf3Field, nf3Table);
+        }
+      }
     }
 
     p.printToFile(resolveJavaFile(interfaceOutDir, interfaceBasePackage, upserterClassName));
 
     return resolveFullName(interfaceBasePackage, upserterClassName);
   }
+
 
   private String generateMainUpdaterInterface() {
 
@@ -775,6 +782,15 @@ public class JavaGenerator {
 
     ) + ");").prn();
   }
+
+  private void printUpsertInterfaceMethodSequence(JavaFilePrinter p, Nf3Field nf3Field, Nf3Table nf3Table) {
+    //TODO pompei ....
+    UpsertInfo info = getUpsertInfo(nf3Table);
+
+    p.ofs(1).pr(p.i(nf3Field.javaType().getName()))
+      .pr(" ").pr(info.upsertMethodName() + "Next" + firstToUp(nf3Field.javaName())).prn("();").prn();
+  }
+
 
   private void printUpdateInterfaceMethod(JavaFilePrinter p, Nf3Table nf3Table) {
     UpdateInfo info = getUpdateInfo(nf3Table);

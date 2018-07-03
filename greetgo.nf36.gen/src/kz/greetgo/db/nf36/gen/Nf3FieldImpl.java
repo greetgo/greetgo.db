@@ -7,6 +7,7 @@ import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
 import kz.greetgo.db.nf36.model.DbType;
 import kz.greetgo.db.nf36.model.Nf3Field;
 import kz.greetgo.db.nf36.model.Nf3Table;
+import kz.greetgo.db.nf36.model.Sequence;
 import kz.greetgo.db.nf36.utils.UtilsNf36;
 
 import java.lang.reflect.Field;
@@ -148,5 +149,12 @@ class Nf3FieldImpl implements Nf3Field {
         + "." + source.getName());
     }
     return UtilsNf36.quoteForSql(d.value());
+  }
+
+  @Override
+  public Sequence sequence() {
+    if (nf3ID == null) return null;
+    if (!dbType().sequential()) return null;
+    return new Sequence(nf3ID.seqFrom());
   }
 }
