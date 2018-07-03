@@ -10,7 +10,7 @@ import kz.greetgo.depinject.core.Bean;
 import kz.greetgo.depinject.core.BeanGetter;
 import kz.greetgo.depinject.core.HasAfterInject;
 import nf36_example_with_depinject.structure.Client;
-import nf36_example_with_depinject.structure.EntityWithManyIds;
+import nf36_example_with_depinject.structure.ManyIds;
 import nf36_example_with_depinject.structure.Person;
 import nf36_example_with_depinject.structure.Stone;
 import nf36_example_with_depinject.structure.Street;
@@ -58,7 +58,7 @@ public class ExampleGenerators implements HasAfterInject {
       .register(new Wow())
       .register(new Person())
       .register(new Stone())
-      .register(new EntityWithManyIds())
+      .register(new ManyIds())
       .register(new Charm());
 
     javaGenerator = JavaGenerator.newGenerator(collector)
@@ -99,25 +99,31 @@ public class ExampleGenerators implements HasAfterInject {
     }
 
     {
-      File outFile = new File(dir + "002_nf6_tables.sql");
+      File outFile = new File(dir + "002_sequences.sql");
+      ddlGenerator.generateSequences(outFile);
+      sqlFileList.add(outFile);
+    }
+
+    {
+      File outFile = new File(dir + "003_nf6_tables.sql");
       ddlGenerator.generateNf6Tables(outFile);
       sqlFileList.add(outFile);
     }
 
     {
-      File outFile = new File(dir + "003_nf3_references.sql");
+      File outFile = new File(dir + "004_nf3_references.sql");
       ddlGenerator.generateNf3References(outFile);
       sqlFileList.add(outFile);
     }
 
     {
-      File outFile = new File(dir + "004_nf6_id_references.sql");
+      File outFile = new File(dir + "005_nf6_id_references.sql");
       ddlGenerator.generateNf6IdReferences(outFile);
       sqlFileList.add(outFile);
     }
 
     {
-      File outFile = new File(dir + "005_comments.sql");
+      File outFile = new File(dir + "006_comments.sql");
       ddlGenerator.generateComments(outFile);
       sqlFileList.add(outFile);
     }

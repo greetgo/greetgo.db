@@ -9,6 +9,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,12 @@ public class DdlGenerator {
   public DdlGenerator generateNf3Tables(File outFile) {
     collector.collect();
     return pushInFile(outFile, this::generateNf3TablesTo);
+  }
+
+  @SuppressWarnings("UnusedReturnValue")
+  public DdlGenerator generateSequences(File outFile) {
+    collector.collect();
+    return pushInFile(outFile, this::generateSequencesTo);
   }
 
   @SuppressWarnings("UnusedReturnValue")
@@ -91,12 +98,20 @@ public class DdlGenerator {
       .forEachOrdered(nf3Table -> printCreateNf3TableFor(nf3Table, out));
   }
 
+  private void generateSequencesTo(PrintStream out) {
+    nf3TableMap.values().stream()
+      .flatMap(t -> t.fields().stream())
+      .map(Nf3Field::sequence)
+      .filter(Objects::nonNull)
+      .sorted(Comparator.comparing(s -> s.name))
+      .forEachOrdered(s -> out.println(sqlDialect.createSequence(s) + commandSeparator));
+  }
+
   private void generateCommentsTo(PrintStream out) {
     nf3TableMap.values().stream()
       .sorted(Comparator.comparing(Nf3Table::tableName))
       .forEachOrdered(nf3Table -> printCommentsFor(nf3Table, out));
   }
-
 
   private void generateNf6TablesTo(PrintStream out) {
     nf3TableMap.values().stream()
@@ -271,4 +286,6 @@ public class DdlGenerator {
 
       );
   }
+
+
 }

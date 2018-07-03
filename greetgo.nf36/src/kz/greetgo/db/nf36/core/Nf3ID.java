@@ -11,7 +11,7 @@ import static java.lang.annotation.ElementType.FIELD;
 @Target(FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Nf3ID {
-  long seqFrom() default 0;
+  long seqFrom() default 1;
 
   Class<?> ref() default Object.class;
 

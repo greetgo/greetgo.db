@@ -59,7 +59,7 @@ public class EntityWithManyIdsUpdateImpl implements EntityWithManyIdsUpdate {
   @Override
   public EntityWithManyIdsUpdate whereStrIdIsEqualTo(String strId) {
     if (strId == null) {
-      throw new CannotBeNull("Field EntityWithManyIds.strId cannot be null");
+      throw new CannotBeNull("Field ManyIds.strId cannot be null");
     }
     this.updater.where("str_id", strId);
     return this;

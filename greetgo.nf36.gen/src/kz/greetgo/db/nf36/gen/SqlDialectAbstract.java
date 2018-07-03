@@ -4,6 +4,7 @@ import kz.greetgo.db.nf36.core.Nf3DefaultNow;
 import kz.greetgo.db.nf36.core.Nf3DefaultValue;
 import kz.greetgo.db.nf36.errors.ConflictError;
 import kz.greetgo.db.nf36.model.DbType;
+import kz.greetgo.db.nf36.model.Sequence;
 import kz.greetgo.db.nf36.model.SqlType;
 import kz.greetgo.db.nf36.utils.UtilsNf36;
 
@@ -94,6 +95,11 @@ public abstract class SqlDialectAbstract implements SqlDialect {
   @Override
   public String fieldTimestampWithDefaultNow(String fieldName) {
     return fieldName + " timestamp default " + now() + " not null";
+  }
+
+  @Override
+  public String createSequence(Sequence sequence) {
+    return "create sequence " + sequence.name + " start with " + sequence.startFrom;
   }
 
   protected abstract String strType();
