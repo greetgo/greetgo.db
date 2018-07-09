@@ -1,9 +1,11 @@
 package nf36_example_with_depinject.structure.inner;
 
 import kz.greetgo.db.nf36.core.Nf3Description;
+import kz.greetgo.db.nf36.core.Nf3Entity;
 import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3Text;
 
+@Nf3Entity
 @Nf3Description("Это стул ' и апостроф")
 @SuppressWarnings("unused")
 public class Chair {

@@ -2,6 +2,7 @@ package nf36_example_with_depinject.structure;
 
 import kz.greetgo.db.nf36.core.Nf3CommitMethodName;
 import kz.greetgo.db.nf36.core.Nf3Description;
+import kz.greetgo.db.nf36.core.Nf3Entity;
 import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3MoreMethodName;
 import kz.greetgo.db.nf36.core.Nf3NotNull;
@@ -10,6 +11,7 @@ import kz.greetgo.db.nf36.core.Nf3Text;
 import nf36_example_with_depinject.structure.inner.Chair;
 import nf36_example_with_depinject.structure.inner.Charm;
 
+@Nf3Entity
 @Nf3Description("Это клиент")
 @Nf3CommitMethodName("commitAll")
 @Nf3MoreMethodName("moreAnother")

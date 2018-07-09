@@ -1,8 +1,10 @@
 package nf36_example_with_depinject.structure;
 
 import kz.greetgo.db.nf36.core.Nf3Description;
+import kz.greetgo.db.nf36.core.Nf3Entity;
 import kz.greetgo.db.nf36.core.Nf3ID;
 
+@Nf3Entity
 @SuppressWarnings("unused")
 @Nf3Description("Это энтити с большим количеством ИД-шников")
 public class ManyIds {

@@ -35,6 +35,7 @@ public class ModelCollector {
   private ClassScanner classScanner = new ClassScannerDef();
   String sourceBasePackage;
 
+  @SuppressWarnings("UnusedReturnValue")
   public ModelCollector setSourceBasePackage(String sourceBasePackage) {
     this.sourceBasePackage = sourceBasePackage;
     return this;
@@ -128,6 +129,7 @@ public class ModelCollector {
   final List<Object> registeredObjects = new ArrayList<>();
 
 
+  @SuppressWarnings("UnusedReturnValue")
   public ModelCollector register(Object object) {
     registeredObjects.add(object);
     return this;
@@ -265,7 +267,7 @@ public class ModelCollector {
     return this;
   }
 
-  public ModelCollector scanPackageOfClassRecursively(Class<?> classForPackage) {
+  public ModelCollector scanPackageOfClassRecursively(Class<?> classForPackage, boolean andSetSourceBasePackage) {
     for (Class<?> aClass : classScanner.scanPackage(classForPackage.getPackage().getName())) {
       if (aClass.getAnnotation(Nf3Entity.class) != null) {
         try {
@@ -275,6 +277,9 @@ public class ModelCollector {
         }
       }
     }
+
+    if (andSetSourceBasePackage) setSourceBasePackage(classForPackage.getPackage().getName());
+
     return this;
   }
 }

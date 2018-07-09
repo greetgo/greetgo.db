@@ -10,15 +10,6 @@ import kz.greetgo.depinject.core.Bean;
 import kz.greetgo.depinject.core.BeanGetter;
 import kz.greetgo.depinject.core.HasAfterInject;
 import nf36_example_with_depinject.structure.Client;
-import nf36_example_with_depinject.structure.ManyIds;
-import nf36_example_with_depinject.structure.Person;
-import nf36_example_with_depinject.structure.Stone;
-import nf36_example_with_depinject.structure.Street;
-import nf36_example_with_depinject.structure.inner.Chair;
-import nf36_example_with_depinject.structure.inner.Charm;
-import nf36_example_with_depinject.structure.inner.ClientAddress;
-import nf36_example_with_depinject.structure.inner.Wow;
-import nf36_example_with_depinject.structure.transaction.Transaction;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,17 +43,7 @@ public class ExampleGenerators implements HasAfterInject {
       .setCommitMethodName("commit")
       .setMoreMethodName("more")
       .setSequencePrefix("s_")
-      .register(new Client())
-      .register(new ClientAddress())
-      .register(new Street())
-      .register(new Chair())
-      .register(new Wow())
-      .register(new Person())
-      .register(new Stone())
-      .register(new ManyIds())
-      .register(new Charm())
-      .scanPackageOfClassRecursively(Transaction.class)
-      .setSourceBasePackage(Client.class.getPackage().getName());
+      .scanPackageOfClassRecursively(Client.class, true);
 
     javaGenerator = JavaGenerator.newGenerator(collector)
       .setInterfaceOutDir("left 1")

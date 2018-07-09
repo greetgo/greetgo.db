@@ -1,10 +1,12 @@
 package nf36_example_with_depinject.structure;
 
 import kz.greetgo.db.nf36.core.Nf3Description;
+import kz.greetgo.db.nf36.core.Nf3Entity;
 import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3Ignore;
 import kz.greetgo.db.nf36.core.Nf3NotNull;
 
+@Nf3Entity
 @Nf3Description("Справочник улиц")
 @SuppressWarnings("unused")
 public class Street {

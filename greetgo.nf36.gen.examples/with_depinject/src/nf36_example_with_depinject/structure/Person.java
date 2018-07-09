@@ -2,11 +2,13 @@ package nf36_example_with_depinject.structure;
 
 import kz.greetgo.db.nf36.core.Nf3DefaultValue;
 import kz.greetgo.db.nf36.core.Nf3Description;
+import kz.greetgo.db.nf36.core.Nf3Entity;
 import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3Length;
 
 import java.math.BigDecimal;
 
+@Nf3Entity
 @Nf3Description("person")
 @SuppressWarnings("unused")
 public class Person {
