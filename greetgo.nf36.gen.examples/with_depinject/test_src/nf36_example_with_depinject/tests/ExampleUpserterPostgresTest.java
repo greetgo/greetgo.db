@@ -319,6 +319,11 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
 
   @Test
   public void onlyIds() {
+    final long id1 = exampleUpserter.get().onlyIdsNextId1();
+    final String id2 = RND.str(10);
 
+    exampleUpserter.get().onlyIds(id1, id2).commit();
+
+    exampleUpserter.get().onlyIds(id1, id2).commit();
   }
 }

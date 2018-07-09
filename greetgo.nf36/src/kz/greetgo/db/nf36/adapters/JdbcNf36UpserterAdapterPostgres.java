@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Stream.concat;
 
 class JdbcNf36UpserterAdapterPostgres extends JdbcNf36UpserterAbstractAdapter {
@@ -30,32 +31,35 @@ class JdbcNf36UpserterAdapterPostgres extends JdbcNf36UpserterAbstractAdapter {
       updateStream = Stream.of(author);
     }
 
+
     String sql = "insert into " + nf3TableName + " ("
-      + idValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))
-      + ", "
-      + fieldValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))
+      + concat(idValueMap.keySet().stream().sorted(), fieldValueMap.keySet().stream().sorted())
+      .collect(joining(", "))
       + insertNames
       + ") values ("
-      + idValueMap.keySet().stream().map(k -> "?").collect(Collectors.joining(", "))
-      + ", "
-      + fieldValueMap.keySet().stream().map(k -> "?").collect(Collectors.joining(", "))
+      + concat(idValueMap.keySet().stream().map(k -> "?"), fieldValueMap.keySet().stream().map(k -> "?"))
+      .collect(joining(", "))
       + insertQ
       + ") on conflict ("
-      + idValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))
-      + ") do update set "
-      + fieldValueMap.keySet().stream().sorted().map(k -> k + " = ?").collect(Collectors.joining(", "))
-      + (
-      toNowFieldList.isEmpty()
-        ? ""
-        : ", " + toNowFieldList.stream().map(n -> n + " = clock_timestamp()").collect(Collectors.joining(", "))
-        + updateNamesQ
-    );
+      + idValueMap.keySet().stream().sorted().collect(joining(", "))
+      + ") do " +
+
+      (fieldValueMap.isEmpty() ? "nothing" :
+
+        "update set "
+          + fieldValueMap.keySet().stream().sorted().map(k -> k + " = ?").collect(joining(", "))
+          + (
+          toNowFieldList.isEmpty()
+            ? ""
+            : ", " + toNowFieldList.stream().map(n -> n + " = clock_timestamp()").collect(joining(", "))
+            + updateNamesQ)
+      );
 
     Stream<Object> s = idValueMap.entrySet().stream().sorted(comparing(Map.Entry::getKey)).map(Map.Entry::getValue);
     s = concat(s, fieldValueMap.entrySet().stream().sorted(comparing(Map.Entry::getKey)).map(Map.Entry::getValue));
     if (insertStream != null) s = concat(s, insertStream);
     s = concat(s, fieldValueMap.entrySet().stream().sorted(comparing(Map.Entry::getKey)).map(Map.Entry::getValue));
-    if (updateStream != null) s = concat(s, updateStream);
+    if (updateStream != null && !fieldValueMap.isEmpty()) s = concat(s, updateStream);
 
     executeUpdate(con, sql, s.collect(Collectors.toList()));
   }

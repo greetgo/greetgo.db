@@ -59,6 +59,8 @@ class JdbcNf36UpserterAdapterOracle extends JdbcNf36UpserterAbstractAdapter {
       authValues = singletonList(author);
     }
 
+    if (flNames.isEmpty()) updates = emptyList();
+
     String sql = "merge into " + nf3TableName + " d using (select " + (
 
       cat(idNames, flNames, authNames)
@@ -69,17 +71,15 @@ class JdbcNf36UpserterAdapterOracle extends JdbcNf36UpserterAbstractAdapter {
 
       cat(idNames).map(n -> "s." + n + " = d." + n).collect(joining(" and "))
 
-    ) + ") when matched then update set " + (
+    ) + ")" + (flNames.size() + updates.size() == 0 ? "" : " when matched then update set " + (
 
       cat(cat(flNames).map(n -> "d." + n + " = s." + n).collect(toList()), updates).collect(joining(", "))
 
-    ) + " when not matched then insert (" + (
+    )) + " when not matched then insert (" + (
       cat(idNames, flNames, insNames).map(n -> "d." + n).collect(joining(", "))
     ) + ") values (" + (
       cat(idNames, flNames, insValues).map(n -> "s." + n).collect(joining(", "))
     ) + ")";
-
-//    System.out.println(sql);
 
     executeUpdate(con, sql, cat(idValues, flValues, authValues).collect(toList()));
   }
