@@ -12,6 +12,7 @@ import nf36_example_with_depinject.generated.faces.upsert.inner.ChairUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.inner.CharmUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.inner.ClientAddressUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.inner.WowUpsert;
+import nf36_example_with_depinject.generated.faces.upsert.transaction.OnlyIdsUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.transaction.TransactionUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.transaction.more.SchoolUpsert;
 
@@ -39,6 +40,10 @@ public interface ExampleUpserter {
   long manyIdsNextLongId();
 
   Long manyIdsNextBoxedLongId();
+
+  OnlyIdsUpsert onlyIds(long id1, String id2);
+
+  long onlyIdsNextId1();
 
   PersonUpsert person(String id);
 

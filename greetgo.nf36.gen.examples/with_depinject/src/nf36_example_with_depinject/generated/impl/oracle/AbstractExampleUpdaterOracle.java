@@ -11,6 +11,7 @@ import nf36_example_with_depinject.generated.faces.update.inner.ChairUpdate;
 import nf36_example_with_depinject.generated.faces.update.inner.CharmUpdate;
 import nf36_example_with_depinject.generated.faces.update.inner.ClientAddressUpdate;
 import nf36_example_with_depinject.generated.faces.update.inner.WowUpdate;
+import nf36_example_with_depinject.generated.faces.update.transaction.OnlyIdsUpdate;
 import nf36_example_with_depinject.generated.faces.update.transaction.TransactionUpdate;
 import nf36_example_with_depinject.generated.faces.update.transaction.more.SchoolUpdate;
 import nf36_example_with_depinject.generated.impl.oracle.update.ClientUpdateImpl;
@@ -22,6 +23,7 @@ import nf36_example_with_depinject.generated.impl.oracle.update.inner.ChairUpdat
 import nf36_example_with_depinject.generated.impl.oracle.update.inner.CharmUpdateImpl;
 import nf36_example_with_depinject.generated.impl.oracle.update.inner.ClientAddressUpdateImpl;
 import nf36_example_with_depinject.generated.impl.oracle.update.inner.WowUpdateImpl;
+import nf36_example_with_depinject.generated.impl.oracle.update.transaction.OnlyIdsUpdateImpl;
 import nf36_example_with_depinject.generated.impl.oracle.update.transaction.TransactionUpdateImpl;
 import nf36_example_with_depinject.generated.impl.oracle.update.transaction.more.SchoolUpdateImpl;
 
@@ -51,6 +53,11 @@ public abstract class AbstractExampleUpdaterOracle implements ExampleUpdater {
   @Override
   public ManyIdsUpdate manyIds() {
     return new ManyIdsUpdateImpl(createUpdater());
+  }
+
+  @Override
+  public OnlyIdsUpdate onlyIds() {
+    return new OnlyIdsUpdateImpl(createUpdater());
   }
 
   @Override

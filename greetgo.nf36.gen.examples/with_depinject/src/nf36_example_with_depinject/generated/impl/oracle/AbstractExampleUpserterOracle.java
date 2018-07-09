@@ -15,6 +15,7 @@ import nf36_example_with_depinject.generated.faces.upsert.inner.ChairUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.inner.CharmUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.inner.ClientAddressUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.inner.WowUpsert;
+import nf36_example_with_depinject.generated.faces.upsert.transaction.OnlyIdsUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.transaction.TransactionUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.transaction.more.SchoolUpsert;
 import nf36_example_with_depinject.generated.impl.oracle.upsert.ClientUpsertImpl;
@@ -26,6 +27,7 @@ import nf36_example_with_depinject.generated.impl.oracle.upsert.inner.ChairUpser
 import nf36_example_with_depinject.generated.impl.oracle.upsert.inner.CharmUpsertImpl;
 import nf36_example_with_depinject.generated.impl.oracle.upsert.inner.ClientAddressUpsertImpl;
 import nf36_example_with_depinject.generated.impl.oracle.upsert.inner.WowUpsertImpl;
+import nf36_example_with_depinject.generated.impl.oracle.upsert.transaction.OnlyIdsUpsertImpl;
 import nf36_example_with_depinject.generated.impl.oracle.upsert.transaction.TransactionUpsertImpl;
 import nf36_example_with_depinject.generated.impl.oracle.upsert.transaction.more.SchoolUpsertImpl;
 
@@ -92,6 +94,16 @@ public abstract class AbstractExampleUpserterOracle implements ExampleUpserter {
   @Override
   public Long manyIdsNextBoxedLongId() {
     return getSequenceNext().nextLong("s_many_ids_boxed_long_id");
+  }
+
+  @Override
+  public OnlyIdsUpsert onlyIds(long id1, String id2) {
+    return new OnlyIdsUpsertImpl(createUpserter(), id1, id2);
+  }
+
+  @Override
+  public long onlyIdsNextId1() {
+    return getSequenceNext().nextLong("s_only_ids_id1");
   }
 
   @Override
