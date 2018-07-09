@@ -9,7 +9,7 @@ import kz.greetgo.db.worker.DbParameters;
 import kz.greetgo.depinject.core.Bean;
 import kz.greetgo.depinject.core.BeanGetter;
 import kz.greetgo.depinject.core.HasAfterInject;
-import nf36_example_with_depinject.sctructure2.Transaction;
+import nf36_example_with_depinject.structure.transaction.Transaction;
 import nf36_example_with_depinject.structure.Client;
 import nf36_example_with_depinject.structure.ManyIds;
 import nf36_example_with_depinject.structure.Person;

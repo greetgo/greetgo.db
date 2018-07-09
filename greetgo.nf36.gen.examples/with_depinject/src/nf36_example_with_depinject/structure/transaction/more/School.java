@@ -1,4 +1,4 @@
-package nf36_example_with_depinject.sctructure2.more;
+package nf36_example_with_depinject.structure.transaction.more;
 
 import kz.greetgo.db.nf36.core.Nf3Entity;
 import kz.greetgo.db.nf36.core.Nf3ID;
