@@ -11,6 +11,8 @@ import nf36_example_with_depinject.generated.faces.update.inner.ChairUpdate;
 import nf36_example_with_depinject.generated.faces.update.inner.CharmUpdate;
 import nf36_example_with_depinject.generated.faces.update.inner.ClientAddressUpdate;
 import nf36_example_with_depinject.generated.faces.update.inner.WowUpdate;
+import nf36_example_with_depinject.generated.faces.update.transaction.TransactionUpdate;
+import nf36_example_with_depinject.generated.faces.update.transaction.more.SchoolUpdate;
 import nf36_example_with_depinject.generated.impl.postgres.update.ClientUpdateImpl;
 import nf36_example_with_depinject.generated.impl.postgres.update.ManyIdsUpdateImpl;
 import nf36_example_with_depinject.generated.impl.postgres.update.PersonUpdateImpl;
@@ -20,6 +22,8 @@ import nf36_example_with_depinject.generated.impl.postgres.update.inner.ChairUpd
 import nf36_example_with_depinject.generated.impl.postgres.update.inner.CharmUpdateImpl;
 import nf36_example_with_depinject.generated.impl.postgres.update.inner.ClientAddressUpdateImpl;
 import nf36_example_with_depinject.generated.impl.postgres.update.inner.WowUpdateImpl;
+import nf36_example_with_depinject.generated.impl.postgres.update.transaction.TransactionUpdateImpl;
+import nf36_example_with_depinject.generated.impl.postgres.update.transaction.more.SchoolUpdateImpl;
 
 public abstract class AbstractExampleUpdaterPostgres implements ExampleUpdater {
   protected abstract Nf36Updater createUpdater();
@@ -55,6 +59,11 @@ public abstract class AbstractExampleUpdaterPostgres implements ExampleUpdater {
   }
 
   @Override
+  public SchoolUpdate school() {
+    return new SchoolUpdateImpl(createUpdater());
+  }
+
+  @Override
   public StoneUpdate stone() {
     return new StoneUpdateImpl(createUpdater());
   }
@@ -62,6 +71,11 @@ public abstract class AbstractExampleUpdaterPostgres implements ExampleUpdater {
   @Override
   public StreetUpdate street() {
     return new StreetUpdateImpl(createUpdater());
+  }
+
+  @Override
+  public TransactionUpdate transaction() {
+    return new TransactionUpdateImpl(createUpdater());
   }
 
   @Override

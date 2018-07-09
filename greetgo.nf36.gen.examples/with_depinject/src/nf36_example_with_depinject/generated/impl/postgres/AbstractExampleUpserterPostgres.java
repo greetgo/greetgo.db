@@ -15,6 +15,8 @@ import nf36_example_with_depinject.generated.faces.upsert.inner.ChairUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.inner.CharmUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.inner.ClientAddressUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.inner.WowUpsert;
+import nf36_example_with_depinject.generated.faces.upsert.transaction.TransactionUpsert;
+import nf36_example_with_depinject.generated.faces.upsert.transaction.more.SchoolUpsert;
 import nf36_example_with_depinject.generated.impl.postgres.upsert.ClientUpsertImpl;
 import nf36_example_with_depinject.generated.impl.postgres.upsert.ManyIdsUpsertImpl;
 import nf36_example_with_depinject.generated.impl.postgres.upsert.PersonUpsertImpl;
@@ -24,6 +26,8 @@ import nf36_example_with_depinject.generated.impl.postgres.upsert.inner.ChairUps
 import nf36_example_with_depinject.generated.impl.postgres.upsert.inner.CharmUpsertImpl;
 import nf36_example_with_depinject.generated.impl.postgres.upsert.inner.ClientAddressUpsertImpl;
 import nf36_example_with_depinject.generated.impl.postgres.upsert.inner.WowUpsertImpl;
+import nf36_example_with_depinject.generated.impl.postgres.upsert.transaction.TransactionUpsertImpl;
+import nf36_example_with_depinject.generated.impl.postgres.upsert.transaction.more.SchoolUpsertImpl;
 
 public abstract class AbstractExampleUpserterPostgres implements ExampleUpserter {
   protected abstract Nf36Upserter createUpserter();
@@ -96,6 +100,11 @@ public abstract class AbstractExampleUpserterPostgres implements ExampleUpserter
   }
 
   @Override
+  public SchoolUpsert school(String id) {
+    return new SchoolUpsertImpl(createUpserter(), id);
+  }
+
+  @Override
   public StoneUpsert stone(String id) {
     return new StoneUpsertImpl(createUpserter(), id);
   }
@@ -108,6 +117,16 @@ public abstract class AbstractExampleUpserterPostgres implements ExampleUpserter
   @Override
   public long streetNextId() {
     return getSequenceNext().nextLong("s_street_id");
+  }
+
+  @Override
+  public TransactionUpsert transaction(long id) {
+    return new TransactionUpsertImpl(createUpserter(), id);
+  }
+
+  @Override
+  public long transactionNextId() {
+    return getSequenceNext().nextLong("s_transaction_id");
   }
 
   @Override

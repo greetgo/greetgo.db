@@ -9,6 +9,8 @@ import nf36_example_with_depinject.generated.faces.update.inner.ChairUpdate;
 import nf36_example_with_depinject.generated.faces.update.inner.CharmUpdate;
 import nf36_example_with_depinject.generated.faces.update.inner.ClientAddressUpdate;
 import nf36_example_with_depinject.generated.faces.update.inner.WowUpdate;
+import nf36_example_with_depinject.generated.faces.update.transaction.TransactionUpdate;
+import nf36_example_with_depinject.generated.faces.update.transaction.more.SchoolUpdate;
 
 public interface ExampleUpdater {
   ChairUpdate chair();
@@ -23,9 +25,13 @@ public interface ExampleUpdater {
 
   PersonUpdate person();
 
+  SchoolUpdate school();
+
   StoneUpdate stone();
 
   StreetUpdate street();
+
+  TransactionUpdate transaction();
 
   WowUpdate wow();
 
