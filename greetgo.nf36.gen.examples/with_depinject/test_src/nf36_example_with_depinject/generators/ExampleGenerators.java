@@ -9,7 +9,6 @@ import kz.greetgo.db.worker.DbParameters;
 import kz.greetgo.depinject.core.Bean;
 import kz.greetgo.depinject.core.BeanGetter;
 import kz.greetgo.depinject.core.HasAfterInject;
-import nf36_example_with_depinject.structure.transaction.Transaction;
 import nf36_example_with_depinject.structure.Client;
 import nf36_example_with_depinject.structure.ManyIds;
 import nf36_example_with_depinject.structure.Person;
@@ -19,6 +18,7 @@ import nf36_example_with_depinject.structure.inner.Chair;
 import nf36_example_with_depinject.structure.inner.Charm;
 import nf36_example_with_depinject.structure.inner.ClientAddress;
 import nf36_example_with_depinject.structure.inner.Wow;
+import nf36_example_with_depinject.structure.transaction.Transaction;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class ExampleGenerators implements HasAfterInject {
       .register(new ManyIds())
       .register(new Charm())
       .scanPackageOfClassRecursively(Transaction.class)
-      ;
+      .setSourceBasePackage(Client.class.getPackage().getName());
 
     javaGenerator = JavaGenerator.newGenerator(collector)
       .setInterfaceOutDir("left 1")
@@ -71,7 +71,6 @@ public class ExampleGenerators implements HasAfterInject {
       .setCleanOutDirsBeforeGeneration(true)
       .setInterfaceBasePackage("nf36_example_with_depinject.generated.faces")
       .setImplBasePackage("nf36_example_with_depinject.generated.impl." + dbParameters.get().baseSubPackage())
-      .setSourceBasePackage(Client.class.getPackage().getName())
       .setUpserterClassName("ExampleUpserter")
       .setUpdaterClassName("ExampleUpdater")
       .setUpserterImplClassName("AbstractExampleUpserter" + dbParameters.get().mainClassesSuffix())

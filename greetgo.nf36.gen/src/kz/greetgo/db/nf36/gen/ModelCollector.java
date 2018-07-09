@@ -33,6 +33,12 @@ public class ModelCollector {
   private String commitMethodName = null;
   private String sequencePrefix = null;
   private ClassScanner classScanner = new ClassScannerDef();
+  String sourceBasePackage;
+
+  public ModelCollector setSourceBasePackage(String sourceBasePackage) {
+    this.sourceBasePackage = sourceBasePackage;
+    return this;
+  }
 
   @SuppressWarnings("unused")
   public ModelCollector setClassScanner(ClassScanner classScanner) {

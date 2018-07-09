@@ -29,8 +29,6 @@ public class JavaGenerator {
   String implOutDir;
   String implBasePackage;
 
-  String sourceBasePackage;
-
   String upserterClassName;
 
   String upserterImplClassName = null;
@@ -129,11 +127,6 @@ public class JavaGenerator {
     UtilsNf36.cleanDir(UtilsNf36.packageDir(interfaceOutDir, interfaceBasePackage));
   }
 
-  public JavaGenerator setSourceBasePackage(String sourceBasePackage) {
-    this.sourceBasePackage = sourceBasePackage;
-    return this;
-  }
-
   boolean cleanOutDirsBeforeGeneration = true;
 
   public JavaGenerator setCleanOutDirsBeforeGeneration(boolean cleanOutDirsBeforeGeneration) {
@@ -143,7 +136,7 @@ public class JavaGenerator {
 
   UpsertInfo getUpsertInfo(Nf3Table nf3Table) {
 
-    String subPackage = UtilsNf36.calcSubPackage(sourceBasePackage, nf3Table.source().getPackage().getName());
+    String subPackage = UtilsNf36.calcSubPackage(collector.sourceBasePackage, nf3Table.source().getPackage().getName());
 
     subPackage = UtilsNf36.resolvePackage("upsert", subPackage);
 
@@ -249,7 +242,7 @@ public class JavaGenerator {
 
   UpdateInfo getUpdateInfo(Nf3Table nf3Table) {
 
-    String subPackage = UtilsNf36.calcSubPackage(sourceBasePackage, nf3Table.source().getPackage().getName());
+    String subPackage = UtilsNf36.calcSubPackage(collector.sourceBasePackage, nf3Table.source().getPackage().getName());
 
     subPackage = UtilsNf36.resolvePackage("update", subPackage);
 
