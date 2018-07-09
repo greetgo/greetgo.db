@@ -58,6 +58,7 @@ subprojects {
     ext.classScannerVersion = "0.0.1"
     ext.greetgoJavaCompilerVersion = "0.0.1"
     ext.pgDriverVersion = "9.4-1202-jdbc42"
+    ext.greetgoClassScannerVersion = "2.0.0"
 
     compile 'com.google.code.findbugs:annotations:2.0.1'
 

@@ -6,6 +6,8 @@ apply plugin: kz.greetgo.gradle.plugins.MavenUploadPlugin
 dependencies {
   compile project(':greetgo.nf36')
   testCompile project(':greetgo.db')
+
+  compile group: 'kz.greetgo', name: 'greetgo.class_scanner', version: "$greetgoClassScannerVersion"
 }
 
 uploadToMavenCentral {

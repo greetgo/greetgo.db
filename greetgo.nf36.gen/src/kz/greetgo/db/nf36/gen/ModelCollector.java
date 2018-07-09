@@ -1,5 +1,8 @@
 package kz.greetgo.db.nf36.gen;
 
+import kz.greetgo.class_scanner.ClassScanner;
+import kz.greetgo.class_scanner.ClassScannerDef;
+import kz.greetgo.db.nf36.core.Nf3Entity;
 import kz.greetgo.db.nf36.model.Nf3Field;
 import kz.greetgo.db.nf36.model.Nf3Table;
 
@@ -29,6 +32,14 @@ public class ModelCollector {
   private String moreMethodName = null;
   private String commitMethodName = null;
   private String sequencePrefix = null;
+  private ClassScanner classScanner = new ClassScannerDef();
+
+  @SuppressWarnings("unused")
+  public ModelCollector setClassScanner(ClassScanner classScanner) {
+    if (classScanner == null) throw new IllegalArgumentException("classScanner == null");
+    this.classScanner = classScanner;
+    return this;
+  }
 
   public String sequencePrefix() {
     if (sequencePrefix == null) throw new RuntimeException("sequencePrefix is null, please call method" +
@@ -248,4 +259,16 @@ public class ModelCollector {
     return this;
   }
 
+  public ModelCollector scanPackageOfClassRecursively(Class<?> classForPackage) {
+    for (Class<?> aClass : classScanner.scanPackage(classForPackage.getPackage().getName())) {
+      if (aClass.getAnnotation(Nf3Entity.class) != null) {
+        try {
+          register(aClass.newInstance());
+        } catch (InstantiationException | IllegalAccessException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    }
+    return this;
+  }
 }
