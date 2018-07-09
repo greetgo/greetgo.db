@@ -27,8 +27,8 @@ public class ExampleWhereUpdaterOracleConnector extends AbstractExampleUpdaterOr
       .database(dbTypeSource.get().currentDbType())
       .setJdbc(jdbc.get())
       .setLogAcceptor(logAcceptor.get())
-      .build()
       .setAuthor(authorGetter.get().getAuthor())
+      .build()
       ;
   }
 }

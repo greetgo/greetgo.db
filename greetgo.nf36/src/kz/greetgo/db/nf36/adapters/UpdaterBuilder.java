@@ -19,6 +19,15 @@ public class UpdaterBuilder {
     return this;
   }
 
+  private boolean hasAuthor = false;
+  private Object author;
+
+  public UpdaterBuilder setAuthor(Object author) {
+    hasAuthor = true;
+    this.author = author;
+    return this;
+  }
+
   private JdbcNf36UpdaterAbstractAdapter adapter = null;
 
   public UpdaterBuilder database(DbType dbType) {
@@ -41,6 +50,7 @@ public class UpdaterBuilder {
     if (jdbc == null) throw new RuntimeException("Please set jdbc");
     adapter.jdbc = jdbc;
     adapter.logAcceptor = logAcceptor;
+    if (hasAuthor) adapter.setAuthor(author);
     return adapter;
   }
 }
