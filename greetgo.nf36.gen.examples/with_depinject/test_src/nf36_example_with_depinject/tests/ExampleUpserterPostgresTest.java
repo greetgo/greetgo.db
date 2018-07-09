@@ -316,4 +316,9 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     assertThat(id1).isEqualTo(id2 - 1);
 
   }
+
+  @Test
+  public void onlyIds() {
+
+  }
 }
