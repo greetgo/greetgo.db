@@ -1,0 +1,19 @@
+
+I) Обин переход
+
+  1) Добавить @Override к more()
+
+  2) Сделать CRUD c MyBatis-ом
+      - Сделать (i)Nf3Crud : Nf3FullUpsert<Model>  тип ИД брать из модельки
+      - Сделать (i)Nf3Crud : Nf3Delete<Model>      тип ИД брать из модельки
+      - Сделать (i)Nf3Crud : Nf3SelectById<Model>  тип ИД брать из модельки
+      - Сделать (i)Nf3Crud : Nf3SelectAll<Model>   тип ИД брать из модельки
+      - Сделать (i)Nf3Crud : Nf3Count<Model>       тип ИД брать из модельки
+      - Для этого надо добавить несовместимые аннотации: @Actual, @Removed
+
+  3) Убрать префикс Nf3 со всех аннотаций
+
+
+I) Второй переход
+
+  1) Перейти на JTA (Java Transaction API)
