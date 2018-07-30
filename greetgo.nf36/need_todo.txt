@@ -16,4 +16,4 @@ I) Обин переход
 
 I) Второй переход
 
-  1) Перейти на JTA (Java Transaction API)
+  1) Перейти на JTA (Java Transaction API) https://ru.wikipedia.org/wiki/Java_Transaction_API
