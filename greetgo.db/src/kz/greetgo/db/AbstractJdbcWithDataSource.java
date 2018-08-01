@@ -2,6 +2,7 @@ package kz.greetgo.db;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public abstract class AbstractJdbcWithDataSource implements Jdbc {
 
@@ -9,30 +10,55 @@ public abstract class AbstractJdbcWithDataSource implements Jdbc {
 
   protected abstract TransactionManager getTransactionManager();
 
-  @Override
-  public <T> T execute(ConnectionCallback<T> connectionCallback) {
-    final TransactionManager tm = getTransactionManager();
-    final DataSource dataSource = getDataSource();
+  public class ConnectionDot implements AutoCloseable {
+    final TransactionManager tm;
+    final DataSource dataSource;
 
-    if (dataSource == null) throw new NullPointerException("dataSource == null");
+    final Connection connection;
 
-    if (tm == null) {
-      try (Connection connection = dataSource.getConnection()) {
-        return connectionCallback.doInConnection(connection);
-      } catch (Exception e) {
-        if (e instanceof RuntimeException) throw (RuntimeException) e;
+    public ConnectionDot(TransactionManager tm, DataSource dataSource) {
+      this.tm = tm;
+      this.dataSource = dataSource;
+      if (dataSource == null) throw new NullPointerException("dataSource == null");
+      try {
+        connection = tm == null ? dataSource.getConnection() : tm.getConnection(dataSource);
+      } catch (SQLException e) {
         throw new RuntimeException(e);
       }
     }
 
-    final Connection connection = tm.getConnection(dataSource);
-    try {
-      return connectionCallback.doInConnection(connection);
-    } catch (Exception e) {
-      if (e instanceof RuntimeException) throw (RuntimeException) e;
-      throw new RuntimeException(e);
-    } finally {
-      tm.closeConnection(dataSource, connection);
+    @Override
+    public void close() {
+      if (tm == null) {
+        try {
+          connection.close();
+        } catch (SQLException e) {
+          throw new RuntimeException(e);
+        }
+      } else {
+        tm.closeConnection(dataSource, connection);
+      }
     }
+  }
+
+  protected ConnectionDot getConnectionDot() {
+    return new ConnectionDot(getTransactionManager(), getDataSource());
+  }
+
+  @Override
+  public <T> T execute(ConnectionCallback<T> connectionCallback) {
+
+    try (ConnectionDot connectionDot = getConnectionDot()) {
+
+      try {
+        return connectionCallback.doInConnection(connectionDot.connection);
+      } catch (RuntimeException e) {
+        throw e;
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+
+    }
+
   }
 }

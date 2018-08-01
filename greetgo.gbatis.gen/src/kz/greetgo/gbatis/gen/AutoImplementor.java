@@ -1,7 +1,5 @@
 package kz.greetgo.gbatis.gen;
 
-import kz.greetgo.depinject.core.Bean;
-import kz.greetgo.depinject.core.BeanGetter;
 import kz.greetgo.gbatis.futurecall.FutureCallImpl;
 import kz.greetgo.gbatis.futurecall.SqlViewer;
 import kz.greetgo.gbatis.model.Request;
@@ -9,7 +7,14 @@ import kz.greetgo.gbatis.modelreader.RequestGenerator;
 import kz.greetgo.gbatis.t.DbAccessInfo;
 import kz.greetgo.util.ServerUtil;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.security.MessageDigest;
@@ -45,7 +50,7 @@ public class AutoImplementor {
 
     final String requestClassName = Request.class.getName();
     final String fcName = FutureCallImpl.class.getName();
-    final String bgName = BeanGetter.class.getName();
+    final String bgName = "kz.greetgo.depinject.core.BeanGetter";
 
     final MessageDigest digest = MessageDigest.getInstance("MD5");
 
@@ -57,6 +62,7 @@ public class AutoImplementor {
       }
 
       @Override
+      @SuppressWarnings("NullableProblems")
       public void write(byte[] b, int off, int len) throws IOException {
         fileOutputStream.write(b, off, len);
         digest.update(b, off, len);
@@ -74,7 +80,7 @@ public class AutoImplementor {
       out.println("package " + autoImplInterface.getPackage().getName() + ";");
       out.println();
 
-      out.println("@" + Bean.class.getName());
+      out.println("@kz.greetgo.depinject.core.Bean");
       out.println("public class " + extractName(implClassName) + " implements " + autoImplInterface.getName() + " {");
 
       out.println("  public " + bgName + "<" + SqlViewer.class.getName() + "> sqlViewer;");
@@ -82,12 +88,7 @@ public class AutoImplementor {
 
       List<Method> methodList = new ArrayList<>();
       Collections.addAll(methodList, autoImplInterface.getMethods());
-      Collections.sort(methodList, new Comparator<Method>() {
-        @Override
-        public int compare(Method o1, Method o2) {
-          return o1.toGenericString().compareTo(o2.toGenericString());
-        }
-      });
+      methodList.sort(Comparator.comparing(Method::toGenericString));
 
       int methodIndex = 0;
       for (Method method : methodList) {

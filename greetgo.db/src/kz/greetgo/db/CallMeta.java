@@ -2,6 +2,7 @@ package kz.greetgo.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class CallMeta {
   private final CallMeta parent;
@@ -46,15 +47,29 @@ public final class CallMeta {
     return getIsolationLevel() != null;
   }
 
-  private IsolationLevel cachedIsolationLevel;
-  private boolean isIsolationLevelCached = false;
+  private static class IsolationLevelCache {
+    final IsolationLevel isolationLevel;
+
+    private IsolationLevelCache(IsolationLevel isolationLevel) {this.isolationLevel = isolationLevel;}
+  }
+
+  private final AtomicReference<IsolationLevelCache> isolationLevelCache = new AtomicReference<>(null);
 
   public IsolationLevel getIsolationLevel() {
-    if (isIsolationLevelCached) return cachedIsolationLevel;
-    isIsolationLevelCached = true;
-    if (isolationLevel != null) return cachedIsolationLevel = isolationLevel;
-    if (parent == null) return cachedIsolationLevel = null;
-    return cachedIsolationLevel = parent.getIsolationLevel();
+
+    IsolationLevelCache cache = isolationLevelCache.get();
+    if (cache != null) return cache.isolationLevel;
+
+    IsolationLevel isolationLevel = calcIsolationLevel();
+    isolationLevelCache.set(new IsolationLevelCache(isolationLevel));
+
+    return isolationLevel;
+  }
+
+  private IsolationLevel calcIsolationLevel() {
+    if (isolationLevel != null) return isolationLevel;
+    if (parent == null) return null;
+    return parent.getIsolationLevel();
   }
 
   public boolean needToCommit(Throwable throwable) {
