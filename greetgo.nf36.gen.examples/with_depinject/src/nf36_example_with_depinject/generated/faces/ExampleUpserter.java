@@ -4,6 +4,7 @@ import java.lang.Integer;
 import java.lang.Long;
 import java.lang.String;
 import nf36_example_with_depinject.generated.faces.upsert.ClientUpsert;
+import nf36_example_with_depinject.generated.faces.upsert.EntityEnumAsIdUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.ManyIdsUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.PersonUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.StoneUpsert;
@@ -15,6 +16,7 @@ import nf36_example_with_depinject.generated.faces.upsert.inner.WowUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.transaction.OnlyIdsUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.transaction.TransactionUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.transaction.more.SchoolUpsert;
+import nf36_example_with_depinject.structure.SomeEnum;
 
 public interface ExampleUpserter {
   ChairUpsert chair(long id1, String id2);
@@ -30,6 +32,8 @@ public interface ExampleUpserter {
   ClientAddressUpsert clientAddress(long clientId);
 
   long clientAddressNextClientId();
+
+  EntityEnumAsIdUpsert entityEnumAsId(SomeEnum id);
 
   ManyIdsUpsert manyIds(int intId, Integer boxedIntId, long longId, Long boxedLongId, String strId);
 

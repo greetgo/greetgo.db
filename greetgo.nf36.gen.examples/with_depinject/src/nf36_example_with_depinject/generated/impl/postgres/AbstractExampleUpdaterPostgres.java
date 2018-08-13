@@ -3,6 +3,7 @@ package nf36_example_with_depinject.generated.impl.postgres;
 import kz.greetgo.db.nf36.core.Nf36Updater;
 import nf36_example_with_depinject.generated.faces.ExampleUpdater;
 import nf36_example_with_depinject.generated.faces.update.ClientUpdate;
+import nf36_example_with_depinject.generated.faces.update.EntityEnumAsIdUpdate;
 import nf36_example_with_depinject.generated.faces.update.ManyIdsUpdate;
 import nf36_example_with_depinject.generated.faces.update.PersonUpdate;
 import nf36_example_with_depinject.generated.faces.update.StoneUpdate;
@@ -15,6 +16,7 @@ import nf36_example_with_depinject.generated.faces.update.transaction.OnlyIdsUpd
 import nf36_example_with_depinject.generated.faces.update.transaction.TransactionUpdate;
 import nf36_example_with_depinject.generated.faces.update.transaction.more.SchoolUpdate;
 import nf36_example_with_depinject.generated.impl.postgres.update.ClientUpdateImpl;
+import nf36_example_with_depinject.generated.impl.postgres.update.EntityEnumAsIdUpdateImpl;
 import nf36_example_with_depinject.generated.impl.postgres.update.ManyIdsUpdateImpl;
 import nf36_example_with_depinject.generated.impl.postgres.update.PersonUpdateImpl;
 import nf36_example_with_depinject.generated.impl.postgres.update.StoneUpdateImpl;
@@ -48,6 +50,11 @@ public abstract class AbstractExampleUpdaterPostgres implements ExampleUpdater {
   @Override
   public ClientAddressUpdate clientAddress() {
     return new ClientAddressUpdateImpl(createUpdater());
+  }
+
+  @Override
+  public EntityEnumAsIdUpdate entityEnumAsId() {
+    return new EntityEnumAsIdUpdateImpl(createUpdater());
   }
 
   @Override

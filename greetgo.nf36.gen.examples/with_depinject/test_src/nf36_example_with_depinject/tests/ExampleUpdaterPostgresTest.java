@@ -9,13 +9,14 @@ import nf36_example_with_depinject.generated.faces.ExampleUpdater;
 import nf36_example_with_depinject.generated.faces.ExampleUpserter;
 import nf36_example_with_depinject.jdbc.ByOne;
 import nf36_example_with_depinject.jdbc.ByOneLast;
+import nf36_example_with_depinject.structure.SomeEnum;
 import nf36_example_with_depinject.util.ParentDbTests;
 import org.testng.annotations.Test;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @ContainerConfig(BeanConfigForPostgresTests.class)
-public class ExampleWhereUpdaterPostgresTest extends ParentDbTests {
+public class ExampleUpdaterPostgresTest extends ParentDbTests {
 
   public BeanGetter<AuthorGetterImpl> authorGetterImpl;
 
@@ -105,5 +106,34 @@ public class ExampleWhereUpdaterPostgresTest extends ParentDbTests {
 
     exampleUpdater.get().stone().whereIdIsEqualTo(id).setActual(false).commit();
 
+  }
+
+  @Test
+  public void update_EntityEnumAsId() {
+    String value = RND.str(10);
+    SomeEnum id = SomeEnum.V2;
+
+    exampleUpserter.get()
+      .entityEnumAsId(id)
+      .value(RND.str(10))
+      .commit()
+    ;
+
+    {
+      String actualValue = jdbc.get().execute(new ByOne<>("id", id.name(), "entity_enum_as_id", "value"));
+      assertThat(actualValue).isNotEqualTo(value);
+    }
+
+    exampleUpdater.get()
+      .entityEnumAsId()
+      .setValue(value)
+      .whereIdIsEqualTo(id)
+      .commit()
+    ;
+
+    {
+      String actualValue = jdbc.get().execute(new ByOne<>("id", id.name(), "entity_enum_as_id", "value"));
+      assertThat(actualValue).isEqualTo(value);
+    }
   }
 }

@@ -12,6 +12,7 @@ import nf36_example_with_depinject.jdbc.ByOneCount;
 import nf36_example_with_depinject.jdbc.ByOneLast;
 import nf36_example_with_depinject.jdbc.ByTwoCount;
 import nf36_example_with_depinject.jdbc.ByTwoLast;
+import nf36_example_with_depinject.structure.SomeEnum;
 import nf36_example_with_depinject.util.ParentDbTests;
 import org.testng.annotations.Test;
 
@@ -76,6 +77,21 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
       String actualSurname = jdbc.get().execute(new ByOne<>("id", id, "client", "surname"));
       assertThat(actualSurname).isEqualTo(expectedSurname);
     }
+  }
+
+  @Test
+  public void upsert_EntityEnumAsId() {
+    String value = RND.str(10);
+    SomeEnum id = SomeEnum.V1;
+
+    exampleUpserter.get()
+      .entityEnumAsId(id)
+      .value(value)
+      .commit()
+    ;
+
+    String actualValue = jdbc.get().execute(new ByOne<>("id", id.name(), "entity_enum_as_id", "value"));
+    assertThat(actualValue).isEqualTo(value);
   }
 
   @Test(expectedExceptions = CannotBeNull.class)

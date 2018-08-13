@@ -5,6 +5,7 @@ import kz.greetgo.db.nf36.core.Nf3Entity;
 import kz.greetgo.db.nf36.core.Nf3ID;
 
 @Nf3Entity
+@SuppressWarnings("unused")
 @Nf3Description("Энтря с ИД типа Enum")
 public class EntityEnumAsId {
   @Nf3ID

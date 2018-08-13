@@ -7,6 +7,7 @@ import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.core.SequenceNext;
 import nf36_example_with_depinject.generated.faces.ExampleUpserter;
 import nf36_example_with_depinject.generated.faces.upsert.ClientUpsert;
+import nf36_example_with_depinject.generated.faces.upsert.EntityEnumAsIdUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.ManyIdsUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.PersonUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.StoneUpsert;
@@ -19,6 +20,7 @@ import nf36_example_with_depinject.generated.faces.upsert.transaction.OnlyIdsUps
 import nf36_example_with_depinject.generated.faces.upsert.transaction.TransactionUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.transaction.more.SchoolUpsert;
 import nf36_example_with_depinject.generated.impl.postgres.upsert.ClientUpsertImpl;
+import nf36_example_with_depinject.generated.impl.postgres.upsert.EntityEnumAsIdUpsertImpl;
 import nf36_example_with_depinject.generated.impl.postgres.upsert.ManyIdsUpsertImpl;
 import nf36_example_with_depinject.generated.impl.postgres.upsert.PersonUpsertImpl;
 import nf36_example_with_depinject.generated.impl.postgres.upsert.StoneUpsertImpl;
@@ -30,6 +32,7 @@ import nf36_example_with_depinject.generated.impl.postgres.upsert.inner.WowUpser
 import nf36_example_with_depinject.generated.impl.postgres.upsert.transaction.OnlyIdsUpsertImpl;
 import nf36_example_with_depinject.generated.impl.postgres.upsert.transaction.TransactionUpsertImpl;
 import nf36_example_with_depinject.generated.impl.postgres.upsert.transaction.more.SchoolUpsertImpl;
+import nf36_example_with_depinject.structure.SomeEnum;
 
 public abstract class AbstractExampleUpserterPostgres implements ExampleUpserter {
   protected abstract Nf36Upserter createUpserter();
@@ -69,6 +72,11 @@ public abstract class AbstractExampleUpserterPostgres implements ExampleUpserter
   @Override
   public long clientAddressNextClientId() {
     return getSequenceNext().nextLong("s_client_address_client_id");
+  }
+
+  @Override
+  public EntityEnumAsIdUpsert entityEnumAsId(SomeEnum id) {
+    return new EntityEnumAsIdUpsertImpl(createUpserter(), id);
   }
 
   @Override
