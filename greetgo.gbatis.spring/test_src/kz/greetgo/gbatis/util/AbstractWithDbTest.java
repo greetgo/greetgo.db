@@ -1,7 +1,5 @@
 package kz.greetgo.gbatis.util;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.mchange.v2.c3p0.PooledDataSource;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import kz.greetgo.conf.SysParams;
 import kz.greetgo.sqlmanager.gen.Conf;
@@ -12,6 +10,7 @@ import kz.greetgo.sqlmanager.parser.StruShaper;
 import org.postgresql.util.PSQLException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.sql.DataSource;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.net.URL;
@@ -22,9 +21,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 @SuppressFBWarnings("SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING")
 public abstract class AbstractWithDbTest {
-  private static String userid = "gbatis";
+  private static String userid = System.getProperty("user.name") + "_gbatis";
 
   private int useridIndex = 0;
 
@@ -82,18 +83,17 @@ public abstract class AbstractWithDbTest {
     prepareDb();
 
     {
-      ComboPooledDataSource ds = new ComboPooledDataSource();
-      ds.setDriverClass("org.postgresql.Driver");
-      ds.setJdbcUrl(getUrl());
-      ds.setUser(userid());
-      ds.setPassword(userid());
-
-      ds.setAcquireIncrement(1);
-      ds.setMinPoolSize(1);
-      ds.setMaxPoolSize(3);
-      ds.setMaxIdleTime(120);
-
-      dataSource = ds;
+      dataSource = new DataSourceAbstract() {
+        @Override
+        public Connection getConnection() throws SQLException {
+          try {
+            Class.forName("org.postgresql.Driver");
+          } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+          }
+          return DriverManager.getConnection(getUrl(), getUserid(), getUserid());
+        }
+      };
 
       jdbc = new JdbcTemplate(dataSource);
     }
@@ -154,7 +154,7 @@ public abstract class AbstractWithDbTest {
           out.flush();
 
           try (Statement st = con.createStatement()) {
-            for (String sql : new String(bout.toByteArray(), "UTF-8").split(";;")) {
+            for (String sql : new String(bout.toByteArray(), UTF_8).split(";;")) {
               st.addBatch(sql);
             }
             st.executeBatch();
@@ -170,9 +170,10 @@ public abstract class AbstractWithDbTest {
   }
 
   protected JdbcTemplate jdbc;
-  protected PooledDataSource dataSource;
+  protected DataSource dataSource;
 
   protected void executeSqls(List<String> sqls) throws SQLException {
+
     try (Connection con = dataSource.getConnection()) {
       try (Statement st = con.createStatement()) {
         for (String sql : sqls) {

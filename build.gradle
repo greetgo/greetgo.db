@@ -48,7 +48,6 @@ subprojects {
     mavenLocal()
     if (System.getenv('GG_REPO')?.trim()) maven { url System.getenv('GG_REPO') }
     mavenCentral()
-    maven { url 'https://maven.oracle.com' }
   }
 
   dependencies {
@@ -56,11 +55,9 @@ subprojects {
     ext.greetgoUtilVersion = "0.0.25"
     ext.depinjectVersion = "2.0.3"
     ext.classScannerVersion = "0.0.1"
-    ext.greetgoJavaCompilerVersion = "0.0.1"
+    ext.greetgoJavaCompilerVersion = "2.0.1"
     ext.pgDriverVersion = "9.4-1202-jdbc42"
     ext.greetgoClassScannerVersion = "2.0.0"
-
-    compile 'com.google.code.findbugs:annotations:2.0.1'
 
     testCompile 'org.testng:testng:6.5.1'
     testCompile 'org.easytesting:fest-assert-core:2.0M10'

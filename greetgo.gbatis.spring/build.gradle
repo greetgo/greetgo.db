@@ -11,7 +11,7 @@ dependencies {
   testCompile 'kz.greetgo:greetgo.conf:0.0.12'
 
   testCompile 'postgresql:postgresql:9.1-901.jdbc4'
-  testCompile 'c3p0:c3p0:0.9.1.2'
+  testCompile 'org.slf4j:slf4j-log4j12:1.7.25'
 
   testCompile "greetgo.3rd-party:oracle-ojdbc6_g:11.2.0.3"
   testCompile "greetgo.3rd-party:oracle-ucp:11.2.0.3"

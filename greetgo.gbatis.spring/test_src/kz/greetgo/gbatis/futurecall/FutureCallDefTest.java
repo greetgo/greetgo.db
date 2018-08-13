@@ -3,6 +3,7 @@ package kz.greetgo.gbatis.futurecall;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.net.URL;
+import java.sql.DriverManager;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
@@ -33,7 +34,7 @@ public class FutureCallDefTest extends AbstractWithDbTest {
   
   @AfterMethod
   public void teardown() throws Exception {
-    dataSource.close();
+//    dataSource.close();
     dataSource = null;
     jdbc = null;
   }
@@ -72,6 +73,7 @@ public class FutureCallDefTest extends AbstractWithDbTest {
   
   @Test
   public void last_select() throws Exception {
+
     {
       List<String> sqlList = new ArrayList<>();
 
