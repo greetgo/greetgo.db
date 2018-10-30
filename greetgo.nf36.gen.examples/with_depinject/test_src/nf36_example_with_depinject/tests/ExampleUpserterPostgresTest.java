@@ -12,9 +12,12 @@ import nf36_example_with_depinject.jdbc.ByOneCount;
 import nf36_example_with_depinject.jdbc.ByOneLast;
 import nf36_example_with_depinject.jdbc.ByTwoCount;
 import nf36_example_with_depinject.jdbc.ByTwoLast;
+import nf36_example_with_depinject.structure.Client;
 import nf36_example_with_depinject.structure.SomeEnum;
 import nf36_example_with_depinject.util.ParentDbTests;
 import org.testng.annotations.Test;
+
+import java.util.Objects;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -34,8 +37,14 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     String expectedName1 = "name1 " + RND.str(10);
 
     exampleUpserter.get().client(id)
-      .name(expectedName1)
-      .commitAll();
+        .name(expectedName1)
+        .commitAll();
+
+    Client client = new Client();
+
+    exampleUpserter.get().client()
+        .myChairId1().skipIf(Objects::isNull)
+        .save(client);
 
     {
       String actualName = jdbc.get().execute(new ByOne<>("id", id, "client", "name"));
@@ -49,8 +58,8 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     String expectedName2 = "name2 " + RND.str(10);
 
     exampleUpserter.get().client(id)
-      .name(expectedName2)
-      .commitAll();
+        .name(expectedName2)
+        .commitAll();
 
     {
       String actualName = jdbc.get().execute(new ByOne<>("id", id, "client", "name"));
@@ -65,9 +74,9 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     String expectedName3 = "name2 " + RND.str(10);
 
     exampleUpserter.get().client(id)
-      .name(expectedName3)
-      .surname(expectedSurname)
-      .commitAll();
+        .name(expectedName3)
+        .surname(expectedSurname)
+        .commitAll();
 
     {
       String actualName = jdbc.get().execute(new ByOne<>("id", id, "client", "name"));
@@ -85,9 +94,9 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     SomeEnum id = SomeEnum.V1;
 
     exampleUpserter.get()
-      .entityEnumAsId(id)
-      .value(value)
-      .commit()
+        .entityEnumAsId(id)
+        .value(value)
+        .commit()
     ;
 
     String actualValue = jdbc.get().execute(new ByOne<>("id", id.name(), "entity_enum_as_id", "value"));
@@ -98,9 +107,9 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
   public void upsertClient_CannotBeNull_surname() throws Exception {
 
     exampleUpserter.get().client(RND.plusLong(1_000_000_000L))
-      .name("asd")
-      .surname(null)
-      .commitAll();
+        .name("asd")
+        .surname(null)
+        .commitAll();
 
   }
 
@@ -113,25 +122,25 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     String chairId2_2 = RND.str(10);
 
     exampleUpserter.get().chair(chairId1_1, chairId2_1)
-      .name(RND.str(10))
-      .commit()
+        .name(RND.str(10))
+        .commit()
     ;
 
     exampleUpserter.get().chair(chairId1_2, chairId2_2)
-      .name(RND.str(10))
-      .commit()
+        .name(RND.str(10))
+        .commit()
     ;
 
     long clientId = RND.plusLong(1_000_000_000_000L);
 
     exampleUpserter.get().client(clientId)
-      .name(RND.str(10))
-      .surname(RND.str(10))
-      .myChairId1(chairId1_1)
-      .myChairId2(chairId2_1)
-      .hisChairLongId(chairId1_2)
-      .hisChairStrId(chairId2_2)
-      .commitAll()
+        .name(RND.str(10))
+        .surname(RND.str(10))
+        .myChairId1(chairId1_1)
+        .myChairId2(chairId2_1)
+        .hisChairLongId(chairId1_2)
+        .hisChairStrId(chairId2_2)
+        .commitAll()
     ;
   }
 
@@ -141,12 +150,12 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     String expectedName1 = "name1 " + RND.str(10);
 
     exampleUpserter.get().client(id)
-      .name(expectedName1)
-      .commitAll();
+        .name(expectedName1)
+        .commitAll();
 
     exampleUpserter.get().client(id)
-      .name(expectedName1)
-      .commitAll();
+        .name(expectedName1)
+        .commitAll();
 
     {
       String actualName = jdbc.get().execute(new ByOneLast<>("id", id, t("m_client_name"), "name"));
@@ -158,12 +167,12 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     String expectedName2 = "name2 " + RND.str(10);
 
     exampleUpserter.get().client(id)
-      .name(expectedName2)
-      .commitAll();
+        .name(expectedName2)
+        .commitAll();
 
     exampleUpserter.get().client(id)
-      .name(expectedName2)
-      .commitAll();
+        .name(expectedName2)
+        .commitAll();
 
     {
       String actualName = jdbc.get().execute(new ByOneLast<>("id", id, t("m_client_name"), "name"));
@@ -173,12 +182,12 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     }
 
     exampleUpserter.get().client(id)
-      .name(expectedName1)
-      .commitAll();
+        .name(expectedName1)
+        .commitAll();
 
     exampleUpserter.get().client(id)
-      .name(expectedName1)
-      .commitAll();
+        .name(expectedName1)
+        .commitAll();
 
     {
       String actualName = jdbc.get().execute(new ByOneLast<>("id", id, t("m_client_name"), "name"));
@@ -196,9 +205,9 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     String expectedDescription1 = "description1 " + RND.str(10);
 
     exampleUpserter.get().chair(id1, id2)
-      .name(expectedName1)
-      .description("left " + RND.str(10))
-      .commit()
+        .name(expectedName1)
+        .description("left " + RND.str(10))
+        .commit()
     ;
 
     {
@@ -209,9 +218,9 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     }
 
     exampleUpserter.get().chair(id1, id2)
-      .name(expectedName1)
-      .description(expectedDescription1)
-      .commit()
+        .name(expectedName1)
+        .description(expectedDescription1)
+        .commit()
     ;
 
     {
@@ -230,9 +239,9 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     String expectedDescription2 = "description2 " + RND.str(10);
 
     exampleUpserter.get().chair(id1, id2)
-      .name("left name " + RND.str(10))
-      .description(expectedDescription2)
-      .commit()
+        .name("left name " + RND.str(10))
+        .description(expectedDescription2)
+        .commit()
     ;
 
     {
@@ -243,9 +252,9 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     }
 
     exampleUpserter.get().chair(id1, id2)
-      .name(expectedName2)
-      .description(expectedDescription2)
-      .commit()
+        .name(expectedName2)
+        .description(expectedDescription2)
+        .commit()
     ;
 
     {
@@ -268,16 +277,16 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     String chairId2 = RND.str(10);
 
     exampleUpserter.get().chair(chairId1, chairId2)
-      .name(RND.str(10))
-      .commit()
+        .name(RND.str(10))
+        .commit()
     ;
 
     long clientId = RND.plusLong(1_000_000_000_000L);
 
     exampleUpserter.get().client(clientId)
-      .myChairId1(chairId1)
-      .myChairId2(chairId2)
-      .commitAll()
+        .myChairId1(chairId1)
+        .myChairId2(chairId2)
+        .commitAll()
     ;
 
     {
@@ -299,10 +308,10 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     String surname2 = RND.str(10);
 
     exampleUpserter.get().client(clientId1)
-      .surname(surname1)
-      .moreAnother(clientId2)
-      .surname(surname2)
-      .commitAll();
+        .surname(surname1)
+        .moreAnother(clientId2)
+        .surname(surname2)
+        .commitAll();
 
     {
       String actualSurname = jdbc.get().execute(new ByOne<>("id", clientId1, "client", "surname"));

@@ -1,8 +1,6 @@
 package nf36_example_with_depinject.generated.faces;
 
-import java.lang.Integer;
-import java.lang.Long;
-import java.lang.String;
+import nf36_example_with_depinject.generated.faces.save.ClientSave;
 import nf36_example_with_depinject.generated.faces.upsert.ClientUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.EntityEnumAsIdUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.ManyIdsUpsert;
@@ -26,6 +24,8 @@ public interface ExampleUpserter {
   CharmUpsert charm(String id);
 
   ClientUpsert client(long id);
+
+  ClientSave client();
 
   long clientNextId();
 

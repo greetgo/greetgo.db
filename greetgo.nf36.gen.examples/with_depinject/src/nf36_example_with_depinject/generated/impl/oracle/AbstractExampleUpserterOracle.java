@@ -3,9 +3,12 @@ package nf36_example_with_depinject.generated.impl.oracle;
 import java.lang.Integer;
 import java.lang.Long;
 import java.lang.String;
+
+import kz.greetgo.db.nf36.core.Nf36Saver;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.core.SequenceNext;
 import nf36_example_with_depinject.generated.faces.ExampleUpserter;
+import nf36_example_with_depinject.generated.faces.save.ClientSave;
 import nf36_example_with_depinject.generated.faces.upsert.ClientUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.EntityEnumAsIdUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.ManyIdsUpsert;
@@ -32,10 +35,13 @@ import nf36_example_with_depinject.generated.impl.oracle.upsert.inner.WowUpsertI
 import nf36_example_with_depinject.generated.impl.oracle.upsert.transaction.OnlyIdsUpsertImpl;
 import nf36_example_with_depinject.generated.impl.oracle.upsert.transaction.TransactionUpsertImpl;
 import nf36_example_with_depinject.generated.impl.oracle.upsert.transaction.more.SchoolUpsertImpl;
+import nf36_example_with_depinject.generated.impl.postgres.save.ClientSaveImpl;
 import nf36_example_with_depinject.structure.SomeEnum;
 
 public abstract class AbstractExampleUpserterOracle implements ExampleUpserter {
   protected abstract Nf36Upserter createUpserter();
+
+  protected abstract Nf36Saver createSaver();
 
   protected abstract SequenceNext getSequenceNext();
 
@@ -57,6 +63,11 @@ public abstract class AbstractExampleUpserterOracle implements ExampleUpserter {
   @Override
   public ClientUpsert client(long id) {
     return new ClientUpsertImpl(createUpserter(), id);
+  }
+
+  @Override
+  public ClientSave client() {
+    return new ClientSaveImpl(createSaver());
   }
 
   @Override
