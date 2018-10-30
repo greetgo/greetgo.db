@@ -1129,11 +1129,11 @@ public class JavaGenerator {
   }
 
   private void printSaveImplMethod(JavaFilePrinter p, Nf3Table nf3Table) {
-    SaveInfo ui = getSaveInfo(nf3Table);
+    SaveInfo si = getSaveInfo(nf3Table);
 
     p.ofs(1).prn("@Override");
-    p.ofs(1).prn("public ").pr(p.i(ui.interfaceFullName())).pr(" ").pr(ui.accessToEntityMethodName()).prn("() {");
-    p.ofs(2).prn("return new " + p.i(ui.implFullName()) + "(" + saverCreateMethod + "());");
+    p.ofs(1).prn("public " + p.i(si.interfaceFullName()) + " " + si.accessToEntityMethodName() + "() {");
+    p.ofs(2).prn("return new " + p.i(si.implFullName()) + "(" + saverCreateMethod + "());");
     p.ofs(1).prn("}").prn();
   }
 
