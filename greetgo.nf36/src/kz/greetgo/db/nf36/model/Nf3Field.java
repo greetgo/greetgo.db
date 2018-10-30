@@ -1,5 +1,7 @@
 package kz.greetgo.db.nf36.model;
 
+import kz.greetgo.db.nf36.utils.UtilsNf36;
+
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +21,10 @@ public interface Nf3Field {
   String dbName();
 
   Class<?> javaType();
+
+  default Class<?> javaTypeBoxing() {
+    return UtilsNf36.boxing(javaType());
+  }
 
   DbType dbType();
 

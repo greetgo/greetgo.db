@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -150,5 +152,31 @@ public class UtilsNf36 {
 
     return s == null ? Stream.empty() : s;
 
+  }
+
+  private final static Map<Class<?>, Class<?>> PRIMITIVE_MAP = new HashMap<>();
+
+  static {
+    PRIMITIVE_MAP.put(boolean.class, Boolean.class);
+    PRIMITIVE_MAP.put(byte.class, Byte.class);
+    PRIMITIVE_MAP.put(short.class, Short.class);
+    PRIMITIVE_MAP.put(char.class, Character.class);
+    PRIMITIVE_MAP.put(int.class, Integer.class);
+    PRIMITIVE_MAP.put(long.class, Long.class);
+    PRIMITIVE_MAP.put(float.class, Float.class);
+    PRIMITIVE_MAP.put(double.class, Double.class);
+  }
+
+  public static Class<?> boxing(Class<?> mayPrimitive) {
+
+    if (mayPrimitive == null) {
+      return null;
+    }
+
+    if (!mayPrimitive.isPrimitive()) {
+      return mayPrimitive;
+    }
+
+    return PRIMITIVE_MAP.get(mayPrimitive);
   }
 }

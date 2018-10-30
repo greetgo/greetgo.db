@@ -455,9 +455,11 @@ public class JavaGenerator {
   private String saverFieldName = null;
 
   private String generateThingSaveInterface(SaveInfo info) {
+    String iClassName = info.interfaceClassName();
+
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = info.interfacePackageName();
-    p.classHeader = "public interface " + info.interfaceClassName();
+    p.classHeader = "public interface " + iClassName;
 
     List<Nf3Field> fields = info.fields().stream()
         .filter(f -> !f.isId())
@@ -469,12 +471,13 @@ public class JavaGenerator {
 
     for (Nf3Field f : fields) {
       String fieldType = p.i(f.javaType().getName());
+      String fieldTypeBoxed = p.i(f.javaTypeBoxing().getName());
       String fieldName = f.javaName();
 
       p.ofs(1).prn("interface " + fieldName + " {");
-      p.ofs(2).prn(info.interfaceClassName() + " set(" + fieldType + " value);").prn();
-      p.ofs(2).prn(info.interfaceClassName() + " skipIf(" + predicate + "<" + fieldType + "> predicate);").prn();
-      p.ofs(2).prn(info.interfaceClassName() + " alias(String alias);");
+      p.ofs(2).prn(iClassName + " set(" + fieldType + " value);").prn();
+      p.ofs(2).prn(iClassName + " skipIf(" + predicate + "<" + fieldTypeBoxed + "> predicate);").prn();
+      p.ofs(2).prn(iClassName + " alias(String alias);");
       p.ofs(1).prn("}").prn();
 
       p.ofs(1).prn(fieldName + " " + fieldName + "();").prn();
@@ -494,7 +497,7 @@ public class JavaGenerator {
 
     p.printToFile(info.interfaceJavaFile());
 
-    return resolveFullName(info.interfacePackageName(), info.interfaceClassName());
+    return resolveFullName(info.interfacePackageName(), iClassName);
   }
 
   private String generateThingUpsertInterface(UpsertInfo info) {

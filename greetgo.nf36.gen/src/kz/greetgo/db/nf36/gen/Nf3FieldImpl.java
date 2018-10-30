@@ -76,11 +76,15 @@ class Nf3FieldImpl implements Nf3Field {
   public Class<?> referenceToClass() {
     {
       Nf3ReferenceTo a = source.getAnnotation(Nf3ReferenceTo.class);
-      if (a != null) return a.value();
+      if (a != null) {
+        return a.value();
+      }
     }
     {
       Nf3ID a = source.getAnnotation(Nf3ID.class);
-      if (a != null && a.ref() != Object.class) return a.ref();
+      if (a != null && a.ref() != Object.class) {
+        return a.ref();
+      }
     }
     return null;
   }
@@ -89,11 +93,15 @@ class Nf3FieldImpl implements Nf3Field {
   public String nextPart() {
     {
       Nf3ReferenceTo a = source.getAnnotation(Nf3ReferenceTo.class);
-      if (a != null && a.nextPart().length() > 0) return a.nextPart();
+      if (a != null && a.nextPart().length() > 0) {
+        return a.nextPart();
+      }
     }
     {
       Nf3ID a = source.getAnnotation(Nf3ID.class);
-      if (a != null && a.nextPart().length() > 0) return a.nextPart();
+      if (a != null && a.nextPart().length() > 0) {
+        return a.nextPart();
+      }
     }
     return null;
   }
@@ -114,7 +122,9 @@ class Nf3FieldImpl implements Nf3Field {
 
   @Override
   public List<Nf3Field> referenceFields() {
-    if (referenceFields == null) throw new RuntimeException("No referenceFields");
+    if (referenceFields == null) {
+      throw new RuntimeException("No referenceFields");
+    }
     return referenceFields;
   }
 
@@ -122,7 +132,9 @@ class Nf3FieldImpl implements Nf3Field {
 
   @Override
   public Nf3Table referenceTo() {
-    if (referenceTo == null) throw new RuntimeException("No referenceTo");
+    if (referenceTo == null) {
+      throw new RuntimeException("No referenceTo");
+    }
     return referenceTo;
   }
 
@@ -148,15 +160,19 @@ class Nf3FieldImpl implements Nf3Field {
     Nf3Description d = source.getAnnotation(Nf3Description.class);
     if (d == null) {
       throw new RuntimeException("No description for field " + definer.getClass().getSimpleName()
-        + "." + source.getName());
+          + "." + source.getName());
     }
     return UtilsNf36.quoteForSql(d.value());
   }
 
   @Override
   public Sequence sequence() {
-    if (nf3ID == null) return null;
-    if (!dbType().sequential()) return null;
+    if (nf3ID == null) {
+      return null;
+    }
+    if (!dbType().sequential()) {
+      return null;
+    }
 
     String sequenceName = collector.sequencePrefix() + nf3Table.tableName() + "_" + dbName();
 
