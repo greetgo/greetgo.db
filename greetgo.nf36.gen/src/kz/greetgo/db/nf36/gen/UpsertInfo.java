@@ -18,7 +18,7 @@ interface UpsertInfo {
 
   String implClassName();
 
-  String upsertMethodName();
+  String accessToEntityMethodName();
 
   String interfaceFullName();
 

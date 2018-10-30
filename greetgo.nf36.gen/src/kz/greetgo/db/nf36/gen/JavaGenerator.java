@@ -160,9 +160,13 @@ public class JavaGenerator {
     String interfacePackageName = UtilsNf36.resolvePackage(interfaceBasePackage, subPackage);
     File interfaceJavaFile = resolveJavaFile(interfaceOutDir, interfacePackageName, interfaceClassName);
 
+    String interfaceFullName = resolveFullName(interfacePackageName, interfaceClassName);
+
     String implClassName = interfaceClassName + "Impl";
     String implPackageName = UtilsNf36.resolvePackage(implBasePackage, subPackage);
     File implJavaFile = resolveJavaFile(implOutDir, implPackageName, implClassName);
+
+    String accessToEntityMethodName = firstToLow(nf3Table.source().getSimpleName());
 
     return new SaveInfo() {
       @Override
@@ -178,6 +182,11 @@ public class JavaGenerator {
       @Override
       public String interfacePackageName() {
         return interfacePackageName;
+      }
+
+      @Override
+      public String interfaceFullName() {
+        return interfaceFullName;
       }
 
       @Override
@@ -215,6 +224,11 @@ public class JavaGenerator {
       public String nf6TableName(Nf3Field f) {
         return nf3Table.nf6prefix() + nf3Table.tableName() + collector.nf6TableSeparator + f.rootField().dbName();
       }
+
+      @Override
+      public String accessToEntityMethodName() {
+        return accessToEntityMethodName;
+      }
     };
   }
 
@@ -232,7 +246,7 @@ public class JavaGenerator {
     String implPackageName = UtilsNf36.resolvePackage(implBasePackage, subPackage);
     File implJavaFile = resolveJavaFile(implOutDir, implPackageName, implClassName);
 
-    String upsertMethodName = firstToLow(nf3Table.source().getSimpleName());
+    String accessToEntityMethodName = firstToLow(nf3Table.source().getSimpleName());
 
     String interfaceFullName = resolveFullName(interfacePackageName, interfaceClassName);
 
@@ -278,8 +292,8 @@ public class JavaGenerator {
       }
 
       @Override
-      public String upsertMethodName() {
-        return upsertMethodName;
+      public String accessToEntityMethodName() {
+        return accessToEntityMethodName;
       }
 
       @Override
@@ -461,7 +475,7 @@ public class JavaGenerator {
       fieldNames.add(fieldName);
     }
 
-    for (int i = 1; ; i++) {
+    for (int i = 13; ; i++) {
       String name = "saver" + i;
       if (!fieldNames.contains(name)) {
         saverFieldName = name;
@@ -861,6 +875,8 @@ public class JavaGenerator {
 
     for (Nf3Table nf3Table : collector.collect()) {
       printUpsertInterfaceMethod(p, nf3Table);
+      printSaveInterfaceMethod(p, nf3Table);
+
       for (Nf3Field nf3Field : nf3Table.fields()) {
         if (nf3Field.sequence() != null) {
           printUpsertInterfaceMethodSequence(p, nf3Field, nf3Table);
@@ -872,7 +888,6 @@ public class JavaGenerator {
 
     return resolveFullName(interfaceBasePackage, upserterClassName);
   }
-
 
   private String generateMainUpdaterInterface() {
 
@@ -975,7 +990,9 @@ public class JavaGenerator {
         + (abstracting ? ";\n" : " {")
     );
 
-    if (abstracting) { return; }
+    if (abstracting) {
+      return;
+    }
 
     String notImplError = p.i(RuntimeException.class.getName());
 
@@ -1019,11 +1036,23 @@ public class JavaGenerator {
     p.ofs(1).prn("}").prn();
   }
 
+  private void printSaveInterfaceMethod(JavaFilePrinter p, Nf3Table nf3Table) {
+
+    if (!generateSaver) {
+      return;
+    }
+
+    SaveInfo info = getSaveInfo(nf3Table);
+
+    p.ofs(1).pr(p.i(info.interfaceFullName()))
+        .pr(" ").pr(info.accessToEntityMethodName()).prn("();").prn();
+  }
+
   private void printUpsertInterfaceMethod(JavaFilePrinter p, Nf3Table nf3Table) {
     UpsertInfo info = getUpsertInfo(nf3Table);
 
     p.ofs(1).pr(p.i(info.interfaceFullName()))
-        .pr(" ").pr(info.upsertMethodName()).prn("(" + (
+        .pr(" ").pr(info.accessToEntityMethodName()).prn("(" + (
 
         nf3Table.fields().stream()
             .filter(Nf3Field::isId)
@@ -1038,7 +1067,7 @@ public class JavaGenerator {
     UpsertInfo info = getUpsertInfo(nf3Table);
 
     p.ofs(1).pr(p.i(nf3Field.javaType().getName()))
-        .pr(" ").pr(info.upsertMethodName() + "Next" + firstToUp(nf3Field.javaName())).prn("();").prn();
+        .pr(" ").pr(info.accessToEntityMethodName() + "Next" + firstToUp(nf3Field.javaName())).prn("();").prn();
   }
 
   private void printUpsertImplMethodSequence(JavaFilePrinter p, Nf3Field nf3Field, Nf3Table nf3Table) {
@@ -1048,7 +1077,7 @@ public class JavaGenerator {
 
     p.ofs(1).prn("@Override");
     p.ofs(1).pr("public " + p.i(nf3Field.javaType().getName()))
-        .pr(" ").pr(info.upsertMethodName() + "Next" + firstToUp(nf3Field.javaName())).prn("() {");
+        .pr(" ").pr(info.accessToEntityMethodName() + "Next" + firstToUp(nf3Field.javaName())).prn("() {");
     p.ofs(2).prn("return " + getSequenceNextMethod + "().next"
         + firstToUp(nf3Field.javaType().getSimpleName()) + "(\"" + sequence.name + "\");");
     p.ofs(1).prn("}").prn();
@@ -1065,7 +1094,7 @@ public class JavaGenerator {
 
     p.ofs(1).prn("@Override");
     p.ofs(1).pr("public ").pr(p.i(ui.interfaceFullName()))
-        .pr(" ").pr(ui.upsertMethodName()).prn("(" + (
+        .pr(" ").pr(ui.accessToEntityMethodName()).prn("(" + (
 
         nf3Table.fields().stream()
             .filter(Nf3Field::isId)

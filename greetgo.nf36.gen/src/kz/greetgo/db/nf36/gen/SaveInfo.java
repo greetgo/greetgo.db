@@ -12,6 +12,8 @@ public interface SaveInfo {
 
   String interfacePackageName();
 
+  String interfaceFullName();
+
   File implJavaFile();
 
   String implPackageName();
@@ -25,4 +27,6 @@ public interface SaveInfo {
   String nf3TableName();
 
   String nf6TableName(Nf3Field field);
+
+  String accessToEntityMethodName();
 }
