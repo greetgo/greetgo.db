@@ -3,12 +3,23 @@ package nf36_example_with_depinject.generated.impl.oracle;
 import java.lang.Integer;
 import java.lang.Long;
 import java.lang.String;
-
 import kz.greetgo.db.nf36.core.Nf36Saver;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.core.SequenceNext;
 import nf36_example_with_depinject.generated.faces.ExampleUpserter;
 import nf36_example_with_depinject.generated.faces.save.ClientSave;
+import nf36_example_with_depinject.generated.faces.save.EntityEnumAsIdSave;
+import nf36_example_with_depinject.generated.faces.save.ManyIdsSave;
+import nf36_example_with_depinject.generated.faces.save.PersonSave;
+import nf36_example_with_depinject.generated.faces.save.StoneSave;
+import nf36_example_with_depinject.generated.faces.save.StreetSave;
+import nf36_example_with_depinject.generated.faces.save.inner.ChairSave;
+import nf36_example_with_depinject.generated.faces.save.inner.CharmSave;
+import nf36_example_with_depinject.generated.faces.save.inner.ClientAddressSave;
+import nf36_example_with_depinject.generated.faces.save.inner.WowSave;
+import nf36_example_with_depinject.generated.faces.save.transaction.OnlyIdsSave;
+import nf36_example_with_depinject.generated.faces.save.transaction.TransactionSave;
+import nf36_example_with_depinject.generated.faces.save.transaction.more.SchoolSave;
 import nf36_example_with_depinject.generated.faces.upsert.ClientUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.EntityEnumAsIdUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.ManyIdsUpsert;
@@ -22,6 +33,19 @@ import nf36_example_with_depinject.generated.faces.upsert.inner.WowUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.transaction.OnlyIdsUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.transaction.TransactionUpsert;
 import nf36_example_with_depinject.generated.faces.upsert.transaction.more.SchoolUpsert;
+import nf36_example_with_depinject.generated.impl.oracle.save.ClientSaveImpl;
+import nf36_example_with_depinject.generated.impl.oracle.save.EntityEnumAsIdSaveImpl;
+import nf36_example_with_depinject.generated.impl.oracle.save.ManyIdsSaveImpl;
+import nf36_example_with_depinject.generated.impl.oracle.save.PersonSaveImpl;
+import nf36_example_with_depinject.generated.impl.oracle.save.StoneSaveImpl;
+import nf36_example_with_depinject.generated.impl.oracle.save.StreetSaveImpl;
+import nf36_example_with_depinject.generated.impl.oracle.save.inner.ChairSaveImpl;
+import nf36_example_with_depinject.generated.impl.oracle.save.inner.CharmSaveImpl;
+import nf36_example_with_depinject.generated.impl.oracle.save.inner.ClientAddressSaveImpl;
+import nf36_example_with_depinject.generated.impl.oracle.save.inner.WowSaveImpl;
+import nf36_example_with_depinject.generated.impl.oracle.save.transaction.OnlyIdsSaveImpl;
+import nf36_example_with_depinject.generated.impl.oracle.save.transaction.TransactionSaveImpl;
+import nf36_example_with_depinject.generated.impl.oracle.save.transaction.more.SchoolSaveImpl;
 import nf36_example_with_depinject.generated.impl.oracle.upsert.ClientUpsertImpl;
 import nf36_example_with_depinject.generated.impl.oracle.upsert.EntityEnumAsIdUpsertImpl;
 import nf36_example_with_depinject.generated.impl.oracle.upsert.ManyIdsUpsertImpl;
@@ -35,7 +59,6 @@ import nf36_example_with_depinject.generated.impl.oracle.upsert.inner.WowUpsertI
 import nf36_example_with_depinject.generated.impl.oracle.upsert.transaction.OnlyIdsUpsertImpl;
 import nf36_example_with_depinject.generated.impl.oracle.upsert.transaction.TransactionUpsertImpl;
 import nf36_example_with_depinject.generated.impl.oracle.upsert.transaction.more.SchoolUpsertImpl;
-import nf36_example_with_depinject.generated.impl.postgres.save.ClientSaveImpl;
 import nf36_example_with_depinject.structure.SomeEnum;
 
 public abstract class AbstractExampleUpserterOracle implements ExampleUpserter {
@@ -51,6 +74,11 @@ public abstract class AbstractExampleUpserterOracle implements ExampleUpserter {
   }
 
   @Override
+  public ChairSave chair() {
+    return new ChairSaveImpl(createSaver());
+  }
+
+  @Override
   public long chairNextId1() {
     return getSequenceNext().nextLong("s_chair_id1");
   }
@@ -58,6 +86,11 @@ public abstract class AbstractExampleUpserterOracle implements ExampleUpserter {
   @Override
   public CharmUpsert charm(String id) {
     return new CharmUpsertImpl(createUpserter(), id);
+  }
+
+  @Override
+  public CharmSave charm() {
+    return new CharmSaveImpl(createSaver());
   }
 
   @Override
@@ -81,6 +114,11 @@ public abstract class AbstractExampleUpserterOracle implements ExampleUpserter {
   }
 
   @Override
+  public ClientAddressSave clientAddress() {
+    return new ClientAddressSaveImpl(createSaver());
+  }
+
+  @Override
   public long clientAddressNextClientId() {
     return getSequenceNext().nextLong("s_client_address_client_id");
   }
@@ -91,8 +129,18 @@ public abstract class AbstractExampleUpserterOracle implements ExampleUpserter {
   }
 
   @Override
+  public EntityEnumAsIdSave entityEnumAsId() {
+    return new EntityEnumAsIdSaveImpl(createSaver());
+  }
+
+  @Override
   public ManyIdsUpsert manyIds(int intId, Integer boxedIntId, long longId, Long boxedLongId, String strId) {
     return new ManyIdsUpsertImpl(createUpserter(), intId, boxedIntId, longId, boxedLongId, strId);
+  }
+
+  @Override
+  public ManyIdsSave manyIds() {
+    return new ManyIdsSaveImpl(createSaver());
   }
 
   @Override
@@ -121,6 +169,11 @@ public abstract class AbstractExampleUpserterOracle implements ExampleUpserter {
   }
 
   @Override
+  public OnlyIdsSave onlyIds() {
+    return new OnlyIdsSaveImpl(createSaver());
+  }
+
+  @Override
   public long onlyIdsNextId1() {
     return getSequenceNext().nextLong("s_only_ids_id1");
   }
@@ -131,8 +184,18 @@ public abstract class AbstractExampleUpserterOracle implements ExampleUpserter {
   }
 
   @Override
+  public PersonSave person() {
+    return new PersonSaveImpl(createSaver());
+  }
+
+  @Override
   public SchoolUpsert school(String id) {
     return new SchoolUpsertImpl(createUpserter(), id);
+  }
+
+  @Override
+  public SchoolSave school() {
+    return new SchoolSaveImpl(createSaver());
   }
 
   @Override
@@ -141,8 +204,18 @@ public abstract class AbstractExampleUpserterOracle implements ExampleUpserter {
   }
 
   @Override
+  public StoneSave stone() {
+    return new StoneSaveImpl(createSaver());
+  }
+
+  @Override
   public StreetUpsert street(long id) {
     return new StreetUpsertImpl(createUpserter(), id);
+  }
+
+  @Override
+  public StreetSave street() {
+    return new StreetSaveImpl(createSaver());
   }
 
   @Override
@@ -156,6 +229,11 @@ public abstract class AbstractExampleUpserterOracle implements ExampleUpserter {
   }
 
   @Override
+  public TransactionSave transaction() {
+    return new TransactionSaveImpl(createSaver());
+  }
+
+  @Override
   public long transactionNextId() {
     return getSequenceNext().nextLong("s_transaction_id");
   }
@@ -163,6 +241,11 @@ public abstract class AbstractExampleUpserterOracle implements ExampleUpserter {
   @Override
   public WowUpsert wow(String wowId, String wowId2) {
     return new WowUpsertImpl(createUpserter(), wowId, wowId2);
+  }
+
+  @Override
+  public WowSave wow() {
+    return new WowSaveImpl(createSaver());
   }
 
 }

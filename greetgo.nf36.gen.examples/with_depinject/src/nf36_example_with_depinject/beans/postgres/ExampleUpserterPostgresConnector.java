@@ -47,6 +47,7 @@ public class ExampleUpserterPostgresConnector extends AbstractExampleUpserterPos
 
   @Override
   protected Nf36Saver createSaver() {
+    // FIXME: 30.10.18 add here to use bridge
     throw new NotImplementedException();
   }
 }

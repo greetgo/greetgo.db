@@ -1,4 +1,4 @@
-package nf36_example_with_depinject.generated.impl.postgres.save;
+package nf36_example_with_depinject.generated.impl.oracle.save;
 
 import java.lang.Long;
 import java.lang.String;
@@ -15,15 +15,15 @@ public class ClientSaveImpl implements ClientSave {
     saver.setTimeFieldName("ts");
     saver.setAuthorFieldNames("created_by", "modified_by", "inserted_by");
     saver.addIdName("id");
-    saver.addFieldName("memory_never_be_superfluous.client_surname", "surname");
-    saver.addFieldName("memory_never_be_superfluous.client_name", "name");
-    saver.addFieldName("memory_never_be_superfluous.client_patronymic", "patronymic");
-    saver.addFieldName("memory_never_be_superfluous.client_charm_id", "charm_id");
-    saver.addFieldName("memory_never_be_superfluous.client_long_description", "long_description");
-    saver.addFieldName("memory_never_be_superfluous.client_my_chair_id1", "my_chair_id1");
-    saver.addFieldName("memory_never_be_superfluous.client_my_chair_id1", "my_chair_id2");
-    saver.addFieldName("memory_never_be_superfluous.client_his_chair_long_id", "his_chair_long_id");
-    saver.addFieldName("memory_never_be_superfluous.client_his_chair_long_id", "his_chair_str_id");
+    saver.addFieldName("m_client_surname", "surname");
+    saver.addFieldName("m_client_name", "name");
+    saver.addFieldName("m_client_patronymic", "patronymic");
+    saver.addFieldName("m_client_charm_id", "charm_id");
+    saver.addFieldName("m_client_long_description", "long_description");
+    saver.addFieldName("m_client_my_chair_id1", "my_chair_id1");
+    saver.addFieldName("m_client_my_chair_id1", "my_chair_id2");
+    saver.addFieldName("m_client_his_chair_long_id", "his_chair_long_id");
+    saver.addFieldName("m_client_his_chair_long_id", "his_chair_str_id");
   }
 
   private final surname surname = new surname() {
