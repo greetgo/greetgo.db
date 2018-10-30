@@ -120,6 +120,12 @@ public class JavaGenerator {
         generateThingUpsertImpl(info, baseInterfaceFullName);
       }
 
+      if (generateSaver) {
+        SaveInfo info = getSaveInfo(nf3Table);
+        String baseInterfaceFullName = generateThingSaveInterface(info);
+        System.out.println("baseInterfaceFullName = " + baseInterfaceFullName);
+      }
+
       if (updaterClassName != null) {
         UpdateInfo info = getUpdateInfo(nf3Table);
         String baseInterfaceFullName = generateThingUpdateWhereInterface(info);
@@ -139,6 +145,58 @@ public class JavaGenerator {
   public JavaGenerator setCleanOutDirsBeforeGeneration(boolean cleanOutDirsBeforeGeneration) {
     this.cleanOutDirsBeforeGeneration = cleanOutDirsBeforeGeneration;
     return this;
+  }
+
+  SaveInfo getSaveInfo(Nf3Table nf3Table) {
+
+    String subPackage = UtilsNf36.calcSubPackage(collector.sourceBasePackage, nf3Table.source().getPackage().getName());
+
+    subPackage = UtilsNf36.resolvePackage("save", subPackage);
+
+    String interfaceClassName = nf3Table.source().getSimpleName() + "Save";
+    String interfacePackageName = UtilsNf36.resolvePackage(interfaceBasePackage, subPackage);
+    File interfaceJavaFile = resolveJavaFile(interfaceOutDir, interfacePackageName, interfaceClassName);
+
+    String implClassName = interfaceClassName + "Impl";
+    String implPackageName = UtilsNf36.resolvePackage(implBasePackage, subPackage);
+    File implJavaFile = resolveJavaFile(implOutDir, implPackageName, implClassName);
+
+    return new SaveInfo() {
+      @Override
+      public File interfaceJavaFile() {
+        return interfaceJavaFile;
+      }
+
+      @Override
+      public String interfaceClassName() {
+        return interfaceClassName;
+      }
+
+      @Override
+      public String interfacePackageName() {
+        return interfacePackageName;
+      }
+
+      @Override
+      public File implJavaFile() {
+        return implJavaFile;
+      }
+
+      @Override
+      public String implPackageName() {
+        return implPackageName;
+      }
+
+      @Override
+      public String implClassName() {
+        return implClassName;
+      }
+
+      @Override
+      public String saveMethodName() {
+        return "save";
+      }
+    };
   }
 
   UpsertInfo getUpsertInfo(Nf3Table nf3Table) {
@@ -352,6 +410,18 @@ public class JavaGenerator {
         return commitMethodName;
       }
     };
+  }
+
+  private String generateThingSaveInterface(SaveInfo info) {
+    JavaFilePrinter p = new JavaFilePrinter();
+    p.packageName = info.interfacePackageName();
+    p.classHeader = "public interface " + info.interfaceClassName();
+
+    p.ofs(1).prn("void " + info.saveMethodName() + "();");
+
+    p.printToFile(info.interfaceJavaFile());
+
+    return resolveFullName(info.interfacePackageName(), info.interfaceClassName());
   }
 
   private String generateThingUpsertInterface(UpsertInfo info) {
@@ -748,6 +818,13 @@ public class JavaGenerator {
 
   public JavaGenerator setAbstracting(boolean abstracting) {
     this.abstracting = abstracting;
+    return this;
+  }
+
+  boolean generateSaver = false;
+
+  public JavaGenerator setGenerateSaver(boolean generateSaver) {
+    this.generateSaver = generateSaver;
     return this;
   }
 
