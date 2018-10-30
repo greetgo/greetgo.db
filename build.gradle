@@ -16,7 +16,6 @@ def vendorName = "greetgo!"
 allprojects {
   apply plugin: 'java'
   apply plugin: 'idea'
-  apply plugin: 'eclipse'
   apply plugin: 'maven'
   apply plugin: 'signing'
   //noinspection UnnecessaryQualifiedReference
@@ -24,13 +23,12 @@ allprojects {
   //noinspection UnnecessaryQualifiedReference
   apply plugin: kz.greetgo.gradle.plugins.ConfigureIdeaPlugin
 
-  version = '2.3.1'
+  version = '2.3.2'
 
   sourceCompatibility = 1.8
 
   group = "kz.greetgo.db"
 
-  eclipse.project.natures 'org.springsource.ide.eclipse.gradle.core.nature'
   compileJava.options.debugOptions.debugLevel = "source,lines,vars"
   compileTestJava.options.debugOptions.debugLevel = "source,lines,vars"
 
@@ -52,7 +50,7 @@ subprojects {
 
   dependencies {
     ext.configVersion = "1.0.2"
-    ext.greetgoUtilVersion = "0.0.25"
+    ext.greetgoUtilVersion = "0.0.27"
     ext.depinjectVersion = "2.0.3"
     ext.classScannerVersion = "0.0.1"
     ext.greetgoJavaCompilerVersion = "2.0.1"
@@ -61,16 +59,6 @@ subprojects {
 
     testCompile 'org.testng:testng:6.5.1'
     testCompile 'org.easytesting:fest-assert-core:2.0M10'
-  }
-
-  project.eclipse.classpath.file.whenMerged { cp ->
-    if (project.hasProperty("sourceCompatibility")) {
-      cp.entries.findAll { it.path.contains('JRE_CONTAINER') }.each {
-
-        it.path += "/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/" +
-          "JavaSE-$project.sourceCompatibility"
-      }
-    }
   }
 
   jar {
