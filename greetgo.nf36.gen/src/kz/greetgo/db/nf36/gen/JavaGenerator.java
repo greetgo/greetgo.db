@@ -586,12 +586,13 @@ public class JavaGenerator {
 
     for (Nf3Field f : fields) {
       String fieldType = p.i(f.javaType().getName());
+      String fieldTypeBoxed = p.i(f.javaTypeBoxing().getName());
       String fieldName = f.javaName();
 
       p.ofs(1).prn("private final " + fieldName + " " + fieldName + " = new " + fieldName + "() {");
 
       p.ofs(2).prn("@Override");
-      p.ofs(2).prn("public ClientSave set(" + fieldType + " value) {");
+      p.ofs(2).prn("public " + implInterfaceName + " set(" + fieldType + " value) {");
       p.ofs(3).prn(saverFieldName + ".presetValue(\"" + fieldName + "\", value);");
       p.ofs(3).prn("return " + info.implClassName() + ".this;");
       p.ofs(2).prn("}").prn();
@@ -599,13 +600,13 @@ public class JavaGenerator {
       String predicate = p.i(Predicate.class.getName());
 
       p.ofs(2).prn("@Override");
-      p.ofs(2).prn("public ClientSave skipIf(" + predicate + "<" + fieldType + "> " + " predicate) {");
+      p.ofs(2).prn("public " + implInterfaceName + " skipIf(" + predicate + "<" + fieldTypeBoxed + "> " + " predicate) {");
       p.ofs(3).prn(saverFieldName + ".addSkipIf(\"" + fieldName + "\", predicate);");
       p.ofs(3).prn("return " + info.implClassName() + ".this;");
       p.ofs(2).prn("}").prn();
 
       p.ofs(2).prn("@Override");
-      p.ofs(2).prn("public ClientSave alias(String alias) {");
+      p.ofs(2).prn("public " + implInterfaceName + " alias(String alias) {");
       p.ofs(3).prn(saverFieldName + ".addAlias(\"" + fieldName + "\", alias);");
       p.ofs(3).prn("return " + info.implClassName() + ".this;");
       p.ofs(2).prn("}").prn();
