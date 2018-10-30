@@ -20,6 +20,8 @@ public interface SaveInfo {
 
   String implClassName();
 
+  String implFullName();
+
   String saveMethodName();
 
   List<Nf3Field> fields();

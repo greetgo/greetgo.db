@@ -166,6 +166,8 @@ public class JavaGenerator {
     String implPackageName = UtilsNf36.resolvePackage(implBasePackage, subPackage);
     File implJavaFile = resolveJavaFile(implOutDir, implPackageName, implClassName);
 
+    String implFullName = resolveFullName(implPackageName, implClassName);
+
     String accessToEntityMethodName = firstToLow(nf3Table.source().getSimpleName());
 
     return new SaveInfo() {
@@ -202,6 +204,11 @@ public class JavaGenerator {
       @Override
       public String implClassName() {
         return implClassName;
+      }
+
+      @Override
+      public String implFullName() {
+        return implFullName;
       }
 
       @Override
@@ -913,10 +920,12 @@ public class JavaGenerator {
         + " implements " + p.i(upserterInterfaceClassName);
 
     printCreateUpserterMethod(p);
+    printCreateSaverMethod(p);
     printGetSequenceNextMethod(p);
 
     for (Nf3Table nf3Table : collector.collect()) {
       printUpsertImplMethod(p, nf3Table);
+      printSaveImplMethod(p, nf3Table);
       for (Nf3Field nf3Field : nf3Table.fields()) {
         if (nf3Field.sequence() != null) {
           printUpsertImplMethodSequence(p, nf3Field, nf3Table);
@@ -952,6 +961,14 @@ public class JavaGenerator {
     return this;
   }
 
+  String saverCreateMethod = "createSaver";
+
+  @SuppressWarnings("unused")
+  public JavaGenerator setSaverCreateMethod(String saverCreateMethod) {
+    this.saverCreateMethod = saverCreateMethod;
+    return this;
+  }
+
   String getSequenceNextMethod = "getSequenceNext";
 
   @SuppressWarnings("unused")
@@ -980,6 +997,28 @@ public class JavaGenerator {
   public JavaGenerator setGenerateSaver(boolean generateSaver) {
     this.generateSaver = generateSaver;
     return this;
+  }
+
+  private void printCreateSaverMethod(JavaFilePrinter p) {
+    if (!generateSaver) {
+      return;
+    }
+
+    String saverClassName = p.i(Nf36Saver.class.getName());
+
+    p.ofs(1).prn("protected " + (abstracting ? "abstract " : "")
+        + saverClassName + " " + saverCreateMethod + "()"
+        + (abstracting ? ";\n" : " {")
+    );
+
+    if (abstracting) {
+      return;
+    }
+
+    String notImplError = p.i(RuntimeException.class.getName());
+
+    p.ofs(2).prn("throw new " + notImplError + "(\"Not implemented\");");
+    p.ofs(1).prn("}").prn();
   }
 
   private void printCreateUpserterMethod(JavaFilePrinter p) {
@@ -1087,6 +1126,15 @@ public class JavaGenerator {
     UpdateInfo info = getUpdateInfo(nf3Table);
 
     p.ofs(1).pr(p.i(info.interfaceFullName())).pr(" ").pr(info.updateMethodName()).prn("();").prn();
+  }
+
+  private void printSaveImplMethod(JavaFilePrinter p, Nf3Table nf3Table) {
+    SaveInfo ui = getSaveInfo(nf3Table);
+
+    p.ofs(1).prn("@Override");
+    p.ofs(1).prn("public ").pr(p.i(ui.interfaceFullName())).pr(" ").pr(ui.accessToEntityMethodName()).prn("() {");
+    p.ofs(2).prn("return new " + p.i(ui.implFullName()) + "(" + saverCreateMethod + "());");
+    p.ofs(1).prn("}").prn();
   }
 
   private void printUpsertImplMethod(JavaFilePrinter p, Nf3Table nf3Table) {
