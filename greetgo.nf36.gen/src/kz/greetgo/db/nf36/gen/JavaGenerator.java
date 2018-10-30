@@ -1,5 +1,6 @@
 package kz.greetgo.db.nf36.gen;
 
+import kz.greetgo.db.nf36.core.Nf36Saver;
 import kz.greetgo.db.nf36.core.Nf36Updater;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.core.Nf3CommitMethodName;
@@ -13,8 +14,10 @@ import kz.greetgo.db.nf36.utils.UtilsNf36;
 
 import java.io.File;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static kz.greetgo.db.nf36.utils.UtilsNf36.firstToLow;
@@ -123,7 +126,7 @@ public class JavaGenerator {
       if (generateSaver) {
         SaveInfo info = getSaveInfo(nf3Table);
         String baseInterfaceFullName = generateThingSaveInterface(info);
-        System.out.println("baseInterfaceFullName = " + baseInterfaceFullName);
+        generateThingSaveImpl(info, baseInterfaceFullName);
       }
 
       if (updaterClassName != null) {
@@ -194,7 +197,23 @@ public class JavaGenerator {
 
       @Override
       public String saveMethodName() {
+        // FIXME: 30.10.18 extract from annotation
         return "save";
+      }
+
+      @Override
+      public List<Nf3Field> fields() {
+        return nf3Table.fields();
+      }
+
+      @Override
+      public String nf3TableName() {
+        return nf3Table.nf3TableName();
+      }
+
+      @Override
+      public String nf6TableName(Nf3Field f) {
+        return nf3Table.nf6prefix() + nf3Table.tableName() + collector.nf6TableSeparator + f.rootField().dbName();
       }
     };
   }
@@ -412,12 +431,45 @@ public class JavaGenerator {
     };
   }
 
+  private String saverFieldName = null;
+
   private String generateThingSaveInterface(SaveInfo info) {
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = info.interfacePackageName();
     p.classHeader = "public interface " + info.interfaceClassName();
 
-    p.ofs(1).prn("void " + info.saveMethodName() + "();");
+    List<Nf3Field> fields = info.fields().stream()
+        .filter(f -> !f.isId())
+        .collect(Collectors.toList());
+
+    String predicate = p.i(Predicate.class.getName());
+
+    Set<String> fieldNames = new HashSet<>();
+
+    for (Nf3Field f : fields) {
+      String fieldType = p.i(f.javaType().getName());
+      String fieldName = f.javaName();
+
+      p.ofs(1).prn("interface " + fieldName + " {");
+      p.ofs(2).prn(info.interfaceClassName() + " set(" + fieldType + " value);").prn();
+      p.ofs(2).prn(info.interfaceClassName() + " skipIf(" + predicate + "<" + fieldType + "> predicate);").prn();
+      p.ofs(2).prn(info.interfaceClassName() + " alias(String alias);");
+      p.ofs(1).prn("}").prn();
+
+      p.ofs(1).prn(fieldName + " " + fieldName + "();").prn();
+
+      fieldNames.add(fieldName);
+    }
+
+    for (int i = 1; ; i++) {
+      String name = "saver" + i;
+      if (!fieldNames.contains(name)) {
+        saverFieldName = name;
+        break;
+      }
+    }
+
+    p.ofs(1).prn("void " + info.saveMethodName() + "(Object objectWithData);");
 
     p.printToFile(info.interfaceJavaFile());
 
@@ -496,6 +548,60 @@ public class JavaGenerator {
     return resolveFullName(info.interfacePackageName(), info.interfaceClassName());
   }
 
+  private void generateThingSaveImpl(SaveInfo info, String baseInterfaceFullName) {
+    JavaFilePrinter p = new JavaFilePrinter();
+    p.packageName = info.implPackageName();
+    String implInterfaceName = p.i(baseInterfaceFullName);
+    p.classHeader = "public class " + info.implClassName() + " implements " + implInterfaceName;
+
+    printSaveImplConstructor(p, info);
+
+    List<Nf3Field> fields = info.fields().stream()
+        .filter(Nf3Field::isData)
+        .collect(Collectors.toList());
+
+    for (Nf3Field f : fields) {
+      String fieldType = p.i(f.javaType().getName());
+      String fieldName = f.javaName();
+
+      p.ofs(1).prn("private final " + fieldName + " " + fieldName + " = new " + fieldName + "() {");
+
+      p.ofs(2).prn("@Override");
+      p.ofs(2).prn("public ClientSave set(" + fieldType + " value) {");
+      p.ofs(3).prn(saverFieldName + ".presetValue(\"" + fieldName + "\", value);");
+      p.ofs(3).prn("return " + info.implClassName() + ".this;");
+      p.ofs(2).prn("}").prn();
+
+      String predicate = p.i(Predicate.class.getName());
+
+      p.ofs(2).prn("@Override");
+      p.ofs(2).prn("public ClientSave skipIf(" + predicate + "<" + fieldType + "> " + " predicate) {");
+      p.ofs(3).prn(saverFieldName + ".addSkipIf(\"" + fieldName + "\", predicate);");
+      p.ofs(3).prn("return " + info.implClassName() + ".this;");
+      p.ofs(2).prn("}").prn();
+
+      p.ofs(2).prn("@Override");
+      p.ofs(2).prn("public ClientSave alias(String alias) {");
+      p.ofs(3).prn(saverFieldName + ".addAlias(\"" + fieldName + "\", alias);");
+      p.ofs(3).prn("return " + info.implClassName() + ".this;");
+      p.ofs(2).prn("}").prn();
+
+      p.ofs(1).prn("};").prn();
+
+      p.ofs(1).prn("@Override");
+      p.ofs(1).prn("public " + fieldName + " " + fieldName + "() {");
+      p.ofs(2).prn("return " + fieldName + ";");
+      p.ofs(1).prn("}").prn();
+    }
+
+    p.ofs(1).prn("@Override");
+    p.ofs(1).prn("public void " + info.saveMethodName() + "(Object objectWithData) {");
+    p.ofs(2).prn(saverFieldName + ".save(objectWithData);");
+    p.ofs(1).prn("}");
+
+    p.printToFile(info.implJavaFile());
+  }
+
   private void generateThingUpsertImpl(UpsertInfo info, String baseInterfaceFullName) {
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = info.implPackageName();
@@ -506,7 +612,7 @@ public class JavaGenerator {
     printMoreMethodImpl(p, info, implInterfaceName);
 
     List<Nf3Field> fields = info.fields().stream()
-        .filter(f -> !f.isId())
+        .filter(Nf3Field::isData)
         .collect(Collectors.toList());
 
     for (Nf3Field f : fields) {
@@ -609,6 +715,39 @@ public class JavaGenerator {
   public JavaGenerator setUpserterField(String upserterField) {
     this.upserterField = upserterField;
     return this;
+  }
+
+  private void printSaveImplConstructor(JavaFilePrinter p, SaveInfo info) {
+    String saverClassName = p.i(Nf36Saver.class.getName());
+
+    p.ofs(1).prn("private final " + saverClassName + " " + saverFieldName + ";");
+    p.prn();
+
+    p.ofs(1).prn("public " + info.implClassName() + "(" + saverClassName + " saver) {");
+    p.ofs(2).prn("this." + saverFieldName + " = saver;");
+    p.ofs(2).prn("saver.setNf3TableName(\"" + info.nf3TableName() + "\");");
+    p.ofs(2).prn("saver.setTimeFieldName(\"" + collector.nf6timeField + "\");");
+
+    if (collector.nf3CreatedBy != null) {
+      p.ofs(2).prn("saver.setAuthorFieldNames("
+          + "\"" + collector.nf3CreatedBy.name + "\""
+          + ", \"" + collector.nf3ModifiedBy.name + "\""
+          + ", \"" + collector.nf6InsertedBy.name + "\""
+          + ");");
+    }
+
+    info.fields().stream()
+        .filter(Nf3Field::isId)
+        .sorted(Comparator.comparing(Nf3Field::idOrder))
+        .forEachOrdered(f -> p.ofs(2).prn("saver.addIdName(\"" + f.dbName() + "\");"));
+
+    info.fields().stream()
+        .filter(Nf3Field::isData)
+        .forEachOrdered(f ->
+            p.ofs(2).prn("saver.addFieldName(\"" + info.nf6TableName(f) + "\", \"" + f.dbName() + "\");"));
+
+    p.ofs(1).prn("}").prn();
+
   }
 
   private void printUpsertImplConstructor(JavaFilePrinter p, UpsertInfo info) {
@@ -852,7 +991,9 @@ public class JavaGenerator {
         + (abstracting ? ";\n" : " {")
     );
 
-    if (abstracting) { return; }
+    if (abstracting) {
+      return;
+    }
 
     String notImplError = p.i(RuntimeException.class.getName());
 
@@ -868,7 +1009,9 @@ public class JavaGenerator {
         + (abstracting ? ";\n" : " {")
     );
 
-    if (abstracting) { return; }
+    if (abstracting) {
+      return;
+    }
 
     String notImplError = p.i(RuntimeException.class.getName());
 

@@ -8,6 +8,10 @@ public interface Nf3Field {
 
   boolean isId();
 
+  default boolean isData() {
+    return !isId();
+  }
+
   int idOrder();
 
   String javaName();
