@@ -28,11 +28,11 @@ public class JdbcSequenceNextAbstractAdapterPostgresTest extends ParentDbTests {
     exec("create sequence " + sequenceName + " start with " + startWith);
 
     SequenceNext sequenceNext = newNf36Builder()
-      .sequenceNext()
-      .database(dbTypeSource.get().currentDbType())
-      .setJdbc(jdbc.get())
-      .setLogAcceptor(logAcceptor.get())
-      .build();
+        .sequenceNext()
+        .database(dbTypeSource.get().currentDbType())
+        .setJdbc(jdbc.get())
+        .setLogAcceptor(logAcceptor.get())
+        .build();
 
     {
       //
@@ -61,11 +61,11 @@ public class JdbcSequenceNextAbstractAdapterPostgresTest extends ParentDbTests {
     exec("create sequence " + sequenceName + " start with " + startWith);
 
     SequenceNext sequenceNext = newNf36Builder()
-      .sequenceNext()
-      .database(dbTypeSource.get().currentDbType())
-      .setJdbc(jdbc.get())
-      .setLogAcceptor(logAcceptor.get())
-      .build();
+        .sequenceNext()
+        .database(dbTypeSource.get().currentDbType())
+        .setJdbc(jdbc.get())
+        .setLogAcceptor(logAcceptor.get())
+        .build();
 
     {
       //

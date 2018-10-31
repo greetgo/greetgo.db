@@ -19,15 +19,15 @@ public class JdbcOracle implements Jdbc {
       Class.forName("oracle.jdbc.driver.OracleDriver");
 
       try (Connection connection = DriverManager.getConnection(
-        DbParamsOracle.url, DbParamsOracle.username, DbParamsOracle.password
+          DbParamsOracle.url, DbParamsOracle.username, DbParamsOracle.password
       )) {
         return connectionCallback.doInConnection(connection);
       }
 
+    } catch (SQLException e) {
+      throw new SqlError(e);
     } catch (Exception e) {
-      if (e instanceof SQLException) throw new SqlError((SQLException) e);
       throw new RuntimeException(e);
     }
-
   }
 }

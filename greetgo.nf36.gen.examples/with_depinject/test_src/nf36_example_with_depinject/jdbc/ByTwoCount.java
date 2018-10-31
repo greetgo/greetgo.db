@@ -26,7 +26,7 @@ public class ByTwoCount implements ConnectionCallback<Integer> {
   public Integer doInConnection(Connection con) throws Exception {
 
     try (PreparedStatement ps = con.prepareStatement(
-      "select count(1) from " + tableName + " where " + idName1 + " = ? and " + idName2 + " = ?")) {
+        "select count(1) from " + tableName + " where " + idName1 + " = ? and " + idName2 + " = ?")) {
 
       ps.setObject(1, idValue1);
       ps.setObject(2, idValue2);

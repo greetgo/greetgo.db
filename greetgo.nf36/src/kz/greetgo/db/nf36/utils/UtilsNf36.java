@@ -15,19 +15,27 @@ import java.util.stream.Stream;
 
 public class UtilsNf36 {
   public static String calcSubPackage(String basePackageName, String packageName) {
-    if (!packageName.startsWith(basePackageName)) throw new IllegalPackage(basePackageName, packageName);
+    if (!packageName.startsWith(basePackageName)) {
+      throw new IllegalPackage(basePackageName, packageName);
+    }
 
     String sub = packageName.substring(basePackageName.length());
 
-    if (sub.length() == 0) return null;
+    if (sub.length() == 0) {
+      return null;
+    }
 
-    if (sub.startsWith(".")) return sub.substring(1);
+    if (sub.startsWith(".")) {
+      return sub.substring(1);
+    }
 
     throw new IllegalPackage(basePackageName, packageName);
   }
 
   public static String resolvePackage(String basePackage, String subPackage) {
-    if (subPackage == null) return basePackage;
+    if (subPackage == null) {
+      return basePackage;
+    }
     return basePackage + "." + subPackage;
   }
 
@@ -37,7 +45,9 @@ public class UtilsNf36 {
 
   public static String extractSimpleName(String fullName) {
     int index = fullName.lastIndexOf('.');
-    if (index < 0) return fullName;
+    if (index < 0) {
+      return fullName;
+    }
     return fullName.substring(index + 1);
   }
 
@@ -49,16 +59,22 @@ public class UtilsNf36 {
 
     if (file.isDirectory()) {
       File[] files = file.listFiles();
-      if (files != null) for (File subFile : files) {
-        removeFile(subFile, true);
+      if (files != null) {
+        for (File subFile : files) {
+          removeFile(subFile, true);
+        }
       }
     }
 
-    if (killMe) file.delete();
+    if (killMe) {
+      file.delete();
+    }
   }
 
   public static String resolveFullName(String packageName, String className) {
-    if (packageName == null) return className;
+    if (packageName == null) {
+      return className;
+    }
     return packageName + "." + className;
   }
 
@@ -76,7 +92,9 @@ public class UtilsNf36 {
         dest[j++] = lowC;
         wasLow = true;
       } else {
-        if (wasLow) dest[j++] = '_';
+        if (wasLow) {
+          dest[j++] = '_';
+        }
         dest[j++] = lowC;
         wasLow = false;
       }
@@ -85,7 +103,7 @@ public class UtilsNf36 {
   }
 
   public static String packageDir(String srcDir, String packageName) {
-    if (packageName == null) return srcDir;
+    if (packageName == null) { return srcDir; }
     return srcDir + "/" + packageName.replace('.', '/');
   }
 
@@ -97,14 +115,22 @@ public class UtilsNf36 {
   }
 
   public static String firstToLow(String str) {
-    if (str == null) return null;
-    if (str.length() < 2) return str.toLowerCase();
+    if (str == null) {
+      return null;
+    }
+    if (str.length() < 2) {
+      return str.toLowerCase();
+    }
     return str.substring(0, 1).toLowerCase() + str.substring(1);
   }
 
   public static String firstToUp(String str) {
-    if (str == null) return null;
-    if (str.length() < 2) return str.toUpperCase();
+    if (str == null) {
+      return null;
+    }
+    if (str.length() < 2) {
+      return str.toUpperCase();
+    }
     return str.substring(0, 1).toUpperCase() + str.substring(1);
   }
 
@@ -113,12 +139,18 @@ public class UtilsNf36 {
   }
 
   public static String selectName(String wantName, Set<String> anotherNames) {
-    if (wantName == null) wantName = "a";
-    if (!anotherNames.contains(wantName)) return wantName;
+    if (wantName == null) {
+      wantName = "a";
+    }
+    if (!anotherNames.contains(wantName)) {
+      return wantName;
+    }
     int i = 1;
     while (true) {
       String ret = wantName + i++;
-      if (!anotherNames.contains(ret)) return ret;
+      if (!anotherNames.contains(ret)) {
+        return ret;
+      }
     }
   }
 
@@ -131,7 +163,9 @@ public class UtilsNf36 {
         StringBuilder sb = new StringBuilder();
         char buffer[] = new char[1024 * 4];
         int count = characterStream.read(buffer);
-        if (count < 0) return sb.toString();
+        if (count < 0) {
+          return sb.toString();
+        }
         sb.append(buffer, 0, count);
       }
 
@@ -146,8 +180,11 @@ public class UtilsNf36 {
     Stream<T> s = null;
 
     for (Collection<T> col : collections) {
-      if (s == null) s = col.stream();
-      else s = Stream.concat(s, col.stream());
+      if (s == null) {
+        s = col.stream();
+      } else {
+        s = Stream.concat(s, col.stream());
+      }
     }
 
     return s == null ? Stream.empty() : s;

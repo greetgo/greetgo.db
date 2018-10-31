@@ -46,11 +46,17 @@ public class UpdaterBuilder {
   }
 
   public Nf36Updater build() {
-    if (adapter == null) throw new RuntimeException("Please define database. Call method 'database'");
-    if (jdbc == null) throw new RuntimeException("Please set jdbc");
+    if (adapter == null) {
+      throw new RuntimeException("Please define database. Call method 'database'");
+    }
+    if (jdbc == null) {
+      throw new RuntimeException("Please set jdbc");
+    }
     adapter.jdbc = jdbc;
     adapter.logAcceptor = logAcceptor;
-    if (hasAuthor) adapter.setAuthor(author);
+    if (hasAuthor) {
+      adapter.setAuthor(author);
+    }
     return adapter;
   }
 }

@@ -16,20 +16,24 @@ public interface Nf3Table {
   String nf6prefix();
 
   default String getDbNameByJavaName(String javaName) {
-    if (javaName == null) throw new IllegalArgumentException("javaName == null");
+    if (javaName == null) {
+      throw new IllegalArgumentException("javaName == null");
+    }
     return fields().stream()
-      .filter(f -> javaName.equals(f.javaName()))
-      .map(Nf3Field::dbName)
-      .findAny()
-      .orElseThrow(() -> new RuntimeException("No field " + javaName + " in " + source().getSimpleName()));
+        .filter(f -> javaName.equals(f.javaName()))
+        .map(Nf3Field::dbName)
+        .findAny()
+        .orElseThrow(() -> new RuntimeException("No field " + javaName + " in " + source().getSimpleName()));
   }
 
   default Nf3Field getByJavaName(String javaName) {
-    if (javaName == null) throw new IllegalArgumentException("javaName == null");
+    if (javaName == null) {
+      throw new IllegalArgumentException("javaName == null");
+    }
     return fields().stream()
-      .filter(f -> javaName.equals(f.javaName()))
-      .findAny()
-      .orElseThrow(() -> new RuntimeException("No field " + javaName + " in " + source().getSimpleName()));
+        .filter(f -> javaName.equals(f.javaName()))
+        .findAny()
+        .orElseThrow(() -> new RuntimeException("No field " + javaName + " in " + source().getSimpleName()));
   }
 
   default String nf3TableName() {
@@ -38,10 +42,10 @@ public interface Nf3Table {
 
   default String commaSeparatedIdDbNames() {
     return fields().stream()
-      .filter(Nf3Field::isId)
-      .sorted(Comparator.comparing(Nf3Field::idOrder))
-      .map(Nf3Field::dbName)
-      .collect(Collectors.joining(", "));
+        .filter(Nf3Field::isId)
+        .sorted(Comparator.comparing(Nf3Field::idOrder))
+        .map(Nf3Field::dbName)
+        .collect(Collectors.joining(", "));
   }
 
   String commentQuotedForSql();

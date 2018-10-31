@@ -43,14 +43,18 @@ public class ModelCollector {
 
   @SuppressWarnings("unused")
   public ModelCollector setClassScanner(ClassScanner classScanner) {
-    if (classScanner == null) throw new IllegalArgumentException("classScanner == null");
+    if (classScanner == null) {
+      throw new IllegalArgumentException("classScanner == null");
+    }
     this.classScanner = classScanner;
     return this;
   }
 
   public String sequencePrefix() {
-    if (sequencePrefix == null) throw new RuntimeException("sequencePrefix is null, please call method" +
-      " setSequencePrefix of ModelCollector to define it");
+    if (sequencePrefix == null) {
+      throw new RuntimeException("sequencePrefix is null, please call method" +
+          " setSequencePrefix of ModelCollector to define it");
+    }
     return sequencePrefix;
   }
 
@@ -60,7 +64,9 @@ public class ModelCollector {
   }
 
   public String commitMethodName() {
-    if (commitMethodName == null) throw new NullPointerException("commitMethodName == null");
+    if (commitMethodName == null) {
+      throw new NullPointerException("commitMethodName == null");
+    }
     return commitMethodName;
   }
 
@@ -70,7 +76,9 @@ public class ModelCollector {
   }
 
   public String moreMethodName() {
-    if (moreMethodName == null) throw new NullPointerException("moreMethodName == null");
+    if (moreMethodName == null) {
+      throw new NullPointerException("moreMethodName == null");
+    }
     return moreMethodName;
   }
 
@@ -141,7 +149,9 @@ public class ModelCollector {
 
 
   public List<Nf3Table> collect() {
-    if (collectedList != null) return Collections.unmodifiableList(collectedList);
+    if (collectedList != null) {
+      return Collections.unmodifiableList(collectedList);
+    }
 
     collectedList = new ArrayList<>();
 
@@ -163,21 +173,21 @@ public class ModelCollector {
   private void fillReferencesFor(Nf3TableImpl nf3Table) {
 
     Set<String> allReferences = nf3Table.fields().stream()
-      .filter(Nf3Field::isReference)
-      .map(Nf3Field::javaName)
-      .collect(Collectors.toSet());
+        .filter(Nf3Field::isReference)
+        .map(Nf3Field::javaName)
+        .collect(Collectors.toSet());
 
     Set<String> allNextParts = nf3Table.fields().stream()
-      .filter(Nf3Field::hasNextPart)
-      .map(Nf3Field::nextPart)
-      .collect(Collectors.toSet());
+        .filter(Nf3Field::hasNextPart)
+        .map(Nf3Field::nextPart)
+        .collect(Collectors.toSet());
 
     Set<String> roots = new HashSet<>(allReferences);
     roots.removeAll(allNextParts);
 
     Map<String, String> nextPartMap = nf3Table.fields().stream()
-      .filter(Nf3Field::hasNextPart).
-        collect(Collectors.toMap(Nf3Field::javaName, Nf3Field::nextPart));
+        .filter(Nf3Field::hasNextPart).
+            collect(Collectors.toMap(Nf3Field::javaName, Nf3Field::nextPart));
 
     for (String root : roots) {
 
@@ -187,8 +197,8 @@ public class ModelCollector {
 
       if (rootField.referenceTo == null) {
         throw new RuntimeException("Broken reference: class " + rootField.referenceToClass().getSimpleName()
-          + " is not registered. Error in " + nf3Table.source().getSimpleName()
-          + ". You need register " + rootField.referenceToClass());
+            + " is not registered. Error in " + nf3Table.source().getSimpleName()
+            + ". You need register " + rootField.referenceToClass());
       }
 
       List<String> referenceJavaNames = new ArrayList<>();
@@ -199,12 +209,12 @@ public class ModelCollector {
           Nf3Field field = nf3Table.getByJavaName(root);
           if (!field.isReference()) {
             throw new RuntimeException("Field " + nf3Table.source().getSimpleName() + "." + field.javaName()
-              + " is not reference part, but there is a link to it"
+                + " is not reference part, but there is a link to it"
             );
           }
           if (rootField.referenceToClass() != field.referenceToClass()) {
             throw new RuntimeException("Field " + nf3Table.source().getSimpleName() + "." + field.javaName()
-              + " must has reference to " + rootField.referenceToClass().getSimpleName()
+                + " must has reference to " + rootField.referenceToClass().getSimpleName()
             );
           }
 
@@ -214,8 +224,8 @@ public class ModelCollector {
       }
       rootField.isRootReference = true;
       rootField.referenceFields = referenceJavaNames.stream()
-        .map(nf3Table::getByJavaName)
-        .collect(Collectors.toList());
+          .map(nf3Table::getByJavaName)
+          .collect(Collectors.toList());
       for (Nf3Field referenceField : rootField.referenceFields) {
         ((Nf3FieldImpl) referenceField).rootField = rootField;
       }
@@ -258,7 +268,7 @@ public class ModelCollector {
 
     if (nf3CreatedBy == null || nf3ModifiedBy == null || nf6InsertedBy == null) {
       throw new IllegalArgumentException("nf3CreatedBy, nf3ModifiedBy, nf6InsertedBy:" +
-        " must be all is null, or all is not null");
+          " must be all is null, or all is not null");
     }
 
     this.nf3CreatedBy = new AuthorField(nf3CreatedBy, authorType, typeLength);
@@ -278,7 +288,9 @@ public class ModelCollector {
       }
     }
 
-    if (andSetSourceBasePackage) setSourceBasePackage(classForPackage.getPackage().getName());
+    if (andSetSourceBasePackage) {
+      setSourceBasePackage(classForPackage.getPackage().getName());
+    }
 
     return this;
   }

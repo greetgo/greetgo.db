@@ -94,38 +94,38 @@ public class DdlGenerator {
 
   private void generateNf3TablesTo(PrintStream out) {
     nf3TableMap.values().stream()
-      .sorted(Comparator.comparing(Nf3Table::tableName))
-      .forEachOrdered(nf3Table -> printCreateNf3TableFor(nf3Table, out));
+        .sorted(Comparator.comparing(Nf3Table::tableName))
+        .forEachOrdered(nf3Table -> printCreateNf3TableFor(nf3Table, out));
   }
 
   private void generateSequencesTo(PrintStream out) {
     nf3TableMap.values().stream()
-      .flatMap(t -> t.fields().stream())
-      .map(Nf3Field::sequence)
-      .filter(Objects::nonNull)
-      .sorted(Comparator.comparing(s -> s.name))
-      .forEachOrdered(s -> out.println(sqlDialect.createSequence(s) + commandSeparator));
+        .flatMap(t -> t.fields().stream())
+        .map(Nf3Field::sequence)
+        .filter(Objects::nonNull)
+        .sorted(Comparator.comparing(s -> s.name))
+        .forEachOrdered(s -> out.println(sqlDialect.createSequence(s) + commandSeparator));
   }
 
   private void generateCommentsTo(PrintStream out) {
     nf3TableMap.values().stream()
-      .sorted(Comparator.comparing(Nf3Table::tableName))
-      .forEachOrdered(nf3Table -> printCommentsFor(nf3Table, out));
+        .sorted(Comparator.comparing(Nf3Table::tableName))
+        .forEachOrdered(nf3Table -> printCommentsFor(nf3Table, out));
   }
 
   private void generateNf6TablesTo(PrintStream out) {
     nf3TableMap.values().stream()
-      .sorted(Comparator.comparing(Nf3Table::tableName))
-      .forEachOrdered(nf3Table -> printCreateNf6TableFor(nf3Table, out));
+        .sorted(Comparator.comparing(Nf3Table::tableName))
+        .forEachOrdered(nf3Table -> printCreateNf6TableFor(nf3Table, out));
   }
 
   private void printCommentsFor(Nf3Table nf3Table, PrintStream out) {
     out.println("comment on table " + nf3Table.nf3TableName()
-      + " is '" + nf3Table.commentQuotedForSql() + "'" + commandSeparator);
+        + " is '" + nf3Table.commentQuotedForSql() + "'" + commandSeparator);
 
     for (Nf3Field field : nf3Table.fields()) {
       out.println("comment on column " + nf3Table.nf3TableName() + "." + field.dbName()
-        + " is '" + field.commentQuotedForSql() + "'" + commandSeparator);
+          + " is '" + field.commentQuotedForSql() + "'" + commandSeparator);
     }
 
   }
@@ -154,18 +154,18 @@ public class DdlGenerator {
     }
 
     checkIdOrdering(nf3Table.source(), nf3Table.fields().stream()
-      .filter(Nf3Field::isId)
-      .mapToInt(Nf3Field::idOrder)
-      .sorted()
-      .toArray());
+        .filter(Nf3Field::isId)
+        .mapToInt(Nf3Field::idOrder)
+        .sorted()
+        .toArray());
 
     out.println("  primary key(" + (
 
-      nf3Table.fields().stream()
-        .filter(Nf3Field::isId)
-        .sorted(Comparator.comparing(Nf3Field::idOrder))
-        .map(Nf3Field::dbName)
-        .collect(Collectors.joining(", "))
+        nf3Table.fields().stream()
+            .filter(Nf3Field::isId)
+            .sorted(Comparator.comparing(Nf3Field::idOrder))
+            .map(Nf3Field::dbName)
+            .collect(Collectors.joining(", "))
 
     ) + ")");
 
@@ -174,12 +174,12 @@ public class DdlGenerator {
 
   private void printCreateNf6TableFor(Nf3Table nf3Table, PrintStream out) {
     nf3Table.fields().stream()
-      .filter(f -> !f.isId() && !f.isReference())
-      .forEachOrdered(field -> printCreateNf6Table(nf3Table, field, out));
+        .filter(f -> !f.isId() && !f.isReference())
+        .forEachOrdered(field -> printCreateNf6Table(nf3Table, field, out));
 
     nf3Table.fields().stream()
-      .filter(f -> !f.isId() && f.isRootReference())
-      .forEachOrdered(field -> printCreateNf6Table(nf3Table, field, out));
+        .filter(f -> !f.isId() && f.isRootReference())
+        .forEachOrdered(field -> printCreateNf6Table(nf3Table, field, out));
   }
 
   private void printCreateNf6Table(Nf3Table nf3Table, Nf3Field field, PrintStream out) {
@@ -189,9 +189,9 @@ public class DdlGenerator {
     out.println("create table " + nf6tableName + " (");
 
     nf3Table.fields().stream()
-      .filter(Nf3Field::isId)
-      .sorted(Comparator.comparing(Nf3Field::idOrder))
-      .forEachOrdered(f -> printCreateField(f, out));
+        .filter(Nf3Field::isId)
+        .sorted(Comparator.comparing(Nf3Field::idOrder))
+        .forEachOrdered(f -> printCreateField(f, out));
 
     out.println("  " + sqlDialect.fieldTimestampWithDefaultNow(collector.nf6timeField) + ",");
 
@@ -215,7 +215,7 @@ public class DdlGenerator {
 
   private void checkIdOrdering(Class<?> source, int[] idArray) {
     for (int i = 1; i <= idArray.length; i++) {
-      if (i != idArray[i - 1]) throw new RuntimeException("Incorrect id ordering in " + source);
+      if (i != idArray[i - 1]) { throw new RuntimeException("Incorrect id ordering in " + source); }
     }
   }
 
@@ -233,26 +233,26 @@ public class DdlGenerator {
       sqlDialect.checkObjectName(field.dbName(), ObjectNameType.TABLE_FIELD_NAME);
 
       String fieldDefinition = sqlDialect.createFieldDefinition(
-        field.dbType(), field.dbName(), field.source(), field.definer());
+          field.dbType(), field.dbName(), field.source(), field.definer());
 
       out.println("  " + fieldDefinition + ",");
 
     } catch (Exception e) {
-      if (e instanceof RuntimeException) throw (RuntimeException) e;
+      if (e instanceof RuntimeException) { throw (RuntimeException) e; }
       throw new RuntimeException(e);
     }
   }
 
   private void generateNf3ReferencesTo(PrintStream out) {
     nf3TableMap.values().stream()
-      .sorted(Comparator.comparing(Nf3Table::tableName))
-      .forEachOrdered(nf3Table -> printNf3ReferenceFor(nf3Table, out));
+        .sorted(Comparator.comparing(Nf3Table::tableName))
+        .forEachOrdered(nf3Table -> printNf3ReferenceFor(nf3Table, out));
   }
 
   private void generateNf6IdReferencesTo(PrintStream out) {
     nf3TableMap.values().stream()
-      .sorted(Comparator.comparing(Nf3Table::tableName))
-      .forEachOrdered(nf3Table -> printNf6IdReferenceFor(nf3Table, out));
+        .sorted(Comparator.comparing(Nf3Table::tableName))
+        .forEachOrdered(nf3Table -> printNf6IdReferenceFor(nf3Table, out));
   }
 
 
@@ -260,15 +260,15 @@ public class DdlGenerator {
 
     nf3Table.fields().stream().filter(Nf3Field::isRootReference).forEachOrdered(root ->
 
-      out.println("alter table " + nf3Table.nf3TableName() + " add foreign key (" + (
+        out.println("alter table " + nf3Table.nf3TableName() + " add foreign key (" + (
 
-        root.referenceDbNames().stream().collect(Collectors.joining(", "))
+            String.join(", ", root.referenceDbNames())
 
-      ) + ") references " + root.referenceTo().nf3TableName() + " (" + (
+        ) + ") references " + root.referenceTo().nf3TableName() + " (" + (
 
-        root.referenceTo().commaSeparatedIdDbNames()
+            root.referenceTo().commaSeparatedIdDbNames()
 
-      ) + ")" + commandSeparator)
+        ) + ")" + commandSeparator)
 
     );
 
@@ -276,15 +276,15 @@ public class DdlGenerator {
 
   private void printNf6IdReferenceFor(Nf3Table nf3Table, PrintStream out) {
     nf3Table.fields().stream()
-      .filter(f -> !f.isId() && (!f.isReference() || f.isRootReference()))
-      .forEachOrdered(field ->
+        .filter(f -> !f.isId() && (!f.isReference() || f.isRootReference()))
+        .forEachOrdered(field ->
 
-        out.println("alter table " + collector.getNf6TableName(nf3Table, field) + " add foreign key"
-          + " (" + nf3Table.commaSeparatedIdDbNames() + ") references " + nf3Table.nf3TableName()
-          + " (" + nf3Table.commaSeparatedIdDbNames() + ")" + commandSeparator
-        )
+            out.println("alter table " + collector.getNf6TableName(nf3Table, field) + " add foreign key"
+                + " (" + nf3Table.commaSeparatedIdDbNames() + ") references " + nf3Table.nf3TableName()
+                + " (" + nf3Table.commaSeparatedIdDbNames() + ")" + commandSeparator
+            )
 
-      );
+        );
   }
 
 

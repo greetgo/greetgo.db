@@ -33,13 +33,13 @@ class JdbcNf36UpdaterAdapterPostgres extends JdbcNf36UpdaterAbstractAdapter {
 
     String sql = "update " + nf3TableName + " set " + (
 
-      setFieldList.stream().map(sf -> sf.fieldName + " = ?").collect(Collectors.joining(", "))
+        setFieldList.stream().map(sf -> sf.fieldName + " = ?").collect(Collectors.joining(", "))
 
     ) + toNow + auth + " where " + (
 
-      whereList.stream().map(w -> w.fieldName + " = ?").collect(Collectors.joining(" and "))
+        whereList.stream().map(w -> w.fieldName + " = ?").collect(Collectors.joining(" and "))
 
-    ) + " returning " + idFieldNames.stream().collect(joining(", "));
+    ) + " returning " + String.join(", ", idFieldNames);
 
     long startedAt = System.nanoTime();
 
@@ -79,5 +79,4 @@ class JdbcNf36UpdaterAdapterPostgres extends JdbcNf36UpdaterAbstractAdapter {
       throw e;
     }
   }
-
 }

@@ -1,7 +1,5 @@
 package nf36_example_with_depinject.tests;
 
-import kz.greetgo.db.ConnectionCallback;
-import kz.greetgo.db.Jdbc;
 import kz.greetgo.db.nf36.core.Nf36Updater;
 import kz.greetgo.db.nf36.core.SqlLogAcceptor;
 import kz.greetgo.depinject.core.BeanGetter;
@@ -18,7 +16,6 @@ import nf36_example_with_depinject.util.ParentDbTests;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.InvocationTargetException;
-import java.sql.PreparedStatement;
 import java.util.Date;
 
 import static kz.greetgo.db.nf36.Nf36Builder.newNf36Builder;
@@ -38,42 +35,44 @@ public class JdbcNf36UpdaterAdapterPostgresTests extends ParentDbTests {
       //noinspection StatementWithEmptyBody
       if (e.type == SqlError.Type.DROP_TABLE) {
         //ignore
-      } else throw e;
+      } else {
+        throw e;
+      }
     }
   }
 
   protected void createTableTmp1() {
     exec("create table tmp1 (" +
-      "  id1   varchar(32)," +
-      "  id2   varchar(32)," +
-      "  name1 varchar(100)," +
-      "  name2 varchar(100)," +
-      "  f1    varchar(100) not null default 'def value'," +
-      "  f2    varchar(100) not null default 'def value'," +
-      "  primary key(id1, id2)" +
-      ")");
+        "  id1   varchar(32)," +
+        "  id2   varchar(32)," +
+        "  name1 varchar(100)," +
+        "  name2 varchar(100)," +
+        "  f1    varchar(100) not null default 'def value'," +
+        "  f2    varchar(100) not null default 'def value'," +
+        "  primary key(id1, id2)" +
+        ")");
   }
 
   protected void createTableTmp1f1() {
     exec("create table tmp1_f1 (" +
-      "  id1   varchar(32)," +
-      "  id2   varchar(32)," +
-      "  ts    timestamp not null default clock_timestamp()," +
-      "  f1    varchar(100) not null default 'def value'," +
-      "  foreign key (id1, id2) references tmp1(id1, id2)," +
-      "  primary key(id1, id2, ts)" +
-      ")");
+        "  id1   varchar(32)," +
+        "  id2   varchar(32)," +
+        "  ts    timestamp not null default clock_timestamp()," +
+        "  f1    varchar(100) not null default 'def value'," +
+        "  foreign key (id1, id2) references tmp1(id1, id2)," +
+        "  primary key(id1, id2, ts)" +
+        ")");
   }
 
   protected void createTableTmp1f2() {
     exec("create table tmp1_f2 (" +
-      "  id1   varchar(32)," +
-      "  id2   varchar(32)," +
-      "  ts    timestamp not null default clock_timestamp()," +
-      "  f2    varchar(100)," +
-      "  foreign key (id1, id2) references tmp1(id1, id2)," +
-      "  primary key(id1, id2, ts)" +
-      ")");
+        "  id1   varchar(32)," +
+        "  id2   varchar(32)," +
+        "  ts    timestamp not null default clock_timestamp()," +
+        "  f2    varchar(100)," +
+        "  foreign key (id1, id2) references tmp1(id1, id2)," +
+        "  primary key(id1, id2, ts)" +
+        ")");
   }
 
   @Test
@@ -95,8 +94,8 @@ public class JdbcNf36UpdaterAdapterPostgresTests extends ParentDbTests {
     exec("insert into tmp1 (id1, id2, name1, name2) values ('102','102','left','left')");
 
     Nf36Updater whereUpdater = createUpdater()
-      //.setAuthor("Сталина на вас нет")
-      ;
+        //.setAuthor("Сталина на вас нет")
+        ;
 
     whereUpdater.setNf3TableName("tmp1");
     whereUpdater.setIdFieldNames("id1", "id2");
@@ -134,17 +133,17 @@ public class JdbcNf36UpdaterAdapterPostgresTests extends ParentDbTests {
     {
       String actualValue = jdbc.get().execute(new ByTwo<>("id1", id1, "id2", id2, "tmp1", field));
       assertThat(actualValue)
-        .describedAs("tmp1(.id1 = " + id1 + ", .id2 = " + id1 + ")." + field
-          + " == '" + actualValue + "', but expected '" + expectedValue + "'")
-        .isEqualTo(expectedValue);
+          .describedAs("tmp1(.id1 = " + id1 + ", .id2 = " + id1 + ")." + field
+              + " == '" + actualValue + "', but expected '" + expectedValue + "'")
+          .isEqualTo(expectedValue);
     }
 
     if (!"def value".equals(expectedValue)) {
       String actualValue = jdbc.get().execute(new ByTwo<>("id1", id1, "id2", id2, "tmp1_" + field, field));
       assertThat(actualValue)
-        .describedAs("tmp1_" + field + "(.id1 = " + id1 + ", .id2 = " + id1 + ")." + field
-          + " == '" + actualValue + "', but expected '" + expectedValue + "'")
-        .isEqualTo(expectedValue);
+          .describedAs("tmp1_" + field + "(.id1 = " + id1 + ", .id2 = " + id1 + ")." + field
+              + " == '" + actualValue + "', but expected '" + expectedValue + "'")
+          .isEqualTo(expectedValue);
     }
 
     return this;
@@ -168,51 +167,51 @@ public class JdbcNf36UpdaterAdapterPostgresTests extends ParentDbTests {
 
   private Nf36Updater createUpdater() {
     return newNf36Builder()
-      .updater()
-      .database(dbTypeSource.get().currentDbType())
-      .setJdbc(jdbc.get())
-      .setLogAcceptor(logAcceptor.get())
-      .build();
+        .updater()
+        .database(dbTypeSource.get().currentDbType())
+        .setJdbc(jdbc.get())
+        .setLogAcceptor(logAcceptor.get())
+        .build();
   }
 
   protected void createTableAdam() {
     exec("create table adam (" +
-      "  id varchar(32)," +
-      "  surname varchar(300)," +
-      "  name varchar(300)," +
-      "  patronymic varchar(300)," +
-      "  primary key(id)" +
-      ")");
+        "  id varchar(32)," +
+        "  surname varchar(300)," +
+        "  name varchar(300)," +
+        "  patronymic varchar(300)," +
+        "  primary key(id)" +
+        ")");
   }
 
   protected void createTableAdamSurname() {
     exec("create table adam_surname (" +
-      "  id varchar(32)," +
-      "  ts timestamp default clock_timestamp()," +
-      "  surname varchar(300)," +
-      "  foreign key (id) references adam(id)," +
-      "  primary key(id, ts)" +
-      ")");
+        "  id varchar(32)," +
+        "  ts timestamp default clock_timestamp()," +
+        "  surname varchar(300)," +
+        "  foreign key (id) references adam(id)," +
+        "  primary key(id, ts)" +
+        ")");
   }
 
   protected void createTableAdamName() {
     exec("create table adam_name (" +
-      "  id varchar(32)," +
-      "  ts timestamp default clock_timestamp()," +
-      "  name varchar(300)," +
-      "  foreign key (id) references adam(id)," +
-      "  primary key(id, ts)" +
-      ")");
+        "  id varchar(32)," +
+        "  ts timestamp default clock_timestamp()," +
+        "  name varchar(300)," +
+        "  foreign key (id) references adam(id)," +
+        "  primary key(id, ts)" +
+        ")");
   }
 
   protected void createTableAdamPatronymic() {
     exec("create table adam_Patronymic (" +
-      "  id varchar(32)," +
-      "  ts timestamp default clock_timestamp()," +
-      "  Patronymic varchar(300)," +
-      "  foreign key (id) references adam(id)," +
-      "  primary key(id, ts)" +
-      ")");
+        "  id varchar(32)," +
+        "  ts timestamp default clock_timestamp()," +
+        "  Patronymic varchar(300)," +
+        "  foreign key (id) references adam(id)," +
+        "  primary key(id, ts)" +
+        ")");
   }
 
   @Test
@@ -276,43 +275,45 @@ public class JdbcNf36UpdaterAdapterPostgresTests extends ParentDbTests {
 
   protected void createTableTmp2() {
     exec("create table tmp2 (" +
-      "  id1   varchar(32)," +
-      "  id2   varchar(32)," +
-      "  name1 varchar(100)," +
-      "  name2 varchar(100)," +
-      "  f1    varchar(100)," +
-      "  f2    varchar(100)," +
-      "  last_modified_by varchar(100) default 'no soul'," +
-      "  last_modified_at timestamp not null default clock_timestamp()," +
-      "  mod_at timestamp," +
-      "  primary key(id1, id2)" +
-      ")");
+        "  id1   varchar(32)," +
+        "  id2   varchar(32)," +
+        "  name1 varchar(100)," +
+        "  name2 varchar(100)," +
+        "  f1    varchar(100)," +
+        "  f2    varchar(100)," +
+        "  last_modified_by varchar(100) default 'no soul'," +
+        "  last_modified_at timestamp not null default clock_timestamp()," +
+        "  mod_at timestamp," +
+        "  primary key(id1, id2)" +
+        ")");
   }
 
   protected void createTableTmp2_f1() {
     exec("create table tmp2_f1 (" +
-      "  id1   varchar(32)," +
-      "  id2   varchar(32)," +
-      "  ts    timestamp not null default clock_timestamp()," +
-      "  f1    varchar(100)," +
-      "  inserted_by varchar(100) default 'no soul'," +
-      "  primary key(id1, id2, ts)" +
-      ")");
+        "  id1   varchar(32)," +
+        "  id2   varchar(32)," +
+        "  ts    timestamp not null default clock_timestamp()," +
+        "  f1    varchar(100)," +
+        "  inserted_by varchar(100) default 'no soul'," +
+        "  primary key(id1, id2, ts)" +
+        ")");
   }
 
   protected void createTableTmp2_f2() {
     exec("create table tmp2_f2 (" +
-      "  id1   varchar(32)," +
-      "  id2   varchar(32)," +
-      "  ts    timestamp not null default clock_timestamp()," +
-      "  f2    varchar(100)," +
-      "  inserted_by varchar(100)," +
-      "  primary key(id1, id2, ts)" +
-      ")");
+        "  id1   varchar(32)," +
+        "  id2   varchar(32)," +
+        "  ts    timestamp not null default clock_timestamp()," +
+        "  f2    varchar(100)," +
+        "  inserted_by varchar(100)," +
+        "  primary key(id1, id2, ts)" +
+        ")");
   }
 
   private static long gotMillis(Object d) {
-    if (d == null) return 0;
+    if (d == null) {
+      return 0;
+    }
 
     if (d instanceof Date) {
       return ((Date) d).getTime();

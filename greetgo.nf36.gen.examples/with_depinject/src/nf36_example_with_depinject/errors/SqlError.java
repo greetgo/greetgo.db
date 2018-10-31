@@ -16,14 +16,20 @@ public class SqlError extends RuntimeException {
   }
 
   private static String takeMessage(Exception e) {
-    if (e == null) return "";
+    if (e == null) {
+      return "";
+    }
     String message = e.getMessage();
     return message == null ? "" : message;
   }
 
   private static Type calculateType(SQLException e) {
-    if ("42P01".equals(e.getSQLState())) return Type.DROP_TABLE;
-    if (takeMessage(e).startsWith("ORA-00942:")) return Type.DROP_TABLE;
+    if ("42P01".equals(e.getSQLState())) {
+      return Type.DROP_TABLE;
+    }
+    if (takeMessage(e).startsWith("ORA-00942:")) {
+      return Type.DROP_TABLE;
+    }
     return Type.UNKNOWN;
   }
 }

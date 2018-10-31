@@ -22,7 +22,7 @@ public class CountWhere implements ConnectionCallback<Integer> {
   public Integer doInConnection(Connection con) throws Exception {
 
     try (PreparedStatement ps = con.prepareStatement(
-      "select count(1) from " + tableName + (where == null ? "" : " where " + where))) {
+        "select count(1) from " + tableName + (where == null ? "" : " where " + where))) {
 
       {
         int index = 1;

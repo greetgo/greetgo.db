@@ -34,7 +34,9 @@ abstract class JdbcSequenceNextAbstractAdapter implements SequenceNext {
       String sql = selectSequence(sequenceName);
       try (PreparedStatement ps = con.prepareStatement(sql)) {
         try (ResultSet rs = ps.executeQuery()) {
-          if (!rs.next()) throw new RuntimeException("Left error");
+          if (!rs.next()) {
+            throw new RuntimeException("Left error");
+          }
           T ret = taker.take(rs);
           logInfo(startedAt, sql);
           return ret;

@@ -21,9 +21,9 @@ class Nf3TableImpl implements Nf3Table {
     this.owner = owner;
 
     fields = Arrays.stream(definer.getClass().getFields())
-      .map(f -> new Nf3FieldImpl(this, definer, f, owner))
-      .filter(Nf3FieldImpl::notIgnoring)
-      .collect(Collectors.toList());
+        .map(f -> new Nf3FieldImpl(this, definer, f, owner))
+        .filter(Nf3FieldImpl::notIgnoring)
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -55,7 +55,9 @@ class Nf3TableImpl implements Nf3Table {
   @Override
   public String commentQuotedForSql() {
     Nf3Description d = definer.getClass().getAnnotation(Nf3Description.class);
-    if (d == null) throw new RuntimeException("No description for class " + definer.getClass().getSimpleName());
+    if (d == null) {
+      throw new RuntimeException("No description for class " + definer.getClass().getSimpleName());
+    }
     return UtilsNf36.quoteForSql(d.value());
   }
 }

@@ -27,7 +27,7 @@ public class ByOneLast<T> implements ConnectionCallback<T> {
   public T doInConnection(Connection con) throws Exception {
 
     try (PreparedStatement ps = con.prepareStatement(
-      "select " + field + " from " + tableName + " where " + idName + " = ? order by ts desc")) {
+        "select " + field + " from " + tableName + " where " + idName + " = ? order by ts desc")) {
 
       ps.setObject(1, idValue);
 

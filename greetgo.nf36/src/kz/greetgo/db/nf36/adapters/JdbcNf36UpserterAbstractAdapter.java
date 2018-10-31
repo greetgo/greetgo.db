@@ -87,7 +87,9 @@ abstract class JdbcNf36UpserterAbstractAdapter implements Nf36Upserter, Connecti
 
   @Override
   public void putUpdateToNowWithParent(String fieldName) {
-    if (parent != null) parent.putUpdateToNowWithParent(fieldName);
+    if (parent != null) {
+      parent.putUpdateToNowWithParent(fieldName);
+    }
     toNowFieldList.add(fieldName);
   }
 
@@ -112,30 +114,40 @@ abstract class JdbcNf36UpserterAbstractAdapter implements Nf36Upserter, Connecti
 
     boolean autoCommit = con.getAutoCommit();
 
-    if (autoCommit) con.setAutoCommit(false);
+    if (autoCommit) {
+      con.setAutoCommit(false);
+    }
 
     try {
       execute(con);
-      if (autoCommit) con.commit();
+      if (autoCommit) {
+        con.commit();
+      }
     } catch (Exception e) {
-      if (autoCommit) con.rollback();
+      if (autoCommit) {
+        con.rollback();
+      }
       throw e;
     } finally {
-      if (autoCommit) con.setAutoCommit(true);
+      if (autoCommit) {
+        con.setAutoCommit(true);
+      }
     }
 
     return null;
   }
 
   private void execute(Connection con) throws Exception {
-    if (parent != null) parent.execute(con);
+    if (parent != null) {
+      parent.execute(con);
+    }
     upsert(con);
     insertHistory(con);
   }
 
   private void insertHistory(Connection con) throws Exception {
     Map<String, List<Map.Entry<String, Object>>> collect = nf6ValueMap.entrySet().stream()
-      .collect(Collectors.groupingBy(e -> e.getKey().split(";")[0]));
+        .collect(Collectors.groupingBy(e -> e.getKey().split(";")[0]));
 
     for (Map.Entry<String, List<Map.Entry<String, Object>>> e : collect.entrySet()) {
       Map<String, Object> nf6values = new HashMap<>();
@@ -179,39 +191,42 @@ abstract class JdbcNf36UpserterAbstractAdapter implements Nf36Upserter, Connecti
     List<Object> fieldValues = new ArrayList<>();
 
     values.entrySet().stream()
-      .sorted(Comparator.comparing(Map.Entry::getKey))
-      .forEachOrdered(e -> {
-        fieldNames.add(e.getKey());
-        fieldValues.add(e.getValue());
-      });
+        .sorted(Comparator.comparing(Map.Entry::getKey))
+        .forEachOrdered(e -> {
+          fieldNames.add(e.getKey());
+          fieldValues.add(e.getValue());
+        });
 
     Optional<List<Object>> current = selectCurrent(nf6TableName, fieldNames, con);
 
-    if (current.isPresent() && arrayEquals(current.get(), fieldValues)) return;
+    if (current.isPresent() && arrayEquals(current.get(), fieldValues)) {
+      return;
+    }
 
     insertNf6(nf6TableName, fieldNames, fieldValues, con);
   }
 
-  private Optional<List<Object>> selectCurrent(String nf6TableName, List<String> fieldNames,
+  private Optional<List<Object>> selectCurrent(String nf6TableName,
+                                               List<String> fieldNames,
                                                Connection con) throws SQLException {
 
     List<Object> idValueList = idValueMap.entrySet().stream()
-      .sorted(comparing(Map.Entry::getKey))
-      .map(Map.Entry::getValue)
-      .collect(Collectors.toList());
+        .sorted(comparing(Map.Entry::getKey))
+        .map(Map.Entry::getValue)
+        .collect(Collectors.toList());
 
     String keyEquals = idValueMap.keySet().stream()
-      .sorted()
-      .map(n -> n + " = ?")
-      .collect(Collectors.joining(" and "));
+        .sorted()
+        .map(n -> n + " = ?")
+        .collect(Collectors.joining(" and "));
 
     long startedAt = System.nanoTime();
 
     //noinspection SqlNoDataSourceInspection
-    String sql = "select " + fieldNames.stream().collect(Collectors.joining(", "))
-      + " from " + nf6TableName
-      + " where " + keyEquals
-      + " order by " + timeFieldName + " desc";
+    String sql = "select " + String.join(", ", fieldNames)
+        + " from " + nf6TableName
+        + " where " + keyEquals
+        + " order by " + timeFieldName + " desc";
 
     try (PreparedStatement ps = con.prepareStatement(sql)) {
       int index = 1;
@@ -221,7 +236,9 @@ abstract class JdbcNf36UpserterAbstractAdapter implements Nf36Upserter, Connecti
 
       try (ResultSet rs = ps.executeQuery()) {
 
-        if (!rs.next()) return Optional.empty();
+        if (!rs.next()) {
+          return Optional.empty();
+        }
 
         List<Object> params = new ArrayList<>();
         for (int i = 1, c = fieldNames.size(); i <= c; i++) {
@@ -249,7 +266,9 @@ abstract class JdbcNf36UpserterAbstractAdapter implements Nf36Upserter, Connecti
     return Objects.equals(list1, list2);
   }
 
-  protected void insertNf6(String nf6TableName, List<String> fieldNames, List<Object> fieldValues,
+  protected void insertNf6(String nf6TableName,
+                           List<String> fieldNames,
+                           List<Object> fieldValues,
                            Connection con) throws Exception {
 
     String insName = "";
@@ -264,28 +283,30 @@ abstract class JdbcNf36UpserterAbstractAdapter implements Nf36Upserter, Connecti
 
     String sql = "insert into " + nf6TableName + " (" + (
 
-      idValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))
+        idValueMap.keySet().stream().sorted().collect(Collectors.joining(", "))
 
     ) + ", " + (
 
-      fieldNames.stream().collect(Collectors.joining(", "))
+        String.join(", ", fieldNames)
 
     ) + insName + ") values (" + (
 
-      idValueMap.keySet().stream().map(n -> "?").collect(Collectors.joining(", "))
+        idValueMap.keySet().stream().map(n -> "?").collect(Collectors.joining(", "))
 
     ) + ", " + (
 
-      fieldNames.stream().map(n -> "?").collect(Collectors.joining(", "))
+        fieldNames.stream().map(n -> "?").collect(Collectors.joining(", "))
 
     ) + insQ + ")";
 
     Stream<Object> s = idValueMap.entrySet().stream()
-      .sorted(Comparator.comparing(Map.Entry::getKey))
-      .map(Map.Entry::getValue);
+        .sorted(Comparator.comparing(Map.Entry::getKey))
+        .map(Map.Entry::getValue);
 
     s = concat(s, fieldValues.stream());
-    if (insStream != null) s = concat(s, insStream);
+    if (insStream != null) {
+      s = concat(s, insStream);
+    }
 
     executeUpdate(con, sql, s.collect(Collectors.toList()));
   }

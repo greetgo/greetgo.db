@@ -26,7 +26,7 @@ public class ByOne<T> implements ConnectionCallback<T> {
   public T doInConnection(Connection con) throws Exception {
 
     try (PreparedStatement ps = con.prepareStatement(
-      "select " + field + " from " + tableName + " where " + idName + " = ?")) {
+        "select " + field + " from " + tableName + " where " + idName + " = ?")) {
 
       ps.setObject(1, idValue);
 

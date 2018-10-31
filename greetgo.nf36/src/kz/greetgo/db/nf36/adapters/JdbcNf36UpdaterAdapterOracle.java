@@ -17,11 +17,11 @@ class JdbcNf36UpdaterAdapterOracle extends JdbcNf36UpdaterAbstractAdapter {
   private List<IdValues> selectIdsForUpdate(Connection con) throws Exception {
     String sql = "select " + (
 
-      idFieldNames.stream().collect(Collectors.joining(", "))
+        String.join(", ", idFieldNames)
 
     ) + " from " + nf3TableName + " where " + (
 
-      whereList.stream().map(w -> w.fieldName + " = ?").collect(Collectors.joining(" and "))
+        whereList.stream().map(w -> w.fieldName + " = ?").collect(Collectors.joining(" and "))
 
     ) + " for update";
 
@@ -89,11 +89,11 @@ class JdbcNf36UpdaterAdapterOracle extends JdbcNf36UpdaterAbstractAdapter {
 
     String sql = "update " + nf3TableName + " set " + (
 
-      setFieldList.stream().map(sf -> sf.fieldName + " = ?").collect(Collectors.joining(", "))
+        setFieldList.stream().map(sf -> sf.fieldName + " = ?").collect(Collectors.joining(", "))
 
     ) + toNow + auth + " where " + (
 
-      whereList.stream().map(w -> w.fieldName + " = ?").collect(Collectors.joining(" and "))
+        whereList.stream().map(w -> w.fieldName + " = ?").collect(Collectors.joining(" and "))
 
     );
 
@@ -112,7 +112,7 @@ class JdbcNf36UpdaterAdapterOracle extends JdbcNf36UpdaterAbstractAdapter {
 
       if (updateCount != idValues.size()) {
         throw new RuntimeException("Left data count sync: updateCount = " + updateCount
-          + ", but idValues.size() = " + idValues.size());
+            + ", but idValues.size() = " + idValues.size());
       }
 
       if (logAcceptor != null && logAcceptor.isErrorEnabled()) {

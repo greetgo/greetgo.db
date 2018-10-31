@@ -10,8 +10,8 @@ public class PreparationDbOracleLauncher {
     container.dbWorker().recreateDb();
 
     container.generators()
-      .generateSqlFiles()
-      .forEach(container.dbWorker()::applySqlFile);
+        .generateSqlFiles()
+        .forEach(container.dbWorker()::applySqlFile);
 
   }
 }

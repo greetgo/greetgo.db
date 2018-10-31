@@ -8,6 +8,7 @@ import java.util.List;
 
 public class SqlLog {
   public final Date happenedAt = new Date();
+  @SuppressWarnings("unused")
   public final long happenedAtNano = System.nanoTime();
   public final String sql;
   public final List<Object> params;

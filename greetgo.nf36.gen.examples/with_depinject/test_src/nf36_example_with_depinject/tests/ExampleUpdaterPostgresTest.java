@@ -35,37 +35,37 @@ public class ExampleUpdaterPostgresTest extends ParentDbTests {
     String surname1 = "sur1 " + RND.str(10);
 
     exampleUpserter.get().client(id1)
-      .name(name1)
-      .surname(surname1)
-      .patronymic(patronymic)
-      .commitAll();
+        .name(name1)
+        .surname(surname1)
+        .patronymic(patronymic)
+        .commitAll();
 
     long id2 = RND.plusLong(1_000_000_000_000L);
     String name2 = "name2 " + RND.str(10);
     String surname2 = "sur2 " + RND.str(10);
 
     exampleUpserter.get().client(id2)
-      .name(name2)
-      .surname(surname2)
-      .patronymic(patronymic)
-      .commitAll();
+        .name(name2)
+        .surname(surname2)
+        .patronymic(patronymic)
+        .commitAll();
 
     long id3 = RND.plusLong(1_000_000_000_000L);
 
     exampleUpserter.get().client(id3)
-      .name("Александр")
-      .patronymic("Сергеевич")
-      .surname("Пушкин")
-      .commitAll();
+        .name("Александр")
+        .patronymic("Сергеевич")
+        .surname("Пушкин")
+        .commitAll();
 
     String newName = "newName " + RND.str(10);
 
     authorGetterImpl.get().author = "Менятель";
 
     exampleUpdater.get().client()
-      .setName(newName)
-      .wherePatronymicIsEqualTo(patronymic)
-      .commitAll();
+        .setName(newName)
+        .wherePatronymicIsEqualTo(patronymic)
+        .commitAll();
 
     {
       String actualName = jdbc.get().execute(new ByOne<>("id", id1, "client", "name"));
@@ -100,9 +100,9 @@ public class ExampleUpdaterPostgresTest extends ParentDbTests {
     String id = RND.str(10);
 
     exampleUpserter.get().stone(id)
-      .name(RND.str(10))
-      .actual(true)
-      .commit();
+        .name(RND.str(10))
+        .actual(true)
+        .commit();
 
     exampleUpdater.get().stone().whereIdIsEqualTo(id).setActual(false).commit();
 
@@ -114,9 +114,9 @@ public class ExampleUpdaterPostgresTest extends ParentDbTests {
     SomeEnum id = SomeEnum.V2;
 
     exampleUpserter.get()
-      .entityEnumAsId(id)
-      .value(RND.str(10))
-      .commit()
+        .entityEnumAsId(id)
+        .value(RND.str(10))
+        .commit()
     ;
 
     {
@@ -125,10 +125,10 @@ public class ExampleUpdaterPostgresTest extends ParentDbTests {
     }
 
     exampleUpdater.get()
-      .entityEnumAsId()
-      .setValue(value)
-      .whereIdIsEqualTo(id)
-      .commit()
+        .entityEnumAsId()
+        .setValue(value)
+        .whereIdIsEqualTo(id)
+        .commit()
     ;
 
     {

@@ -61,7 +61,7 @@ public class SqlTypeUtil {
   public static DbType extractDbType(Field field, ModelCollector collector) {
     if (String.class.equals(field.getType())) {
       boolean idOrReference = field.getAnnotation(Nf3ID.class) != null
-        || field.getAnnotation(Nf3ReferenceTo.class) != null;
+          || field.getAnnotation(Nf3ReferenceTo.class) != null;
 
       boolean nullable = field.getAnnotation(Nf3ID.class) == null && field.getAnnotation(Nf3NotNull.class) == null;
 
@@ -76,7 +76,7 @@ public class SqlTypeUtil {
         len = collector.longLength;
       }
 
-      if (aShort != null && aLong != null) throw new ConflictError(aShort, aLong);
+      if (aShort != null && aLong != null) { throw new ConflictError(aShort, aLong); }
 
       Object prev = aShort != null ? aShort : aLong;
 
@@ -85,13 +85,12 @@ public class SqlTypeUtil {
         len = aLength.value();
       }
 
-      if (prev != null && aLength != null) throw new ConflictError(prev, aLength);
-
+      if (prev != null && aLength != null) { throw new ConflictError(prev, aLength); }
 
       prev = prev != null ? prev : aLength;
 
       Nf3Text aText = field.getAnnotation(Nf3Text.class);
-      if (prev != null && aText != null) throw new ConflictError(prev, aText);
+      if (prev != null && aText != null) { throw new ConflictError(prev, aText); }
 
       if (aText != null) {
         return new DbTypeImpl(SqlType.CLOB, 0, nullable, false);
@@ -100,12 +99,24 @@ public class SqlTypeUtil {
       return new DbTypeImpl(SqlType.VARCHAR, len, nullable, false);
     }
 
-    if (Integer.class.equals(field.getType())) return new DbTypeImpl(SqlType.INT, intLen(field), true, true);
-    if (int.class.equals(field.getType())) return new DbTypeImpl(SqlType.INT, intLen(field), false, true);
-    if (Long.class.equals(field.getType())) return new DbTypeImpl(SqlType.BIGINT, 0, true, true);
-    if (long.class.equals(field.getType())) return new DbTypeImpl(SqlType.BIGINT, 0, false, true);
-    if (Boolean.class.equals(field.getType())) return new DbTypeImpl(SqlType.BOOL, 0, true, false);
-    if (boolean.class.equals(field.getType())) return new DbTypeImpl(SqlType.BOOL, 0, false, false);
+    if (Integer.class.equals(field.getType())) {
+      return new DbTypeImpl(SqlType.INT, intLen(field), true, true);
+    }
+    if (int.class.equals(field.getType())) {
+      return new DbTypeImpl(SqlType.INT, intLen(field), false, true);
+    }
+    if (Long.class.equals(field.getType())) {
+      return new DbTypeImpl(SqlType.BIGINT, 0, true, true);
+    }
+    if (long.class.equals(field.getType())) {
+      return new DbTypeImpl(SqlType.BIGINT, 0, false, true);
+    }
+    if (Boolean.class.equals(field.getType())) {
+      return new DbTypeImpl(SqlType.BOOL, 0, true, false);
+    }
+    if (boolean.class.equals(field.getType())) {
+      return new DbTypeImpl(SqlType.BOOL, 0, false, false);
+    }
 
     if (Date.class.equals(field.getType())) {
       boolean nullable = field.getAnnotation(Nf3NotNull.class) == null;
@@ -119,7 +130,9 @@ public class SqlTypeUtil {
         len = aLength.value();
       }
       if (len == 0) {
-        if (collector.enumLength < 10) throw new RuntimeException("enumLength must be >= 10");
+        if (collector.enumLength < 10) {
+          throw new RuntimeException("enumLength must be >= 10");
+        }
         len = collector.enumLength;
       }
       boolean nullable = field.getAnnotation(Nf3NotNull.class) == null;

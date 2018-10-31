@@ -42,7 +42,9 @@ public class QuickStart {
     //this method must work in transaction
     @Override
     public void move(int from, int to, int amount) {
-      if (from == to) return;
+      if (from == to) {
+        return;
+      }
 
       //to prevent dead lock
       if (from < to) {
@@ -167,7 +169,9 @@ public class QuickStart {
       try (PreparedStatement ps = con.prepareStatement("select value from account where id = ? for update")) {
         ps.setInt(1, id);
         try (ResultSet rs = ps.executeQuery()) {
-          if (!rs.next()) throw new RuntimeException("Left state");
+          if (!rs.next()) {
+            throw new RuntimeException("Left state");
+          }
           return rs.getInt(1);
         }
       }
@@ -189,7 +193,9 @@ public class QuickStart {
         ps.setInt(1, value);
         ps.setInt(2, id);
         int count = ps.executeUpdate();
-        if (count <= 0) throw new RuntimeException("Left update");
+        if (count <= 0) {
+          throw new RuntimeException("Left update");
+        }
         return null;
       }
     }
@@ -200,7 +206,9 @@ public class QuickStart {
     public Integer doInConnection(Connection con) throws Exception {
       try (PreparedStatement ps = con.prepareStatement("select sum(value) from account")) {
         try (ResultSet rs = ps.executeQuery()) {
-          if (!rs.next()) throw new RuntimeException("Left state");
+          if (!rs.next()) {
+            throw new RuntimeException("Left state");
+          }
           return rs.getInt(1);
         }
       }
@@ -216,7 +224,9 @@ public class QuickStart {
 
   private static String changeDb(String adminUrl, String db) {
     int idx = adminUrl.lastIndexOf('/');
-    if (idx < 0) throw new RuntimeException("Left admin url = " + adminUrl);
+    if (idx < 0) {
+      throw new RuntimeException("Left admin url = " + adminUrl);
+    }
     return adminUrl.substring(0, idx + 1) + db;
   }
 

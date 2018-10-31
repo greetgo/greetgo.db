@@ -22,7 +22,7 @@ public class ByOneCount implements ConnectionCallback<Integer> {
   public Integer doInConnection(Connection con) throws Exception {
 
     try (PreparedStatement ps = con.prepareStatement(
-      "select count(1) from " + tableName + " where " + idName + " = ?")) {
+        "select count(1) from " + tableName + " where " + idName + " = ?")) {
 
       ps.setObject(1, idValue);
 

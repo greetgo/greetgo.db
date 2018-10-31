@@ -37,8 +37,12 @@ public class SequenceNextBuilder {
   }
 
   public SequenceNext build() {
-    if (jdbc == null) throw new RuntimeException("Please set jdbc");
-    if (adapter == null) throw new RuntimeException("Please define database. Call method 'database'");
+    if (jdbc == null) {
+      throw new RuntimeException("Please set jdbc");
+    }
+    if (adapter == null) {
+      throw new RuntimeException("Please define database. Call method 'database'");
+    }
     adapter.jdbc = jdbc;
     adapter.logAcceptor = logAcceptor;
     return adapter;

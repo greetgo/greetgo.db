@@ -171,7 +171,7 @@ public abstract class JdbcNf36UpdaterAbstractAdapter implements Nf36Updater, Con
 
     String sql = "insert into " + setField.nf6TableName + " (" + (
 
-      idFieldNames.stream().collect(joining(", "))
+        String.join(", ", idFieldNames)
 
     ) + insByF + ", " + setField.fieldName + ") values (" + (
 

@@ -9,7 +9,7 @@ public class PreparationDbPostgresLauncher {
     container.dbWorker().recreateDb();
 
     container.generators()
-      .generateSqlFiles()
-      .forEach(container.dbWorker()::applySqlFile);
+        .generateSqlFiles()
+        .forEach(container.dbWorker()::applySqlFile);
   }
 }

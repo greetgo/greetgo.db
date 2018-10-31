@@ -19,13 +19,14 @@ public class JdbcPostgres implements Jdbc {
       Class.forName("org.postgresql.Driver");
 
       try (Connection connection = DriverManager.getConnection(
-        DbParamsPostgres.url, DbParamsPostgres.username, DbParamsPostgres.password
+          DbParamsPostgres.url, DbParamsPostgres.username, DbParamsPostgres.password
       )) {
         return connectionCallback.doInConnection(connection);
       }
 
+    } catch (SQLException e) {
+      throw new SqlError(e);
     } catch (Exception e) {
-      if (e instanceof SQLException) throw new SqlError((SQLException) e);
       throw new RuntimeException(e);
     }
 

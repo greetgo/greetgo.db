@@ -23,12 +23,12 @@ public class ExampleWhereUpdaterOracleConnector extends AbstractExampleUpdaterOr
   @Override
   protected Nf36Updater createUpdater() {
     return newNf36Builder()
-      .updater()
-      .database(dbTypeSource.get().currentDbType())
-      .setJdbc(jdbc.get())
-      .setLogAcceptor(logAcceptor.get())
-      .setAuthor(authorGetter.get().getAuthor())
-      .build()
-      ;
+        .updater()
+        .database(dbTypeSource.get().currentDbType())
+        .setJdbc(jdbc.get())
+        .setLogAcceptor(logAcceptor.get())
+        .setAuthor(authorGetter.get().getAuthor())
+        .build()
+        ;
   }
 }

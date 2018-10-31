@@ -28,10 +28,14 @@ public abstract class SqlDialectAbstract implements SqlDialect {
     }
 
     if (field.getType() == boolean.class) {
-      if (aDefStrValue != null) throw new RuntimeException("@" + Nf3DefaultValue.class.getSimpleName()
-        + " is incompatible with boolean");
-      if (aDefNow != null) throw new RuntimeException("@" + Nf3DefaultNow.class.getSimpleName()
-        + " is incompatible with boolean");
+      if (aDefStrValue != null) {
+        throw new RuntimeException("@" + Nf3DefaultValue.class.getSimpleName()
+            + " is incompatible with boolean");
+      }
+      if (aDefNow != null) {
+        throw new RuntimeException("@" + Nf3DefaultNow.class.getSimpleName()
+            + " is incompatible with boolean");
+      }
       boolean defaultValue = (boolean) field.get(definer);
       String def = " default " + (defaultValue ? "1" : "0") + " not null";
 

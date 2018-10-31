@@ -43,7 +43,9 @@ public class JavaFilePrinter {
   }
 
   public String i(String fullName) {
-    if (fullName == null) throw new IllegalArgumentException("fullName == null");
+    if (fullName == null) {
+      throw new IllegalArgumentException("fullName == null");
+    }
     String simpleName = UtilsNf36.extractSimpleName(fullName);
     if (Objects.equals(simpleName, fullName)) {
       return fullName;
@@ -55,7 +57,9 @@ public class JavaFilePrinter {
       return simpleName;
     }
 
-    if (Objects.equals(fullName, fullNameStored)) return simpleName;
+    if (Objects.equals(fullName, fullNameStored)) {
+      return simpleName;
+    }
 
     return fullName;
   }

@@ -28,17 +28,17 @@ class JdbcNf36UpserterAdapterOracle extends JdbcNf36UpserterAbstractAdapter {
   protected void upsert(Connection con) throws Exception {
 
     List<String> idNames = idValueMap.keySet().stream()
-      .sorted()
-      .collect(toList());
+        .sorted()
+        .collect(toList());
     List<Object> idValues = idValueMap.entrySet().stream()
-      .sorted(Comparator.comparing(Map.Entry::getKey))
-      .map(Map.Entry::getValue)
-      .collect(toList());
+        .sorted(Comparator.comparing(Map.Entry::getKey))
+        .map(Map.Entry::getValue)
+        .collect(toList());
 
     List<String> flNames = fieldValueMap.keySet().stream().sorted().collect(toList());
     List<Object> flValues = fieldValueMap.entrySet().stream()
-      .sorted(Comparator.comparing(Map.Entry::getKey))
-      .map(Map.Entry::getValue).collect(toList());
+        .sorted(Comparator.comparing(Map.Entry::getKey))
+        .map(Map.Entry::getValue).collect(toList());
 
     List<String> authNames = emptyList();
     List<Object> authValues = emptyList();
@@ -59,26 +59,28 @@ class JdbcNf36UpserterAdapterOracle extends JdbcNf36UpserterAbstractAdapter {
       authValues = singletonList(author);
     }
 
-    if (flNames.isEmpty()) updates = emptyList();
+    if (flNames.isEmpty()) {
+      updates = emptyList();
+    }
 
     String sql = "merge into " + nf3TableName + " d using (select " + (
 
-      cat(idNames, flNames, authNames)
-        .map(s -> "? as " + s)
-        .collect(Collectors.joining(", "))
+        cat(idNames, flNames, authNames)
+            .map(s -> "? as " + s)
+            .collect(Collectors.joining(", "))
 
     ) + " from dual) s on (" + (
 
-      cat(idNames).map(n -> "s." + n + " = d." + n).collect(joining(" and "))
+        cat(idNames).map(n -> "s." + n + " = d." + n).collect(joining(" and "))
 
     ) + ")" + (flNames.size() + updates.size() == 0 ? "" : " when matched then update set " + (
 
-      cat(cat(flNames).map(n -> "d." + n + " = s." + n).collect(toList()), updates).collect(joining(", "))
+        cat(cat(flNames).map(n -> "d." + n + " = s." + n).collect(toList()), updates).collect(joining(", "))
 
     )) + " when not matched then insert (" + (
-      cat(idNames, flNames, insNames).map(n -> "d." + n).collect(joining(", "))
+        cat(idNames, flNames, insNames).map(n -> "d." + n).collect(joining(", "))
     ) + ") values (" + (
-      cat(idNames, flNames, insValues).map(n -> "s." + n).collect(joining(", "))
+        cat(idNames, flNames, insValues).map(n -> "s." + n).collect(joining(", "))
     ) + ")";
 
     executeUpdate(con, sql, cat(idValues, flValues, authValues).collect(toList()));
@@ -86,18 +88,26 @@ class JdbcNf36UpserterAdapterOracle extends JdbcNf36UpserterAbstractAdapter {
 
   @Override
   protected boolean arrayEquals(List<Object> list1, List<Object> list2) {
-    if (list1 == null && list2 == null) return true;
-    if (list1 == null || list2 == null) return false;
+    if (list1 == null && list2 == null) {
+      return true;
+    }
+    if (list1 == null || list2 == null) {
+      return false;
+    }
 
     int size = list1.size();
-    if (size != list2.size()) return false;
+    if (size != list2.size()) {
+      return false;
+    }
 
     for (int i = 0; i < size; i++) {
 
       Object v1 = SqlConvertUtil.fromSql(list1.get(i));
       Object v2 = SqlConvertUtil.fromSql(list2.get(i));
 
-      if (!Objects.equals(v1, v2)) return false;
+      if (!Objects.equals(v1, v2)) {
+        return false;
+      }
     }
 
     return true;

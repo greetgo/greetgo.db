@@ -6,6 +6,6 @@ public class DbParamsOracle {
   public static final String username = System.getProperty("user.name") + "_nf36_example";
   public static final String password = System.getProperty("user.name") + "_nf36_example_123";
   public static final String url = "jdbc:oracle:thin:@" + SysParams.oracleAdminHost()
-    + ":" + SysParams.oracleAdminPort()
-    + ":" + SysParams.oracleAdminSid();
+      + ":" + SysParams.oracleAdminPort()
+      + ":" + SysParams.oracleAdminSid();
 }

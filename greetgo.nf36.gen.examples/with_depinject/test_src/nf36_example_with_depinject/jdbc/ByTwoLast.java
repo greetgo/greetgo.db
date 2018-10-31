@@ -29,7 +29,9 @@ public class ByTwoLast<T> implements ConnectionCallback<T> {
   public T doInConnection(Connection con) throws Exception {
 
     try (PreparedStatement ps = con.prepareStatement(
-      "select " + field + " from " + tableName + " where " + idName1 + " = ? and " + idName2 + " = ? order by ts desc")) {
+        "select " + field + " from " + tableName
+            + " where " + idName1 + " = ? and " + idName2 + " = ?"
+            + " order by ts desc")) {
 
       ps.setObject(1, idValue1);
       ps.setObject(2, idValue2);
@@ -38,7 +40,7 @@ public class ByTwoLast<T> implements ConnectionCallback<T> {
 
         if (!rs.next()) {
           throw new RuntimeException("No record with " + idName1 + " = " + idValue1 + " and "
-            + idName2 + " = " + idValue2 + " in table " + tableName);
+              + idName2 + " = " + idValue2 + " in table " + tableName);
         }
 
         //noinspection unchecked

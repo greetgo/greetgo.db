@@ -1,7 +1,5 @@
 package kz.greetgo.db.nf36.gen;
 
-import kz.greetgo.db.nf36.model.Sequence;
-
 public class SqlDialectOracle extends SqlDialectAbstract {
   @Override
   protected String strType() {
