@@ -315,13 +315,26 @@ public class SqlConvertUtil {
     //
     {
       Class<?> valueClass = value.getClass();
-      if ("oracle.sql.TIMESTAMP".equals(valueClass.getName())) {
+      if (ORACLE_TIMESTAMP.equals(valueClass.getName())) {
         try {
           Timestamp ts = (Timestamp) value.getClass().getMethod("timestampValue").invoke(value);
           return new Date(ts.getTime());
         } catch (Exception e) {
           throw new RuntimeException(e);
         }
+      }
+
+      if (ORACLE_TIMESTAMP_TZ.equals(valueClass.getName())) {
+        try {
+          throw new CannotConvertFromSql(
+
+              "Type " + ORACLE_TIMESTAMP_TZ + " cannot be converted to java.util.Date without java.sql.Connection",
+
+              Class.forName(ORACLE_TIMESTAMP_TZ), toType);
+        } catch (ClassNotFoundException e) {
+          throw new RuntimeException(e);
+        }
+
       }
     }
     //
@@ -330,6 +343,10 @@ public class SqlConvertUtil {
 
     throw new CannotConvertFromSql(value, toType);
   }
+
+  @SuppressWarnings("SpellCheckingInspection")
+  private static final String ORACLE_TIMESTAMP_TZ = "oracle.sql.TIMESTAMPTZ";
+  private static final String ORACLE_TIMESTAMP = "oracle.sql.TIMESTAMP";
 
   public static Integer asIntegerNoException(Object value) {
     if (value == null) {

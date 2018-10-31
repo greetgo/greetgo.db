@@ -7,6 +7,7 @@ import kz.greetgo.db.nf36.core.SequenceNext;
 import kz.greetgo.db.nf36.core.SqlLogAcceptor;
 import kz.greetgo.depinject.core.Bean;
 import kz.greetgo.depinject.core.BeanGetter;
+import nf36_example_with_depinject.beans.all.UpserterCreator;
 import nf36_example_with_depinject.generated.impl.postgres.AbstractExampleUpserterPostgres;
 import nf36_example_with_depinject.util.AuthorGetter;
 import nf36_example_with_depinject.util.DbTypeSource;
@@ -33,6 +34,11 @@ public class ExampleUpserterPostgresConnector extends AbstractExampleUpserterPos
         .setAuthor(authorGetter.get().getAuthor())
         .build()
         ;
+  }
+
+  @Bean
+  public UpserterCreator createUpserterCreator() {
+    return this::createUpserter;
   }
 
   @Override

@@ -46,12 +46,13 @@ class JdbcNf36UpserterAdapterPostgres extends JdbcNf36UpserterAbstractAdapter {
         (fieldValueMap.isEmpty() ? "nothing" :
 
             "update set "
-                + fieldValueMap.keySet().stream().sorted().map(k -> k + " = ?").collect(joining(", "))
-                + (
+                + fieldValueMap.keySet().stream().sorted().map(k -> k + " = ?").collect(joining(", ")) + (
+
                 toNowFieldList.isEmpty()
                     ? ""
                     : ", " + toNowFieldList.stream().map(n -> n + " = clock_timestamp()").collect(joining(", "))
-                    + updateNamesQ)
+
+            ) + updateNamesQ
         );
 
     Stream<Object> s = idValueMap.entrySet().stream().sorted(comparing(Map.Entry::getKey)).map(Map.Entry::getValue);

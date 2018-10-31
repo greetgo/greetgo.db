@@ -40,12 +40,6 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
         .name(expectedName1)
         .commitAll();
 
-    Client client = new Client();
-
-    exampleUpserter.get().client()
-        .myChairId1().skipIf(Objects::isNull)
-        .save(client);
-
     {
       String actualName = jdbc.get().execute(new ByOne<>("id", id, "client", "name"));
       assertThat(actualName).isEqualTo(expectedName1);

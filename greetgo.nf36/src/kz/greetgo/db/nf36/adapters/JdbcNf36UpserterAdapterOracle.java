@@ -77,6 +77,14 @@ class JdbcNf36UpserterAdapterOracle extends JdbcNf36UpserterAbstractAdapter {
 
         cat(cat(flNames).map(n -> "d." + n + " = s." + n).collect(toList()), updates).collect(joining(", "))
 
+            + (
+
+            toNowFieldList.isEmpty()
+                ? ""
+                : ", " + toNowFieldList.stream().map(n -> "d." + n + " = localtimestamp").collect(joining(", "))
+
+        )
+
     )) + " when not matched then insert (" + (
         cat(idNames, flNames, insNames).map(n -> "d." + n).collect(joining(", "))
     ) + ") values (" + (
