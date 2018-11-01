@@ -8,9 +8,9 @@ import java.util.function.Predicate;
 public class SkipList {
   private static class Skip {
     final String fieldName;
-    final Predicate<Object> predicate;
+    final Predicate predicate;
 
-    public Skip(String fieldName, Predicate<Object> predicate) {
+    public Skip(String fieldName, Predicate<?> predicate) {
       Objects.requireNonNull(fieldName);
       Objects.requireNonNull(predicate);
       this.fieldName = fieldName;
@@ -20,7 +20,7 @@ public class SkipList {
 
   private final List<Skip> list = new ArrayList<>();
 
-  public void addSkipIf(String fieldName, Predicate<Object> predicate) {
+  public void addSkipIf(String fieldName, Predicate<?> predicate) {
     list.add(new Skip(fieldName, predicate));
   }
 
@@ -30,14 +30,15 @@ public class SkipList {
 
       if (skip.fieldName.equals(fieldName)) {//see above Objects.requireNonNull(fieldName);
 
-        if (!skip.predicate.test(fieldValue)) {
+        //noinspection unchecked
+        if (skip.predicate.test(fieldValue)) {
 
-          return false;
+          return true;
         }
       }
     }
 
-    return true;
+    return false;
   }
 
 }

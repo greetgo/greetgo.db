@@ -32,7 +32,7 @@ public class JdbcNf36SaverBridgeOracleTest extends JdbcNf36SaverBridgePostgresTe
     exec("create table t014_client_surname (" +
         "  id1         int,            " +
         "  id2         varchar2(32),   " +
-        "  ts          timestamp,      " +
+        "  ts          timestamp default current_timestamp," +
         "  surname     varchar2(300),  " +
         "  inserted_by varchar2(100),  " +
         "  primary key(id1, id2, ts)   " +
@@ -41,7 +41,7 @@ public class JdbcNf36SaverBridgeOracleTest extends JdbcNf36SaverBridgePostgresTe
     exec("create table t014_client_name (" +
         "  id1         int,            " +
         "  id2         varchar2(32),   " +
-        "  ts          timestamp,      " +
+        "  ts          timestamp default current_timestamp," +
         "  name        varchar2(300),  " +
         "  inserted_by varchar2(100),  " +
         "  primary key(id1, id2, ts)   " +
@@ -50,7 +50,7 @@ public class JdbcNf36SaverBridgeOracleTest extends JdbcNf36SaverBridgePostgresTe
     exec("create table t014_client_patronymic (" +
         "  id1         int,            " +
         "  id2         varchar2(32),   " +
-        "  ts          timestamp,      " +
+        "  ts          timestamp default current_timestamp," +
         "  patronymic  varchar2(300),  " +
         "  inserted_by varchar2(100),  " +
         "  primary key(id1, id2, ts)   " +
@@ -59,7 +59,7 @@ public class JdbcNf36SaverBridgeOracleTest extends JdbcNf36SaverBridgePostgresTe
     exec("create table t014_client_birth (" +
         "  id1         int,            " +
         "  id2         varchar2(32),   " +
-        "  ts          timestamp,      " +
+        "  ts          timestamp default current_timestamp," +
         "  birth       timestamp,      " +
         "  inserted_by varchar2(100),  " +
         "  primary key(id1, id2, ts)   " +
@@ -68,7 +68,7 @@ public class JdbcNf36SaverBridgeOracleTest extends JdbcNf36SaverBridgePostgresTe
     exec("create table t014_client_age (" +
         "  id1         int,            " +
         "  id2         varchar2(32),   " +
-        "  ts          timestamp,      " +
+        "  ts          timestamp default current_timestamp," +
         "  age         int,            " +
         "  inserted_by varchar2(100),  " +
         "  primary key(id1, id2, ts)   " +
@@ -77,7 +77,7 @@ public class JdbcNf36SaverBridgeOracleTest extends JdbcNf36SaverBridgePostgresTe
     exec("create table t014_client_amount (" +
         "  id1         int,            " +
         "  id2         varchar2(32),   " +
-        "  ts          timestamp,      " +
+        "  ts          timestamp default current_timestamp," +
         "  amount      number(19),     " +
         "  inserted_by varchar2(100),  " +
         "  primary key(id1, id2, ts)   " +

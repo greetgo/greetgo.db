@@ -3,18 +3,18 @@ package kz.greetgo.db.nf36.bridges;
 import java.util.function.Function;
 
 public class IdField {
-  private final String name;
-  private String realName;
+  public final String name;
+  private String alias;
 
   public IdField(String name) {
-    this.name = realName = name;
+    this.name = alias = name;
   }
 
-  public String name() {
-    return realName;
+  public String alias() {
+    return alias;
   }
 
   public void applyConverter(Function<String, String> nameConverter) {
-    realName = nameConverter.apply(name);
+    alias = nameConverter.apply(name);
   }
 }

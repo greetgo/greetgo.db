@@ -8,16 +8,16 @@ class DataField {
 
   public DataField(String nf6TableName, String fieldName) {
     this.nf6TableName = nf6TableName;
-    this.fieldName = realFieldName = fieldName;
+    this.fieldName = alias = fieldName;
   }
 
-  public String fieldName() {
-    return realFieldName;
+  public String alias() {
+    return alias;
   }
 
-  private String realFieldName;
+  private String alias;
 
   public void applyConverter(Function<String, String> aliasConverter) {
-    realFieldName = aliasConverter.apply(fieldName);
+    alias = aliasConverter.apply(fieldName);
   }
 }

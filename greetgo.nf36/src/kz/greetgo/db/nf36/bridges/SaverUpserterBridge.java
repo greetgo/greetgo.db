@@ -17,61 +17,71 @@ public class SaverUpserterBridge implements Nf36Saver {
   }
 
   @Override
-  public void setNf3TableName(String nf3TableName) {
+  public Nf36Saver setNf3TableName(String nf3TableName) {
     upserter.setNf3TableName(nf3TableName);
+    return this;
   }
 
   @Override
-  public void setTimeFieldName(String timeFieldName) {
+  public Nf36Saver setTimeFieldName(String timeFieldName) {
     upserter.setTimeFieldName(timeFieldName);
+    return this;
   }
 
   @Override
-  public void setAuthorFieldNames(String nf3CreatedBy, String nf3ModifiedBy, String nf6InsertedBy) {
+  public Nf36Saver setAuthorFieldNames(String nf3CreatedBy, String nf3ModifiedBy, String nf6InsertedBy) {
     upserter.setAuthorFieldNames(nf3CreatedBy, nf3ModifiedBy, nf6InsertedBy);
+    return this;
   }
 
   private final List<IdField> idFieldList = new ArrayList<>();
 
   @Override
-  public void addIdName(String idName) {
+  public Nf36Saver addIdName(String idName) {
     idFieldList.add(new IdField(idName));
+    return this;
   }
 
   private final List<DataField> dataFieldList = new ArrayList<>();
 
   @Override
-  public void addFieldName(String nf6TableName, String fieldName) {
+  public Nf36Saver addFieldName(String nf6TableName, String fieldName) {
     dataFieldList.add(new DataField(nf6TableName, fieldName));
+    return this;
   }
 
   @Override
-  public void putUpdateToNow(String timestampFieldName) {
+  public Nf36Saver putUpdateToNow(String timestampFieldName) {
     upserter.putUpdateToNow(timestampFieldName);
+    return this;
   }
 
   @Override
-  public void setAuthor(Object author) {
+  public Nf36Saver setAuthor(Object author) {
     upserter.setAuthor(author);
+    return this;
   }
 
   @Override
-  public void presetValue(String fieldName, Object value) {
+  public Nf36Saver presetValue(String fieldName, Object value) {
+    // FIXME: 01.11.18 test this method
     throw new NotImplementedException();
   }
 
   private final SkipList skipList = new SkipList();
 
   @Override
-  public void addSkipIf(String fieldName, Predicate<Object> predicate) {
+  public Nf36Saver addSkipIf(String fieldName, Predicate<?> predicate) {
     skipList.addSkipIf(fieldName, predicate);
+    return this;
   }
 
   private final AliasMapper aliasMapper = new AliasMapper();
 
   @Override
-  public void addAlias(String fieldName, String alias) {
+  public Nf36Saver addAlias(String fieldName, String alias) {
     aliasMapper.addAlias(fieldName, alias);
+    return this;
   }
 
   private static final ClassAccessorStorage classAccessorStorage = new ClassAccessorStorage();
@@ -93,8 +103,7 @@ public class SaverUpserterBridge implements Nf36Saver {
     ClassAccessor classAccessor = classAccessorStorage.get(objectWithData.getClass());
 
     for (IdField f : idFieldList) {
-      Object idValue = classAccessor.extractValue(f.name(), objectWithData);
-      upserter.putId(f.name(), idValue);
+      upserter.putId(f.name, classAccessor.extractValue(f.alias(), objectWithData));
     }
   }
 
@@ -103,17 +112,17 @@ public class SaverUpserterBridge implements Nf36Saver {
 
     for (DataField f : dataFieldList) {
 
-      if (classAccessor.isAbsent(f.fieldName())) {
+      if (classAccessor.isAbsent(f.alias())) {
         continue;
       }
 
-      Object fieldValue = classAccessor.extractValue(f.fieldName(), objectWithData);
+      Object fieldValue = classAccessor.extractValue(f.alias(), objectWithData);
 
-      if (skipList.needSkip(f.fieldName(), fieldValue)) {
+      if (skipList.needSkip(f.fieldName, fieldValue)) {
         continue;
       }
 
-      upserter.putField(f.nf6TableName, f.fieldName(), fieldValue);
+      upserter.putField(f.nf6TableName, f.fieldName, fieldValue);
     }
   }
 

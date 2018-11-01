@@ -11,6 +11,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Date;
+import java.util.Objects;
 
 import static nf36_example_with_depinject.errors.SqlError.Type.DROP_TABLE;
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -57,7 +58,7 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
     exec("create table t014_client_surname (" +
         "  id1         int,            " +
         "  id2         varchar(32),    " +
-        "  ts          timestamp,      " +
+        "  ts          timestamp default current_timestamp," +
         "  surname     varchar(300),   " +
         "  inserted_by varchar(100),   " +
         "  primary key(id1, id2, ts)   " +
@@ -66,7 +67,7 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
     exec("create table t014_client_name (" +
         "  id1         int,            " +
         "  id2         varchar(32),    " +
-        "  ts          timestamp,      " +
+        "  ts          timestamp default current_timestamp," +
         "  name        varchar(300),   " +
         "  inserted_by varchar(100),   " +
         "  primary key(id1, id2, ts)   " +
@@ -75,7 +76,7 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
     exec("create table t014_client_patronymic (" +
         "  id1         int,            " +
         "  id2         varchar(32),    " +
-        "  ts          timestamp,      " +
+        "  ts          timestamp default current_timestamp," +
         "  patronymic  varchar(300),   " +
         "  inserted_by varchar(100),   " +
         "  primary key(id1, id2, ts)   " +
@@ -84,7 +85,7 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
     exec("create table t014_client_birth (" +
         "  id1         int,            " +
         "  id2         varchar(32),    " +
-        "  ts          timestamp,      " +
+        "  ts          timestamp default current_timestamp," +
         "  birth       timestamp,      " +
         "  inserted_by varchar(100),   " +
         "  primary key(id1, id2, ts)   " +
@@ -93,7 +94,7 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
     exec("create table t014_client_age (" +
         "  id1         int,            " +
         "  id2         varchar(32),    " +
-        "  ts          timestamp,      " +
+        "  ts          timestamp default current_timestamp," +
         "  age         int,            " +
         "  inserted_by varchar(100),   " +
         "  primary key(id1, id2, ts)   " +
@@ -102,7 +103,7 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
     exec("create table t014_client_amount (" +
         "  id1         int,            " +
         "  id2         varchar(32),    " +
-        "  ts          timestamp,      " +
+        "  ts          timestamp default current_timestamp," +
         "  amount      bigint,         " +
         "  inserted_by varchar(100),   " +
         "  primary key(id1, id2, ts)   " +
@@ -111,19 +112,24 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
   }
 
   private Nf36Saver newSaver() {
-    Nf36Saver saver = saverCreator.get().create();
+    return saverCreator.get().create()
 
-    saver.addIdName("id1");
-    saver.addIdName("id2");
+        .setNf3TableName("t014_client")
+        .setTimeFieldName("ts")
+        .setAuthorFieldNames("author", "last_modifier", "inserted_by")
+        .putUpdateToNow("last_modified_at")
 
-    saver.addFieldName("t014_client_surname", "surname");
-    saver.addFieldName("t014_client_name", "name");
-    saver.addFieldName("t014_client_patronymic", "patronymic");
-    saver.addFieldName("t014_client_birth", "birth");
-    saver.addFieldName("t014_client_age", "age");
-    saver.addFieldName("t014_client_amount", "amount");
+        .addIdName("id1")
+        .addIdName("id2")
 
-    return saver;
+        .addFieldName("t014_client_surname", "surname")
+        .addFieldName("t014_client_name", "name")
+        .addFieldName("t014_client_patronymic", "patronymic")
+        .addFieldName("t014_client_birth", "birth")
+        .addFieldName("t014_client_age", "age")
+        .addFieldName("t014_client_amount", "amount")
+
+        ;
   }
 
   public static class Client1 {
@@ -157,14 +163,11 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
 
     Client1 c = rndClient1();
 
-    Nf36Saver saver = newSaver();
-
-    saver.putUpdateToNow("last_modified_at");
-    saver.setAuthor("Создатель");
-
     //
     //
-    saver.save(c);
+    newSaver()
+        .setAuthor("Создатель")
+        .save(c);
     //
     //
 
@@ -199,14 +202,11 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
     c.age = RND.plusInt(1_000_000_000);
     c.amount = RND.plusLong(1_000_000_000_000_000L);
 
-    saver = newSaver();
-
-    saver.putUpdateToNow("last_modified_at");
-    saver.setAuthor("Вселенная");
-
     //
     //
-    saver.save(c);
+    newSaver()
+        .setAuthor("Вселенная")
+        .save(c);
     //
     //
 
@@ -233,5 +233,96 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
 
     assertThat(loadStr("id1", c.id1, "id2", c.id2, "t014_client", "author")).isEqualTo("Создатель");
     assertThat(loadStr("id1", c.id1, "id2", c.id2, "t014_client", "last_modifier")).isEqualTo("Вселенная");
+  }
+
+  @Test
+  public void skip_fields() {
+    Client1 c = rndClient1();
+
+    assertThat(c.name).isNotNull();
+    assertThat(c.patronymic).isNotNull();
+
+    String name[] = new String[]{null};
+
+    //
+    //
+    newSaver()
+        .addSkipIf("name", value -> {
+          name[0] = (String) value;
+          return true;
+        })
+        .save(c);
+    //
+    //
+
+    assertThat(loadStr("id1", c.id1, "id2", c.id2, "t014_client", "name")).isNull();
+    assertThat(name[0]).isEqualTo(c.name);
+    assertThat(loadStr("id1", c.id1, "id2", c.id2, "t014_client", "patronymic")).isEqualTo(c.patronymic);
+  }
+
+  @Test
+  public void skip_ifNull() {
+    Client1 c = rndClient1();
+
+    newSaver().save(c);
+
+    assertThat(loadStr("id1", c.id1, "id2", c.id2, "t014_client", "name")).isNotNull();
+    assertThat(loadStr("id1", c.id1, "id2", c.id2, "t014_client", "patronymic")).isNotNull();
+
+    c.name = null;
+    c.patronymic = null;
+
+    //
+    //
+    newSaver()
+        .addSkipIf("name", Objects::isNull)
+        .save(c);
+    //
+    //
+
+    assertThat(loadStr("id1", c.id1, "id2", c.id2, "t014_client", "name")).isNotNull();
+    assertThat(loadStr("id1", c.id1, "id2", c.id2, "t014_client", "patronymic")).isNull();
+  }
+
+  public static class Client2 {
+    public int idOne;
+    public String id2;
+    public String nameOfClient;
+    public String patronymic;
+  }
+
+  @Test
+  public void using_aliases() {
+
+    Client2 c = new Client2();
+    c.idOne = RND.plusInt(1_000_000_000);
+    c.id2 = RND.str(10);
+    c.nameOfClient = RND.str(10);
+    c.patronymic = RND.str(10);
+
+    //
+    //
+    newSaver()
+        .addAlias("id1", "idOne")
+        .addAlias("name", "nameOfClient")
+        .save(c);
+    //
+    //
+
+    assertThat(loadStr("id1", c.idOne, "id2", c.id2, "t014_client", "name")).isEqualTo(c.nameOfClient);
+
+    c.nameOfClient = null;
+
+    //
+    //
+    newSaver()
+        .addAlias("id1", "idOne")
+        .addAlias("name", "nameOfClient")
+        .addSkipIf("name", s -> true)
+        .save(c);
+    //
+    //
+
+    assertThat(loadStr("id1", c.idOne, "id2", c.id2, "t014_client", "name")).isNotNull();
   }
 }

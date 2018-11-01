@@ -5,27 +5,27 @@ import java.util.function.Predicate;
 public interface Nf36Saver {
   // Common methods
 
-  void setNf3TableName(String nf3TableName);
+  Nf36Saver setNf3TableName(String nf3TableName);
 
-  void setTimeFieldName(String timeFieldName);
+  Nf36Saver setTimeFieldName(String timeFieldName);
 
-  void setAuthorFieldNames(String nf3CreatedBy, String nf3ModifiedBy, String nf6InsertedBy);
+  Nf36Saver setAuthorFieldNames(String nf3CreatedBy, String nf3ModifiedBy, String nf6InsertedBy);
 
-  void addIdName(String idName);
+  Nf36Saver addIdName(String idName);
 
-  void addFieldName(String nf6TableName, String fieldName);
+  Nf36Saver addFieldName(String nf6TableName, String fieldName);
 
-  void putUpdateToNow(String timestampFieldName);
+  Nf36Saver putUpdateToNow(String timestampFieldName);
 
   // Field preset methods
 
-  void setAuthor(Object author);
+  Nf36Saver setAuthor(Object author);
 
-  void presetValue(String fieldName, Object value);
+  Nf36Saver presetValue(String fieldName, Object value);
 
-  void addSkipIf(String fieldName, Predicate<Object> predicate);
+  Nf36Saver addSkipIf(String fieldName, Predicate<?> predicate);
 
-  void addAlias(String fieldName, String alias);
+  Nf36Saver addAlias(String fieldName, String alias);
 
   // Main operation
 
