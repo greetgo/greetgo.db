@@ -12,12 +12,9 @@ import nf36_example_with_depinject.jdbc.ByOneCount;
 import nf36_example_with_depinject.jdbc.ByOneLast;
 import nf36_example_with_depinject.jdbc.ByTwoCount;
 import nf36_example_with_depinject.jdbc.ByTwoLast;
-import nf36_example_with_depinject.structure.Client;
 import nf36_example_with_depinject.structure.SomeEnum;
 import nf36_example_with_depinject.util.ParentDbTests;
 import org.testng.annotations.Test;
-
-import java.util.Objects;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -345,4 +342,8 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
 
     exampleUpserter.get().onlyIds(id1, id2).commit();
   }
+
+  // FIXME: 01.11.18 Проверить обновление поля last_modified_at для upsert
+  // FIXME: 01.11.18 Проверить обновление поля last_modified_at для save
+  // FIXME: 01.11.18 Проверить обновление поля last_modified_at для update
 }
