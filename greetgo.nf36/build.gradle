@@ -5,6 +5,8 @@ apply plugin: kz.greetgo.gradle.plugins.MavenUploadPlugin
 
 dependencies {
   compile project(':greetgo.db')
+
+  testCompile "kz.greetgo:greetgo.util:$greetgoUtilVersion"
 }
 
 uploadToMavenCentral {
