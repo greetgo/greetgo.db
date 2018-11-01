@@ -29,7 +29,7 @@ public class JdbcNf36SaverBridgeOracleTest extends JdbcNf36SaverBridgePostgresTe
         "  primary key(id1, id2)" +
         ")");
 
-    exec("create table t014_m_client_surname (" +
+    exec("create table t014_client_surname (" +
         "  id1         int,            " +
         "  id2         varchar2(32),   " +
         "  ts          timestamp,      " +
@@ -38,7 +38,7 @@ public class JdbcNf36SaverBridgeOracleTest extends JdbcNf36SaverBridgePostgresTe
         "  primary key(id1, id2, ts)   " +
         ")");
 
-    exec("create table t014_m_client_name (" +
+    exec("create table t014_client_name (" +
         "  id1         int,            " +
         "  id2         varchar2(32),   " +
         "  ts          timestamp,      " +
@@ -47,7 +47,7 @@ public class JdbcNf36SaverBridgeOracleTest extends JdbcNf36SaverBridgePostgresTe
         "  primary key(id1, id2, ts)   " +
         ")");
 
-    exec("create table t014_m_client_patronymic (" +
+    exec("create table t014_client_patronymic (" +
         "  id1         int,            " +
         "  id2         varchar2(32),   " +
         "  ts          timestamp,      " +
@@ -56,7 +56,7 @@ public class JdbcNf36SaverBridgeOracleTest extends JdbcNf36SaverBridgePostgresTe
         "  primary key(id1, id2, ts)   " +
         ")");
 
-    exec("create table t014_m_client_birth (" +
+    exec("create table t014_client_birth (" +
         "  id1         int,            " +
         "  id2         varchar2(32),   " +
         "  ts          timestamp,      " +
@@ -65,7 +65,7 @@ public class JdbcNf36SaverBridgeOracleTest extends JdbcNf36SaverBridgePostgresTe
         "  primary key(id1, id2, ts)   " +
         ")");
 
-    exec("create table t014_m_client_age (" +
+    exec("create table t014_client_age (" +
         "  id1         int,            " +
         "  id2         varchar2(32),   " +
         "  ts          timestamp,      " +
@@ -74,7 +74,7 @@ public class JdbcNf36SaverBridgeOracleTest extends JdbcNf36SaverBridgePostgresTe
         "  primary key(id1, id2, ts)   " +
         ")");
 
-    exec("create table t014_m_client_amount (" +
+    exec("create table t014_client_amount (" +
         "  id1         int,            " +
         "  id2         varchar2(32),   " +
         "  ts          timestamp,      " +

@@ -75,9 +75,21 @@ public abstract class ParentDbTests extends AbstractDepinjectTestNg {
     return load(idName, idValue, tableName, field);
   }
 
+  protected String loadStr(String id1Name, Object id1Value,
+                           String id2Name, Object id2Value,
+                           String tableName, String field) {
+    return load(id1Name, id1Value, id2Name, id2Value, tableName, field);
+  }
+
   protected int loadInt(String idName, Object idValue,
                         String tableName, String field) {
     return fromSql(load(idName, idValue, tableName, field), int.class);
+  }
+
+  protected int loadInt(String id1Name, Object id1Value,
+                        String id2Name, Object id2Value,
+                        String tableName, String field) {
+    return fromSql(load(id1Name, id1Value, id2Name, id2Value, tableName, field), int.class);
   }
 
   protected long loadLong(String idName, Object idValue,
@@ -85,16 +97,31 @@ public abstract class ParentDbTests extends AbstractDepinjectTestNg {
     return fromSql(load(idName, idValue, tableName, field), long.class);
   }
 
+  protected long loadLong(String id1Name, Object id1Value,
+                          String id2Name, Object id2Value,
+                          String tableName, String field) {
+    return fromSql(load(id1Name, id1Value, id2Name, id2Value, tableName, field), long.class);
+  }
+
   protected String loadTS(String idName, Object idValue,
                           String tableName, String field) {
-    Object ts = fromSql(load(idName, idValue, tableName, field));
-    if (ts == null) {
+    return formatTS(load(idName, idValue, tableName, field));
+  }
+
+  private String formatTS(Object value) {
+    if (value == null) {
       return null;
     }
     {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-      return sdf.format(ts);
+      return sdf.format(fromSql(value));
     }
+  }
+
+  protected String loadTS(String id1Name, Object id1Value,
+                          String id2Name, Object id2Value,
+                          String tableName, String field) {
+    return formatTS(load(id1Name, id1Value, id2Name, id2Value, tableName, field));
   }
 
   protected int loadCount(String idName, Object idValue, String tableName) {
@@ -111,16 +138,21 @@ public abstract class ParentDbTests extends AbstractDepinjectTestNg {
     return loadLast(idName, idValue, tableName, field);
   }
 
+  protected String loadLastStr(String id1Name, Object id1Value,
+                               String id2Name, Object id2Value,
+                               String tableName, String field) {
+    return loadLast(id1Name, id1Value, id2Name, id2Value, tableName, field);
+  }
+
   protected String loadLastTS(String idName, Object idValue,
                               String tableName, String field) {
-    Object ts = fromSql(loadLast(idName, idValue, tableName, field));
-    if (ts == null) {
-      return null;
-    }
-    {
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-      return sdf.format(ts);
-    }
+    return formatTS(loadLast(idName, idValue, tableName, field));
+  }
+
+  protected String loadLastTS(String id1Name, Object id1Value,
+                              String id2Name, Object id2Value,
+                              String tableName, String field) {
+    return formatTS(loadLast(id1Name, id1Value, id2Name, id2Value, tableName, field));
   }
 
   protected int loadLastInt(String idName, Object idValue,
@@ -128,9 +160,21 @@ public abstract class ParentDbTests extends AbstractDepinjectTestNg {
     return fromSql(loadLast(idName, idValue, tableName, field), int.class);
   }
 
+  protected int loadLastInt(String id1Name, Object id1Value,
+                            String id2Name, Object id2Value,
+                            String tableName, String field) {
+    return fromSql(loadLast(id1Name, id1Value, id2Name, id2Value, tableName, field), int.class);
+  }
+
   protected long loadLastLong(String idName, Object idValue,
                               String tableName, String field) {
     return fromSql(loadLast(idName, idValue, tableName, field), long.class);
+  }
+
+  protected long loadLastLong(String id1Name, Object id1Value,
+                              String id2Name, Object id2Value,
+                              String tableName, String field) {
+    return fromSql(loadLast(id1Name, id1Value, id2Name, id2Value, tableName, field), long.class);
   }
 
   protected <T> T load(String idName1, Object idValue1,
@@ -158,6 +202,14 @@ public abstract class ParentDbTests extends AbstractDepinjectTestNg {
     } catch (ParseException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  protected static String str(Date date) {
+    if (date == null) {
+      return null;
+    }
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    return sdf.format(date);
   }
 
   protected Date now() {

@@ -19,6 +19,8 @@ public interface Nf36Saver {
 
   // Field preset methods
 
+  void setAuthor(Object author);
+
   void presetValue(String fieldName, Object value);
 
   void addSkipIf(String fieldName, Predicate<?> predicate);
