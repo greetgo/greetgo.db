@@ -41,6 +41,11 @@ public class SaverUpserterBridge implements Nf36Saver {
   }
 
   @Override
+  public void putUpdateToNow(String timestampFieldName) {
+
+  }
+
+  @Override
   public void presetValue(String fieldName, Object value) {
     throw new NotImplementedException();
   }
