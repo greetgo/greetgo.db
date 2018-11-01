@@ -23,7 +23,7 @@ public interface Nf36Saver {
 
   void presetValue(String fieldName, Object value);
 
-  void addSkipIf(String fieldName, Predicate<?> predicate);
+  void addSkipIf(String fieldName, Predicate<Object> predicate);
 
   void addAlias(String fieldName, String alias);
 

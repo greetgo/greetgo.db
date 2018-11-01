@@ -5,9 +5,8 @@ import kz.greetgo.db.nf36.core.Nf36Upserter;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 public class SaverUpserterBridge implements Nf36Saver {
@@ -32,28 +31,18 @@ public class SaverUpserterBridge implements Nf36Saver {
     upserter.setAuthorFieldNames(nf3CreatedBy, nf3ModifiedBy, nf6InsertedBy);
   }
 
-  private final List<String> idNameList = new ArrayList<>();
+  private final List<IdField> idFieldList = new ArrayList<>();
 
   @Override
   public void addIdName(String idName) {
-    idNameList.add(idName);
+    idFieldList.add(new IdField(idName));
   }
 
-  private static class TableField {
-    final String nf6TableName;
-    final String fieldName;
-
-    public TableField(String nf6TableName, String fieldName) {
-      this.nf6TableName = nf6TableName;
-      this.fieldName = fieldName;
-    }
-  }
-
-  private final List<TableField> tableFieldList = new ArrayList<>();
+  private final List<DataField> dataFieldList = new ArrayList<>();
 
   @Override
   public void addFieldName(String nf6TableName, String fieldName) {
-    tableFieldList.add(new TableField(nf6TableName, fieldName));
+    dataFieldList.add(new DataField(nf6TableName, fieldName));
   }
 
   @Override
@@ -71,32 +60,69 @@ public class SaverUpserterBridge implements Nf36Saver {
     throw new NotImplementedException();
   }
 
-  private static class Skip {
-    final String fieldName;
-    final Predicate<?> predicate;
-
-    public Skip(String fieldName, Predicate<?> predicate) {
-      this.fieldName = fieldName;
-      this.predicate = predicate;
-    }
-  }
-
-  private final List<Skip> skipList = new ArrayList<>();
+  private final SkipList skipList = new SkipList();
 
   @Override
-  public void addSkipIf(String fieldName, Predicate<?> predicate) {
-    skipList.add(new Skip(fieldName, predicate));
+  public void addSkipIf(String fieldName, Predicate<Object> predicate) {
+    skipList.addSkipIf(fieldName, predicate);
   }
 
-  private final Map<String, String> aliasMap = new HashMap<>();
+  private final AliasMapper aliasMapper = new AliasMapper();
 
   @Override
   public void addAlias(String fieldName, String alias) {
-    aliasMap.put(fieldName, alias);
+    aliasMapper.addAlias(fieldName, alias);
   }
+
+  private static final ClassAccessorStorage classAccessorStorage = new ClassAccessorStorage();
 
   @Override
   public void save(Object objectWithData) {
-    throw new NotImplementedException();
+    Objects.requireNonNull(objectWithData);
+
+    applyAliases();
+
+    putIdFields(objectWithData);
+
+    putDataFields(objectWithData);
+
+    upserter.commit();
+  }
+
+  private void putIdFields(Object objectWithData) {
+    ClassAccessor classAccessor = classAccessorStorage.get(objectWithData.getClass());
+
+    for (IdField f : idFieldList) {
+      Object idValue = classAccessor.extractValue(f.name(), objectWithData);
+      upserter.putId(f.name(), idValue);
+    }
+  }
+
+  private void putDataFields(Object objectWithData) {
+    ClassAccessor classAccessor = classAccessorStorage.get(objectWithData.getClass());
+
+    for (DataField f : dataFieldList) {
+
+      if (classAccessor.isAbsent(f.fieldName())) {
+        continue;
+      }
+
+      Object fieldValue = classAccessor.extractValue(f.fieldName(), objectWithData);
+
+      if (skipList.needSkip(f.fieldName(), fieldValue)) {
+        continue;
+      }
+
+      upserter.putField(f.nf6TableName, f.fieldName(), fieldValue);
+    }
+  }
+
+  private void applyAliases() {
+    for (DataField f : dataFieldList) {
+      f.applyConverter(aliasMapper::convert);
+    }
+    for (IdField f : idFieldList) {
+      f.applyConverter(aliasMapper::convert);
+    }
   }
 }
