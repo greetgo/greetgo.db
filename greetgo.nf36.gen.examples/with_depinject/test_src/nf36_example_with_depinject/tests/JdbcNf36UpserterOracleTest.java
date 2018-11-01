@@ -6,7 +6,7 @@ import nf36_example_with_depinject.bean_containers.for_tests.BeanConfigForOracle
 @ContainerConfig(BeanConfigForOracleTests.class)
 public class JdbcNf36UpserterOracleTest extends JdbcNf36UpserterPostgresTest {
   protected void createTablesForTestFields() {
-    exec("create table test_client (" +
+    exec("create table t13_client (" +
         "  id varchar2(32) not null," +
         "  surname varchar2(300)," +
         "  name varchar2(300)," +
@@ -17,40 +17,40 @@ public class JdbcNf36UpserterOracleTest extends JdbcNf36UpserterPostgresTest {
         "  primary key(id)" +
         ")");
 
-    exec("create table test_m_client_surname (" +
-        "  id varchar2(32) not null references test_client," +
+    exec("create table t13_m_client_surname (" +
+        "  id varchar2(32) not null references t13_client," +
         "  ts timestamp default current_timestamp not null," +
         "  surname varchar2(300)," +
         "" +
         "  primary key(id, ts)" +
         ")");
 
-    exec("create table test_m_client_name (" +
-        "  id varchar2(32) not null references test_client," +
+    exec("create table t13_m_client_name (" +
+        "  id varchar2(32) not null references t13_client," +
         "  ts timestamp default current_timestamp not null," +
         "  name varchar2(300)," +
         "" +
         "  primary key(id, ts)" +
         ")");
 
-    exec("create table test_m_client_birth (" +
-        "  id varchar2(32) not null references test_client," +
+    exec("create table t13_m_client_birth (" +
+        "  id varchar2(32) not null references t13_client," +
         "  ts timestamp default current_timestamp not null," +
         "  birth timestamp," +
         "" +
         "  primary key(id, ts)" +
         ")");
 
-    exec("create table test_m_client_age (" +
-        "  id varchar2(32) not null references test_client," +
+    exec("create table t13_m_client_age (" +
+        "  id varchar2(32) not null references t13_client," +
         "  ts timestamp default current_timestamp not null," +
         "  age int," +
         "" +
         "  primary key(id, ts)" +
         ")");
 
-    exec("create table test_m_client_amount (" +
-        "  id varchar2(32) not null references test_client," +
+    exec("create table t13_m_client_amount (" +
+        "  id varchar2(32) not null references t13_client," +
         "  ts timestamp default current_timestamp not null," +
         "  amount number(19)," +
         "" +
@@ -60,7 +60,7 @@ public class JdbcNf36UpserterOracleTest extends JdbcNf36UpserterPostgresTest {
 
   @Override
   protected void createTablesForTestModificationInfo() {
-    exec("create table test_home (" +
+    exec("create table t13_home (" +
         "  id int,                        " +
         "  name             varchar2(300)," +
         "  address          varchar2(500)," +
@@ -71,7 +71,7 @@ public class JdbcNf36UpserterOracleTest extends JdbcNf36UpserterPostgresTest {
         "  primary key(id)" +
         ")");
 
-    exec("create table test_m_home_name (" +
+    exec("create table t13_m_home_name (" +
         "  id int," +
         "  ts timestamp default current_timestamp," +
         "  name         varchar2(300)," +
@@ -79,7 +79,7 @@ public class JdbcNf36UpserterOracleTest extends JdbcNf36UpserterPostgresTest {
         "  primary key(id, ts)" +
         ")");
 
-    exec("create table test_m_home_address (" +
+    exec("create table t13_m_home_address (" +
         "  id int," +
         "  ts timestamp default current_timestamp," +
         "  address      varchar2(500)," +

@@ -15,6 +15,8 @@ public interface Nf36Saver {
 
   void addFieldName(String nf6TableName, String fieldName);
 
+  void putUpdateToNow(String timestampFieldName);
+
   // Field preset methods
 
   void presetValue(String fieldName, Object value);
