@@ -2,7 +2,6 @@ package kz.greetgo.db.nf36.bridges;
 
 import kz.greetgo.db.nf36.core.Nf36Saver;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,10 +61,12 @@ public class SaverUpserterBridge implements Nf36Saver {
     return this;
   }
 
+  private final PresetValues presetValues = new PresetValues();
+
   @Override
   public Nf36Saver presetValue(String fieldName, Object value) {
-    // FIXME: 01.11.18 test this method
-    throw new NotImplementedException();
+    presetValues.presetValue(fieldName, value);
+    return this;
   }
 
   private final SkipList skipList = new SkipList();
@@ -112,11 +113,18 @@ public class SaverUpserterBridge implements Nf36Saver {
 
     for (DataField f : dataFieldList) {
 
-      if (classAccessor.isAbsent(f.alias())) {
-        continue;
-      }
+      final Object fieldValue;
 
-      Object fieldValue = classAccessor.extractValue(f.alias(), objectWithData);
+      if (presetValues.exists(f.fieldName)) {
+        fieldValue = presetValues.getValue(f.fieldName);
+      } else {
+
+        if (classAccessor.isAbsent(f.alias())) {
+          continue;
+        }
+
+        fieldValue = classAccessor.extractValue(f.alias(), objectWithData);
+      }
 
       if (skipList.needSkip(f.fieldName, fieldValue)) {
         continue;

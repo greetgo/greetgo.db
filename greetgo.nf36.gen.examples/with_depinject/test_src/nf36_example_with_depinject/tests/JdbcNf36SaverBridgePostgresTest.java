@@ -29,7 +29,7 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
     exec("drop table t014_client_birth      ", DROP_TABLE);
     exec("drop table t014_client_age        ", DROP_TABLE);
     exec("drop table t014_client_amount     ", DROP_TABLE);
-    exec("drop table t014_client              ", DROP_TABLE);
+    exec("drop table t014_client            ", DROP_TABLE);
 
     createTables();
   }
@@ -324,5 +324,28 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
     //
 
     assertThat(loadStr("id1", c.idOne, "id2", c.id2, "t014_client", "name")).isNotNull();
+  }
+
+  @Test
+  public void preset_value_with_alias() {
+    Client2 c = new Client2();
+    c.idOne = RND.plusInt(1_000_000_000);
+    c.id2 = RND.str(10);
+    c.nameOfClient = RND.str(10);
+    c.patronymic = RND.str(10);
+
+    String expectedName = RND.str(10);
+
+    //
+    //
+    newSaver()
+        .addAlias("id1", "idOne")
+        .addAlias("name", "nameOfClient")
+        .presetValue("name", expectedName)
+        .save(c);
+    //
+    //
+
+    assertThat(loadStr("id1", c.idOne, "id2", c.id2, "t014_client", "name")).isEqualTo(expectedName);
   }
 }
