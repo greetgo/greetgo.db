@@ -108,8 +108,10 @@ public class JavaGenerator {
       cleanOutDirs();
     }
 
-    String upserterInterfaceClassName = generateMainUpserterInterface();
-    generateMainUpserterImpl(upserterInterfaceClassName);
+    {
+      String upserterInterfaceClassName = generateMainUpserterInterface();
+      generateMainUpserterImpl(upserterInterfaceClassName);
+    }
 
     if (updaterClassName != null) {
       String updaterInterfaceClassName = generateMainUpdaterInterface();
@@ -623,13 +625,11 @@ public class JavaGenerator {
       p.ofs(1).prn("}").prn();
     }
 
-    p.ofs(1).prn("@Override");
-    p.ofs(1).prn("public void " + info.saveMethodName() + "(Object objectWithData) {");
-    p.ofs(2).prn(saverFieldName + ".save(objectWithData);");
-    p.ofs(1).prn("}");
+    printSaveMethodImpl(p, info);
 
     p.printToFile(info.implJavaFile());
   }
+
 
   private void generateThingUpsertImpl(UpsertInfo info, String baseInterfaceFullName) {
     JavaFilePrinter p = new JavaFilePrinter();
@@ -726,6 +726,16 @@ public class JavaGenerator {
     }
 
     p.printToFile(info.implJavaFile());
+  }
+
+  private void printSaveMethodImpl(JavaFilePrinter p, SaveInfo info) {
+    p.ofs(1).prn("@Override");
+    p.ofs(1).prn("public void " + info.saveMethodName() + "(Object objectWithData) {");
+    if (collector.nf3ModifiedAtField != null) {
+      p.ofs(2).prn(saverFieldName + ".putUpdateToNow(\"" + collector.nf3ModifiedAtField + "\");");
+    }
+    p.ofs(2).prn(saverFieldName + ".save(objectWithData);");
+    p.ofs(1).prn("}");
   }
 
   private void printCommitMethodImpl(JavaFilePrinter p, UpsertInfo upsertInfo) {
