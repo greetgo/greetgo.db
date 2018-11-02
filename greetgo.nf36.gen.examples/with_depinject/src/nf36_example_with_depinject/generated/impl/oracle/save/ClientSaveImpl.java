@@ -261,7 +261,7 @@ public class ClientSaveImpl implements ClientSave {
   }
 
   @Override
-  public void save(Object objectWithData) {
+  public void saveAll(Object objectWithData) {
     saver13.save(objectWithData);
   }
 }

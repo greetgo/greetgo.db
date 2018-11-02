@@ -16,6 +16,9 @@ import nf36_example_with_depinject.structure.SomeEnum;
 import nf36_example_with_depinject.util.ParentDbTests;
 import org.testng.annotations.Test;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @ContainerConfig(BeanConfigForPostgresTests.class)
@@ -343,7 +346,109 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
     exampleUpserter.get().onlyIds(id1, id2).commit();
   }
 
-  // FIXME: 01.11.18 Проверить обновление поля last_modified_at для upsert
+  @Test
+  public void updating_last_modified_at_on_upsert() {
+
+    Date time1 = now();
+    sleep(30);
+
+    long id = exampleUpserter.get().clientNextId();
+
+    exampleUpserter.get().client(id)
+        .surname(RND.str(10))
+        .name(RND.str(10))
+        .commitAll();
+
+    Date mod1 = loadDate("id", id, "client", "mod_at");
+
+    sleep(30);
+    Date time2 = now();
+    sleep(30);
+
+    exampleUpserter.get().client(id)
+        .longDescription(RND.str(1000))
+        .commitAll();
+
+    Date mod2 = loadDate("id", id, "client", "mod_at");
+
+    sleep(30);
+    Date time3 = now();
+    sleep(30);
+
+    // time1 ... mod1 ... time2 ... mod2 ... time3
+
+    SimpleDateFormat sdf = new SimpleDateFormat("mm:ss.SSS");
+
+    System.out.println("upsert: time1 = " + sdf.format(time1));
+    System.out.println("upsert:  mod1 = " + sdf.format(mod1));
+    System.out.println("upsert: time2 = " + sdf.format(time2));
+    System.out.println("upsert:  mod2 = " + sdf.format(mod2));
+    System.out.println("upsert: time3 = " + sdf.format(time3));
+
+    assertThat(mod1).isBetween(time1, time2, false, false);
+    assertThat(mod2).isBetween(time2, time3, false, false);
+
+  }
+
+  public static class TestClient {
+    public long id;
+
+    public String surname;
+    public String name;
+    public String fatherName;
+  }
+
+  @Test
+  public void updating_last_modified_at_on_save() {
+
+    Date time1 = now();
+    sleep(30);
+
+    TestClient c = new TestClient();
+    c.id = exampleUpserter.get().clientNextId();
+    c.surname = RND.str(10);
+    c.name = RND.str(10);
+    c.fatherName = RND.str(10);
+
+    exampleUpserter.get().client()
+        .patronymic().alias("fatherName")
+        .saveAll(c);
+
+    Date mod1 = loadDate("id", c.id, "client", "mod_at");
+
+    sleep(30);
+    Date time2 = now();
+    sleep(30);
+
+    c.surname = RND.str(10);
+    c.name = RND.str(10);
+    c.fatherName = RND.str(10);
+
+    exampleUpserter.get().client()
+        .patronymic().alias("fatherName")
+        .saveAll(c);
+
+    Date mod2 = loadDate("id", c.id, "client", "mod_at");
+
+    sleep(30);
+    Date time3 = now();
+    sleep(30);
+
+    // time1 ... mod1 ... time2 ... mod2 ... time3
+
+    SimpleDateFormat sdf = new SimpleDateFormat("mm:ss.SSS");
+
+    System.out.println("save: time1 = " + sdf.format(time1));
+    System.out.println("save:  mod1 = " + sdf.format(mod1));
+    System.out.println("save: time2 = " + sdf.format(time2));
+    System.out.println("save:  mod2 = " + sdf.format(mod2));
+    System.out.println("save: time3 = " + sdf.format(time3));
+
+    assertThat(mod1).isBetween(time1, time2, false, false);
+    assertThat(mod2).isBetween(time2, time3, false, false);
+
+  }
+
   // FIXME: 01.11.18 Проверить обновление поля last_modified_at для save
   // FIXME: 01.11.18 Проверить обновление поля last_modified_at для update
 }

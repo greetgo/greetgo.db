@@ -95,5 +95,5 @@ public interface ClientSave {
 
   hisChairStrId hisChairStrId();
 
-  void save(Object objectWithData);
+  void saveAll(Object objectWithData);
 }
