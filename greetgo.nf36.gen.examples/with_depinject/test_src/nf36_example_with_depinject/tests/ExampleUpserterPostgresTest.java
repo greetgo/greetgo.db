@@ -449,6 +449,4 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
 
   }
 
-  // FIXME: 01.11.18 Проверить обновление поля last_modified_at для save
-  // FIXME: 01.11.18 Проверить обновление поля last_modified_at для update
 }

@@ -13,6 +13,9 @@ import nf36_example_with_depinject.structure.SomeEnum;
 import nf36_example_with_depinject.util.ParentDbTests;
 import org.testng.annotations.Test;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @ContainerConfig(BeanConfigForPostgresTests.class)
@@ -119,10 +122,7 @@ public class ExampleUpdaterPostgresTest extends ParentDbTests {
         .commit()
     ;
 
-    {
-      String actualValue = jdbc.get().execute(new ByOne<>("id", id.name(), "entity_enum_as_id", "value"));
-      assertThat(actualValue).isNotEqualTo(value);
-    }
+    assertThat(loadStr("id", id.name(), "entity_enum_as_id", "value")).isNotEqualTo(value);
 
     exampleUpdater.get()
         .entityEnumAsId()
@@ -131,9 +131,51 @@ public class ExampleUpdaterPostgresTest extends ParentDbTests {
         .commit()
     ;
 
-    {
-      String actualValue = jdbc.get().execute(new ByOne<>("id", id.name(), "entity_enum_as_id", "value"));
-      assertThat(actualValue).isEqualTo(value);
-    }
+    assertThat(loadStr("id", id.name(), "entity_enum_as_id", "value")).isEqualTo(value);
+  }
+
+  @Test
+  public void updating_last_modified_at_on_update() {
+
+    Date time1 = now();
+    sleep(30);
+
+    long id = exampleUpserter.get().clientNextId();
+
+    exampleUpserter.get().client(id)
+        .surname(RND.str(10))
+        .name(RND.str(10))
+        .commitAll();
+
+    Date mod1 = loadDate("id", id, "client", "mod_at");
+
+    sleep(30);
+    Date time2 = now();
+    sleep(30);
+
+    exampleUpdater.get().client()
+        .whereIdIsEqualTo(id)
+        .setName(RND.str(10))
+        .commitAll();
+
+    Date mod2 = loadDate("id", id, "client", "mod_at");
+
+    sleep(30);
+    Date time3 = now();
+    sleep(30);
+
+    // time1 ... mod1 ... time2 ... mod2 ... time3
+
+    SimpleDateFormat sdf = new SimpleDateFormat("mm:ss.SSS");
+
+    System.out.println("update: time1 = " + sdf.format(time1));
+    System.out.println("update:  mod1 = " + sdf.format(mod1));
+    System.out.println("update: time2 = " + sdf.format(time2));
+    System.out.println("update:  mod2 = " + sdf.format(mod2));
+    System.out.println("update: time3 = " + sdf.format(time3));
+
+    assertThat(mod1).isBetween(time1, time2, false, false);
+    assertThat(mod2).isBetween(time2, time3, false, false);
+
   }
 }
