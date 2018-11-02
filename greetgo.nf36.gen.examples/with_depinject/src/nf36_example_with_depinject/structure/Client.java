@@ -7,6 +7,7 @@ import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3MoreMethodName;
 import kz.greetgo.db.nf36.core.Nf3NotNull;
 import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
+import kz.greetgo.db.nf36.core.Nf3SaveMethodName;
 import kz.greetgo.db.nf36.core.Nf3Text;
 import nf36_example_with_depinject.structure.inner.Chair;
 import nf36_example_with_depinject.structure.inner.Charm;
@@ -15,6 +16,7 @@ import nf36_example_with_depinject.structure.inner.Charm;
 @Nf3Description("Это клиент")
 @Nf3CommitMethodName("commitAll")
 @Nf3MoreMethodName("moreAnother")
+@Nf3SaveMethodName("saveAll")
 @SuppressWarnings("unused")
 public class Client {
   @Nf3Description("Идентификатор клиента")

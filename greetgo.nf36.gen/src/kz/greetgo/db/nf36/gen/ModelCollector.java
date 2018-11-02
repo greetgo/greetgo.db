@@ -29,8 +29,9 @@ public class ModelCollector {
   int defaultLength;
   int shortLength;
   int longLength;
-  private String moreMethodName = null;
-  private String commitMethodName = null;
+  private String moreMethodName = "more";
+  private String commitMethodName = "commit";
+  private String saveMethodName = "save";
   private String sequencePrefix = null;
   private ClassScanner classScanner = new ClassScannerDef();
   String sourceBasePackage;
@@ -80,6 +81,19 @@ public class ModelCollector {
       throw new NullPointerException("moreMethodName == null");
     }
     return moreMethodName;
+  }
+
+  @SuppressWarnings("unused")
+  public ModelCollector setSaveMethodName(String saveMethodName) {
+    this.saveMethodName = saveMethodName;
+    return this;
+  }
+
+  public String saveMethodName() {
+    if (saveMethodName == null) {
+      throw new NullPointerException("saveMethodName == null");
+    }
+    return saveMethodName;
   }
 
   public ModelCollector setMoreMethodName(String moreMethodName) {

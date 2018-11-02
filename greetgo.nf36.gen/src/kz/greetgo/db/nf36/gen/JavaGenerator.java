@@ -5,6 +5,7 @@ import kz.greetgo.db.nf36.core.Nf36Updater;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
 import kz.greetgo.db.nf36.core.Nf3CommitMethodName;
 import kz.greetgo.db.nf36.core.Nf3MoreMethodName;
+import kz.greetgo.db.nf36.core.Nf3SaveMethodName;
 import kz.greetgo.db.nf36.core.SequenceNext;
 import kz.greetgo.db.nf36.errors.CannotBeNull;
 import kz.greetgo.db.nf36.model.Nf3Field;
@@ -170,6 +171,10 @@ public class JavaGenerator {
 
     String accessToEntityMethodName = firstToLow(nf3Table.source().getSimpleName());
 
+    Nf3SaveMethodName nf3SaveMethodName = nf3Table.source().getAnnotation(Nf3SaveMethodName.class);
+
+    String saveMethodName = nf3SaveMethodName == null ? collector.saveMethodName() : nf3SaveMethodName.value();
+
     return new SaveInfo() {
       @Override
       public File interfaceJavaFile() {
@@ -213,8 +218,7 @@ public class JavaGenerator {
 
       @Override
       public String saveMethodName() {
-        // FIXME: 30.10.18 extract from annotation
-        return "save";
+        return saveMethodName;
       }
 
       @Override
