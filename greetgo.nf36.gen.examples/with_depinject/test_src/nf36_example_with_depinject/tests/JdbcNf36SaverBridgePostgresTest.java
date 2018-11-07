@@ -23,13 +23,14 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
 
   @BeforeMethod
   public void recreateTables() {
-    exec("drop table t014_client_surname    ", DROP_TABLE);
-    exec("drop table t014_client_name       ", DROP_TABLE);
-    exec("drop table t014_client_patronymic ", DROP_TABLE);
-    exec("drop table t014_client_birth      ", DROP_TABLE);
-    exec("drop table t014_client_age        ", DROP_TABLE);
-    exec("drop table t014_client_amount     ", DROP_TABLE);
-    exec("drop table t014_client            ", DROP_TABLE);
+    exec("drop table t014_client_surname        ", DROP_TABLE);
+    exec("drop table t014_client_name           ", DROP_TABLE);
+    exec("drop table t014_client_super_top_name ", DROP_TABLE);
+    exec("drop table t014_client_patronymic     ", DROP_TABLE);
+    exec("drop table t014_client_birth          ", DROP_TABLE);
+    exec("drop table t014_client_age            ", DROP_TABLE);
+    exec("drop table t014_client_amount         ", DROP_TABLE);
+    exec("drop table t014_client                ", DROP_TABLE);
 
     createTables();
   }
@@ -42,6 +43,7 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
         //data fields
         "  surname          varchar(300), " +
         "  name             varchar(300), " +
+        "  super_top_name   varchar(300), " +
         "  patronymic       varchar(300), " +
         "  birth            timestamp,    " +
         "  age              int,          " +
@@ -70,6 +72,15 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
         "  ts          timestamp default current_timestamp," +
         "  name        varchar(300),   " +
         "  inserted_by varchar(100),   " +
+        "  primary key(id1, id2, ts)   " +
+        ")");
+
+    exec("create table t014_client_super_top_name (" +
+        "  id1            int,            " +
+        "  id2            varchar(32),    " +
+        "  ts             timestamp default current_timestamp," +
+        "  super_top_name varchar(300),   " +
+        "  inserted_by    varchar(100),   " +
         "  primary key(id1, id2, ts)   " +
         ")");
 
@@ -124,6 +135,7 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
 
         .addFieldName("t014_client_surname", "surname")
         .addFieldName("t014_client_name", "name")
+        .addFieldName("t014_client_super_top_name", "super_top_name")
         .addFieldName("t014_client_patronymic", "patronymic")
         .addFieldName("t014_client_birth", "birth")
         .addFieldName("t014_client_age", "age")
@@ -137,6 +149,7 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
     public String id2;
     public String surname;
     public String name;
+    public String superTopName;
     public String patronymic;
     public Date birth;
     public int age;
@@ -150,6 +163,7 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
 
     ret.surname = RND.str(10);
     ret.name = RND.str(10);
+    ret.superTopName = RND.str(10);
     ret.patronymic = RND.str(10);
     ret.birth = RND.dateYears(-100, -20);
     ret.age = RND.plusInt(1_000_000_000);
@@ -173,6 +187,7 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
 
     assertThat(loadStr("id1", c.id1, "id2", c.id2, "t014_client", "surname")).isEqualTo(c.surname);
     assertThat(loadStr("id1", c.id1, "id2", c.id2, "t014_client", "name")).isEqualTo(c.name);
+    assertThat(loadStr("id1", c.id1, "id2", c.id2, "t014_client", "super_top_name")).isEqualTo(c.superTopName);
     assertThat(loadStr("id1", c.id1, "id2", c.id2, "t014_client", "patronymic")).isEqualTo(c.patronymic);
     assertThat(loadTS("id1", c.id1, "id2", c.id2, "t014_client", "birth")).isEqualTo(str(c.birth));
     assertThat(loadInt("id1", c.id1, "id2", c.id2, "t014_client", "age")).isEqualTo(c.age);
@@ -180,6 +195,7 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
 
     assertThat(loadLastStr("id1", c.id1, "id2", c.id2, "t014_client_surname", "surname")).isEqualTo(c.surname);
     assertThat(loadLastStr("id1", c.id1, "id2", c.id2, "t014_client_name", "name")).isEqualTo(c.name);
+    assertThat(loadLastStr("id1", c.id1, "id2", c.id2, "t014_client_super_top_name", "super_top_name")).isEqualTo(c.superTopName);
     assertThat(loadLastStr("id1", c.id1, "id2", c.id2, "t014_client_patronymic", "patronymic")).isEqualTo(c.patronymic);
     assertThat(loadLastTS("id1", c.id1, "id2", c.id2, "t014_client_birth", "birth")).isEqualTo(str(c.birth));
     assertThat(loadLastInt("id1", c.id1, "id2", c.id2, "t014_client_age", "age")).isEqualTo(c.age);
@@ -197,6 +213,7 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
 
     c.surname = RND.str(10);
     c.name = RND.str(10);
+    c.superTopName = RND.str(10);
     c.patronymic = RND.str(10);
     c.birth = RND.dateYears(-100, -20);
     c.age = RND.plusInt(1_000_000_000);
@@ -212,6 +229,7 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
 
     assertThat(loadStr("id1", c.id1, "id2", c.id2, "t014_client", "surname")).isEqualTo(c.surname);
     assertThat(loadStr("id1", c.id1, "id2", c.id2, "t014_client", "name")).isEqualTo(c.name);
+    assertThat(loadStr("id1", c.id1, "id2", c.id2, "t014_client", "super_top_name")).isEqualTo(c.superTopName);
     assertThat(loadStr("id1", c.id1, "id2", c.id2, "t014_client", "patronymic")).isEqualTo(c.patronymic);
     assertThat(loadTS("id1", c.id1, "id2", c.id2, "t014_client", "birth")).isEqualTo(str(c.birth));
     assertThat(loadInt("id1", c.id1, "id2", c.id2, "t014_client", "age")).isEqualTo(c.age);
@@ -219,6 +237,7 @@ public class JdbcNf36SaverBridgePostgresTest extends ParentDbTests {
 
     assertThat(loadLastStr("id1", c.id1, "id2", c.id2, "t014_client_surname", "surname")).isEqualTo(c.surname);
     assertThat(loadLastStr("id1", c.id1, "id2", c.id2, "t014_client_name", "name")).isEqualTo(c.name);
+    assertThat(loadLastStr("id1", c.id1, "id2", c.id2, "t014_client_super_top_name", "super_top_name")).isEqualTo(c.superTopName);
     assertThat(loadLastStr("id1", c.id1, "id2", c.id2, "t014_client_patronymic", "patronymic")).isEqualTo(c.patronymic);
     assertThat(loadLastTS("id1", c.id1, "id2", c.id2, "t014_client_birth", "birth")).isEqualTo(str(c.birth));
     assertThat(loadLastInt("id1", c.id1, "id2", c.id2, "t014_client_age", "age")).isEqualTo(c.age);

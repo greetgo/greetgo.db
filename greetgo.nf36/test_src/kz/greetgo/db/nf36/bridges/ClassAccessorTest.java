@@ -2,6 +2,7 @@ package kz.greetgo.db.nf36.bridges;
 
 import kz.greetgo.db.nf36.errors.CannotExtractFieldFromClass;
 import kz.greetgo.util.RND;
+import org.fest.assertions.api.Assertions;
 import org.testng.annotations.Test;
 
 import static kz.greetgo.db.nf36.bridges.ClassAccessor.extractGetterFieldName;
@@ -172,5 +173,81 @@ public class ClassAccessorTest {
   @Test
   public void extractGetterFieldName_9() {
     assertThat(extractGetterFieldName("isA")).isEqualTo("a");
+  }
+
+  public static class Test3 {
+    public String superTopName;
+  }
+
+  @Test
+  public void extractValue__camel_case_to_underscored() {
+    Test3 test = new Test3();
+    test.superTopName = RND.str(10);
+
+    ClassAccessor classAccessor = new ClassAccessor(test.getClass());
+
+    assertThat(classAccessor.extractValue("super_top_name", test)).isEqualTo(test.superTopName);
+  }
+
+  @Test
+  public void isAbsent_FALSE__camel_case_to_underscored() {
+    Test3 test = new Test3();
+
+    ClassAccessor classAccessor = new ClassAccessor(test.getClass());
+
+    assertThat(classAccessor.isAbsent("super_top_name")).isFalse();
+  }
+
+  public static class Test4 {
+    public String superTopName;
+    public String super_top_name;
+  }
+
+  @Test
+  public void extractValue__camel_case_with_underscored() {
+    Test4 test = new Test4();
+    test.superTopName = RND.str(10);
+    test.super_top_name = RND.str(10);
+
+    ClassAccessor classAccessor = new ClassAccessor(test.getClass());
+
+    assertThat(classAccessor.extractValue("super_top_name", test)).isEqualTo(test.super_top_name);
+  }
+
+  @Test
+  public void isAbsent_FALSE__camel_case_with_underscored() {
+    Test4 test = new Test4();
+
+    ClassAccessor classAccessor = new ClassAccessor(test.getClass());
+
+    assertThat(classAccessor.isAbsent("super_top_name")).isFalse();
+  }
+
+  public static class Test5 {
+    String asd;
+
+    @SuppressWarnings("unused")
+    public String getSuperTopName() {
+      return "{[(" + asd + ")]}";
+    }
+  }
+
+  @Test
+  public void extractValue_fromGetter_usingUnderscored() {
+    Test5 test = new Test5();
+    test.asd = RND.str(10);
+
+    ClassAccessor classAccessor = new ClassAccessor(test.getClass());
+
+    assertThat(classAccessor.extractValue("super_top_name", test)).isEqualTo("{[(" + test.asd + ")]}");
+  }
+
+  @Test
+  public void isAbsent_fromGetter_usingUnderscored() {
+    Test5 test = new Test5();
+
+    ClassAccessor classAccessor = new ClassAccessor(test.getClass());
+
+    assertThat(classAccessor.isAbsent("super_top_name")).isFalse();
   }
 }

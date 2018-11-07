@@ -930,6 +930,9 @@ public class JavaGenerator {
   }
 
   private void generateMainUpserterImpl(String upserterInterfaceClassName) {
+    if (!generateSaver) {
+      return;
+    }
 
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = implBasePackage;

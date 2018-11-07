@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static kz.greetgo.db.nf36.utils.UtilsNf36.javaNameToDbName;
+
 public class ClassAccessor {
 
   private final Map<String, Function<Object, Object>> getterMap = new HashMap<>();
@@ -38,6 +40,48 @@ public class ClassAccessor {
       }
 
       getterMap.put(fieldName, object -> {
+        try {
+          return method.invoke(object);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+          throw new RuntimeException(e);
+        }
+      });
+    }
+
+    for (Field field : accessingClass.getFields()) {
+
+      String dbName = javaNameToDbName(field.getName());
+
+      if (getterMap.containsKey(dbName)) {
+        continue;
+      }
+
+      getterMap.put(dbName, object -> {
+        try {
+          return field.get(object);
+        } catch (IllegalAccessException e) {
+          throw new RuntimeException(e);
+        }
+      });
+    }
+
+    for (Method method : accessingClass.getMethods()) {
+      if (method.getParameterTypes().length > 0) {
+        continue;
+      }
+
+      String fieldName = extractGetterFieldName(method.getName());
+      if (fieldName == null) {
+        continue;
+      }
+
+      String dbName = javaNameToDbName(fieldName);
+
+      if (getterMap.containsKey(dbName)) {
+        continue;
+      }
+
+      getterMap.put(dbName, object -> {
         try {
           return method.invoke(object);
         } catch (IllegalAccessException | InvocationTargetException e) {
