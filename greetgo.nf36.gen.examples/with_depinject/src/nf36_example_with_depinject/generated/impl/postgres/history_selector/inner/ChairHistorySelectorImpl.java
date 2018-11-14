@@ -13,31 +13,32 @@ public class ChairHistorySelectorImpl implements ChairHistorySelector {
 
   public ChairHistorySelectorImpl(Nf36HistorySelector historySelector) {
     this.historySelector = historySelector;
+    historySelector.setNf3TableName("chair");
     historySelector.addId("id1");
     historySelector.addId("id2");
   }
 
   @Override
   public ChairHistorySelector name() {
-    historySelector.field("name", null);
+    historySelector.field("memory_never_be_superfluous.chair_name", "name", null);
     return this;
   }
 
   @Override
   public ChairHistorySelector nameTo(String nameAlias) {
-    historySelector.field("name", nameAlias);
+    historySelector.field("memory_never_be_superfluous.chair_name", "name", nameAlias);
     return this;
   }
 
   @Override
   public ChairHistorySelector description() {
-    historySelector.field("description", null);
+    historySelector.field("memory_never_be_superfluous.chair_description", "description", null);
     return this;
   }
 
   @Override
   public ChairHistorySelector descriptionTo(String descriptionAlias) {
-    historySelector.field("description", descriptionAlias);
+    historySelector.field("memory_never_be_superfluous.chair_description", "description", descriptionAlias);
     return this;
   }
 

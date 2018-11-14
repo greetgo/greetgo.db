@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.function.Consumer;
 
 public interface Nf36HistorySelector {
-  Nf36HistorySelector field(String dbFieldName, String aliasName);
+  void setNf3TableName(String nf3TableName);
+
+  Nf36HistorySelector field(String nf6TableName, String dbFieldName, String aliasName);
 
   void peekSql(Consumer<String> sqlConsumer);
 

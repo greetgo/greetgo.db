@@ -13,54 +13,55 @@ public class ClientHistorySelectorImpl implements ClientHistorySelector {
 
   public ClientHistorySelectorImpl(Nf36HistorySelector historySelector) {
     this.historySelector = historySelector;
+    historySelector.setNf3TableName("client");
     historySelector.addId("id");
   }
 
   @Override
   public ClientHistorySelector surname() {
-    historySelector.field("surname", null);
+    historySelector.field("memory_never_be_superfluous.client_surname", "surname", null);
     return this;
   }
 
   @Override
   public ClientHistorySelector surnameTo(String surnameAlias) {
-    historySelector.field("surname", surnameAlias);
+    historySelector.field("memory_never_be_superfluous.client_surname", "surname", surnameAlias);
     return this;
   }
 
   @Override
   public ClientHistorySelector name() {
-    historySelector.field("name", null);
+    historySelector.field("memory_never_be_superfluous.client_name", "name", null);
     return this;
   }
 
   @Override
   public ClientHistorySelector nameTo(String nameAlias) {
-    historySelector.field("name", nameAlias);
+    historySelector.field("memory_never_be_superfluous.client_name", "name", nameAlias);
     return this;
   }
 
   @Override
   public ClientHistorySelector patronymic() {
-    historySelector.field("patronymic", null);
+    historySelector.field("memory_never_be_superfluous.client_patronymic", "patronymic", null);
     return this;
   }
 
   @Override
   public ClientHistorySelector patronymicTo(String patronymicAlias) {
-    historySelector.field("patronymic", patronymicAlias);
+    historySelector.field("memory_never_be_superfluous.client_patronymic", "patronymic", patronymicAlias);
     return this;
   }
 
   @Override
   public ClientHistorySelector longDescription() {
-    historySelector.field("longDescription", null);
+    historySelector.field("memory_never_be_superfluous.client_long_description", "long_description", null);
     return this;
   }
 
   @Override
   public ClientHistorySelector longDescriptionTo(String longDescriptionAlias) {
-    historySelector.field("longDescription", longDescriptionAlias);
+    historySelector.field("memory_never_be_superfluous.client_long_description", "long_description", longDescriptionAlias);
     return this;
   }
 
