@@ -14,6 +14,7 @@ public class UpserterAdapterBuilderTest {
     return newDatabaseConnectorBuilder()
         .setDbType(dbType)
         .setDbName(System.getProperty("user.name") + "_db_security")
+        .setDbUser(System.getProperty("user.name") + "_db_security")
         .build()
         ;
   }

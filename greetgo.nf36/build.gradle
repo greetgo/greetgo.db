@@ -7,6 +7,8 @@ dependencies {
   compile project(':greetgo.db')
 
   testCompile "kz.greetgo:greetgo.util:$greetgoUtilVersion"
+  testCompile fileTree(dir: rootProject.file('lib'), include: ['*.jar'])
+  testCompile "org.postgresql:postgresql:$pgDriverVersion"
 }
 
 uploadToMavenCentral {

@@ -19,6 +19,7 @@ public class DatabaseConnectorBuilder {
   public DatabaseConnector build() {
     DatabaseConnectorAbstract ret = preBuild();
     ret.setDbName(dbName);
+    ret.setDbUser(dbUser);
     return ret;
   }
 
@@ -43,6 +44,13 @@ public class DatabaseConnectorBuilder {
 
   public DatabaseConnectorBuilder setDbName(String dbName) {
     this.dbName = dbName;
+    return this;
+  }
+
+  private String dbUser;
+
+  public DatabaseConnectorBuilder setDbUser(String dbUser) {
+    this.dbUser = dbUser;
     return this;
   }
 }
