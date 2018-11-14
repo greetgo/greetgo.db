@@ -1,5 +1,6 @@
 package kz.greetgo.db.nf36;
 
+import kz.greetgo.db.nf36.adapters.HistorySelectorAdapterBuilder;
 import kz.greetgo.db.nf36.adapters.SequenceNextBuilder;
 import kz.greetgo.db.nf36.adapters.UpdaterBuilder;
 import kz.greetgo.db.nf36.adapters.UpserterAdapterBuilder;
@@ -27,5 +28,9 @@ public class Nf36Builder {
 
   public SaverBuilder saver() {
     return new SaverBuilder();
+  }
+
+  public HistorySelectorAdapterBuilder historySelector() {
+    return new HistorySelectorAdapterBuilder();
   }
 }
