@@ -1,7 +1,7 @@
 package kz.greetgo.db.example.configs;
 
 import kz.greetgo.db.example.utils.ExampleUtil;
-import kz.greetgo.db.worker.DbConfig;
+import kz.greetgo.db.worker.db.DbConfig;
 
 public class PostgresDbConfig implements DbConfig {
 

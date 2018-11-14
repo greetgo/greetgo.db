@@ -2,7 +2,7 @@ package kz.greetgo.db.worker.postgres;
 
 
 import kz.greetgo.conf.sys_params.SysParams;
-import kz.greetgo.db.worker.DbConfig;
+import kz.greetgo.db.worker.db.DbConfig;
 import kz.greetgo.db.worker.utils.UtilsFiles;
 import kz.greetgo.depinject.core.Bean;
 import kz.greetgo.depinject.core.BeanGetter;

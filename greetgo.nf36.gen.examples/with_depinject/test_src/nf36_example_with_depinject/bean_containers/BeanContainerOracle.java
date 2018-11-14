@@ -1,6 +1,6 @@
 package nf36_example_with_depinject.bean_containers;
 
-import kz.greetgo.db.worker.Places;
+import kz.greetgo.db.worker.util.Places;
 import kz.greetgo.db.worker.oracle.BeanConfigDbWorkerOracle;
 import kz.greetgo.db.worker.oracle.DbWorkerOracle;
 import kz.greetgo.depinject.Depinject;

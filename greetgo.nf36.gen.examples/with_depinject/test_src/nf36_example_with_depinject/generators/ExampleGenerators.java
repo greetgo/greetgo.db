@@ -5,7 +5,7 @@ import kz.greetgo.db.nf36.gen.DdlGenerator;
 import kz.greetgo.db.nf36.gen.JavaGenerator;
 import kz.greetgo.db.nf36.gen.ModelCollector;
 import kz.greetgo.db.nf36.gen.SqlDialect;
-import kz.greetgo.db.worker.DbParameters;
+import kz.greetgo.db.worker.db.DbParameters;
 import kz.greetgo.depinject.core.Bean;
 import kz.greetgo.depinject.core.BeanGetter;
 import kz.greetgo.depinject.core.HasAfterInject;
@@ -15,7 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kz.greetgo.db.worker.Places.withDepinjectDir;
+import static kz.greetgo.db.worker.util.Places.withDepinjectDir;
 
 @Bean
 public class ExampleGenerators implements HasAfterInject {

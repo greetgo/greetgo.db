@@ -56,8 +56,9 @@ subprojects {
     ext.greetgoJavaCompilerVersion = "2.0.1"
     ext.pgDriverVersion = "9.4-1202-jdbc42"
     ext.greetgoClassScannerVersion = "2.0.0"
+    ext.testNgVersion = "6.5.1"
 
-    testCompile 'org.testng:testng:6.5.1'
+    testCompile "org.testng:testng:$testNgVersion"
     testCompile 'org.easytesting:fest-assert-core:2.0M10'
   }
 

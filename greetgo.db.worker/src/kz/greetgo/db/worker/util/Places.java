@@ -1,4 +1,4 @@
-package kz.greetgo.db.worker;
+package kz.greetgo.db.worker.util;
 
 import java.io.File;
 

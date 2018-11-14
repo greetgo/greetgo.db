@@ -1,4 +1,4 @@
-package kz.greetgo.db.worker;
+package kz.greetgo.db.worker.db;
 
 public interface DbParameters {
   String nf6prefix();

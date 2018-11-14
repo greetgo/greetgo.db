@@ -2,7 +2,7 @@ package nf36_example_with_depinject.util;
 
 import kz.greetgo.db.ConnectionCallback;
 import kz.greetgo.db.Jdbc;
-import kz.greetgo.db.worker.DbParameters;
+import kz.greetgo.db.worker.db.DbParameters;
 import kz.greetgo.depinject.core.BeanGetter;
 import kz.greetgo.depinject.testng.AbstractDepinjectTestNg;
 import nf36_example_with_depinject.errors.SqlError;

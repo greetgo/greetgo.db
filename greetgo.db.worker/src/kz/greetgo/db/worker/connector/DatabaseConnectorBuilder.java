@@ -1,4 +1,4 @@
-package kz.greetgo.db.nf36.db;
+package kz.greetgo.db.worker.connector;
 
 import kz.greetgo.db.DbType;
 
@@ -20,6 +20,7 @@ public class DatabaseConnectorBuilder {
     DatabaseConnectorAbstract ret = preBuild();
     ret.setDbName(dbName);
     ret.setDbUser(dbUser);
+    ret.setDbPassword(dbPassword);
     return ret;
   }
 
@@ -51,6 +52,13 @@ public class DatabaseConnectorBuilder {
 
   public DatabaseConnectorBuilder setDbUser(String dbUser) {
     this.dbUser = dbUser;
+    return this;
+  }
+
+  private String dbPassword;
+
+  public DatabaseConnectorBuilder setDbPassword(String dbPassword) {
+    this.dbPassword = dbPassword;
     return this;
   }
 }

@@ -1,7 +1,7 @@
 package kz.greetgo.db.worker.oracle;
 
 import kz.greetgo.depinject.core.Bean;
-import kz.greetgo.db.worker.DbParameters;
+import kz.greetgo.db.worker.db.DbParameters;
 
 @Bean
 public class DbParametersOracle implements DbParameters {

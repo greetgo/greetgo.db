@@ -1,6 +1,6 @@
 package nf36_example_with_depinject.conf.postgres;
 
-import kz.greetgo.db.worker.DbConfig;
+import kz.greetgo.db.worker.db.DbConfig;
 import kz.greetgo.depinject.core.Bean;
 import nf36_example_with_depinject.env.DbParamsPostgres;
 

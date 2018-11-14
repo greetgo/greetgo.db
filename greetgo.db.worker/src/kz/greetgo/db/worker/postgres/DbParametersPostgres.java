@@ -1,6 +1,6 @@
 package kz.greetgo.db.worker.postgres;
 
-import kz.greetgo.db.worker.DbParameters;
+import kz.greetgo.db.worker.db.DbParameters;
 import kz.greetgo.depinject.core.Bean;
 
 @Bean

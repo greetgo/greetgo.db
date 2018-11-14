@@ -1,4 +1,4 @@
-package kz.greetgo.db.nf36.db;
+package kz.greetgo.db.worker.connector;
 
 class DatabaseConnectorPostgres extends DatabaseConnectorAbstract {
   @Override
