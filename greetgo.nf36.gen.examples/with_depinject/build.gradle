@@ -8,5 +8,5 @@ dependencies {
 
   compile fileTree(dir: rootProject.file('lib'), include: ['*.jar'])
 
-  testCompile project(':greetgo.db.worker')
+  compile project(':greetgo.db.worker')
 }

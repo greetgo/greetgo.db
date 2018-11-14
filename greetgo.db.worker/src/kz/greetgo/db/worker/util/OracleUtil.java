@@ -73,4 +73,15 @@ public class OracleUtil {
   public static Connection getOracleAdminConnection() throws Exception {
     return getConnection(oracleAdminUserid(), oracleAdminPassword());
   }
+
+  public static boolean ping(String username, String password) {
+    try {
+      getConnection(username, password).close();
+      return true;
+    } catch (SkipException e) {
+      throw e;
+    } catch (Exception e) {
+      return false;
+    }
+  }
 }

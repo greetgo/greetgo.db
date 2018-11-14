@@ -1,8 +1,8 @@
 package kz.greetgo.db.worker.postgres;
 
 
-import kz.greetgo.conf.sys_params.SysParams;
 import kz.greetgo.db.worker.db.DbConfig;
+import kz.greetgo.db.worker.util.PostgresUtil;
 import kz.greetgo.db.worker.utils.UtilsFiles;
 import kz.greetgo.depinject.core.Bean;
 import kz.greetgo.depinject.core.BeanGetter;
@@ -29,7 +29,7 @@ public class DbWorkerPostgres {
   }
 
   public void recreateDb() throws Exception {
-    try (Connection con = getPostgresAdminConnection()) {
+    try (Connection con = PostgresUtil.getAdminConnection()) {
       exec(con, "drop database if exists " + dbConfig.get().dbName());
       exec(con, "drop user if exists " + dbConfig.get().username());
       exec(con, "create user " + dbConfig.get().username() + " encrypted password '" + dbConfig.get().password() + "'");
@@ -39,15 +39,6 @@ public class DbWorkerPostgres {
     try (Connection con = getConnection()) {
       exec(con, "create schema " + dbParameters.get().schema());
     }
-  }
-
-  public static Connection getPostgresAdminConnection() throws Exception {
-    Class.forName("org.postgresql.Driver");
-    return DriverManager.getConnection(
-      SysParams.pgAdminUrl(),
-      SysParams.pgAdminUserid(),
-      SysParams.pgAdminPassword()
-    );
   }
 
   public Connection getConnection() throws Exception {

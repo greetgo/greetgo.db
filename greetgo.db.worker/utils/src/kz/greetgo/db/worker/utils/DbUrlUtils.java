@@ -1,4 +1,4 @@
-package nf36_example_with_depinject.util;
+package kz.greetgo.db.worker.utils;
 
 public class DbUrlUtils {
   public static String changeUrlDbName(String url, String dbName) {
