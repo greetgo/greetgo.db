@@ -4,17 +4,17 @@ import java.util.Date;
 import java.util.function.Consumer;
 
 public interface Nf36HistorySelector {
-  void setNf3TableName(String nf3TableName);
+  Nf36HistorySelector setNf3TableName(String nf3TableName);
 
   Nf36HistorySelector field(String nf6TableName, String dbFieldName, String aliasName);
 
-  void peekSql(Consumer<String> sqlConsumer);
+  Nf36HistorySelector onAbsent(Consumer<Object> destinationObjectConsumer);
 
-  void putTo(Object destinationObject);
+  boolean putTo(Object destinationObject);
 
-  void addId(String idName);
+  Nf36HistorySelector addId(String idName);
 
   void addIdAlias(String idName, String idAlias);
 
-  void at(Date date);
+  Nf36HistorySelector at(Date date);
 }

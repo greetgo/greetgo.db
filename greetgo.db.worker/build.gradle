@@ -6,4 +6,6 @@ dependencies {
   compile "org.postgresql:postgresql:$pgDriverVersion"
   compile "kz.greetgo.depinject:greetgo.depinject:$depinjectVersion"
   compile "org.testng:testng:$testNgVersion"
+
+  compile "$poolJar"
 }

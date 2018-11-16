@@ -2,7 +2,7 @@ package nf36_example_with_depinject.env;
 
 import kz.greetgo.conf.sys_params.SysParams;
 
-import static kz.greetgo.db.worker.utils.DbUrlUtils.changeUrlDbName;
+import static kz.greetgo.db.worker.utils.DbUtils.changeUrlDbName;
 
 public class DbParamsPostgres {
   public static final String username = System.getProperty("user.name") + "_nf36_example";

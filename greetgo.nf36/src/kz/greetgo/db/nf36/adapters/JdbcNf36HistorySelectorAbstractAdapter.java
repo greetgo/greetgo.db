@@ -3,6 +3,7 @@ package kz.greetgo.db.nf36.adapters;
 import kz.greetgo.db.Jdbc;
 import kz.greetgo.db.nf36.core.Nf36HistorySelector;
 import kz.greetgo.db.nf36.core.SqlLogAcceptor;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Date;
 import java.util.function.Consumer;
@@ -13,37 +14,38 @@ abstract class JdbcNf36HistorySelectorAbstractAdapter implements Nf36HistorySele
   SqlLogAcceptor logAcceptor = null;
 
   @Override
-  public void setNf3TableName(String nf3TableName) {
-
+  public Nf36HistorySelector setNf3TableName(String nf3TableName) {
+    throw new NotImplementedException();
   }
 
   @Override
   public Nf36HistorySelector field(String nf6TableName, String dbFieldName, String aliasName) {
-    return null;
+    throw new NotImplementedException();
+  }
+
+
+  @Override
+  public boolean putTo(Object destinationObject) {
+    throw new NotImplementedException();
   }
 
   @Override
-  public void peekSql(Consumer<String> sqlConsumer) {
-
-  }
-
-  @Override
-  public void putTo(Object destinationObject) {
-
-  }
-
-  @Override
-  public void addId(String idName) {
-
+  public Nf36HistorySelector addId(String idName) {
+    throw new NotImplementedException();
   }
 
   @Override
   public void addIdAlias(String idName, String idAlias) {
-
+    throw new NotImplementedException();
   }
 
   @Override
-  public void at(Date date) {
+  public Nf36HistorySelector at(Date date) {
+    throw new NotImplementedException();
+  }
 
+  @Override
+  public Nf36HistorySelector onAbsent(Consumer<Object> destinationObjectConsumer) {
+    throw new NotImplementedException();
   }
 }

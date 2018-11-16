@@ -55,7 +55,7 @@ public class OracleUtil {
     }
   }
 
-  public static Connection getConnection(String username, String password) throws Exception {
+  public static Connection getConnection(String username, String password) {
     try {
       Class.forName("oracle.jdbc.driver.OracleDriver");
     } catch (ClassNotFoundException e) {
@@ -67,7 +67,11 @@ public class OracleUtil {
 
     String url = "jdbc:oracle:thin:@" + oracleAdminHost() + ":" + oracleAdminPort() + ":" + oracleAdminSid();
 
-    return DriverManager.getConnection(url, username, password);
+    try {
+      return DriverManager.getConnection(url, username, password);
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public static Connection getOracleAdminConnection() throws Exception {
