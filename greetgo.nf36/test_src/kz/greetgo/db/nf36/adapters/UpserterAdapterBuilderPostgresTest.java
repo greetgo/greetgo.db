@@ -431,7 +431,7 @@ public class UpserterAdapterBuilderPostgresTest extends ParentDbTest {
       c1.fatherName = RND.str(10);
 
       LocalClient c2 = new LocalClient();
-      c2.id = "id1";
+      c2.id = "id2";
       c2.surname = RND.str(10);
       c2.name = RND.str(10);
       c2.fatherName = RND.str(10);
@@ -462,7 +462,7 @@ public class UpserterAdapterBuilderPostgresTest extends ParentDbTest {
       c1.fatherName = RND.str(10);
 
       LocalClient c2 = new LocalClient();
-      c2.id = "id1";
+      c2.id = "id2";
       c2.surname = RND.str(10);
       c2.name = RND.str(10);
       c2.fatherName = RND.str(10);
@@ -493,7 +493,7 @@ public class UpserterAdapterBuilderPostgresTest extends ParentDbTest {
       c1.fatherName = RND.str(10);
 
       LocalClient c2 = new LocalClient();
-      c2.id = "id1";
+      c2.id = "id2";
       c2.surname = RND.str(10);
       c2.name = RND.str(10);
       c2.fatherName = RND.str(10);
@@ -524,7 +524,7 @@ public class UpserterAdapterBuilderPostgresTest extends ParentDbTest {
       c1.fatherName = RND.str(10);
 
       LocalClient c2 = new LocalClient();
-      c2.id = "id1";
+      c2.id = "id2";
       c2.surname = RND.str(10);
       c2.name = RND.str(10);
       c2.fatherName = RND.str(10);
