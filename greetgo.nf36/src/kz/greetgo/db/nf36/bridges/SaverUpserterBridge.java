@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import static kz.greetgo.db.nf36.bridges.ClassAccessorStorage.classAccessorStorage;
+
 public class SaverUpserterBridge implements Nf36Saver {
   private final Nf36Upserter upserter;
 
@@ -85,8 +87,6 @@ public class SaverUpserterBridge implements Nf36Saver {
     return this;
   }
 
-  private static final ClassAccessorStorage classAccessorStorage = new ClassAccessorStorage();
-
   @Override
   public void save(Object objectWithData) {
     Objects.requireNonNull(objectWithData);
@@ -101,7 +101,7 @@ public class SaverUpserterBridge implements Nf36Saver {
   }
 
   private void putIdFields(Object objectWithData) {
-    ClassAccessor classAccessor = classAccessorStorage.get(objectWithData.getClass());
+    ClassAccessor classAccessor = classAccessorStorage().get(objectWithData.getClass());
 
     for (IdField f : idFieldList) {
       upserter.putId(f.name, classAccessor.extractValue(f.alias(), objectWithData));
@@ -109,7 +109,7 @@ public class SaverUpserterBridge implements Nf36Saver {
   }
 
   private void putDataFields(Object objectWithData) {
-    ClassAccessor classAccessor = classAccessorStorage.get(objectWithData.getClass());
+    ClassAccessor classAccessor = classAccessorStorage().get(objectWithData.getClass());
 
     for (DataField f : dataFieldList) {
 

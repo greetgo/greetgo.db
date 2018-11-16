@@ -1,6 +1,7 @@
 package kz.greetgo.db.nf36.bridges;
 
 import kz.greetgo.db.nf36.errors.CannotExtractFieldFromClass;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -128,5 +129,17 @@ public class ClassAccessor {
     }
 
     return extractor.apply(object);
+  }
+
+  public void setValue(Object destinationObject, String fieldName, Object value) {
+    throw new NotImplementedException();
+  }
+
+  public boolean hasSetter(String fieldName) {
+    throw new NotImplementedException();
+  }
+
+  public Class<?> setterType(String fieldName) {
+    throw new NotImplementedException();
   }
 }

@@ -122,15 +122,18 @@ public class UpserterAdapterBuilderPostgresTest extends ParentDbTest {
   private Nf36HistorySelector createHistorySelectorForClient() {
     return newNf36Builder()
         .historySelector()
+        .setLogAcceptor(new ConsoleLogAcceptor())
         .database(connector().type())
         .setJdbc(connector().jdbc())
         .setSelectAuthor(true)
         .build()
         .addId("id")
         .setNf3TableName("client")
-        .field("m_client_surname", "surname", null)
-        .field("m_client_name", "name", null)
-        .field("m_client_father_name", "father_name", null);
+        .setTimeFieldName("ts")
+        .setInsertedAtFieldName("inserted_at")
+        .field("m_client_surname", "surname", null, "author")
+        .field("m_client_name", "name", null, "author")
+        .field("m_client_father_name", "father_name", null, "author");
   }
 
   @Test(enabled = false)

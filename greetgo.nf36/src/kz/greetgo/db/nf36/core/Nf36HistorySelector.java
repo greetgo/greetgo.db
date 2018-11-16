@@ -4,9 +4,13 @@ import java.util.Date;
 import java.util.function.Consumer;
 
 public interface Nf36HistorySelector {
+  Nf36HistorySelector setTimeFieldName(String timeFieldName);
+
+  Nf36HistorySelector setInsertedAtFieldName(String insertedAtFieldName);
+
   Nf36HistorySelector setNf3TableName(String nf3TableName);
 
-  Nf36HistorySelector field(String nf6TableName, String dbFieldName, String aliasName);
+  Nf36HistorySelector field(String nf6TableName, String dbFieldName, String aliasName, String authorFieldName);
 
   Nf36HistorySelector onAbsent(Consumer<Object> destinationObjectConsumer);
 
