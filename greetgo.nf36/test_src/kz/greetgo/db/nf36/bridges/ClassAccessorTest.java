@@ -1,11 +1,11 @@
 package kz.greetgo.db.nf36.bridges;
 
 import kz.greetgo.db.nf36.errors.CannotExtractFieldFromClass;
+import kz.greetgo.db.nf36.errors.CannotSetFieldToClass;
 import kz.greetgo.util.RND;
-import org.fest.assertions.api.Assertions;
 import org.testng.annotations.Test;
 
-import static kz.greetgo.db.nf36.bridges.ClassAccessor.extractGetterFieldName;
+import static kz.greetgo.db.nf36.bridges.ClassAccessor.extractAcceptorFieldName;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 public class ClassAccessorTest {
@@ -132,47 +132,47 @@ public class ClassAccessorTest {
 
   @Test
   public void extractGetterFieldName_1() {
-    assertThat(extractGetterFieldName("getField")).isEqualTo("field");
+    assertThat(extractAcceptorFieldName("getField", "is", "get")).isEqualTo("field");
   }
 
   @Test
   public void extractGetterFieldName_2() {
-    assertThat(extractGetterFieldName("getFieldName")).isEqualTo("fieldName");
+    assertThat(extractAcceptorFieldName("getFieldName", "is", "get")).isEqualTo("fieldName");
   }
 
   @Test
   public void extractGetterFieldName_3() {
-    assertThat(extractGetterFieldName("getter")).isNull();
+    assertThat(extractAcceptorFieldName("getter", "is", "get")).isNull();
   }
 
   @Test
   public void extractGetterFieldName_4() {
-    assertThat(extractGetterFieldName("hello")).isNull();
+    assertThat(extractAcceptorFieldName("hello", "is", "get")).isNull();
   }
 
   @Test
   public void extractGetterFieldName_5() {
-    assertThat(extractGetterFieldName("isActualWhileMoving")).isEqualTo("actualWhileMoving");
+    assertThat(extractAcceptorFieldName("isActualWhileMoving", "is", "get")).isEqualTo("actualWhileMoving");
   }
 
   @Test
   public void extractGetterFieldName_6() {
-    assertThat(extractGetterFieldName("is")).isNull();
+    assertThat(extractAcceptorFieldName("is", "is", "get")).isNull();
   }
 
   @Test
   public void extractGetterFieldName_7() {
-    assertThat(extractGetterFieldName("get")).isNull();
+    assertThat(extractAcceptorFieldName("get", "is", "get")).isNull();
   }
 
   @Test
   public void extractGetterFieldName_8() {
-    assertThat(extractGetterFieldName("getA")).isEqualTo("a");
+    assertThat(extractAcceptorFieldName("getA", "is", "get")).isEqualTo("a");
   }
 
   @Test
   public void extractGetterFieldName_9() {
-    assertThat(extractGetterFieldName("isA")).isEqualTo("a");
+    assertThat(extractAcceptorFieldName("isA", "is", "get")).isEqualTo("a");
   }
 
   public static class Test3 {
@@ -249,5 +249,94 @@ public class ClassAccessorTest {
     ClassAccessor classAccessor = new ClassAccessor(test.getClass());
 
     assertThat(classAccessor.isAbsent("super_top_name")).isFalse();
+  }
+
+  public class SetTest1 {
+    public String field1;
+    public int field2;
+  }
+
+  @Test
+  public void setValue() {
+    SetTest1 test = new SetTest1();
+
+    ClassAccessor classAccessor = new ClassAccessor(test.getClass());
+
+    //
+    //
+    classAccessor.setValue(test, "field1", "Привет мир");
+    classAccessor.setValue(test, "field2", 765);
+    //
+    //
+
+    assertThat(test.field1).isEqualTo("Привет мир");
+    assertThat(test.field2).isEqualTo(765);
+  }
+
+  @Test
+  public void hasSetter() {
+    SetTest1 test = new SetTest1();
+
+    ClassAccessor classAccessor = new ClassAccessor(test.getClass());
+
+    //
+    //
+    boolean field1 = classAccessor.hasSetter("field1");
+    boolean fieldX = classAccessor.hasSetter("fieldX");
+    //
+    //
+
+    assertThat(field1).isTrue();
+    assertThat(fieldX).isFalse();
+  }
+
+  @Test(expectedExceptions = CannotSetFieldToClass.class)
+  public void setValue_CannotSetFieldToClass() {
+    SetTest1 test = new SetTest1();
+
+    ClassAccessor classAccessor = new ClassAccessor(test.getClass());
+
+    classAccessor.setValue(test, "hello_world", null);
+  }
+
+  public class SetTest2 {
+    public String superFieldOne;
+    public int good_field_two;
+  }
+
+  @Test
+  public void setValue_CamelCase() {
+    SetTest2 test = new SetTest2();
+
+    ClassAccessor classAccessor = new ClassAccessor(test.getClass());
+
+    //
+    //
+    classAccessor.setValue(test, "super_field_one", "Привет мир!");
+    classAccessor.setValue(test, "good_field_two", 7615);
+    //
+    //
+
+    assertThat(test.superFieldOne).isEqualTo("Привет мир!");
+    assertThat(test.good_field_two).isEqualTo(7615);
+  }
+
+  @Test
+  public void hasSetter_CamelCase() {
+    SetTest2 test = new SetTest2();
+
+    ClassAccessor classAccessor = new ClassAccessor(test.getClass());
+
+    //
+    //
+    boolean superFieldOne = classAccessor.hasSetter("super_field_one");
+    boolean goodFieldTwo = classAccessor.hasSetter("good_field_two");
+    boolean leftName = classAccessor.hasSetter("leftName");
+    //
+    //
+
+    assertThat(superFieldOne).isTrue();
+    assertThat(goodFieldTwo).isTrue();
+    assertThat(leftName).isFalse();
   }
 }

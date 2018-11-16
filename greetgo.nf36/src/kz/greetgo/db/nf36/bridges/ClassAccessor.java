@@ -1,7 +1,7 @@
 package kz.greetgo.db.nf36.bridges;
 
 import kz.greetgo.db.nf36.errors.CannotExtractFieldFromClass;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import kz.greetgo.db.nf36.errors.CannotSetFieldToClass;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -28,6 +28,24 @@ public class ClassAccessor {
           throw new RuntimeException(e);
         }
       });
+
+      setterMap.put(field.getName(), new Setter() {
+        @Override
+        public void setValue(Object destinationObject, Object value) {
+          try {
+            field.set(destinationObject, value);
+          } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+          }
+        }
+
+        Class<?> type = field.getType();
+
+        @Override
+        public Class<?> type() {
+          return type;
+        }
+      });
     }
 
     for (Method method : accessingClass.getMethods()) {
@@ -35,7 +53,7 @@ public class ClassAccessor {
         continue;
       }
 
-      String fieldName = extractGetterFieldName(method.getName());
+      String fieldName = extractAcceptorFieldName(method.getName(), "is", "get");
       if (fieldName == null) {
         continue;
       }
@@ -45,6 +63,37 @@ public class ClassAccessor {
           return method.invoke(object);
         } catch (IllegalAccessException | InvocationTargetException e) {
           throw new RuntimeException(e);
+        }
+      });
+    }
+
+    for (Method method : accessingClass.getMethods()) {
+      if (method.getParameterTypes().length != 1) {
+        continue;
+      }
+
+      String fieldName = extractAcceptorFieldName(method.getName(), "set");
+      if (fieldName == null) {
+        continue;
+      }
+
+      setterMap.put(fieldName, new Setter() {
+        @Override
+        public void setValue(Object destinationObject, Object value) {
+
+          try {
+            method.invoke(destinationObject, value);
+          } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+          }
+
+        }
+
+        final Class<?> type = method.getParameterTypes()[0];
+
+        @Override
+        public Class<?> type() {
+          return type;
         }
       });
     }
@@ -66,12 +115,39 @@ public class ClassAccessor {
       });
     }
 
+    for (Field field : accessingClass.getFields()) {
+
+      String dbName = javaNameToDbName(field.getName());
+
+      if (setterMap.containsKey(dbName)) {
+        continue;
+      }
+
+      setterMap.put(dbName, new Setter() {
+        @Override
+        public void setValue(Object destinationObject, Object value) {
+          try {
+            field.set(destinationObject, value);
+          } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+          }
+        }
+
+        Class<?> type = field.getType();
+
+        @Override
+        public Class<?> type() {
+          return type;
+        }
+      });
+    }
+
     for (Method method : accessingClass.getMethods()) {
       if (method.getParameterTypes().length > 0) {
         continue;
       }
 
-      String fieldName = extractGetterFieldName(method.getName());
+      String fieldName = extractAcceptorFieldName(method.getName(), "is", "get");
       if (fieldName == null) {
         continue;
       }
@@ -91,11 +167,46 @@ public class ClassAccessor {
       });
     }
 
+    for (Method method : accessingClass.getMethods()) {
+      if (method.getParameterTypes().length != 1) {
+        continue;
+      }
+
+      String fieldName = extractAcceptorFieldName(method.getName(), "set");
+      if (fieldName == null) {
+        continue;
+      }
+
+      String dbName = javaNameToDbName(fieldName);
+
+      if (setterMap.containsKey(dbName)) {
+        continue;
+      }
+
+      setterMap.put(dbName, new Setter() {
+        @Override
+        public void setValue(Object destinationObject, Object value) {
+          try {
+            method.invoke(destinationObject, value);
+          } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+          }
+        }
+
+        Class<?> type = method.getParameterTypes()[0];
+
+        @Override
+        public Class<?> type() {
+          return type;
+        }
+      });
+    }
+
   }
 
-  static String extractGetterFieldName(String name) {
+  static String extractAcceptorFieldName(String name, String... prefixes) {
 
-    for (String pre : new String[]{"is", "get"}) {
+    for (String pre : prefixes) {
       if (name.startsWith(pre)) {
 
         String name2 = name.substring(pre.length());
@@ -131,15 +242,32 @@ public class ClassAccessor {
     return extractor.apply(object);
   }
 
+  private interface Setter {
+    void setValue(Object destinationObject, Object value);
+
+    Class<?> type();
+  }
+
+  private final Map<String, Setter> setterMap = new HashMap<>();
+
   public void setValue(Object destinationObject, String fieldName, Object value) {
-    throw new NotImplementedException();
+    getSetter(fieldName).setValue(destinationObject, value);
+  }
+
+  private Setter getSetter(String fieldName) {
+    Setter setter = setterMap.get(fieldName);
+
+    if (setter == null) {
+      throw new CannotSetFieldToClass(fieldName, accessingClass);
+    }
+    return setter;
   }
 
   public boolean hasSetter(String fieldName) {
-    throw new NotImplementedException();
+    return setterMap.containsKey(fieldName);
   }
 
   public Class<?> setterType(String fieldName) {
-    throw new NotImplementedException();
+    return getSetter(fieldName).type();
   }
 }
