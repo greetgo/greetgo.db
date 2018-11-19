@@ -24,8 +24,6 @@ public class ExampleHistorySelectorPostgresTest extends ParentDbTests {
 
   public BeanGetter<ExampleHistorySelector> exampleHistorySelector;
 
-  // TODO: 19.11.18 place to continue after generating
-
   @Test
   public void selectHistoryOfClient() throws Exception {
 
