@@ -5,4 +5,9 @@ class JdbcNf36HistorySelectorAdapterOracle extends JdbcNf36HistorySelectorAbstra
   protected String timestampParameter() {
     return "?";
   }
+
+  @Override
+  protected void sqlAppendFromDual() {
+    sqlAppend("from dual");
+  }
 }

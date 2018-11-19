@@ -5,4 +5,7 @@ class JdbcNf36HistorySelectorAdapterPostgres extends JdbcNf36HistorySelectorAbst
   protected String timestampParameter() {
     return "?::timestamp";
   }
+
+  @Override
+  protected void sqlAppendFromDual() {}
 }

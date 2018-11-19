@@ -329,6 +329,7 @@ abstract class JdbcNf36HistorySelectorAbstractAdapter implements Nf36HistorySele
       sqlAppend("       , ? as " + f.refAlias);
       sqlParams.add(forSql(f.extractValue()));
     }
+    sqlAppendFromDual();
     sqlAppend(")");
 
     //
@@ -385,6 +386,8 @@ abstract class JdbcNf36HistorySelectorAbstractAdapter implements Nf36HistorySele
     sqlAppend("where " + nf3TableName + "." + insertedAt + " <= " + sqlData() + ".t and " + idFilter());
 
   }
+
+  protected abstract void sqlAppendFromDual();
 
   private String idFilter() {
     return idFieldList.stream()
