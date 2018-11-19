@@ -90,6 +90,14 @@ public class JavaGenerator {
     return this;
   }
 
+  String createHistorySelectorMethodName = "createHistorySelector";
+
+  @SuppressWarnings("unused")
+  public JavaGenerator setCreateHistorySelectorMethodName(String createHistorySelectorMethodName) {
+    this.createHistorySelectorMethodName = createHistorySelectorMethodName;
+    return this;
+  }
+
   public JavaGenerator setUpserterClassName(String upserterClassName) {
     this.upserterClassName = upserterClassName;
     return this;
@@ -136,6 +144,13 @@ public class JavaGenerator {
     if (updaterClassName != null) {
       String updaterInterfaceClassName = generateMainUpdaterInterface();
       generateMainUpdaterImpl(updaterInterfaceClassName);
+    }
+
+    if (historySelectorNames == null) {
+
+      String interfaceFullClassName = generateMainHistorySelectorInterface();
+      generateMainHistorySelectorImpl(interfaceFullClassName);
+
     }
 
     for (Nf3Table nf3Table : collector.collect()) {
@@ -1151,6 +1166,29 @@ public class JavaGenerator {
     p.ofs(1).prn("}").prn();
   }
 
+  private String generateMainHistorySelectorInterface() {
+
+    JavaFilePrinter p = new JavaFilePrinter();
+    p.packageName = interfaceBasePackage;
+    p.classHeader = "public interface " + historySelectorNames.interfaceClassName;
+
+    for (Nf3Table nf3Table : collector.collect()) {
+
+      HistorySelectorInfo info = getHistorySelectorInfo(nf3Table);
+      if (info != null) {
+
+        p.ofs(1).prn(p.i(info.interfaceFullName()) + " " + info.nf3TableName() + "();").prn();
+
+      }
+
+    }
+
+    p.printToFile(resolveJavaFile(interfaceOutDir, interfaceBasePackage, historySelectorNames.interfaceClassName));
+
+    return resolveFullName(interfaceBasePackage, historySelectorNames.interfaceClassName);
+  }
+
+
   private String generateMainUpserterInterface() {
 
     if (upserterClassName == null) {
@@ -1191,6 +1229,46 @@ public class JavaGenerator {
     p.printToFile(resolveJavaFile(interfaceOutDir, interfaceBasePackage, updaterClassName));
 
     return resolveFullName(interfaceBasePackage, updaterClassName);
+  }
+
+  private void generateMainHistorySelectorImpl(String interfaceFullClassName) {
+    JavaFilePrinter p = new JavaFilePrinter();
+    p.packageName = implBasePackage;
+    p.classHeader = "public" + (abstracting ? " abstract" : "")
+        + " class " + historySelectorNames.implClassName
+        + " implements " + p.i(interfaceFullClassName);
+
+    {
+      String selectorClassName = p.i(Nf36HistorySelector.class);
+
+      p.ofs(1).prn("protected " + (abstracting ? "abstract " : "")
+          + selectorClassName + " " + createHistorySelectorMethodName + "()"
+          + (abstracting ? ";\n" : " {")
+      );
+
+      if (!abstracting) {
+        String notImplError = p.i(RuntimeException.class.getName());
+
+        p.ofs(2).prn("throw new " + notImplError + "(\"Not implemented\");");
+        p.ofs(1).prn("}").prn();
+      }
+    }
+
+    for (Nf3Table nf3Table : collector.collect()) {
+
+      HistorySelectorInfo info = getHistorySelectorInfo(nf3Table);
+      if (info != null) {
+
+        p.ofs(1).prn("@Override");
+        p.ofs(1).prn("public " + p.i(info.interfaceFullName()) + " " + info.nf3TableName() + "() {");
+        p.ofs(2).prn("return new " + p.i(info.implFullName()) + "(" + createHistorySelectorMethodName + "());");
+        p.ofs(1).prn("}").prn();
+
+      }
+
+    }
+
+    p.printToFile(resolveJavaFile(implOutDir, implBasePackage, historySelectorNames.implClassName));
   }
 
   private void generateMainUpserterImpl(String upserterInterfaceClassName) {

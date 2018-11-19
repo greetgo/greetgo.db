@@ -24,6 +24,10 @@ public interface HistorySelectorInfo {
 
   File implJavaFile();
 
+  default String implFullName() {
+    return resolveFullName(implPackageName(), implClassName());
+  }
+
   List<Nf3Field> fields();
 
   String atMethodName();
