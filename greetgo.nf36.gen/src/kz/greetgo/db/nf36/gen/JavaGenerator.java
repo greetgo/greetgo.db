@@ -832,7 +832,7 @@ public class JavaGenerator {
     for (Nf3Field f : idFields) {
       String name = "aliasFor" + firstToUp(f.javaName());
       p.ofs(2).prn("@Override");
-      p.ofs(2).prn("Finish " + name + "(String " + name + ") {");
+      p.ofs(2).prn("public Finish " + name + "(String " + name + ") {");
       p.ofs(3).prn("historySelector.addIdAlias(\"" + f.dbName() + "\", " + name + ");");
       p.ofs(3).prn("return this;");
       p.ofs(2).prn("}").prn();
@@ -840,7 +840,7 @@ public class JavaGenerator {
 
     {
       p.ofs(2).prn("@Override");
-      p.ofs(2).prn("void putTo(Object destinationObject) {");
+      p.ofs(2).prn("public void putTo(Object destinationObject) {");
       p.ofs(3).prn("historySelector.putTo(destinationObject);");
       p.ofs(3).prn("return this;");
       p.ofs(2).prn("}").prn();
@@ -849,7 +849,7 @@ public class JavaGenerator {
     String className = p.i(info.source());
 
     p.ofs(2).prn("@Override");
-    p.ofs(2).prn(className + " get(" + (
+    p.ofs(2).prn("public " + className + " get(" + (
 
         idFields.stream()
             .map(f -> p.i(f.javaType()) + " " + f.javaName())
