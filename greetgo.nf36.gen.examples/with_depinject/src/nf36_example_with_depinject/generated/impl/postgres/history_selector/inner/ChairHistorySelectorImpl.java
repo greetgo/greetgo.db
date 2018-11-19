@@ -13,6 +13,8 @@ public class ChairHistorySelectorImpl implements ChairHistorySelector {
   public ChairHistorySelectorImpl(Nf36HistorySelector historySelector) {
     this.historySelector = historySelector;
     historySelector.setNf3TableName("chair");
+    historySelector.setTimeFieldName("ts");
+    historySelector.setInsertedAtFieldName("created_at");
     historySelector.addId("id1");
     historySelector.addId("id2");
   }

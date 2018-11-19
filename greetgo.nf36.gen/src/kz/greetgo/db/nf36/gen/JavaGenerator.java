@@ -1,5 +1,6 @@
 package kz.greetgo.db.nf36.gen;
 
+import kz.greetgo.db.nf36.core.Nf36HistorySelector;
 import kz.greetgo.db.nf36.core.Nf36Saver;
 import kz.greetgo.db.nf36.core.Nf36Updater;
 import kz.greetgo.db.nf36.core.Nf36Upserter;
@@ -351,6 +352,11 @@ public class JavaGenerator {
       public String nf6TableName(Nf3Field f) {
         return nf3Table.nf6prefix() + nf3Table.tableName() + collector.nf6TableSeparator + f.rootField().dbName();
       }
+
+      @Override
+      public String nf3TableName() {
+        return nf3Table.nf3TableName();
+      }
     };
   }
 
@@ -665,8 +671,7 @@ public class JavaGenerator {
       }
     }
 
-    p.ofs(1).prn(info.interfaceClassName() + " " + info.atMethodName() + "(" + p.i(Date.class) + " at);").prn();
-
+    p.ofs(1).prn("Finish " + info.atMethodName() + "(" + p.i(Date.class) + " at);").prn();
 
     p.ofs(1).prn("interface Finish {");
 
@@ -796,6 +801,25 @@ public class JavaGenerator {
     String implInterfaceName = p.i(baseInterfaceFullName);
     p.classHeader = "public class " + info.implClassName() + " implements " + implInterfaceName;
 
+    List<Nf3Field> idFields = info.fields().stream()
+        .filter(Nf3Field::isId)
+        .sorted(comparing(Nf3Field::idOrder))
+        .collect(toList());
+
+    {
+      String historySelector = p.i(Nf36HistorySelector.class);
+      p.ofs(1).prn("private final " + historySelector + " historySelector;").prn();
+      p.ofs(1).prn("public " + implInterfaceName + "(" + historySelector + " historySelector) {").prn();
+      p.ofs(2).prn("this.historySelector = historySelector;");
+      p.ofs(2).prn("historySelector.setNf3TableName(\"" + info.nf3TableName() + "\");");
+      p.ofs(2).prn("historySelector.setTimeFieldName(\"" + collector.nf6timeField + "\");");
+      p.ofs(2).prn("historySelector.setInsertedAtFieldName(\"" + collector.nf3CreatedAtField + "\");");
+      for (Nf3Field f : idFields) {
+        p.ofs(2).prn("historySelector.addId(\"" + f.dbName() + "\");");
+      }
+      p.ofs(1).prn("}");
+    }
+
     {
       List<Nf3Field> fields = info.fields().stream()
           .filter(Nf3Field::isData)
@@ -828,11 +852,6 @@ public class JavaGenerator {
     p.ofs(1).prn("}").prn();
 
     p.ofs(1).prn("private final Finish finish = new Finish() {");
-
-    List<Nf3Field> idFields = info.fields().stream()
-        .filter(Nf3Field::isId)
-        .sorted(comparing(Nf3Field::idOrder))
-        .collect(toList());
 
     for (Nf3Field f : idFields) {
       String name = "aliasFor" + firstToUp(f.javaName());

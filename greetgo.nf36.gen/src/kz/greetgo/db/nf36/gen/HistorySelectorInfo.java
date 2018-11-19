@@ -33,4 +33,6 @@ public interface HistorySelectorInfo {
   String toSuffix();
 
   String nf6TableName(Nf3Field f);
+
+  String nf3TableName();
 }
