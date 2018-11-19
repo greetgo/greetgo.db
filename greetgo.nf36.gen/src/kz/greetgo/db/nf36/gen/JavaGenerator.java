@@ -866,7 +866,6 @@ public class JavaGenerator {
       p.ofs(2).prn("@Override");
       p.ofs(2).prn("public void putTo(Object destinationObject) {");
       p.ofs(3).prn("historySelector.putTo(destinationObject);");
-      p.ofs(3).prn("return this;");
       p.ofs(2).prn("}").prn();
     }
 
