@@ -798,8 +798,8 @@ public class JavaGenerator {
   private void generateThingHistorySelectorImpl(HistorySelectorInfo info, String baseInterfaceFullName) {
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = info.implPackageName();
-    String implInterfaceName = p.i(baseInterfaceFullName);
-    p.classHeader = "public class " + info.implClassName() + " implements " + implInterfaceName;
+    String interfaceName = p.i(baseInterfaceFullName);
+    p.classHeader = "public class " + info.implClassName() + " implements " + interfaceName;
 
     List<Nf3Field> idFields = info.fields().stream()
         .filter(Nf3Field::isId)
@@ -809,7 +809,7 @@ public class JavaGenerator {
     {
       String historySelector = p.i(Nf36HistorySelector.class);
       p.ofs(1).prn("private final " + historySelector + " historySelector;").prn();
-      p.ofs(1).prn("public " + implInterfaceName + "(" + historySelector + " historySelector) {").prn();
+      p.ofs(1).prn("public " + info.implClassName() + "(" + historySelector + " historySelector) {").prn();
       p.ofs(2).prn("this.historySelector = historySelector;");
       p.ofs(2).prn("historySelector.setNf3TableName(\"" + info.nf3TableName() + "\");");
       p.ofs(2).prn("historySelector.setTimeFieldName(\"" + collector.nf6timeField + "\");");
