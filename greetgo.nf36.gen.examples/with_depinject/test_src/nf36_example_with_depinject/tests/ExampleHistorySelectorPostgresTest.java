@@ -56,4 +56,43 @@ public class ExampleHistorySelectorPostgresTest extends ParentDbTests {
     assertThat(client).isNotNull();
     assertThat(client.name).isEqualTo(expectedName);
   }
+
+  public class LocalClient {
+    public long identifier;
+    public String nameOfClient;
+  }
+
+  @Test
+  public void checking_aliases() {
+    authorGetterImpl.get().author = "Сталина на вас нет!";
+
+    long id = RND.plusLong(1_000_000_000_000L);
+    String expectedName = "name " + RND.str(10);
+
+    exampleUpserter.get().client(id)
+        .name(expectedName)
+        .commitAll();
+
+    sleep(50);
+
+    Date date1 = now();
+
+    sleep(50);
+
+    exampleUpserter.get().client(id)
+        .name(RND.str(10))
+        .commitAll();
+
+    LocalClient localClient = new LocalClient();
+    localClient.identifier = id;
+
+    exampleHistorySelector.get()
+        .client()
+        .nameTo("nameOfClient")
+        .atMoment(date1)
+        .aliasForId("identifier")
+        .putTo(localClient);
+
+    assertThat(localClient.nameOfClient).isEqualTo(expectedName);
+  }
 }
