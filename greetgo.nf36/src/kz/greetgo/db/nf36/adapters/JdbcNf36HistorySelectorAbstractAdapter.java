@@ -6,6 +6,7 @@ import kz.greetgo.db.nf36.bridges.ClassAccessor;
 import kz.greetgo.db.nf36.core.Nf36HistorySelector;
 import kz.greetgo.db.nf36.core.SqlLogAcceptor;
 import kz.greetgo.db.nf36.model.SqlLog;
+import kz.greetgo.db.nf36.utils.UtilsNf36;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -102,12 +103,14 @@ abstract class JdbcNf36HistorySelectorAbstractAdapter implements Nf36HistorySele
         return viewAlias;
       }
 
-      String alias = "v_" + nf6TableName;
+      String name = UtilsNf36.extractAfterDot(nf6TableName);
+
+      String alias = "v_" + name;
 
       int i = 1;
 
       while (usedTableNames.contains(alias)) {
-        alias = "v" + (i++) + "_" + nf6TableName;
+        alias = "v" + (i++) + "_" + name;
       }
 
       usedTableNames.add(alias);

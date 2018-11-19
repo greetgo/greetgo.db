@@ -5,7 +5,6 @@ import nf36_example_with_depinject.generated.faces.history_selector.ClientHistor
 import nf36_example_with_depinject.structure.Client;
 
 import java.util.Date;
-import java.util.function.Consumer;
 
 public class ClientHistorySelectorImpl implements ClientHistorySelector {
 
@@ -14,6 +13,8 @@ public class ClientHistorySelectorImpl implements ClientHistorySelector {
   public ClientHistorySelectorImpl(Nf36HistorySelector historySelector) {
     this.historySelector = historySelector;
     historySelector.setNf3TableName("client");
+    historySelector.setInsertedAtFieldName("created_at");
+    historySelector.setTimeFieldName("ts");
     historySelector.addId("id");
   }
 
@@ -25,7 +26,8 @@ public class ClientHistorySelectorImpl implements ClientHistorySelector {
 
   @Override
   public ClientHistorySelector surnameTo(String surnameAlias) {
-    historySelector.field("memory_never_be_superfluous.client_surname", "surname", surnameAlias);
+    historySelector.field("memory_never_be_superfluous.client_surname", "surname", null);
+    historySelector.addFieldAlias("surname", surnameAlias);
     return this;
   }
 
@@ -37,7 +39,8 @@ public class ClientHistorySelectorImpl implements ClientHistorySelector {
 
   @Override
   public ClientHistorySelector nameTo(String nameAlias) {
-    historySelector.field("memory_never_be_superfluous.client_name", "name", nameAlias);
+    historySelector.field("memory_never_be_superfluous.client_name", "name", null);
+    historySelector.addFieldAlias("name", nameAlias);
     return this;
   }
 
@@ -50,6 +53,7 @@ public class ClientHistorySelectorImpl implements ClientHistorySelector {
   @Override
   public ClientHistorySelector patronymicTo(String patronymicAlias) {
     historySelector.field("memory_never_be_superfluous.client_patronymic", "patronymic", patronymicAlias);
+    historySelector.addFieldAlias("patronymic", patronymicAlias);
     return this;
   }
 
@@ -62,12 +66,7 @@ public class ClientHistorySelectorImpl implements ClientHistorySelector {
   @Override
   public ClientHistorySelector longDescriptionTo(String longDescriptionAlias) {
     historySelector.field("memory_never_be_superfluous.client_long_description", "long_description", longDescriptionAlias);
-    return this;
-  }
-
-  @Override
-  public ClientHistorySelector peekSql(Consumer<String> sqlConsumer) {
-    historySelector.peekSql(sqlConsumer);
+    historySelector.addFieldAlias("long_description", longDescriptionAlias);
     return this;
   }
 

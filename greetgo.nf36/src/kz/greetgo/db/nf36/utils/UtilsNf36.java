@@ -216,4 +216,14 @@ public class UtilsNf36 {
 
     return PRIMITIVE_MAP.get(mayPrimitive);
   }
+
+  public static String extractAfterDot(String nameCanHaveDots) {
+    int i = nameCanHaveDots.lastIndexOf('.');
+
+    if (i < 0) {
+      return nameCanHaveDots;
+    } else {
+      return nameCanHaveDots.substring(i + 1);
+    }
+  }
 }

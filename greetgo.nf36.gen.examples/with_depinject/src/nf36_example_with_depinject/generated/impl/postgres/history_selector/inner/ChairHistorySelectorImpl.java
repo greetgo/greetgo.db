@@ -5,7 +5,6 @@ import nf36_example_with_depinject.generated.faces.history_selector.inner.ChairH
 import nf36_example_with_depinject.structure.inner.Chair;
 
 import java.util.Date;
-import java.util.function.Consumer;
 
 public class ChairHistorySelectorImpl implements ChairHistorySelector {
 
@@ -39,12 +38,6 @@ public class ChairHistorySelectorImpl implements ChairHistorySelector {
   @Override
   public ChairHistorySelector descriptionTo(String descriptionAlias) {
     historySelector.field("memory_never_be_superfluous.chair_description", "description", descriptionAlias);
-    return this;
-  }
-
-  @Override
-  public ChairHistorySelector peekSql(Consumer<String> sqlConsumer) {
-    historySelector.peekSql(sqlConsumer);
     return this;
   }
 

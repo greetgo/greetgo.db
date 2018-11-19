@@ -141,4 +141,22 @@ public class UtilsNf36Test {
     String dir = UtilsNf36.packageDir("build/src", null);
     assertThat(dir).isEqualTo("build/src");
   }
+
+  @Test
+  public void extractAfterDot_noDots() {
+    String actual = UtilsNf36.extractAfterDot("name without a dot");
+    assertThat(actual).isEqualTo("name without a dot");
+  }
+
+  @Test
+  public void extractAfterDot_oneDot() {
+    String actual = UtilsNf36.extractAfterDot("hello.world");
+    assertThat(actual).isEqualTo("world");
+  }
+
+  @Test
+  public void extractAfterDot_threeDots() {
+    String actual = UtilsNf36.extractAfterDot("the_east.The north.Hello_World");
+    assertThat(actual).isEqualTo("Hello_World");
+  }
 }

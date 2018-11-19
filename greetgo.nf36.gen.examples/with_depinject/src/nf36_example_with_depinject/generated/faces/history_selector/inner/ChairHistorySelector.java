@@ -15,8 +15,6 @@ public interface ChairHistorySelector {
 
   ChairHistorySelector descriptionTo(String descriptionAlias);
 
-  ChairHistorySelector peekSql(Consumer<String> sqlConsumer);
-
   Finish at(Date date);
 
   interface Finish {

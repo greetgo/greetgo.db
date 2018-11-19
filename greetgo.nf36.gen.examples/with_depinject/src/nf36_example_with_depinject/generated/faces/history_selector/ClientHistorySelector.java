@@ -23,8 +23,6 @@ public interface ClientHistorySelector {
 
   ClientHistorySelector longDescriptionTo(String longDescriptionAlias);
 
-  ClientHistorySelector peekSql(Consumer<String> sqlConsumer);
-
   Finish at(Date date);
 
   interface Finish {
