@@ -50,7 +50,7 @@ public class ExampleHistorySelectorPostgresTest extends ParentDbTests {
 
     Client client = exampleHistorySelector.get().client()
         .name()
-        .at(date1)
+        .atMoment(date1)
         .get(id);
 
     assertThat(client).isNotNull();
