@@ -856,12 +856,15 @@ public class JavaGenerator {
             .collect(joining(", "))
 
     ) + ") {");
-    p.ofs(3).prn(className + " __ret__ = new " + className + "();");
+
+    String ret = selectName("ret", idFields.stream().map(Nf3Field::javaName).collect(Collectors.toSet()));
+
+    p.ofs(3).prn(className + " " + ret + " = new " + className + "();");
     for (Nf3Field f : idFields) {
-      p.ofs(3).prn("__ret__." + f.javaName() + " = " + f.javaName() + ";");
+      p.ofs(3).prn(ret + "." + f.javaName() + " = " + f.javaName() + ";");
     }
-    p.ofs(3).prn("historySelector.putTo(__ret__);");
-    p.ofs(3).prn("return __ret__;");
+    p.ofs(3).prn("historySelector.putTo(" + ret + ");");
+    p.ofs(3).prn("return " + ret + ";");
     p.ofs(2).prn("}");
 
     p.ofs(1).prn("};");
@@ -1040,7 +1043,7 @@ public class JavaGenerator {
 
     Set<String> anotherNames = idFields.stream().map(Nf3Field::javaName).collect(Collectors.toSet());
 
-    String upserterVar = UtilsNf36.selectName(upserterField, anotherNames);
+    String upserterVar = selectName(upserterField, anotherNames);
 
     p.ofs(1).prn("public " + info.implClassName() + "(" + upserterClassName + " " + upserterVar + ", " + (
 
