@@ -779,7 +779,7 @@ public class JavaGenerator {
 
       p.ofs(2).prn("@Override");
       p.ofs(2).prn("public " + implInterfaceName + " set(" + fieldType + " value) {");
-      p.ofs(3).prn(saverFieldName + ".presetValue(\"" + fieldName + "\", value);");
+      p.ofs(3).prn(saverFieldName + ".presetValue(\"" + f.dbName() + "\", value);");
       p.ofs(3).prn("return " + info.implClassName() + ".this;");
       p.ofs(2).prn("}").prn();
 
@@ -787,13 +787,13 @@ public class JavaGenerator {
 
       p.ofs(2).prn("@Override");
       p.ofs(2).prn("public " + implInterfaceName + " skipIf(" + predicate + "<" + fieldTypeBoxed + "> " + " predicate) {");
-      p.ofs(3).prn(saverFieldName + ".addSkipIf(\"" + fieldName + "\", predicate);");
+      p.ofs(3).prn(saverFieldName + ".addSkipIf(\"" + f.dbName() + "\", predicate);");
       p.ofs(3).prn("return " + info.implClassName() + ".this;");
       p.ofs(2).prn("}").prn();
 
       p.ofs(2).prn("@Override");
       p.ofs(2).prn("public " + implInterfaceName + " alias(String alias) {");
-      p.ofs(3).prn(saverFieldName + ".addAlias(\"" + fieldName + "\", alias);");
+      p.ofs(3).prn(saverFieldName + ".addAlias(\"" + f.dbName() + "\", alias);");
       p.ofs(3).prn("return " + info.implClassName() + ".this;");
       p.ofs(2).prn("}").prn();
 

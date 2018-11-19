@@ -53,19 +53,19 @@ public class ClientAddressSaveImpl implements ClientAddressSave {
   private final streetId streetId = new streetId() {
     @Override
     public ClientAddressSave set(long value) {
-      saver13.presetValue("streetId", value);
+      saver13.presetValue("street_id", value);
       return ClientAddressSaveImpl.this;
     }
 
     @Override
     public ClientAddressSave skipIf(Predicate<Long>  predicate) {
-      saver13.addSkipIf("streetId", predicate);
+      saver13.addSkipIf("street_id", predicate);
       return ClientAddressSaveImpl.this;
     }
 
     @Override
     public ClientAddressSave alias(String alias) {
-      saver13.addAlias("streetId", alias);
+      saver13.addAlias("street_id", alias);
       return ClientAddressSaveImpl.this;
     }
 
@@ -131,19 +131,19 @@ public class ClientAddressSaveImpl implements ClientAddressSave {
   private final birthDate birthDate = new birthDate() {
     @Override
     public ClientAddressSave set(Date value) {
-      saver13.presetValue("birthDate", value);
+      saver13.presetValue("birth_date", value);
       return ClientAddressSaveImpl.this;
     }
 
     @Override
     public ClientAddressSave skipIf(Predicate<Date>  predicate) {
-      saver13.addSkipIf("birthDate", predicate);
+      saver13.addSkipIf("birth_date", predicate);
       return ClientAddressSaveImpl.this;
     }
 
     @Override
     public ClientAddressSave alias(String alias) {
-      saver13.addAlias("birthDate", alias);
+      saver13.addAlias("birth_date", alias);
       return ClientAddressSaveImpl.this;
     }
 

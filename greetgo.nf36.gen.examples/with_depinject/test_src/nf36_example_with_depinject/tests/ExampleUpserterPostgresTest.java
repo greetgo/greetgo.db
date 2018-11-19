@@ -449,4 +449,173 @@ public class ExampleUpserterPostgresTest extends ParentDbTests {
 
   }
 
+  public static class TestClient2 {
+    public long id;
+
+    public String name;
+    public String fatherName;
+
+    public String longDescription;
+  }
+
+  @Test
+  public void check_alias_without_camel_case() {
+
+    TestClient2 test = new TestClient2();
+    test.id = RND.plusLong(1_000_000_000L);
+    test.fatherName = RND.str(10);
+
+    exampleUpserter.get().client()
+        .patronymic().alias("fatherName")
+        .saveAll(test);
+
+    String actualPatronymic = loadStr("id", test.id, "client", "patronymic");
+
+    assertThat(actualPatronymic).isEqualTo(test.fatherName);
+  }
+
+  @Test
+  public void check_preset_with_camel_case() {
+
+    String longDescription = RND.str(10);
+
+    TestClient2 test = new TestClient2();
+    test.id = RND.plusLong(1_000_000_000L);
+    test.longDescription = RND.str(10);
+
+    exampleUpserter.get().client()
+        .longDescription().set(longDescription)
+        .saveAll(test);
+
+    String actualLongDescription = loadStr("id", test.id, "client", "long_description");
+
+    assertThat(actualLongDescription).isEqualTo(longDescription);
+  }
+
+  @Test
+  public void check_preset_without_camel_case() {
+
+    String name = RND.str(10);
+
+    TestClient2 test = new TestClient2();
+    test.id = RND.plusLong(1_000_000_000L);
+    test.name = RND.str(10);
+
+    exampleUpserter.get().client()
+        .name().set(name)
+        .saveAll(test);
+
+    String actualName = loadStr("id", test.id, "client", "name");
+
+    assertThat(actualName).isEqualTo(name);
+  }
+
+  public static class TestClient3 {
+    public long id;
+
+    public String longDescriptionOfClient;
+  }
+
+  @Test
+  public void check_alias_with_camel_case() {
+
+    TestClient3 test = new TestClient3();
+    test.id = RND.plusLong(1_000_000_000L);
+    test.longDescriptionOfClient = RND.str(10);
+
+    exampleUpserter.get().client()
+        .longDescription().alias("longDescriptionOfClient")
+        .saveAll(test);
+
+    String actualLongDescription = loadStr("id", test.id, "client", "long_description");
+
+    assertThat(actualLongDescription).isEqualTo(test.longDescriptionOfClient);
+  }
+
+  @Test
+  public void check_preset_with_alias_with_camel_case() {
+
+    String longDescription = RND.str(10);
+
+    TestClient3 test = new TestClient3();
+    test.id = RND.plusLong(1_000_000_000L);
+    test.longDescriptionOfClient = RND.str(10);
+
+    exampleUpserter.get().client()
+        .longDescription().alias("longDescriptionOfClient")
+        .longDescription().set(longDescription)
+        .saveAll(test);
+
+    String actualLongDescription = loadStr("id", test.id, "client", "long_description");
+
+    assertThat(actualLongDescription).isEqualTo(longDescription);
+  }
+
+  @Test
+  public void check_skip_camel_case_alias() {
+
+    String longDescription = RND.str(10);
+
+    TestClient3 test = new TestClient3();
+    test.id = RND.plusLong(1_000_000_000L);
+    test.longDescriptionOfClient = longDescription;
+
+    exampleUpserter.get().client()
+        .longDescription().alias("longDescriptionOfClient")
+        .saveAll(test);
+
+    {
+      String actualLongDescription = loadStr("id", test.id, "client", "long_description");
+      assertThat(actualLongDescription).isEqualTo(longDescription);
+    }
+
+    test.longDescriptionOfClient = RND.str(10);
+
+    exampleUpserter.get().client()
+        .longDescription().alias("longDescriptionOfClient")
+        .longDescription().skipIf(a -> true)
+        .saveAll(test);
+
+    {
+      String actualLongDescription = loadStr("id", test.id, "client", "long_description");
+
+      assertThat(actualLongDescription).isEqualTo(longDescription);
+    }
+  }
+
+  public static class TestClient4 {
+    public long id;
+
+    public String longDescription;
+  }
+
+  @Test
+  public void check_skip_camel_case() {
+
+    String longDescription = RND.str(10);
+
+    TestClient4 test = new TestClient4();
+    test.id = RND.plusLong(1_000_000_000L);
+    test.longDescription = longDescription;
+
+    exampleUpserter.get().client().saveAll(test);
+
+    {
+      String actualLongDescription = loadStr("id", test.id, "client", "long_description");
+      assertThat(actualLongDescription).isEqualTo(longDescription);
+    }
+
+    test.longDescription = RND.str(10);
+
+    exampleUpserter.get().client()
+        .longDescription().skipIf(a -> true)
+        .saveAll(test);
+
+    {
+      String actualLongDescription = loadStr("id", test.id, "client", "long_description");
+
+      assertThat(actualLongDescription).isEqualTo(longDescription);
+    }
+  }
+
 }

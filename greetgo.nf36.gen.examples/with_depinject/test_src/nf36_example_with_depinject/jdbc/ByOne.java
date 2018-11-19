@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import static nf36_example_with_depinject.util.CorrectionUtil.correctType;
+import static nf36_example_with_depinject.util.CorrectionUtil.correctTypeForJava;
 
 public class ByOne<T> implements ConnectionCallback<T> {
 
@@ -36,7 +36,7 @@ public class ByOne<T> implements ConnectionCallback<T> {
           throw new RuntimeException("No record with " + idName + " = " + idValue + " in table " + tableName);
         }
 
-        return correctType(rs.getObject(1));
+        return correctTypeForJava(rs.getObject(1), con);
 
       }
     }

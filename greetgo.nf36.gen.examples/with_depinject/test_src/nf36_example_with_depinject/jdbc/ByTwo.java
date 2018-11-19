@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import static nf36_example_with_depinject.util.CorrectionUtil.correctType;
+import static nf36_example_with_depinject.util.CorrectionUtil.correctTypeForJava;
 
 @SuppressWarnings("unused")
 public class ByTwo<T> implements ConnectionCallback<T> {
@@ -43,7 +43,7 @@ public class ByTwo<T> implements ConnectionCallback<T> {
               + idName2 + " = " + idValue2 + " in table " + tableName);
         }
 
-        return correctType(rs.getObject(1));
+        return correctTypeForJava(rs.getObject(1), con);
 
       }
     }

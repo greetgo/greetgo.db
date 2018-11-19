@@ -103,19 +103,19 @@ public class PersonSaveImpl implements PersonSave {
   private final amountRU amountRU = new amountRU() {
     @Override
     public PersonSave set(BigDecimal value) {
-      saver13.presetValue("amountRU", value);
+      saver13.presetValue("amount_ru", value);
       return PersonSaveImpl.this;
     }
 
     @Override
     public PersonSave skipIf(Predicate<BigDecimal>  predicate) {
-      saver13.addSkipIf("amountRU", predicate);
+      saver13.addSkipIf("amount_ru", predicate);
       return PersonSaveImpl.this;
     }
 
     @Override
     public PersonSave alias(String alias) {
-      saver13.addAlias("amountRU", alias);
+      saver13.addAlias("amount_ru", alias);
       return PersonSaveImpl.this;
     }
 

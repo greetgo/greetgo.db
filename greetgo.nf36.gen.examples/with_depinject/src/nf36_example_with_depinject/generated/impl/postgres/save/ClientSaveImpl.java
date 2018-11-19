@@ -107,19 +107,19 @@ public class ClientSaveImpl implements ClientSave {
   private final charmId charmId = new charmId() {
     @Override
     public ClientSave set(String value) {
-      saver13.presetValue("charmId", value);
+      saver13.presetValue("charm_id", value);
       return ClientSaveImpl.this;
     }
 
     @Override
     public ClientSave skipIf(Predicate<String>  predicate) {
-      saver13.addSkipIf("charmId", predicate);
+      saver13.addSkipIf("charm_id", predicate);
       return ClientSaveImpl.this;
     }
 
     @Override
     public ClientSave alias(String alias) {
-      saver13.addAlias("charmId", alias);
+      saver13.addAlias("charm_id", alias);
       return ClientSaveImpl.this;
     }
 
@@ -133,19 +133,19 @@ public class ClientSaveImpl implements ClientSave {
   private final longDescription longDescription = new longDescription() {
     @Override
     public ClientSave set(String value) {
-      saver13.presetValue("longDescription", value);
+      saver13.presetValue("long_description", value);
       return ClientSaveImpl.this;
     }
 
     @Override
     public ClientSave skipIf(Predicate<String>  predicate) {
-      saver13.addSkipIf("longDescription", predicate);
+      saver13.addSkipIf("long_description", predicate);
       return ClientSaveImpl.this;
     }
 
     @Override
     public ClientSave alias(String alias) {
-      saver13.addAlias("longDescription", alias);
+      saver13.addAlias("long_description", alias);
       return ClientSaveImpl.this;
     }
 
@@ -159,19 +159,19 @@ public class ClientSaveImpl implements ClientSave {
   private final myChairId1 myChairId1 = new myChairId1() {
     @Override
     public ClientSave set(Long value) {
-      saver13.presetValue("myChairId1", value);
+      saver13.presetValue("my_chair_id1", value);
       return ClientSaveImpl.this;
     }
 
     @Override
     public ClientSave skipIf(Predicate<Long>  predicate) {
-      saver13.addSkipIf("myChairId1", predicate);
+      saver13.addSkipIf("my_chair_id1", predicate);
       return ClientSaveImpl.this;
     }
 
     @Override
     public ClientSave alias(String alias) {
-      saver13.addAlias("myChairId1", alias);
+      saver13.addAlias("my_chair_id1", alias);
       return ClientSaveImpl.this;
     }
 
@@ -185,19 +185,19 @@ public class ClientSaveImpl implements ClientSave {
   private final myChairId2 myChairId2 = new myChairId2() {
     @Override
     public ClientSave set(String value) {
-      saver13.presetValue("myChairId2", value);
+      saver13.presetValue("my_chair_id2", value);
       return ClientSaveImpl.this;
     }
 
     @Override
     public ClientSave skipIf(Predicate<String>  predicate) {
-      saver13.addSkipIf("myChairId2", predicate);
+      saver13.addSkipIf("my_chair_id2", predicate);
       return ClientSaveImpl.this;
     }
 
     @Override
     public ClientSave alias(String alias) {
-      saver13.addAlias("myChairId2", alias);
+      saver13.addAlias("my_chair_id2", alias);
       return ClientSaveImpl.this;
     }
 
@@ -211,19 +211,19 @@ public class ClientSaveImpl implements ClientSave {
   private final hisChairLongId hisChairLongId = new hisChairLongId() {
     @Override
     public ClientSave set(Long value) {
-      saver13.presetValue("hisChairLongId", value);
+      saver13.presetValue("his_chair_long_id", value);
       return ClientSaveImpl.this;
     }
 
     @Override
     public ClientSave skipIf(Predicate<Long>  predicate) {
-      saver13.addSkipIf("hisChairLongId", predicate);
+      saver13.addSkipIf("his_chair_long_id", predicate);
       return ClientSaveImpl.this;
     }
 
     @Override
     public ClientSave alias(String alias) {
-      saver13.addAlias("hisChairLongId", alias);
+      saver13.addAlias("his_chair_long_id", alias);
       return ClientSaveImpl.this;
     }
 
@@ -237,19 +237,19 @@ public class ClientSaveImpl implements ClientSave {
   private final hisChairStrId hisChairStrId = new hisChairStrId() {
     @Override
     public ClientSave set(String value) {
-      saver13.presetValue("hisChairStrId", value);
+      saver13.presetValue("his_chair_str_id", value);
       return ClientSaveImpl.this;
     }
 
     @Override
     public ClientSave skipIf(Predicate<String>  predicate) {
-      saver13.addSkipIf("hisChairStrId", predicate);
+      saver13.addSkipIf("his_chair_str_id", predicate);
       return ClientSaveImpl.this;
     }
 
     @Override
     public ClientSave alias(String alias) {
-      saver13.addAlias("hisChairStrId", alias);
+      saver13.addAlias("his_chair_str_id", alias);
       return ClientSaveImpl.this;
     }
 

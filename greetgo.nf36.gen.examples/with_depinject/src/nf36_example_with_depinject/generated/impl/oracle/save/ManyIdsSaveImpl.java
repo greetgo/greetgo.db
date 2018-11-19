@@ -24,19 +24,19 @@ public class ManyIdsSaveImpl implements ManyIdsSave {
   private final aField aField = new aField() {
     @Override
     public ManyIdsSave set(int value) {
-      saver13.presetValue("aField", value);
+      saver13.presetValue("a_field", value);
       return ManyIdsSaveImpl.this;
     }
 
     @Override
     public ManyIdsSave skipIf(Predicate<Integer>  predicate) {
-      saver13.addSkipIf("aField", predicate);
+      saver13.addSkipIf("a_field", predicate);
       return ManyIdsSaveImpl.this;
     }
 
     @Override
     public ManyIdsSave alias(String alias) {
-      saver13.addAlias("aField", alias);
+      saver13.addAlias("a_field", alias);
       return ManyIdsSaveImpl.this;
     }
 
