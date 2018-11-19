@@ -802,8 +802,8 @@ public class JavaGenerator {
           .collect(Collectors.toList());
 
       for (Nf3Field f : fields) {
-        p.ofs(1).prn("@Override").pr("public ");
-        p.ofs(1).prn(info.interfaceClassName() + " " + f.javaName() + "() {");
+        p.ofs(1).prn("@Override");
+        p.ofs(1).prn("public " + info.interfaceClassName() + " " + f.javaName() + "() {");
         p.ofs(2).prn("historySelector.field(\"" + info.nf6TableName(f) + "\", \"" + f.dbName() + "\", null);");
         p.ofs(2).prn("return this;");
         p.ofs(1).prn("}").prn();
