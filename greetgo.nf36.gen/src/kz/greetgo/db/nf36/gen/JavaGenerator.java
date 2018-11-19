@@ -146,7 +146,7 @@ public class JavaGenerator {
       generateMainUpdaterImpl(updaterInterfaceClassName);
     }
 
-    if (historySelectorNames == null) {
+    if (historySelectorNames != null) {
 
       String interfaceFullClassName = generateMainHistorySelectorInterface();
       generateMainHistorySelectorImpl(interfaceFullClassName);
