@@ -78,16 +78,16 @@ public class ClientHistorySelectorImpl implements ClientHistorySelector {
     }
 
     @Override
+    public void putTo(Object destinationObject) {
+      historySelector.putTo(destinationObject);
+    }
+
+    @Override
     public Client get(long id) {
       Client ret = new Client();
       ret.id = id;
       historySelector.putTo(ret);
       return ret;
-    }
-
-    @Override
-    public void putTo(Object destinationObject) {
-      historySelector.putTo(destinationObject);
     }
   };
 

@@ -668,7 +668,17 @@ public class JavaGenerator {
 
 
     p.ofs(1).prn("interface Finish {");
-    p.ofs(2).prn("Finish aliasForId(String aliasForId);").prn();
+
+    List<Nf3Field> aList = info.fields().stream()
+        .filter(Nf3Field::isId)
+        .sorted(comparing(Nf3Field::idOrder))
+        .collect(Collectors.toList());
+
+    for (Nf3Field f : aList) {
+      String name = "aliasFor" + firstToUp(f.javaName());
+      p.ofs(2).prn("Finish " + name + "(String " + name + ");").prn();
+    }
+
     p.ofs(2).prn("void putTo(Object destinationObject);").prn();
 
     p.ofs(2).prn(p.i(info.source()) + " get(" + (
@@ -812,22 +822,49 @@ public class JavaGenerator {
     p.ofs(1).prn(info.interfaceClassName() + " " + info.atMethodName() + "(" + p.i(Date.class) + " at);").prn();
 
 
-    p.ofs(1).prn("interface Finish {");
-    p.ofs(2).prn("Finish aliasForId(String aliasForId);").prn();
-    p.ofs(2).prn("void putTo(Object destinationObject);").prn();
+    p.ofs(1).prn("private final Finish finish = new Finish() {");
 
-    p.ofs(2).prn(p.i(info.source()) + " get(" + (
+    List<Nf3Field> idFields = info.fields().stream()
+        .filter(Nf3Field::isId)
+        .sorted(comparing(Nf3Field::idOrder))
+        .collect(Collectors.toList());
 
-        info.fields().stream()
-            .filter(Nf3Field::isId)
-            .sorted(comparing(Nf3Field::idOrder))
+    for (Nf3Field f : idFields) {
+      String name = "aliasFor" + firstToUp(f.javaName());
+      p.ofs(2).prn("@Override");
+      p.ofs(2).prn("Finish " + name + "(String " + name + ") {");
+      p.ofs(3).prn("historySelector.addIdAlias(\"" + f.dbName() + "\", " + name + ");");
+      p.ofs(3).prn("return this;");
+      p.ofs(2).prn("}").prn();
+    }
+
+    {
+      p.ofs(2).prn("@Override");
+      p.ofs(2).prn("void putTo(Object destinationObject) {");
+      p.ofs(3).prn("historySelector.putTo(destinationObject);");
+      p.ofs(3).prn("return this;");
+      p.ofs(2).prn("}").prn();
+    }
+
+    String className = p.i(info.source());
+
+    p.ofs(2).prn("@Override");
+    p.ofs(2).prn(className + " get(" + (
+
+        idFields.stream()
             .map(f -> p.i(f.javaType()) + " " + f.javaName())
             .collect(joining(", "))
 
-    ) + ");").prn();
+    ) + ") {");
+    p.ofs(3).prn(className + " __ret__ = new " + className + "();");
+    for (Nf3Field f : idFields) {
+      p.ofs(3).prn("__ret__." + f.javaName() + " = " + f.javaName() + ";");
+    }
+    p.ofs(3).prn("historySelector.putTo(__ret__);");
+    p.ofs(3).prn("return __ret__;");
+    p.ofs(2).prn("}");
 
-    p.ofs(1).prn("}");
-
+    p.ofs(1).prn("};");
 
     p.printToFile(info.implJavaFile());
   }
