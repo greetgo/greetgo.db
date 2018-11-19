@@ -64,6 +64,10 @@ public class JavaFilePrinter {
     return fullName;
   }
 
+  public String i(Class<?> aClass) {
+    return i(aClass.getName());
+  }
+
   public StringBuilder result() {
     StringBuilder result = new StringBuilder();
     if (packageName != null) {

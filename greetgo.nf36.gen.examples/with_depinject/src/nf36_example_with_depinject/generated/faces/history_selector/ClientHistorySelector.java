@@ -3,7 +3,6 @@ package nf36_example_with_depinject.generated.faces.history_selector;
 import nf36_example_with_depinject.structure.Client;
 
 import java.util.Date;
-import java.util.function.Consumer;
 
 public interface ClientHistorySelector {
 
@@ -26,10 +25,10 @@ public interface ClientHistorySelector {
   Finish at(Date date);
 
   interface Finish {
-    Client get(long id);
-
     Finish aliasForId(String aliasForId);
 
     void putTo(Object destinationObject);
+
+    Client get(long id);
   }
 }

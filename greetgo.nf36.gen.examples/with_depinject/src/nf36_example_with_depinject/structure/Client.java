@@ -3,6 +3,7 @@ package nf36_example_with_depinject.structure;
 import kz.greetgo.db.nf36.core.Nf3CommitMethodName;
 import kz.greetgo.db.nf36.core.Nf3Description;
 import kz.greetgo.db.nf36.core.Nf3Entity;
+import kz.greetgo.db.nf36.core.Nf3GenerateHistorySelector;
 import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3MoreMethodName;
 import kz.greetgo.db.nf36.core.Nf3NotNull;
@@ -18,6 +19,7 @@ import nf36_example_with_depinject.structure.inner.Charm;
 @Nf3MoreMethodName("moreAnother")
 @Nf3SaveMethodName("saveAll")
 @SuppressWarnings("unused")
+@Nf3GenerateHistorySelector(atMethodName = "atMoment")
 public class Client {
   @Nf3Description("Идентификатор клиента")
   @Nf3ID(seqFrom = 10_000_000)

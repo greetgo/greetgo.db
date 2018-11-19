@@ -60,4 +60,9 @@ class Nf3TableImpl implements Nf3Table {
     }
     return UtilsNf36.quoteForSql(d.value());
   }
+
+  @Override
+  public String toString() {
+    return "Nf3Table{" + tableName() + "}";
+  }
 }

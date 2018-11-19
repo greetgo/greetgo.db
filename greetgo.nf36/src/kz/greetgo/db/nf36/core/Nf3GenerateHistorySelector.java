@@ -13,5 +13,5 @@ import static java.lang.annotation.ElementType.TYPE;
 public @interface Nf3GenerateHistorySelector {
   String atMethodName() default "at";
 
-  String peekSqlMethodName() default "peekSql";
+  String toSuffix() default "To";
 }

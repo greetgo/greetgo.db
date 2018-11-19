@@ -57,6 +57,8 @@ public class ExampleGenerators implements HasAfterInject {
         .setUpserterImplClassName("AbstractExampleUpserter" + dbParameters.get().mainClassesSuffix())
         .setUpdaterImplClassName("AbstractExampleUpdater" + dbParameters.get().mainClassesSuffix())
         .setGenerateSaver(true)
+        .setHistorySelectorClassName("ExampleHistorySelector",
+            "AbstractExampleHistorySelector" + dbParameters.get().mainClassesSuffix())
         .setAbstracting(true)
     ;
 

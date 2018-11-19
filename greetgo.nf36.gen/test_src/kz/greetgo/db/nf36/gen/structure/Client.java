@@ -1,6 +1,7 @@
 package kz.greetgo.db.nf36.gen.structure;
 
 import kz.greetgo.db.nf36.core.Nf3Description;
+import kz.greetgo.db.nf36.core.Nf3GenerateHistorySelector;
 import kz.greetgo.db.nf36.core.Nf3ID;
 import kz.greetgo.db.nf36.core.Nf3NotNull;
 import kz.greetgo.db.nf36.core.Nf3ReferenceTo;
@@ -9,6 +10,7 @@ import kz.greetgo.db.nf36.gen.structure.inner.Chair;
 
 @Nf3Description("Это клиент")
 @SuppressWarnings("unused")
+@Nf3GenerateHistorySelector
 public class Client {
   @Nf3Description("Идентификатор клиента")
   @Nf3ID(seqFrom = 10_000_000)
