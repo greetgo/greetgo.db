@@ -808,7 +808,7 @@ public class JavaGenerator {
 
     {
       String historySelector = p.i(Nf36HistorySelector.class);
-      p.ofs(1).prn("private final " + historySelector + " historySelector;");
+      p.ofs(1).prn("private final " + historySelector + " historySelector;").prn();
       p.ofs(1).prn("public " + info.implClassName() + "(" + historySelector + " historySelector) {").prn();
       p.ofs(2).prn("this.historySelector = historySelector;");
       p.ofs(2).prn("historySelector.setNf3TableName(\"" + info.nf3TableName() + "\");");
@@ -817,7 +817,7 @@ public class JavaGenerator {
       for (Nf3Field f : idFields) {
         p.ofs(2).prn("historySelector.addId(\"" + f.dbName() + "\");");
       }
-      p.ofs(1).prn("}");
+      p.ofs(1).prn("}").prn();
     }
 
     {
