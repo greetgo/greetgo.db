@@ -10,7 +10,9 @@ public interface Nf36HistorySelector {
 
   Nf36HistorySelector setNf3TableName(String nf3TableName);
 
-  Nf36HistorySelector field(String nf6TableName, String dbFieldName, String aliasName, String authorFieldName);
+  Nf36HistorySelector field(String nf6TableName, String dbFieldName, String authorFieldName);
+
+  Nf36HistorySelector addFieldAlias(String dbFieldName, String aliasName);
 
   Nf36HistorySelector onAbsent(Consumer<Object> destinationObjectConsumer);
 
@@ -18,7 +20,7 @@ public interface Nf36HistorySelector {
 
   Nf36HistorySelector addId(String idName);
 
-  void addIdAlias(String idName, String idAlias);
+  Nf36HistorySelector addIdAlias(String idName, String idAlias);
 
   Nf36HistorySelector at(Date date);
 }

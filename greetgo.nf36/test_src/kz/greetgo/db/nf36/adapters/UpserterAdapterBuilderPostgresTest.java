@@ -131,9 +131,9 @@ public class UpserterAdapterBuilderPostgresTest extends ParentDbTest {
         .setNf3TableName("client")
         .setTimeFieldName("ts")
         .setInsertedAtFieldName("inserted_at")
-        .field("m_client_surname", "surname", null, "author")
-        .field("m_client_name", "name", null, "author")
-        .field("m_client_father_name", "father_name", null, "author");
+        .field("m_client_surname", "surname", "author")
+        .field("m_client_name", "name", "author")
+        .field("m_client_father_name", "father_name", "author");
   }
 
   @Test(enabled = false)
@@ -319,12 +319,7 @@ public class UpserterAdapterBuilderPostgresTest extends ParentDbTest {
     }
   }
 
-  @Test
-  public void putTo_onlyFields() throws Exception {
-    connector().prepareDatabase();
-
-    createClientTables();
-
+  private void insertData() {
     String id1 = "id1";
     String id2 = "id2";
 
@@ -376,8 +371,17 @@ public class UpserterAdapterBuilderPostgresTest extends ParentDbTest {
     System.out.println("       , '" + stdDate(7) + "'::timestamp as t7   -- date 7");
     System.out.println("       , '" + stdDate(9) + "'::timestamp as t9   -- date 9");
     System.out.println("       , '" + stdDate(11) + "'::timestamp as t11  -- date 11");
+  }
 
-    {
+  @Test
+  public void putTo_onlyFields_1() throws Exception {
+    connector().prepareDatabase();
+
+    createClientTables();
+
+    insertData();
+
+    {//1
       LocalClient client = new LocalClient();
       client.id = "id1";
 
@@ -397,8 +401,17 @@ public class UpserterAdapterBuilderPostgresTest extends ParentDbTest {
       assertThat(client.name).isEqualTo("Сидор");
       assertThat(client.fatherName).isEqualTo("Анатольевич");
     }
+  }
 
-    {
+  @Test
+  public void putTo_onlyFields_2() throws Exception {
+    connector().prepareDatabase();
+
+    createClientTables();
+
+    insertData();
+
+    {//2
       LocalClient client = new LocalClient();
       client.id = "id2";
 
@@ -422,8 +435,17 @@ public class UpserterAdapterBuilderPostgresTest extends ParentDbTest {
       assertThat(client.name).isNotNull();
       assertThat(client.fatherName).isNotNull();
     }
+  }
 
-    {
+  @Test
+  public void putTo_onlyFields_3() throws Exception {
+    connector().prepareDatabase();
+
+    createClientTables();
+
+    insertData();
+
+    {//3
       LocalClient c1 = new LocalClient();
       c1.id = "id1";
       c1.surname = RND.str(10);
@@ -453,8 +475,17 @@ public class UpserterAdapterBuilderPostgresTest extends ParentDbTest {
       assertThat(c1.fatherName).isEqualTo("Анатольевич");
       assertThat(c2.fatherName).isEqualTo("Васильевич");
     }
+  }
 
-    {
+  @Test
+  public void putTo_onlyFields_4() throws Exception {
+    connector().prepareDatabase();
+
+    createClientTables();
+
+    insertData();
+
+    {//4
       LocalClient c1 = new LocalClient();
       c1.id = "id1";
       c1.surname = RND.str(10);
@@ -484,8 +515,18 @@ public class UpserterAdapterBuilderPostgresTest extends ParentDbTest {
       assertThat(c1.fatherName).isEqualTo("Анатольевич");
       assertThat(c2.fatherName).isEqualTo("Васильевич");
     }
+  }
 
-    {
+  @Test
+  public void putTo_onlyFields_5() throws Exception {
+    connector().prepareDatabase();
+
+    createClientTables();
+
+    insertData();
+
+
+    {//5
       LocalClient c1 = new LocalClient();
       c1.id = "id1";
       c1.surname = RND.str(10);
@@ -515,8 +556,17 @@ public class UpserterAdapterBuilderPostgresTest extends ParentDbTest {
       assertThat(c1.fatherName).isEqualTo("Анатолич");
       assertThat(c2.fatherName).isEqualTo("Василич");
     }
+  }
 
-    {
+  @Test
+  public void putTo_onlyFields_6() throws Exception {
+    connector().prepareDatabase();
+
+    createClientTables();
+
+    insertData();
+
+    {//6
       LocalClient c1 = new LocalClient();
       c1.id = "id1";
       c1.surname = RND.str(10);
@@ -546,6 +596,61 @@ public class UpserterAdapterBuilderPostgresTest extends ParentDbTest {
       assertThat(c1.fatherName).isEqualTo("Анатольевич-Валирийского");
       assertThat(c2.fatherName).isEqualTo("Васильевич-Валирийского");
     }
+  }
 
+  public static class AliasedClient {
+    public String idAlias;
+    public String surnameAlias;
+    public String nameAlias;
+    public String fatherNameAlias;
+  }
+
+  private Nf36HistorySelector createHistorySelectorForAliasedClient() {
+    return createHistorySelectorForClient()
+        .addIdAlias("id", "idAlias")
+        .addFieldAlias("surname", "surnameAlias")
+        .addFieldAlias("name", "nameAlias")
+        .addFieldAlias("father_name", "fatherNameAlias")
+        ;
+  }
+
+  @Test
+  public void putTo_aliasedFields() throws Exception {
+    connector().prepareDatabase();
+
+    createClientTables();
+
+    insertData();
+
+    {//4
+      AliasedClient c1 = new AliasedClient();
+      c1.idAlias = "id1";
+      c1.surnameAlias = RND.str(10);
+      c1.nameAlias = RND.str(10);
+      c1.fatherNameAlias = RND.str(10);
+
+      AliasedClient c2 = new AliasedClient();
+      c2.idAlias = "id2";
+      c2.surnameAlias = RND.str(10);
+      c2.nameAlias = RND.str(10);
+      c2.fatherNameAlias = RND.str(10);
+
+      //
+      //
+      boolean exists1 = createHistorySelectorForAliasedClient().at(dateArray[7]).putTo(c1);
+      boolean exists2 = createHistorySelectorForAliasedClient().at(dateArray[7]).putTo(c2);
+      //
+      //
+
+      assertThat(exists1).isTrue();
+      assertThat(exists2).isTrue();
+
+      assertThat(c1.surnameAlias).isEqualTo("Иванов-Ганич");
+      assertThat(c2.surnameAlias).isEqualTo("Потапов-Ганич");
+      assertThat(c1.nameAlias).isEqualTo("Сидорус");
+      assertThat(c2.nameAlias).isEqualTo("Генна");
+      assertThat(c1.fatherNameAlias).isEqualTo("Анатольевич");
+      assertThat(c2.fatherNameAlias).isEqualTo("Васильевич");
+    }
   }
 }

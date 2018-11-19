@@ -82,17 +82,16 @@ abstract class JdbcNf36HistorySelectorAbstractAdapter implements Nf36HistorySele
   protected class EntityField {
     final String nf6TableName;
     final String dbFieldName;
-    final String aliasName;
     final String authorFieldName;
 
-    public EntityField(String nf6TableName, String dbFieldName, String aliasName, String authorFieldName) {
+    public EntityField(String nf6TableName, String dbFieldName, String authorFieldName) {
       this.nf6TableName = nf6TableName;
       this.dbFieldName = dbFieldName;
-      this.aliasName = aliasName;
       this.authorFieldName = authorFieldName;
     }
 
     String javaFieldName() {
+      String aliasName = fieldAliasMap.get(dbFieldName);
       return aliasName == null ? dbFieldName : aliasName;
     }
 
@@ -132,8 +131,16 @@ abstract class JdbcNf36HistorySelectorAbstractAdapter implements Nf36HistorySele
   protected final List<EntityField> fieldList = new ArrayList<>();
 
   @Override
-  public Nf36HistorySelector field(String nf6TableName, String dbFieldName, String aliasName, String authorFieldName) {
-    fieldList.add(new EntityField(nf6TableName, dbFieldName, aliasName, authorFieldName));
+  public Nf36HistorySelector field(String nf6TableName, String dbFieldName, String authorFieldName) {
+    fieldList.add(new EntityField(nf6TableName, dbFieldName, authorFieldName));
+    return this;
+  }
+
+  protected final Map<String, String> fieldAliasMap = new HashMap<>();
+
+  @Override
+  public Nf36HistorySelector addFieldAlias(String dbFieldName, String aliasName) {
+    fieldAliasMap.put(dbFieldName, aliasName);
     return this;
   }
 
@@ -179,8 +186,9 @@ abstract class JdbcNf36HistorySelectorAbstractAdapter implements Nf36HistorySele
   }
 
   @Override
-  public void addIdAlias(String idName, String idAlias) {
+  public Nf36HistorySelector addIdAlias(String idName, String idAlias) {
     idAliasMap.put(idName, idAlias);
+    return this;
   }
 
   protected Date at = null;
