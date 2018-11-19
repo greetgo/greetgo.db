@@ -1,14 +1,32 @@
 package nf36_example_with_depinject.generated.faces.history_selector;
 
+import java.util.Date;
 import nf36_example_with_depinject.structure.Client;
 
-import java.util.Date;
-
 public interface ClientHistorySelector {
+  ClientHistorySelector charmId();
 
-  ClientHistorySelector surname();
+  ClientHistorySelector charmIdTo(String charmIdAlias);
 
-  ClientHistorySelector surnameTo(String surnameAlias);
+  ClientHistorySelector hisChairLongId();
+
+  ClientHistorySelector hisChairLongIdTo(String hisChairLongIdAlias);
+
+  ClientHistorySelector hisChairStrId();
+
+  ClientHistorySelector hisChairStrIdTo(String hisChairStrIdAlias);
+
+  ClientHistorySelector longDescription();
+
+  ClientHistorySelector longDescriptionTo(String longDescriptionAlias);
+
+  ClientHistorySelector myChairId1();
+
+  ClientHistorySelector myChairId1To(String myChairId1Alias);
+
+  ClientHistorySelector myChairId2();
+
+  ClientHistorySelector myChairId2To(String myChairId2Alias);
 
   ClientHistorySelector name();
 
@@ -18,11 +36,11 @@ public interface ClientHistorySelector {
 
   ClientHistorySelector patronymicTo(String patronymicAlias);
 
-  ClientHistorySelector longDescription();
+  ClientHistorySelector surname();
 
-  ClientHistorySelector longDescriptionTo(String longDescriptionAlias);
+  ClientHistorySelector surnameTo(String surnameAlias);
 
-  Finish at(Date date);
+  Finish atMoment(Date at);
 
   interface Finish {
     Finish aliasForId(String aliasForId);
@@ -30,5 +48,6 @@ public interface ClientHistorySelector {
     void putTo(Object destinationObject);
 
     Client get(long id);
+
   }
 }

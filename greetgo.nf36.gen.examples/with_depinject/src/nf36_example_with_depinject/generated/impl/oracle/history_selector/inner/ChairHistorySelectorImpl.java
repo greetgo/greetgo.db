@@ -1,4 +1,4 @@
-package nf36_example_with_depinject.generated.impl.postgres.history_selector.inner;
+package nf36_example_with_depinject.generated.impl.oracle.history_selector.inner;
 
 import java.lang.String;
 import java.util.Date;
@@ -21,26 +21,26 @@ public class ChairHistorySelectorImpl implements ChairHistorySelector {
 
   @Override
   public ChairHistorySelector description() {
-    historySelector.field("memory_never_be_superfluous.chair_description", "description", null);
+    historySelector.field("m_chair_description", "description", null);
     return this;
   }
 
   @Override
   public ChairHistorySelector descriptionInto(String descriptionAlias) {
-    historySelector.field("memory_never_be_superfluous.chair_description", "description", null);
+    historySelector.field("m_chair_description", "description", null);
     historySelector.addFieldAlias("description", descriptionAlias);
     return this;
   }
 
   @Override
   public ChairHistorySelector name() {
-    historySelector.field("memory_never_be_superfluous.chair_name", "name", null);
+    historySelector.field("m_chair_name", "name", null);
     return this;
   }
 
   @Override
   public ChairHistorySelector nameInto(String nameAlias) {
-    historySelector.field("memory_never_be_superfluous.chair_name", "name", null);
+    historySelector.field("m_chair_name", "name", null);
     historySelector.addFieldAlias("name", nameAlias);
     return this;
   }

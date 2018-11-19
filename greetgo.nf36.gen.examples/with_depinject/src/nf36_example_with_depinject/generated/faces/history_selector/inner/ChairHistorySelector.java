@@ -1,29 +1,28 @@
 package nf36_example_with_depinject.generated.faces.history_selector.inner;
 
+import java.lang.String;
+import java.util.Date;
 import nf36_example_with_depinject.structure.inner.Chair;
 
-import java.util.Date;
-import java.util.function.Consumer;
-
 public interface ChairHistorySelector {
+  ChairHistorySelector description();
+
+  ChairHistorySelector descriptionInto(String descriptionAlias);
 
   ChairHistorySelector name();
 
-  ChairHistorySelector nameTo(String nameAlias);
+  ChairHistorySelector nameInto(String nameAlias);
 
-  ChairHistorySelector description();
-
-  ChairHistorySelector descriptionTo(String descriptionAlias);
-
-  Finish at(Date date);
+  Finish at(Date at);
 
   interface Finish {
-    Chair get(long id1, String id2);
-
     Finish aliasForId1(String aliasForId1);
 
     Finish aliasForId2(String aliasForId2);
 
     void putTo(Object destinationObject);
+
+    Chair get(long id1, String id2);
+
   }
 }

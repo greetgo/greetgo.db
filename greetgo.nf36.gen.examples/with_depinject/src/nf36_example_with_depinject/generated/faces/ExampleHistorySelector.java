@@ -4,7 +4,8 @@ import nf36_example_with_depinject.generated.faces.history_selector.ClientHistor
 import nf36_example_with_depinject.generated.faces.history_selector.inner.ChairHistorySelector;
 
 public interface ExampleHistorySelector {
+  ChairHistorySelector chair();
+
   ClientHistorySelector client();
 
-  ChairHistorySelector chair();
 }
