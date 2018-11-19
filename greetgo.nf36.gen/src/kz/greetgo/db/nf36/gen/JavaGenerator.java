@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static kz.greetgo.db.nf36.utils.UtilsNf36.*;
 
 public class JavaGenerator {
@@ -577,7 +578,7 @@ public class JavaGenerator {
 
     List<Nf3Field> fields = info.fields().stream()
         .filter(f -> !f.isId())
-        .collect(Collectors.toList());
+        .collect(toList());
 
     String predicate = p.i(Predicate.class.getName());
 
@@ -621,7 +622,7 @@ public class JavaGenerator {
 
     List<Nf3Field> fields = info.fields().stream()
         .filter(f -> !f.isId())
-        .collect(Collectors.toList());
+        .collect(toList());
 
     for (Nf3Field f : fields) {
       String fieldType = p.i(f.javaType().getName());
@@ -656,7 +657,7 @@ public class JavaGenerator {
       List<Nf3Field> fields = info.fields().stream()
           .filter(Nf3Field::isData)
           .sorted(comparing(Nf3Field::javaName))
-          .collect(Collectors.toList());
+          .collect(toList());
 
       for (Nf3Field f : fields) {
         p.ofs(1).prn(info.interfaceClassName() + " " + f.javaName() + "();").prn();
@@ -672,7 +673,7 @@ public class JavaGenerator {
     List<Nf3Field> aList = info.fields().stream()
         .filter(Nf3Field::isId)
         .sorted(comparing(Nf3Field::idOrder))
-        .collect(Collectors.toList());
+        .collect(toList());
 
     for (Nf3Field f : aList) {
       String name = "aliasFor" + firstToUp(f.javaName());
@@ -707,7 +708,7 @@ public class JavaGenerator {
       List<Nf3Field> fields = info.fields().stream()
           .filter(f -> !f.isId())
           .sorted(comparing(Nf3Field::javaName))
-          .collect(Collectors.toList());
+          .collect(toList());
 
       for (Nf3Field f : fields) {
         String fieldType = p.i(f.javaType().getName());
@@ -721,7 +722,7 @@ public class JavaGenerator {
     {
       List<Nf3Field> fields = info.fields().stream()
           .sorted(comparing(Nf3Field::javaName))
-          .collect(Collectors.toList());
+          .collect(toList());
 
       for (Nf3Field f : fields) {
         String fieldType = p.i(f.javaType().getName());
@@ -747,7 +748,7 @@ public class JavaGenerator {
 
     List<Nf3Field> fields = info.fields().stream()
         .filter(Nf3Field::isData)
-        .collect(Collectors.toList());
+        .collect(toList());
 
     for (Nf3Field f : fields) {
       String fieldType = p.i(f.javaType().getName());
@@ -799,7 +800,7 @@ public class JavaGenerator {
       List<Nf3Field> fields = info.fields().stream()
           .filter(Nf3Field::isData)
           .sorted(comparing(Nf3Field::javaName))
-          .collect(Collectors.toList());
+          .collect(toList());
 
       for (Nf3Field f : fields) {
         p.ofs(1).prn("@Override");
@@ -808,10 +809,11 @@ public class JavaGenerator {
         p.ofs(2).prn("return this;");
         p.ofs(1).prn("}").prn();
 
-        String alias = f.javaName() + "Alias";
+        final String alias = f.javaName() + "Alias";
+        final String toName = f.javaName() + info.toSuffix();
 
-        p.ofs(1).prn("@Override").pr("public ");
-        p.ofs(1).prn(info.interfaceClassName() + " " + f.javaName() + info.toSuffix() + "(String " + alias + ") {");
+        p.ofs(1).prn("@Override");
+        p.ofs(1).prn("public " + info.interfaceClassName() + " " + toName + "(String " + alias + ") {");
         p.ofs(2).prn("historySelector.field(\"" + info.nf6TableName(f) + "\", \"" + f.dbName() + "\", null);");
         p.ofs(2).prn("historySelector.addFieldAlias(\"" + f.dbName() + "\", " + alias + ");");
         p.ofs(2).prn("return this;");
@@ -819,15 +821,18 @@ public class JavaGenerator {
       }
     }
 
-    p.ofs(1).prn(info.interfaceClassName() + " " + info.atMethodName() + "(" + p.i(Date.class) + " at);").prn();
-
+    p.ofs(1).prn("@Override");
+    p.ofs(1).prn("public Finish " + info.atMethodName() + "(" + p.i(Date.class) + " at) {");
+    p.ofs(2).prn("historySelector.at(at);");
+    p.ofs(2).prn("return finish;");
+    p.ofs(1).prn("}").prn();
 
     p.ofs(1).prn("private final Finish finish = new Finish() {");
 
     List<Nf3Field> idFields = info.fields().stream()
         .filter(Nf3Field::isId)
         .sorted(comparing(Nf3Field::idOrder))
-        .collect(Collectors.toList());
+        .collect(toList());
 
     for (Nf3Field f : idFields) {
       String name = "aliasFor" + firstToUp(f.javaName());
@@ -883,7 +888,7 @@ public class JavaGenerator {
 
     List<Nf3Field> fields = info.fields().stream()
         .filter(Nf3Field::isData)
-        .collect(Collectors.toList());
+        .collect(toList());
 
     for (Nf3Field f : fields) {
       String fieldType = p.i(f.javaType().getName());
@@ -920,7 +925,7 @@ public class JavaGenerator {
     {
       List<Nf3Field> fields = info.fields().stream()
           .filter(f -> !f.isId())
-          .collect(Collectors.toList());
+          .collect(toList());
 
       for (Nf3Field f : fields) {
         String fieldType = p.i(f.javaType().getName());
@@ -938,7 +943,7 @@ public class JavaGenerator {
     {
       List<Nf3Field> fields = info.fields().stream()
           .sorted(comparing(Nf3Field::javaName))
-          .collect(Collectors.toList());
+          .collect(toList());
 
       for (Nf3Field f : fields) {
         String fieldType = p.i(f.javaType().getName());
@@ -1039,7 +1044,7 @@ public class JavaGenerator {
     List<Nf3Field> idFields = info.fields().stream()
         .filter(Nf3Field::isId)
         .sorted(comparing(Nf3Field::idOrder))
-        .collect(Collectors.toList());
+        .collect(toList());
 
     Set<String> anotherNames = idFields.stream().map(Nf3Field::javaName).collect(Collectors.toSet());
 
