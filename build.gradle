@@ -23,7 +23,7 @@ allprojects {
   //noinspection UnnecessaryQualifiedReference
   apply plugin: kz.greetgo.gradle.plugins.ConfigureIdeaPlugin
 
-  version = '2.3.4'
+  version = '2.3.5'
 
   sourceCompatibility = 1.8
 

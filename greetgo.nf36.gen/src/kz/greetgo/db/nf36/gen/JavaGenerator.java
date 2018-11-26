@@ -1272,9 +1272,6 @@ public class JavaGenerator {
   }
 
   private void generateMainUpserterImpl(String upserterInterfaceClassName) {
-    if (!generateSaver) {
-      return;
-    }
 
     JavaFilePrinter p = new JavaFilePrinter();
     p.packageName = implBasePackage;
@@ -1283,12 +1280,16 @@ public class JavaGenerator {
         + " implements " + p.i(upserterInterfaceClassName);
 
     printCreateUpserterMethod(p);
-    printCreateSaverMethod(p);
+    if (generateSaver) {
+      printCreateSaverMethod(p);
+    }
     printGetSequenceNextMethod(p);
 
     for (Nf3Table nf3Table : collector.collect()) {
       printUpsertImplMethod(p, nf3Table);
-      printSaveImplMethod(p, nf3Table);
+      if (generateSaver) {
+        printSaveImplMethod(p, nf3Table);
+      }
       for (Nf3Field nf3Field : nf3Table.fields()) {
         if (nf3Field.sequence() != null) {
           printUpsertImplMethodSequence(p, nf3Field, nf3Table);
@@ -1363,9 +1364,6 @@ public class JavaGenerator {
   }
 
   private void printCreateSaverMethod(JavaFilePrinter p) {
-    if (!generateSaver) {
-      return;
-    }
 
     String saverClassName = p.i(Nf36Saver.class.getName());
 
