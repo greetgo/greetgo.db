@@ -21,6 +21,7 @@ public class UpserterAdapterBuilderOracleTest extends UpserterAdapterBuilderPost
         "  surname     varchar2(300),\n" +
         "  name        varchar2(300),\n" +
         "  father_name varchar2(300),\n" +
+        "  inserted_at timestamp default systimestamp not null,\n" +
         "  primary key (id)\n" +
         ")");
     exec("create table m_client_surname (\n" +
