@@ -7,7 +7,7 @@ dependencies {
   compile project(':greetgo.nf36')
   testCompile project(':greetgo.db')
 
-  compile group: 'kz.greetgo', name: 'greetgo.class_scanner', version: "$greetgoClassScannerVersion"
+  compile group: 'kz.greetgo.class_scanner', name: 'greetgo.class_scanner', version: "$classScannerVersion"
 }
 
 uploadToMavenCentral {

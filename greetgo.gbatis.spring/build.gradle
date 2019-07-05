@@ -8,7 +8,8 @@ dependencies {
 
   compile "kz.greetgo.class_scanner:greetgo.class_scanner:${classScannerVersion}"
 
-  testCompile 'kz.greetgo:greetgo.conf:0.0.12'
+  testCompile "kz.greetgo.conf:greetgo.conf:${configVersion}"
+  testCompile "kz.greetgo.conf:greetgo.sys_params:${configVersion}"
 
   testCompile 'postgresql:postgresql:9.1-901.jdbc4'
   testCompile 'org.slf4j:slf4j-log4j12:1.7.25'

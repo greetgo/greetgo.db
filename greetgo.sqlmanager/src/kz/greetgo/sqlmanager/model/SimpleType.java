@@ -1,7 +1,5 @@
 package kz.greetgo.sqlmanager.model;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +25,6 @@ public class SimpleType extends Type implements JavaType {
   public static final SimpleType tlong, tint, tfloat, tline, tword;
   public static final SimpleType tlongline, ttext, ttime, tbool;
 
-  @SuppressFBWarnings("MS_MUTABLE_COLLECTION")
   public static final Map<String, SimpleType> SimpleTypes = new HashMap<>();
 
   static {

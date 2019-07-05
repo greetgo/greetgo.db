@@ -1,14 +1,13 @@
 package kz.greetgo.gbatis.gen;
 
-import kz.greetgo.gbatis.gen.autoimpl_for_tests.TestDao6;
-import kz.greetgo.java_compiler.JavaCompiler;
-import kz.greetgo.java_compiler.JavaCompilerFactory;
-import kz.greetgo.util.ServerUtil;
-import org.testng.annotations.Test;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.io.File;
-
-import static org.fest.assertions.api.Assertions.assertThat;
+import kz.greetgo.gbatis.gen.autoimpl_for_tests.TestDao6;
+import kz.greetgo.java_compiler.FilesClassLoader;
+import kz.greetgo.java_compiler.JavaCompiler;
+import kz.greetgo.java_compiler.JavaCompilerFactory;
+import org.testng.annotations.Test;
 
 public class AutoImplementorTest {
 
@@ -37,9 +36,10 @@ public class AutoImplementorTest {
       compiler.compile(gr.javaFile());
     }
 
-    ServerUtil.addToClasspath(new File(srcDir));
+    FilesClassLoader filesClassLoader = new FilesClassLoader(getClass().getClassLoader());
+    filesClassLoader.addClasspath(new File(srcDir));
 
-    final Class<?> implClass = Class.forName(gr.implClassName());
+    final Class<?> implClass = filesClassLoader.loadClass(gr.implClassName());
 
     final TestDao6 testDao6impl = (TestDao6) implClass.newInstance();
 

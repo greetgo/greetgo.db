@@ -1,6 +1,6 @@
 dependencies {
-  ext.depinjectVersion = "2.0.1"
-  ext.configVersion = "1.0.2"
+  ext.depinjectVersion = "2.2.2"
+  ext.configVersion = "1.1.2"
 
   compile project(':greetgo.db')
 

@@ -1,6 +1,5 @@
 package kz.greetgo.sqlmanager.parser;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import kz.greetgo.sqlmanager.model.*;
 import kz.greetgo.sqlmanager.model.command.Command;
 import kz.greetgo.sqlmanager.model.command.SelectAll;
@@ -19,7 +18,6 @@ import static kz.greetgo.sqlmanager.model.SimpleType.SimpleTypes;
  *
  * @author pompei
  */
-@SuppressFBWarnings("DMI_COLLECTION_OF_URLS")
 public class StruShaper {
   /**
    * Постфикс файлов, в которых содержатся коменты к таблицам

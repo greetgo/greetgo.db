@@ -1,6 +1,6 @@
 package kz.greetgo.gbatis.util;
 
-import kz.greetgo.util.db.DbType;
+import kz.greetgo.db.DbType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -237,7 +237,7 @@ public class SqlUtil {
 
     switch (dbType) {
 
-      case PostgreSQL: {
+      case Postgres: {
         if (offset <= 0) {
           limitParams.add(count);
           return sql + " limit ?";

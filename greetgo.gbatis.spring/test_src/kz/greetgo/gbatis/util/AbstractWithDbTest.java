@@ -1,16 +1,7 @@
 package kz.greetgo.gbatis.util;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import kz.greetgo.conf.SysParams;
-import kz.greetgo.sqlmanager.gen.Conf;
-import kz.greetgo.sqlmanager.gen.Nf6Generator;
-import kz.greetgo.sqlmanager.gen.Nf6GeneratorPostgres;
-import kz.greetgo.sqlmanager.gen.UserIdFieldType;
-import kz.greetgo.sqlmanager.parser.StruShaper;
-import org.postgresql.util.PSQLException;
-import org.springframework.jdbc.core.JdbcTemplate;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-import javax.sql.DataSource;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.net.URL;
@@ -20,10 +11,16 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import javax.sql.DataSource;
+import kz.greetgo.conf.sys_params.SysParams;
+import kz.greetgo.sqlmanager.gen.Conf;
+import kz.greetgo.sqlmanager.gen.Nf6Generator;
+import kz.greetgo.sqlmanager.gen.Nf6GeneratorPostgres;
+import kz.greetgo.sqlmanager.gen.UserIdFieldType;
+import kz.greetgo.sqlmanager.parser.StruShaper;
+import org.postgresql.util.PSQLException;
+import org.springframework.jdbc.core.JdbcTemplate;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-@SuppressFBWarnings("SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING")
 public abstract class AbstractWithDbTest {
   private static String userid = System.getProperty("user.name") + "_gbatis";
 
@@ -99,7 +96,6 @@ public abstract class AbstractWithDbTest {
     }
   }
 
-  @SuppressFBWarnings("SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE")
   protected void prepareDb() throws Exception {
     {
       try (Connection con = DriverManager.getConnection(SysParams.pgAdminUrl(),
@@ -129,7 +125,7 @@ public abstract class AbstractWithDbTest {
             e.printStackTrace();
           }
 
-        }//TRIES: for 
+        }//TRIES: for
 
         try (PreparedStatement ps = con.prepareStatement("create user " + userid()
           + " encrypted password '" + userid() + "'")) {

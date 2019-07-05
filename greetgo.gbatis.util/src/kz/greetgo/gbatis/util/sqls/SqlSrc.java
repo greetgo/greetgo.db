@@ -2,8 +2,7 @@ package kz.greetgo.gbatis.util.sqls;
 
 import kz.greetgo.gbatis.util.sqls.oracle.SqlSrcOracle;
 import kz.greetgo.gbatis.util.sqls.postgres.SqlSrcPostgres;
-import kz.greetgo.util.db.DbType;
-import kz.greetgo.util.db.DbTypeDetector;
+import kz.greetgo.db.DbType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +19,7 @@ public abstract class SqlSrc {
   private static final Map<DbType, SqlSrc> SQL_SRC_MAP = new HashMap<>();
 
   public static SqlSrc get(Connection con) throws SQLException {
-    return get(DbTypeDetector.detect(con));
+    return get(DbType.detect(con));
   }
 
   public static SqlSrc get(DbType dbType) {
@@ -46,7 +45,7 @@ public abstract class SqlSrc {
 
   static {
     Map<DbType, SqlSrc> map = new HashMap<>();
-    map.put(DbType.PostgreSQL, new SqlSrcPostgres());
+    map.put(DbType.Postgres, new SqlSrcPostgres());
     map.put(DbType.Oracle, new SqlSrcOracle());
     defaultDbTypeMap = Collections.unmodifiableMap(map);
   }

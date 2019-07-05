@@ -10,7 +10,7 @@ import kz.greetgo.sqlmanager.model.Field;
 import kz.greetgo.sqlmanager.model.FieldDb;
 import kz.greetgo.sqlmanager.model.Stru;
 import kz.greetgo.sqlmanager.model.Table;
-import kz.greetgo.util.db.DbType;
+import kz.greetgo.db.DbType;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -225,7 +225,7 @@ class PreparedSql {
     sb.append("with ");
     boolean needComma = false;
     if (at != null) {
-      String placeHolder = "?" + (dbType == DbType.PostgreSQL ? "::timestamp" : "");
+      String placeHolder = "?" + (dbType == DbType.Postgres ? "::timestamp" : "");
       sb.append(conf.tsTab).append(" as (select ").append(placeHolder).append(" as ")
           .append(conf.ts).append(dbType == DbType.Oracle ? " from dual" : "").append(")");
       needComma = true;

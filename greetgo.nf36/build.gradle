@@ -7,7 +7,7 @@ dependencies {
   compile project(':greetgo.db')
   testCompile project(':greetgo.db.worker')
 
-  testCompile "kz.greetgo:greetgo.util:$greetgoUtilVersion"
+  testCompile "kz.greetgo.util:greetgo.util:$greetgoUtilVersion"
   testCompile fileTree(dir: rootProject.file('lib'), include: ['*.jar'])
   testCompile "org.postgresql:postgresql:$pgDriverVersion"
 }

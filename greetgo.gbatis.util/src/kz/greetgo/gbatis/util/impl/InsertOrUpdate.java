@@ -4,8 +4,7 @@ import kz.greetgo.db.ConnectionCallback;
 import kz.greetgo.gbatis.util.Getter;
 import kz.greetgo.gbatis.util.iface.TableName;
 import kz.greetgo.gbatis.util.model.ColInfo;
-import kz.greetgo.util.db.DbType;
-import kz.greetgo.util.db.DbTypeDetector;
+import kz.greetgo.db.DbType;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -84,7 +83,7 @@ public class InsertOrUpdate {
 
   private ModificationListApplier createModificationListApplier(DbType dbType) {
     switch (dbType) {
-      case PostgreSQL:
+      case Postgres:
         return new ModificationListApplierPostgres(dbInfo.sqlViewer());
       case Oracle:
         return new ModificationListApplierOracle(dbInfo.sqlViewer());
@@ -97,7 +96,7 @@ public class InsertOrUpdate {
       @Override
       public Void doInConnection(Connection connection) throws Exception {
 
-        DbType dbType = DbTypeDetector.detect(connection);
+        DbType dbType = DbType.detect(connection);
         ModificationListApplier modificationListApplier = createModificationListApplier(dbType);
         modificationListApplier.apply(connection, modificationList);
 

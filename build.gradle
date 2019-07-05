@@ -8,6 +8,7 @@ buildscript {
     classpath "kz.greetgo.plugins:greetgo.gradle.plugins:0.0.5"
   }
 }
+apply plugin: 'project-report'
 
 def nowDate = new Date()
 def nowFormattedDate = nowDate.format("yyyy-MM-dd/HH:mm:ss")
@@ -23,7 +24,7 @@ allprojects {
   //noinspection UnnecessaryQualifiedReference
   apply plugin: kz.greetgo.gradle.plugins.ConfigureIdeaPlugin
 
-  version = '2.3.5'
+  version = '2.3.6'
 
   sourceCompatibility = 1.8
 
@@ -41,6 +42,7 @@ allprojects {
 }
 
 subprojects {
+  task allDeps(type: DependencyReportTask) {}
   repositories {
     mavenLocal()
     if (System.getenv('GG_REPO')?.trim()) maven { url System.getenv('GG_REPO') }
@@ -48,13 +50,13 @@ subprojects {
   }
 
   dependencies {
-    ext.configVersion = "1.0.2"
-    ext.greetgoUtilVersion = "0.0.27"
-    ext.depinjectVersion = "2.0.3"
-    ext.classScannerVersion = "0.0.1"
-    ext.greetgoJavaCompilerVersion = "2.0.1"
+    
+    ext.configVersion = "1.1.2"
+    ext.greetgoUtilVersion = "0.1.3"
+    ext.depinjectVersion = "2.2.2"
+    ext.classScannerVersion = "2.0.4"
+    ext.greetgoJavaCompilerVersion = "2.0.4"
     ext.pgDriverVersion = "9.4-1202-jdbc42"
-    ext.greetgoClassScannerVersion = "2.0.0"
     ext.testNgVersion = "6.5.1"
 
     ext.poolJar = "com.zaxxer:HikariCP:3.2.0"

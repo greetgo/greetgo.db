@@ -6,7 +6,7 @@ import kz.greetgo.gbatis.model.SqlWithParams;
 import kz.greetgo.gbatis.model.WithView;
 import kz.greetgo.sqlmanager.gen.Conf;
 import kz.greetgo.sqlmanager.parser.StruShaper;
-import kz.greetgo.util.db.DbType;
+import kz.greetgo.db.DbType;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -61,7 +61,7 @@ public class PreparedSqlTest {
     r.paramList.add(new Param(Integer.class, "age2"));
 
     SqlWithParams sql = PreparedSql.prepare(conf, sg.stru, r, new Object[]{13, 709},
-        new Date(), DbType.PostgreSQL, 100, 300);
+        new Date(), DbType.Postgres, 100, 300);
 
     assertThat(sql).isNotNull();
     assertThat(sql.sql).isNotNull();
@@ -87,7 +87,7 @@ public class PreparedSqlTest {
     }
 
     SqlWithParams sql = PreparedSql.prepare(conf, sg.stru, r, new Object[]{new Asd()},
-        new Date(), DbType.PostgreSQL, 100, 300);
+        new Date(), DbType.Postgres, 100, 300);
 
     assertThat(sql).isNotNull();
     assertThat(sql.sql).isNotNull();
@@ -110,7 +110,7 @@ public class PreparedSqlTest {
     r.paramList.add(new Param(String.class, "table"));
 
     SqlWithParams sql = PreparedSql.prepare(conf, sg.stru, r, new Object[]{13, 709, "x_client"},
-        new Date(), DbType.PostgreSQL, 100, 300);
+        new Date(), DbType.Postgres, 100, 300);
 
     assertThat(sql).isNotNull();
     assertThat(sql.sql).isNotNull();
@@ -135,7 +135,7 @@ public class PreparedSqlTest {
     r.paramList.add(new Param(String.class, "table1"));
 
     SqlWithParams sql = PreparedSql.prepare(conf, sg.stru, r, new Object[]{13, 709, "x_client"},
-        new Date(), DbType.PostgreSQL, 100, 300);
+        new Date(), DbType.Postgres, 100, 300);
 
     assertThat(sql).isNotNull();
     assertThat(sql.sql).isNotNull();
@@ -163,7 +163,7 @@ public class PreparedSqlTest {
     r.paramList.add(new Param(String.class, "table2"));
 
     SqlWithParams sql = PreparedSql.prepare(conf, sg.stru, r, new Object[]{13, 709, "x_client"},
-        null, DbType.PostgreSQL, 100, 300);
+        null, DbType.Postgres, 100, 300);
 
     assertThat(sql).isNotNull();
     assertThat(sql.sql).isNotNull();

@@ -1,12 +1,14 @@
 package kz.greetgo.gbatis.gen;
 
-import kz.greetgo.util.ServerUtil;
-import org.testng.annotations.Test;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.io.File;
 import java.util.List;
-
-import static org.fest.assertions.api.Assertions.assertThat;
+import kz.greetgo.java_compiler.FilesClassLoader;
+import kz.greetgo.java_compiler.JavaCompiler;
+import kz.greetgo.java_compiler.JavaCompilerFactory;
+import kz.greetgo.util.ServerUtil;
+import org.testng.annotations.Test;
 
 public class PackageAutoImplementorTest {
   @Test
@@ -23,9 +25,10 @@ public class PackageAutoImplementorTest {
 
     assertThat(genResults.size()).isGreaterThanOrEqualTo(2);
 
-    ServerUtil.addToClasspath(new File(srcDir));
+    FilesClassLoader filesClassLoader = new FilesClassLoader(getClass().getClassLoader());
+    filesClassLoader.addClasspath(new File(srcDir));
 
-    final Class<?> aClass = Class.forName(genResults.get(0).implClassName());
+    final Class<?> aClass = filesClassLoader.loadClass(genResults.get(0).implClassName());
 
     final Object daoInstance = aClass.newInstance();
 

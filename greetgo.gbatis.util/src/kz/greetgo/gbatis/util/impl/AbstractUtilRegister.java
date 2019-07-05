@@ -1,6 +1,7 @@
 package kz.greetgo.gbatis.util.impl;
 
 import kz.greetgo.db.ConnectionCallback;
+import kz.greetgo.db.DbType;
 import kz.greetgo.db.Jdbc;
 import kz.greetgo.gbatis.futurecall.SqlViewer;
 import kz.greetgo.gbatis.model.Creator;
@@ -13,7 +14,6 @@ import kz.greetgo.gbatis.util.callbacks.meta.AllReferencesCallback;
 import kz.greetgo.gbatis.util.iface.UtilRegister;
 import kz.greetgo.gbatis.util.model.ForeignKey;
 import kz.greetgo.gbatis.util.model.TableReference;
-import kz.greetgo.util.db.DbTypeDetector;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -275,7 +275,7 @@ public abstract class AbstractUtilRegister implements UtilRegister {
         result.type = ResultType.LIST;
 
         SqlWithParams sqlWithParams = SqlWithParams.selectWith(sql.toString(), params);
-        sqlWithParams.page(DbTypeDetector.detect(con), offset, count);
+        sqlWithParams.page(DbType.detect(con), offset, count);
 
         return OperUtil.call(con, sqlWithParams, result);
       }

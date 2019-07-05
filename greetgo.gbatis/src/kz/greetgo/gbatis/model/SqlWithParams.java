@@ -1,7 +1,7 @@
 package kz.greetgo.gbatis.model;
 
+import kz.greetgo.db.DbType;
 import kz.greetgo.gbatis.util.SqlUtil;
-import kz.greetgo.util.db.DbType;
 
 import java.util.ArrayList;
 import java.util.Collection;

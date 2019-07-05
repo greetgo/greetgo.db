@@ -1,6 +1,6 @@
 package kz.greetgo.gbatis.spring.beans;
 
-import kz.greetgo.conf.SysParams;
+import kz.greetgo.conf.sys_params.SysParams;
 import kz.greetgo.gbatis.util.AbstractWithDbTest;
 import kz.greetgo.gbatis.util.DataSourceAbstract;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,7 @@ import static kz.greetgo.gbatis.util.AbstractWithDbTest.changeDb;
 @Component
 public class DataSourceFab {
 
-  @Bean(destroyMethod = "close")
+  @Bean
   public DataSource getDataSource() throws Exception {
     if (dataSource == null) createDataSource();
     return dataSource;

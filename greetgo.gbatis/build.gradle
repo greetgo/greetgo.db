@@ -5,8 +5,9 @@ dependencies {
   compile project(':greetgo.sqlmanager')
   compile project(':greetgo.db')
 
-  testCompile 'kz.greetgo:greetgo.conf:0.0.12'
-  compile "kz.greetgo:greetgo.util:${greetgoUtilVersion}"
+  testCompile "kz.greetgo.conf:greetgo.conf:${configVersion}"
+  testCompile "kz.greetgo.conf:greetgo.sys_params:${configVersion}"
+  compile "kz.greetgo.util:greetgo.util:${greetgoUtilVersion}"
 
   testCompile "kz.greetgo.depinject:greetgo.depinject:$depinjectVersion"
 
