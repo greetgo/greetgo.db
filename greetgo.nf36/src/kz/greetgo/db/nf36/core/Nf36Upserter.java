@@ -13,9 +13,13 @@ public interface Nf36Upserter {
 
   void putField(String nf6TableName, String fieldName, Object fieldValue);
 
+  void putField(String fieldName, Object fieldValue);
+
   void putUpdateToNow(String fieldName);
 
   void putUpdateToNowWithParent(String fieldName);
+
+  void setNf6Enabled(boolean nf6Enabled);
 
   Nf36Upserter more();
 

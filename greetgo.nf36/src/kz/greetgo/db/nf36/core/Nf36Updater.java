@@ -14,6 +14,10 @@ public interface Nf36Updater {
 
   void setField(String nf6TableName, String fieldName, Object fieldValue);
 
+  void setField(String fieldName, Object fieldValue);
+
+  void setNf6Enabled(boolean nf6Enabled);
+
   void where(String fieldName, Object fieldValue);
 
   void commit();

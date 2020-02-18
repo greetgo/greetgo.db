@@ -25,6 +25,7 @@ public abstract class JdbcNf36UpdaterAbstractAdapter implements Nf36Updater, Con
   protected String nf3ModifiedBy;
   protected String nf6InsertedBy;
   protected Object author;
+  private boolean nf6Enabled = true;
 
   @Override
   public void setNf3TableName(String tableName) {
@@ -83,6 +84,16 @@ public abstract class JdbcNf36UpdaterAbstractAdapter implements Nf36Updater, Con
   @Override
   public void setField(String nf6TableName, String fieldName, Object fieldValue) {
     setFieldList.add(new SetField(nf6TableName, fieldName, SqlConvertUtil.forSql(fieldValue)));
+  }
+
+  @Override
+  public void setField(String fieldName, Object fieldValue) {
+    setFieldList.add(new SetField(null, fieldName, SqlConvertUtil.forSql(fieldValue)));
+  }
+
+  @Override
+  public void setNf6Enabled(boolean nf6Enabled) {
+    this.nf6Enabled = nf6Enabled;
   }
 
   protected static class Where {
@@ -144,8 +155,10 @@ public abstract class JdbcNf36UpdaterAbstractAdapter implements Nf36Updater, Con
 
   private void execute(Connection con) throws Exception {
     List<IdValues> idValuesList = updateNf3(con);
-    for (IdValues idValues : idValuesList) {
-      insertIntoNf6(idValues, con);
+    if (nf6Enabled) {
+      for (IdValues idValues : idValuesList) {
+        insertIntoNf6(idValues, con);
+      }
     }
   }
 

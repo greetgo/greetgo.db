@@ -39,6 +39,7 @@ abstract class JdbcNf36UpserterAbstractAdapter implements Nf36Upserter, Connecti
   protected final Map<String, Object> nf6ValueMap = new HashMap<>();
   protected final List<String> toNowFieldList = new ArrayList<>();
   protected JdbcNf36UpserterAbstractAdapter parent = null;
+  private boolean nf6Enabled = true;
 
   protected abstract JdbcNf36UpserterAbstractAdapter copyInstance();
 
@@ -94,6 +95,11 @@ abstract class JdbcNf36UpserterAbstractAdapter implements Nf36Upserter, Connecti
   }
 
   @Override
+  public void setNf6Enabled(boolean nf6Enabled) {
+    this.nf6Enabled = nf6Enabled;
+  }
+
+  @Override
   public void putId(String idName, Object idValue) {
     idValueMap.put(idName, SqlConvertUtil.forSql(idValue));
   }
@@ -102,6 +108,12 @@ abstract class JdbcNf36UpserterAbstractAdapter implements Nf36Upserter, Connecti
   public void putField(String nf6TableName, String fieldName, Object fieldValue) {
     fieldValueMap.put(fieldName, SqlConvertUtil.forSql(fieldValue));
     nf6ValueMap.put(nf6TableName + ";" + fieldName, SqlConvertUtil.forSql(fieldValue));
+  }
+
+  @Override
+  public void putField(String fieldName, Object fieldValue) {
+    fieldValueMap.put(fieldName, SqlConvertUtil.forSql(fieldValue));
+    nf6ValueMap.put(fieldName, SqlConvertUtil.forSql(fieldValue));
   }
 
   @Override
@@ -142,7 +154,7 @@ abstract class JdbcNf36UpserterAbstractAdapter implements Nf36Upserter, Connecti
       parent.execute(con);
     }
     upsert(con);
-    insertHistory(con);
+    if (nf6Enabled) insertHistory(con);
   }
 
   private void insertHistory(Connection con) throws Exception {

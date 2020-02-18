@@ -936,8 +936,12 @@ public class JavaGenerator {
         p.ofs(2).prn("}");
       }
 
-      p.ofs(2).prn(upserterField + ".putField(\"" + info.nf6TableName(f) + "\", \""
+      if (collector.nf6Enabled) {
+        p.ofs(2).prn(upserterField + ".putField(\"" + info.nf6TableName(f) + "\", \""
           + f.dbName() + "\", " + fieldName + ");");
+      } else {
+        p.ofs(2).prn(upserterField + ".putField(\"" + f.dbName() + "\", " + fieldName + ");");
+      }
       p.ofs(2).prn("return this;");
       p.ofs(1).prn("}").prn();
     }
@@ -965,7 +969,13 @@ public class JavaGenerator {
         p.ofs(1).prn("@Override");
         p.ofs(1).prn("public " + info.interfaceClassName() + " " + info.setMethodName(f)
             + "(" + fieldType + " " + f.javaName() + ") {");
-        p.ofs(2).prn("this.updater.setField(\"" + info.nf6TableName(f) + "\", \"" + f.dbName() + "\", " + f.javaName() + ");");
+
+        if (collector.nf6Enabled) {
+          p.ofs(2).prn("this.updater.setField(\"" + info.nf6TableName(f) + "\", \"" + f.dbName() + "\", " + f.javaName() + ");");
+        } else {
+          p.ofs(2).prn("this.updater.setField(\"" + f.dbName() + "\", " + f.javaName() + ");");
+        }
+
         p.ofs(2).prn("return this;");
         p.ofs(1).prn("}").prn();
       }
@@ -1054,6 +1064,10 @@ public class JavaGenerator {
           + ");");
     }
 
+    if (!collector.nf6Enabled) {
+      p.ofs(2).prn("saver.setNf6Enabled(false);");
+    }
+
     info.fields().stream()
         .filter(Nf3Field::isId)
         .sorted(comparing(Nf3Field::idOrder))
@@ -1061,8 +1075,13 @@ public class JavaGenerator {
 
     info.fields().stream()
         .filter(Nf3Field::isData)
-        .forEachOrdered(f ->
-            p.ofs(2).prn("saver.addFieldName(\"" + info.nf6TableName(f) + "\", \"" + f.dbName() + "\");"));
+        .forEachOrdered(f -> {
+          if (collector.nf6Enabled) {
+            p.ofs(2).prn("saver.addFieldName(\"" + info.nf6TableName(f) + "\", \"" + f.dbName() + "\");");
+          } else {
+            p.ofs(2).prn("saver.addFieldName(\"" + f.dbName() + "\");");
+          }
+        });
 
     p.ofs(1).prn("}").prn();
 
@@ -1107,6 +1126,10 @@ public class JavaGenerator {
     for (Nf3Field f : idFields) {
       p.ofs(2).prn(upserterVar + ".putId(\"" + f.dbName() + "\", " + f.javaName() + ");");
     }
+
+    if (!collector.nf6Enabled) {
+      p.ofs(2).prn(upserterVar + ".setNf6Enabled(false);");
+    }
     p.ofs(1).prn("}").prn();
   }
 
@@ -1137,6 +1160,10 @@ public class JavaGenerator {
             .map(f -> "\"" + f.dbName() + "\"")
             .collect(joining(", "))
     ) + ");");
+
+    if (!collector.nf6Enabled) {
+      p.ofs(2).prn("updater.setNf6Enabled(false);");
+    }
 
     p.ofs(1).prn("}").prn();
   }

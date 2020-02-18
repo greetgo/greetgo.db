@@ -35,6 +35,7 @@ public class ModelCollector {
   private String sequencePrefix = null;
   private ClassScanner classScanner = new ClassScannerDef();
   String sourceBasePackage;
+  boolean nf6Enabled = true;
 
   @SuppressWarnings("UnusedReturnValue")
   public ModelCollector setSourceBasePackage(String sourceBasePackage) {
@@ -145,6 +146,11 @@ public class ModelCollector {
 
   public ModelCollector setNf6Prefix(String nf6prefix) {
     this.nf6prefix = nf6prefix;
+    return this;
+  }
+
+  public ModelCollector setNf6Enabled(boolean nf6Enabled) {
+    this.nf6Enabled = nf6Enabled;
     return this;
   }
 

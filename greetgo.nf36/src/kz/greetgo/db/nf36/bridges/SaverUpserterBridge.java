@@ -52,6 +52,17 @@ public class SaverUpserterBridge implements Nf36Saver {
   }
 
   @Override
+  public Nf36Saver addFieldName(String fieldName) {
+    dataFieldList.add(new DataField(null, fieldName));
+    return this;
+  }
+
+  @Override
+  public void setNf6Enabled(boolean nf6Enabled) {
+    upserter.setNf6Enabled(nf6Enabled);
+  }
+
+  @Override
   public Nf36Saver putUpdateToNow(String timestampFieldName) {
     upserter.putUpdateToNow(timestampFieldName);
     return this;
